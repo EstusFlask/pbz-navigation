@@ -1,4 +1,4 @@
-Quest and Exploration Navigation 0.8.5-beta
+Quest and Exploration Navigation 0.8.5-beta (local patch 0.8.5-local-fix2)
 
 Layout: PBZModLoader 1.0.0
 Release: 0.8.5-beta.
@@ -7,7 +7,7 @@ INSTALL
 1. Close the game and install PBZModLoader 1.0.0.
 2. Merge this archive's ProjectPBZ folder into the PBZ game root opened through Steam -> Manage -> Browse local files.
 3. Confirm the entry: ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/main.js
-4. Install Map Tracker Plus 0.6.7 for collectible and minimap integration.
+4. Keep Map Collectible Tracker 1.0.9 unchanged. Install this navigation package's platform folder: PBZQuestRouteCompat is a navigation-owned adapter for the existing UE4SS 1195 Shipping runtime. Minimap route overlays, large icons and accessory hints have not been ported.
 5. Start the game normally through Steam.
 
 This layout keeps the PBZModLoader folder structure. Mods Menu is optional for in-game settings.
@@ -15,6 +15,7 @@ Choose one full archive. When switching layouts, back up and move out the old PB
 Remove legacy 0.7.x zzz_PBZQuestRoute_P.pak/.utoc/.ucas and PBZQuestRouteMouse before upgrading.
 
 CHANGES
+- Local patch: bounded far-ribbon collision auditing, update throttling, no spline readbacks, and a navigation-owned UE4SS target bridge. No collector files are modified. Atlas data is unchanged. Not verified in game.
 - Confirm startup explicitly and prevent duplicate navigation hooks within a session.
 - Native Mods Menu layout and tracker resolution across original, native-menu and generated folders.
 - An absent or incompatible optional tracker cannot fail core map/quest navigation startup.

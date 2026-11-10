@@ -105,10 +105,23 @@ function install(){
     const content=UE.KismetSystemLibrary.ConvertToAbsolutePath(UE.KismetSystemLibrary.GetProjectContentDirectory());
     const provider=new Provider({load:require,dirname:__dirname,content,
         exists:file=>UE.BlueprintPathsLibrary.FileExists(file),runtime:()=>globalThis,clock:Date.now});
+    const saved=UE.KismetSystemLibrary.ConvertToAbsolutePath(UE.KismetSystemLibrary.GetProjectSavedDirectory()).replace(/[\\/]?$/,'/');
+    const {LuaTracker}=require('./PBZRouteLuaTracker');
+    const lua=new LuaTracker({read:()=>{
+        const file=saved+'PBZQuestRoute-tracker.json',out=P.$ref('');
+        return UE.BlueprintPathsLibrary.FileExists(file)&&UE.EasyCsv.LoadStringFromLocalFile(file,out)?String(P.$unref(out)):'';
+    },write:text=>UE.EasyCsv.SaveStringToFileWithFullPath(text,saved+'PBZQuestRoute-command.json')});
     const control=globalThis.__PBZQuestRouteTrackerAdapter={state:null,error:'',timer:null};
     const tick=()=>{
         try{
             if(!control.state){
+                if(lua.refresh()){
+                    control.state={tick:()=>lua.refresh()};
+                    globalThis.PBZMapTrackerBridge={target:lua};
+                    const status=globalThis.__PBZQuestRouteRuntime;if(status)status.tracker='UE4SS Map Tracker 1.0.9 connected';
+                    console.log('[PBZQuestRoute] UE4SS Map Tracker target adapter active');
+                    return;
+                }
                 const active=provider.active();if(!active)return;
                 control.state=adapt(active.load);
                 globalThis.PBZMapTrackerBridge={load:active.load};

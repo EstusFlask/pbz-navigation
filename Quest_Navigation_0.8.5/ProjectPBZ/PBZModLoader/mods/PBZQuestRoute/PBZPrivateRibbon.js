@@ -1,18 +1,19 @@
 'use strict';
 const UE=require('ue'),P=require('puerts'),R=require('./PBZRouteCore'),W=require('./PBZRouteWorld'),B=require('./PBZRibbonMath'),Fiber=require('./PBZRouteFiber'),{Arrival}=require('./PBZRouteArrival');
 const WORLD=UE.ESplineCoordinateSpace.World;
+const {RibbonGuard}=require('./PBZRibbonGuard');
 const fx=(kind)=>'/Game/PBZContent/VFX/SceneFX/'+(kind==='001_Player'?'Sequence/Seq_009_FirstBell/':'Bell/')+'NS_BellRedString_'+kind+'.NS_BellRedString_'+kind;
 const asset=(path)=>{const a=UE.Object.Load(path);if(a)return a;const soft=UE.KismetSystemLibrary.Conv_SoftObjPathToSoftObjRef(UE.KismetSystemLibrary.MakeSoftObjectPath(path));return UE.KismetSystemLibrary.LoadAsset_Blocking(soft);},zero=()=>new UE.Rotator(0,0,0);
 const tr=p=>UE.KismetMathLibrary.MakeTransform(W.vec(p),zero(),new UE.Vector(1,1,1));
 class Threads{
- constructor(log){this.log=log;this.pool=[];this.version=-1;this.mark=-1;}
+ constructor(log){this.log=log;this.pool=[];this.version=-1;this.mark=-1;this.guard=new RibbonGuard();}
  clear(){for(const r of this.pool)if(r&&W.alive(r.a))r.a.K2_DestroyActor();this.pool=[];this.version=-1;this.last=null;this.hint=0;this.attachment=null;this.motion=null;this.clip=null;}
  vis(r,on){if(!r||r.on===on)return;r.a.SetActorHiddenInGame(!on);
   r.n?.SetVisibility?.(on,true);r.n?.SetHiddenInGame?.(!on,true);r.fiber?.SetVisibility?.(on,true);r.fiber?.SetHiddenInGame?.(!on,true);
   if(on){if(!r.lit&&r.sys){r.n.Activate(true);r.lit=true;}}
   else{if(r.n?.DeactivateImmediate)r.n.DeactivateImmediate();else r.n?.Deactivate?.();r.lit=false;}
   r.on=on;}
- hide(){for(const r of this.pool)this.vis(r,false);}
+ hide(){for(const r of this.pool)this.vis(r,false);this.lastDraw=null;}
  make(i,pawn,at){let row=this.pool[i];if(row&&W.alive(row.a))return row;
   const hd=i===0;let sys;try{sys=hd?(this.playerFX ||=asset(fx('001_Player'))):(this.roadFX ||=asset(fx('002_Bell')));if(!sys)sys=(this.roadFX ||=asset(fx('002_Bell')));}catch(e){this.log('thread asset',String(e));}
   // A private stock NiagaraActor: no Bell blueprint, checkpoint component,
@@ -40,13 +41,14 @@ class Threads{
   r.spl.SetSplinePoints(arr,WORLD,false);
   for(let i=0;i<ps.length;i++){
    const a=i?ps[i-1]:before||ps[0],b=i+1<ps.length?ps[i+1]:after||ps[i],p=ps[i];
-   if(typeof r.spl.SetTangentsAtSplinePoint==='function'){
+   if(typeof r.spl.SetSplinePointType==='function')r.spl.SetSplinePointType(i,UE.ESplinePointType.Linear,false);
+   else if(typeof r.spl.SetTangentsAtSplinePoint==='function'){
     const d=B.unit(a,b),incoming=R.dist(a,p)||R.dist(p,b),outgoing=R.dist(p,b)||R.dist(a,p);
     const tangent=n=>W.vec({x:d.x*n,y:d.y*n,z:d.z*n});
     r.spl.SetTangentsAtSplinePoint(i,tangent(incoming),tangent(outgoing),WORLD,false);
    }else r.spl.SetSplinePointType(i,UE.ESplinePointType.CurveClamped,false);
   }r.spl.UpdateSpline();
-  Fiber.draw(r,r.head,this.log);this.vis(r,true);
+  Fiber.draw(r,r.head,this.log,ps);this.vis(r,true);
  }
  maintainFloor(w,m,now){
   if(now<this.nextFloor)return;this.nextFloor=now+125;
@@ -66,12 +68,14 @@ class Threads{
  }
  section(i,S,f,a,b,shapeKey){
   const present=this.pool[i];if(present?.on&&shapeKey!==null&&present.tag===shapeKey)return;
-  const slice=B.section(this.route,f,a,b);if(!slice){this.vis(present,false);return;}
+  const slice=!f&&this.guarded?this.guard.section(i-1,a,b):B.section(this.route,f,a,b);if(!slice){this.vis(present,false);return;}
   const row=this.make(i,S.pawn,slice.ps[0]);this.shape(row,slice.ps,slice.before,slice.after);row.tag=shapeKey;
  }
  show(S){
   if(S.line.length<2){this.hide();return;}
   const now=Date.now(),w=S.world,feet=w.feet();
+  if(this.lastDraw!==null&&this.lastDraw!==undefined&&this.version===S.version&&now-this.lastDraw<16)return;
+  this.lastDraw=now;
   if(this.version!==S.version){
    const newKey=(S.trip?.legs[S.active]?.world||'')+'/'+(S.targetKey||'')+'/'+S.active;
    const same=this.routeKey===newKey,old=this.route;
@@ -86,7 +90,7 @@ class Threads{
     }}
    this.hint=0;this.nextFloor=0;this.seenFloor=new Set();this.adjusting=new Set();
    this.floorDistance=new Float64Array(this.route.points.length).fill(Infinity);this.floorGoal=new Float64Array(this.route.points.length);
-   this.tileVersion=[];for(const r of this.pool){if(r){r.tag=null;this.vis(r,false);}}
+   this.tileVersion=[];this.guard.reset();for(const r of this.pool){if(r){r.tag=null;this.vis(r,false);}}
   }
   const r=this.route;if(r.points.length<2){this.hide();return;}
   const arrival=S.arrival||=new Arrival();
@@ -130,6 +134,8 @@ class Threads{
    if(drawEnd<=m.arc+8){this.hide();return;}
   }
   const front=Math.min(drawEnd,m.arc+B.influence);
+  this.guarded=typeof w.threadHit==='function';
+  if(this.guarded&&drawEnd>front)drawEnd=this.guard.check(r,w,S.version,this.tileVersion,front,drawEnd,now);
   // The same 10 m interval follows the character. Its endpoint slides through
   // the stationary spline with a zero displacement and zero slope.
   const key=[S.version,m.arc,front,anchor.x,anchor.y,anchor.z,this.motion.vx*.035,this.motion.vy*.035,

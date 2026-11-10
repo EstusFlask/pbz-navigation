@@ -10,7 +10,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='0.8.5-menu-test1';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='0.8.5-local-fix2';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces)=>new R.Graph(data,faces),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
@@ -531,7 +531,7 @@ exports.install=function(){if(globalThis.__PBZQuestRouteInstalled)return;dir=UE.
  wrap(m,'Tick',function(){try{onMap(this);}catch(e){ink.hide(this);throw e;}});bindPadTap(m);bindMouse(m);chooseUI(m,'toggleTrackQuestPoint',false);
  const journal=require('UI/Widget/DisplayQuest').QuestUIMixinInterface.prototype;chooseUI(journal,'toggleHoveredQuestPoint',true);
  wrap(m,'FinishCurrentWidget',function(){ink.remove(this);maps.delete(this);pointers.delete(this);pads.delete(this);confirmations.delete(this);});wrap(m,'ReleaseScriptReferences',function(){ink.remove(this);maps.delete(this);pointers.delete(this);pads.delete(this);confirmations.delete(this);});
- tracker=new Tracker(function(id){const bridge=globalThis.PBZMapTrackerBridge;if(bridge&&id.startsWith('Mods/Pbz'))return bridge.load(id.slice(5));return require(id);},trackerChanged,log);
+ tracker=new Tracker(function(id){const bridge=globalThis.PBZMapTrackerBridge;if(id==='Mods/PbzTrackerTarget'&&bridge?.target)return bridge.target;if(bridge?.load&&id.startsWith('Mods/Pbz'))return bridge.load(id.slice(5));return require(id);},trackerChanged,log);
  globalThis.PBZQuestRouteBridge={
   version:BUILD,
   options:()=>S.cfg,

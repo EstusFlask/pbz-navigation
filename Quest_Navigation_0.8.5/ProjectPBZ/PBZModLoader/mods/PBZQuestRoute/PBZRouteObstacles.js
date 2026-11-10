@@ -32,7 +32,7 @@ function* sweep(w,a,b){
 // run inside the whole-world graph search or the map's drawing callback.
 class Auditor{
  constructor(){this.cache=new Map();this.reset();}
- reset(){this.leg=null;this.job=null;this.safe=null;this.result=null;this.started=0;}
+ reset(){this.leg=null;this.job=null;this.safe=null;this.result=null;this.started=0;this.nextPump=0;}
  begin(leg,w,feet,now){
   this.leg=leg;this.started=now;this.result=null;this.origin={...feet};
   const near=R.nearestOnLine(feet,leg.points);this.safe={...feet};
@@ -83,7 +83,8 @@ class Auditor{
  }
  pump(clock=Date.now,maxSteps=12,maxMs=3){
   if(!this.job)return this.result;
-  const started=clock();for(let i=0;i<maxSteps;i++){
+  const started=clock();if(started<this.nextPump)return null;this.nextPump=started+16;
+  for(let i=0;i<maxSteps;i++){
    const row=this.job.next();if(row.done){this.result=row.value;this.job=null;return this.result;}
    if(clock()-started>=maxMs)break;
   }return null;

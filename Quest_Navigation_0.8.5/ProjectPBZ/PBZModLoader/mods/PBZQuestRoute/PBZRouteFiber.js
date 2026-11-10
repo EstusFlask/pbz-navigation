@@ -16,12 +16,11 @@ function mesh(ps,org,radius=.82){
    if(i+1<ps.length){const x=i*rings+j,y=i*rings+(j+1)%rings;idx.push(x,y,x+rings,y,y+rings,x+rings);}}}
  return {v,normal,col,idx};
 }
-function draw(r,head,log){
+function draw(r,head,log,samples){
  if(!r.fiber||r.fiberOff)return;const now=Date.now();if(head&&r.fiberTime===now)return;r.fiberTime=now;
- try{const length=r.spl.GetSplineLength();if(!(length>1))return;
+ try{
  // Keep topology and vertex identity stable while the clipped section moves.
- const n=head?48:52,ps=[];
- for(let i=0;i<=n;i++)ps.push(W.plain(r.spl.GetLocationAtDistanceAlongSpline(i*length/n,UE.ESplineCoordinateSpace.World)));
+ const ps=samples||[];if(ps.length<2)return;const n=ps.length-1;
  const q=mesh(ps,W.plain(r.fiber.K2_GetComponentLocation())),v=UE.NewArray(UE.Vector),ns=UE.NewArray(UE.Vector),cs=UE.NewArray(UE.LinearColor);
  for(let i=0;i<q.v.length;i++){v.Add(W.vec(q.v[i]));ns.Add(W.vec(q.normal[i]));cs.Add(new UE.LinearColor(...q.col[i]));}
  if(!r.uv)r.uv=UE.NewArray(UE.Vector2D);if(!r.tans)r.tans=UE.NewArray(UE.ProcMeshTangent);const uv=r.uv;

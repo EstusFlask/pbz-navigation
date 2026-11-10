@@ -1,4 +1,4 @@
-任务与探索导航 0.8.5-beta
+任务与探索导航 0.8.5-beta（本地修补 0.8.5-local-fix2）
 
 安装版本：PBZModLoader 1.0.0
 发布版本：0.8.5-beta
@@ -7,7 +7,7 @@
 1. 退出游戏，先安装 PBZModLoader 1.0.0
 2. 将本包 ProjectPBZ 文件夹合并到 Steam“管理 → 浏览本地文件”打开的 PBZ 根目录
 3. 确认入口：ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/main.js
-4. 如需物品与小地图，安装 Map Tracker Plus 0.6.7
+4. 使用 Map Collectible Tracker 1.0.9 时保留其原版文件，同时安装本导航包的 platform 目录，其中 PBZQuestRouteCompat 是导航自有的桥接组件。目前适配目标导航与取消同步，小地图路线、放大图标和自动饰品提示未迁移
 5. 正常通过 Steam 启动游戏
 
 本版保留 PBZModLoader 目录布局，Mods Menu 作为游戏内设置菜单可选
@@ -16,6 +16,7 @@
 不要同时留下旧 0.7.x 的 zzz_PBZQuestRoute_P.pak、.utoc、.ucas 和 PBZQuestRouteMouse
 
 本次改动
+- 本地补丁：红绳远段分帧碰撞校验、限制重复更新、消除样条回读，并添加导航自有的 UE4SS 目标桥接；不改收集 Mod 文件，未改路网，未进行游戏内验证
 - 增加明确的启动成功状态与失败记录，阻止同一会话重复安装导航钩子
 - 支持 Mods Menu 原生目录，修正物品联动在原生目录、原始目录和加载器生成目录之间的解析
 - 可选收集 Mod 缺失或启动失败不再让基础导航入口报失败
