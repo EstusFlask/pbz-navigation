@@ -11,16 +11,31 @@ local function report(code, detail)
     print('[PBZQuestRouteCompat] ' .. code .. ' ' .. tostring(detail or '') .. '\n')
 end
 local wrapped
+local selectionModule, originalCreate, selectionCreate
+local function restoreRequire()
+    if control.bridge and selectionModule and require == wrapped then require = original end
+end
 wrapped = function(name, ...)
     local value, loader = original(name, ...)
-    if name == 'PbzMapTarget' and control.active then
+    if name == 'PbzMapSelection' and not selectionModule then
+        selectionModule, originalCreate = value, value.create
+        selectionCreate = function(...)
+            local service = originalCreate(...)
+            if control.bridge then control.bridge.watchSelection(service)
+            else control.pendingSelection = service end
+            return service
+        end
+        value.create = selectionCreate
+        restoreRequire()
+    end
+    if name == 'PbzMapTarget' and not control.bridge and control.active then
         -- PbzMapTracker requires this service from its game-thread boot before
         -- constructing the live target. Nothing is booted in a second VM.
         local ok, result = pcall(adapter.install, {target = value, report = report})
         if ok then
             control.bridge = result
-            control.active = false
-            if require == wrapped then require = original end
+            if control.pendingSelection then result.watchSelection(control.pendingSelection);control.pendingSelection=nil end
+            restoreRequire()
             report('TARGET_CONNECTED', 'Map Collectible Tracker 1.0.9')
         else report('CONNECT_FAILED', result) end
     end
@@ -30,6 +45,7 @@ require = wrapped
 function control.stop()
     control.active = false
     if require == wrapped then require = original end
+    if selectionModule and selectionModule.create == selectionCreate then selectionModule.create = originalCreate end
     if control.bridge then control.bridge.stop(); control.bridge = nil end
     rawset(_G, '__PBZQuestRouteHost', nil)
 end

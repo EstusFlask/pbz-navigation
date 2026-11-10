@@ -28,23 +28,56 @@ function M.install(options)
         local ok, err = f:write(text); f:close(); assert(ok, err)
     end
     read, write = options.read or read, options.write or write
-    local control = {session = tostring(now()) .. '-' .. tostring({}), revision = 0, active = true}
-    local current, unsubscribe, lastCommand, lastWrite, reason
+    local control = {session = tostring(now()) .. '-' .. tostring({}), revision = 0, selectionRevision = 0, active = true}
+    local current, unsubscribe, lastCommand, lastWrite, reason, selection, hover, hoverSignature
+    local undoSelection = {}
+    local function plainOf(target)
+        if not target then return nil end
+        local plain = {}
+        for _, key in ipairs({'key','mapID','location','title','name','trackingMode','hintOnly'}) do plain[key] = target[key] end
+        return plain
+    end
     local function publish()
         local target = current and current.read().target
-        local plain
-        if target then
-            plain = {}
-            for _, key in ipairs({'key','mapID','location','title','name','trackingMode','hintOnly'}) do plain[key] = target[key] end
-        end
         write('PBZQuestRoute-tracker.json', json.encode({protocol=PROTOCOL,version=1,session=control.session,
-            revision=control.revision,writtenAt=now(),target=plain,reason=reason}))
+            revision=control.revision,writtenAt=now(),target=plainOf(target),reason=reason,
+            hover=hover,selectionRevision=control.selectionRevision}))
         lastWrite = now()
+    end
+    local function refreshHover()
+        local point = selection and selection.selected()
+        local plain = plainOf(point)
+        local signature = json.encode(plain)
+        if signature == hoverSignature then return end
+        hover, hoverSignature = plain, signature
+        control.selectionRevision = control.selectionRevision + 1
+        publish()
+    end
+    function control.watchSelection(service)
+        for _, undo in ipairs(undoSelection) do undo() end
+        undoSelection = {}; selection = service; hover = nil; hoverSignature = nil
+        control.selectionRevision = control.selectionRevision + 1
+        if service then
+            for _, name in ipairs({'select','selectAt','selectIndex','selectNext','selectPrevious','clearSelection','setMarkers'}) do
+                local original = service[name]
+                if type(original) == 'function' then
+                    local wrapped = function(...)
+                        local result = table.pack(original(...))
+                        pcall(refreshHover)
+                        return table.unpack(result, 1, result.n)
+                    end
+                    service[name] = wrapped
+                    undoSelection[#undoSelection+1] = function() if service[name] == wrapped then service[name] = original end end
+                end
+            end
+        end
+        pcall(refreshHover)
     end
     local create = Target.create
     Target.create = function(...)
         local api = create(...)
         if unsubscribe then unsubscribe() end
+        control.watchSelection(nil)
         current = api
         control.revision = control.revision + 1
         reason = 'restore'
@@ -66,17 +99,22 @@ function M.install(options)
                 lastCommand = text
                 local selected = current and current.read().target
                 -- Late cancellation cannot clear a newer item or another session.
-                if selected and cmd.session == control.session and cmd.revision == control.revision
+                if cmd.action == 'select' and cmd.session == control.session and selection
+                    and cmd.selectionRevision == control.selectionRevision and selection.selectedKey() == cmd.key then
+                    selection.trackSelected({selectReason='navigation middle-click'})
+                elseif selected and cmd.session == control.session and cmd.revision == control.revision
                     and cmd.key == selected.key and cmd.action == 'clear' then
                     current.clear(tostring(cmd.reason or 'route cleared'))
                 end
             end
         end
+        refreshHover()
         if current and (not lastWrite or now() - lastWrite >= 1000) then publish() end
     end
     function control.stop()
         control.active = false
         if unsubscribe then unsubscribe(); unsubscribe = nil end
+        control.watchSelection(nil)
         Target.create = create
         Target.__questRouteBridge = nil
     end

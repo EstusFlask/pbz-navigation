@@ -143,6 +143,7 @@ exports.crossesBlock=crossesBlock;
 // dashed until scene collision checks certify it; a physical blocker is red.
 function intervals(leg){
  const cuts=[];
+ if(leg.diagnostic){const n=leg.verifiedEndIndex??0;cuts.push({lo:R.extent(leg.points.slice(0,n+1)),hi:R.extent(leg.points)+1,unknown:true});}
  const at=p=>{const q=R.nearestOnLine(p,leg.points);let s=0;for(let i=0;i<q.i;i++)s+=R.dist(leg.points[i],leg.points[i+1]);return s+(q.p?R.dist(leg.points[q.i],q.p):0);};
  for(const c of leg.checks||[])if((c.kind===10||c.kind===11||c.kind===12)&&!c.verified){const a=at(c.a),b=at(c.b);cuts.push({lo:Math.min(a,b),hi:Math.max(a,b),unknown:c.kind!==11});}
  for(const b of leg.obstacles||[]){const s=at(b.p);cuts.push({lo:Math.max(0,s-85),hi:s+85,unknown:!!b.unknown});}

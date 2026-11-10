@@ -86,3 +86,15 @@ exports.findRow = findRow;
 exports.pickItem = pickItem;
 exports.mapIntent = mapIntent;
 exports.readItem = readItem;
+// Lua markers do not carry JS properties on their widgets. The navigation's
+// bridge publishes the hovered record; require a real projected icon hit.
+function pickTrackerItem(raw,uv,width,height,project){
+    const p=raw?.location;
+    if(!raw?.key||!raw.mapID||!Array.isArray(p)||p.length<3||!p.slice(0,3).every(Number.isFinite)||!uv)return null;
+    const point={x:p[0],y:p[1],z:p[2]},at=project(point);
+    if(!at||!Number.isFinite(at.x+at.y))return null;
+    const distance=Math.hypot((uv.x-at.x)*width,(uv.y-at.y)*height);
+    if(distance>28)return null;
+    return {p:point,area:lower(raw.mapID),id:raw.key,name:raw.title||raw.name||'',provider:'187',tracked:raw,uv:at,distance};
+}
+exports.pickTrackerItem=pickTrackerItem;

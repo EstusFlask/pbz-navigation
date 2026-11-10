@@ -68,14 +68,14 @@ function frame(r,m,anchor,motion){
  const origin=floor(r,m.arc),ahead=floor(r,Math.min(r.length,m.arc+35));
  const planar=Math.hypot(ahead.x-origin.x,ahead.y-origin.y)||1;
  const startTail=smooth((r.length-m.arc)/tailLength),nearHeight=R.clamp(anchor.z-origin.z,30,64);
- const baseHeight=origin.z+nearHeight*startTail-13*(1-startTail);
+ const baseHeight=origin.z+nearHeight*startTail+10*(1-startTail);
  return {start:m.arc,anchor,shift:{x:anchor.x-origin.x,y:anchor.y-origin.y},
   side:{x:-(ahead.y-origin.y)/planar,y:(ahead.x-origin.x)/planar},
   nearHeight,startTail,baseHeight,motion};
 }
 function at(r,s,f){
  const p=floor(r,s),endDist=Math.max(0,r.length-s),tail=smooth(endDist/tailLength);
- const rest=farLift*tail-13*(1-tail);
+ const rest=farLift*tail+10*(1-tail);
  if(!f){p.z+=rest;return p;}
  const d=Math.max(0,s-f.start),restWeight=smooth(d/influence),pull=1-restWeight;
  const startTail=f.startTail;
@@ -96,7 +96,8 @@ function section(r,f,a,b){
  if(b-a<1)return null;
  // Fixed material coordinates: passing an atlas knot must never insert or
  // remove a spline point or renumber live Niagara particles / mesh vertices.
- const ps=[],n=f?48:52;for(let i=0;i<=n;i++)ps.push(at(r,a+(b-a)*i/n,f));
+ const ps=[],n=b-a<250?Math.max(2,Math.ceil((b-a)/20)):f?Math.min(48,Math.ceil((b-a)/35)):52;
+ for(let i=0;i<=n;i++)ps.push(at(r,a+(b-a)*i/n,f));
  return {ps,before:a>0?at(r,Math.max(0,a-4),f):null,after:b<r.length?at(r,Math.min(r.length,b+4),f):null};
 }
 exports.road=road;exports.floor=floor;exports.index=index;exports.match=match;exports.animate=animate;exports.frame=frame;

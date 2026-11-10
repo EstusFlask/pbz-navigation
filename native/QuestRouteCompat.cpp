@@ -74,7 +74,7 @@ class QuestRouteCompat final : public RC::CppUserModBase {
     }
 public:
     QuestRouteCompat() {
-        ModName=L"Quest Navigation Tracker Adapter"; ModVersion=L"0.8.5-local-fix2";
+        ModName=L"Quest Navigation Tracker Adapter"; ModVersion=L"0.8.5-local-fix5";
         ModDescription=L"Navigation-owned target bridge; no Map Tracker file replacements";
         ModAuthors=L"Local navigation patch";
         register_on_lua_start(&lua_started);

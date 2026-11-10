@@ -3,6 +3,19 @@ const UE=require('ue'),P=require('puerts'),R=require('./PBZRouteCore');
 const vec=p=>new UE.Vector(p.x,p.y,p.z),plain=p=>p?{x:Number(p.X),y:Number(p.Y),z:Number(p.Z)}:null;
 function alive(o){try{return !!o&&UE.KismetSystemLibrary.IsValid(o);}catch(_){return false;}}
 const norm=s=>String(s||'').toLowerCase().split('/').pop().split('.').pop().replace(/^uedpie_\d+_/,'');
+function supportHit(w,a,b){
+ const hit=w.hit(a,b);
+ if(!hit||hit.penetrating||hit.nz>=w.normal-.025)return hit;
+ // A centre ray on a rock's side is not the character's whole floor contact.
+ // Sample inside the capsule footprint without weakening its body sweep.
+ const d=Math.max(8,Math.min(22,(Number(w.r)||35)*.45));let best=null;
+ for(const [x,y] of [[d,0],[-d,0],[0,d],[0,-d]]){
+  const q=w.hit({x:a.x+x,y:a.y+y,z:a.z},{x:b.x+x,y:b.y+y,z:b.z});
+  const reference=(a.z+b.z)/2;
+  if(q&&!q.penetrating&&q.nz>=w.normal-.025&&(!best||Math.abs(q.point.z-reference)<Math.abs(best.point.z-reference)))best=q;
+ }
+ return best?{...best,point:{x:b.x,y:b.y,z:best.point.z}}:hit;
+}
 class Ground{
  constructor(pawn){this.pawn=pawn;this.cap=pawn.CapsuleComponent||pawn.GetCapsuleComponent();const m=pawn.CharacterMovement;this.h=this.cap.GetScaledCapsuleHalfHeight();this.r=this.cap.GetScaledCapsuleRadius();this.rise=Math.max(12,Math.min(65,Number(m?.MaxStepHeight)||45));this.normal=Math.max(.55,Math.min(.91,Number(m?.GetWalkableFloorZ?.())||.70));this.slope=Math.sqrt(1-this.normal*this.normal)/this.normal;
   const prof=String(this.cap.GetCollisionProfileName()||'Pawn');this.profile=/^(none|custom|nocollision)$/i.test(prof)?'Pawn':prof;this.ignored=UE.NewArray(UE.Actor);this.ignored.Add(pawn);this.color=new UE.LinearColor(0,0,0,0);this.calls=0;}
@@ -29,12 +42,25 @@ class Ground{
   const yes=k.SphereTraceSingleByProfile(this.pawn,vec(a),vec(b),7,this.profile,false,this.ignored,UE.EDrawDebugTrace.None,out,true,c,c,0);
   if(!yes)return null;const h=P.$unref(out);return h?.bBlockingHit?{point:plain(h.ImpactPoint)}:null;
  }
- floorAt(p,deep=false){const h=this.hit({...p,z:p.z+Math.max(55,this.rise+10)},{...p,z:p.z-(deep?520:155)});return h&&!h.penetrating&&h.nz>=this.normal-.025?h.point:null;}
- step(a,b,expected){const run=R.xy(a,b),reach=this.rise+run*this.slope+7;const hit=this.hit({x:b.x,y:b.y,z:a.z+reach},{x:b.x,y:b.y,z:a.z-reach-8});
-  if(!hit)return {why:'no supporting floor'};if(hit.penetrating||hit.nz<this.normal-.025)return {hit:hit.point,why:'steep surface'};
-  const p=hit.point;if(Math.abs(p.z-a.z)>reach+1)return {why:'different floor'};
-  if(expected&&Math.abs(p.z-b.z)>170)return {why:'stacked floor mismatch'};
-  const wall=this.hit(a,p,true);return wall?{hit:wall.point,normal:wall.normal,why:'blocked body clearance'}:{p};
+ floorAt(p,deep=false){
+  for(const up of [Math.max(55,this.rise+10),180]){
+   const h=supportHit(this,{...p,z:p.z+up},{...p,z:p.z-(deep?520:155)});
+   if(h&&!h.penetrating&&h.nz>=this.normal-.025)return h.point;
+  }return null;
+ }
+ step(a,b,expected){
+  const n=Math.max(1,Math.ceil(R.xy(a,b)/35)),points=[];let previous=a;
+  for(let i=1;i<=n;i++){
+   const q=R.lerp(a,b,i/n),run=R.xy(previous,q),reach=this.rise+run*this.slope+7;
+   const hit=supportHit(this,{x:q.x,y:q.y,z:previous.z+reach},{x:q.x,y:q.y,z:previous.z-reach-8});
+   if(!hit)return {why:'no supporting floor'};if(hit.penetrating||hit.nz<this.normal-.025)return {hit:hit.point,why:'steep surface'};
+   const p=hit.point,dz=p.z-previous.z;if(Math.abs(dz)>reach+1)return {why:'different floor'};
+   if(hit.nz>.98&&Math.abs(dz)>this.rise+2)return {hit:p,why:'ledge exceeds step height'};
+   if(expected&&Math.abs(p.z-q.z)>200)return {why:'stacked floor mismatch'};
+   const wall=this.hit(previous,p,true);if(wall)return {hit:wall.point,normal:wall.normal,why:'blocked body clearance'};
+   points.push(p);previous=p;
+  }
+  return {p:previous,points};
  }
  anchor(){const feet=this.feet(),mesh=this.pawn.Mesh;
   // Alternating calf animation is not a stable attachment height. Use capsule

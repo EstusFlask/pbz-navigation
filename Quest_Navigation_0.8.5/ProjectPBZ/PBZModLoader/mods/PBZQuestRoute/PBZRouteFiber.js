@@ -3,10 +3,14 @@ const UE=require('ue'),W=require('./PBZRouteWorld'),R=require('./PBZRouteCore');
 const matPath='/PBZVFXPack/VFX/A_DebugAssets/M_VertexColorLit.M_VertexColorLit',unit=(a)=>{const l=Math.hypot(a.x,a.y,a.z)||1;return {x:a.x/l,y:a.y/l,z:a.z/l};};
 const cross=(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
 let material;
-function add(r,transform){if(!UE.ProceduralMeshComponent?.StaticClass)return;
- if(material===undefined)material=UE.Object.Load(matPath)||null;if(!material)return;
- const m=r.a.AddComponentByClass(UE.ProceduralMeshComponent.StaticClass(),false,transform,false);if(!W.alive(m))return;
- m.SetCollisionEnabled(UE.ECollisionEnabled.NoCollision);m.SetGenerateOverlapEvents(false);m.SetCastShadow(false);m.SetMaterial(0,material);r.fiber=m;}
+function add(r,transform){if(!UE.ProceduralMeshComponent?.StaticClass)throw Error('ProceduralMeshComponent unavailable');
+ if(material===undefined){material=null;for(const path of [matPath,'/Engine/EngineDebugMaterials/VertexColorMaterial.VertexColorMaterial','/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial']){
+  try{material=UE.Object.Load(path);}catch(_){}if(material)break;}}
+ if(!material)throw Error('ribbon material unavailable');
+ const m=r.a.AddComponentByClass(UE.ProceduralMeshComponent.StaticClass(),false,transform,false);if(!W.alive(m))throw Error('ribbon mesh component could not be created');
+ m.SetCollisionEnabled(UE.ECollisionEnabled.NoCollision);m.SetGenerateOverlapEvents(false);m.SetCastShadow(false);m.SetMaterial(0,material);
+ try{const dynamic=m.CreateDynamicMaterialInstance?.(0,material);if(dynamic)for(const key of ['Color','BaseColor','Tint'])dynamic.SetVectorParameterValue(key,new UE.LinearColor(.7,.012,.015,1));}catch(_){}
+ r.fiber=m;}
 function mesh(ps,org,radius=.82){
  const v=[],normal=[],col=[],idx=[],rings=6;
  for(let i=0;i<ps.length;i++){const a=ps[Math.max(0,i-1)],b=ps[Math.min(ps.length-1,i+1)],t=unit({x:b.x-a.x,y:b.y-a.y,z:b.z-a.z});
@@ -26,6 +30,6 @@ function draw(r,head,log,samples){
  if(!r.uv)r.uv=UE.NewArray(UE.Vector2D);if(!r.tans)r.tans=UE.NewArray(UE.ProcMeshTangent);const uv=r.uv;
  if(r.meshN===n)r.fiber.UpdateMeshSection_LinearColor(0,v,ns,uv,uv,uv,uv,cs,r.tans,false);
  else{const tri=UE.NewArray(UE.BuiltinInt);for(const k of q.idx)tri.Add(k);r.fiber.CreateMeshSection_LinearColor(0,v,tri,ns,uv,uv,uv,uv,cs,r.tans,false,false);r.meshN=n;}
- }catch(e){r.fiberOff=true;log('fiber','stock particle remains; mesh API '+e);}
+ }catch(e){r.fiberOff=true;log('fiber','mesh rendering unavailable: '+e);}
 }
 exports.add=add;exports.draw=draw;exports.mesh=mesh;

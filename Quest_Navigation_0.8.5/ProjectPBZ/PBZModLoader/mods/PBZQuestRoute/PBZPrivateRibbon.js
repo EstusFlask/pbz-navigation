@@ -1,21 +1,24 @@
 'use strict';
-const UE=require('ue'),P=require('puerts'),R=require('./PBZRouteCore'),W=require('./PBZRouteWorld'),B=require('./PBZRibbonMath'),Fiber=require('./PBZRouteFiber'),{Arrival}=require('./PBZRouteArrival');
-const WORLD=UE.ESplineCoordinateSpace.World;
+const UE=require('ue'),R=require('./PBZRouteCore'),W=require('./PBZRouteWorld'),B=require('./PBZRibbonMath'),Fiber=require('./PBZRouteFiber'),{Arrival}=require('./PBZRouteArrival');
 const {RibbonGuard}=require('./PBZRibbonGuard');
-const fx=(kind)=>'/Game/PBZContent/VFX/SceneFX/'+(kind==='001_Player'?'Sequence/Seq_009_FirstBell/':'Bell/')+'NS_BellRedString_'+kind+'.NS_BellRedString_'+kind;
-const asset=(path)=>{const a=UE.Object.Load(path);if(a)return a;const soft=UE.KismetSystemLibrary.Conv_SoftObjPathToSoftObjRef(UE.KismetSystemLibrary.MakeSoftObjectPath(path));return UE.KismetSystemLibrary.LoadAsset_Blocking(soft);},zero=()=>new UE.Rotator(0,0,0);
+const zero=()=>new UE.Rotator(0,0,0);
 const tr=p=>UE.KismetMathLibrary.MakeTransform(W.vec(p),zero(),new UE.Vector(1,1,1));
 class Threads{
  constructor(log){this.log=log;this.pool=[];this.version=-1;this.mark=-1;this.guard=new RibbonGuard();}
  clear(){for(const r of this.pool)if(r&&W.alive(r.a))r.a.K2_DestroyActor();this.pool=[];this.version=-1;this.last=null;this.hint=0;this.attachment=null;this.motion=null;this.clip=null;}
- vis(r,on){if(!r||r.on===on)return;r.a.SetActorHiddenInGame(!on);
-  r.n?.SetVisibility?.(on,true);r.n?.SetHiddenInGame?.(!on,true);r.fiber?.SetVisibility?.(on,true);r.fiber?.SetHiddenInGame?.(!on,true);
-  if(on){if(!r.lit&&r.sys){r.n.Activate(true);r.lit=true;}}
-  else{if(r.n?.DeactivateImmediate)r.n.DeactivateImmediate();else r.n?.Deactivate?.();r.lit=false;}
-  r.on=on;}
+ vis(r,on){if(!r)return;
+  // Use one owned mesh, never a history of stock bell particles. Updating
+  // vertices replaces the old strand even while the player turns in place.
+  const particles=false,mesh=!!on&&!!r.fiber&&!r.fiberOff&&r.meshN!==undefined;
+  if(r.on===on&&r.particles===particles&&r.meshOn===mesh)return;
+  r.a.SetActorHiddenInGame(!particles&&!mesh);
+  r.n?.SetVisibility?.(false,false);r.n?.SetHiddenInGame?.(true,false);
+  r.fiber?.SetVisibility?.(mesh,true);r.fiber?.SetHiddenInGame?.(!mesh,true);
+  if(r.n?.DeactivateImmediate)r.n.DeactivateImmediate();else r.n?.Deactivate?.();r.lit=false;
+  r.on=on;r.particles=particles;r.meshOn=mesh;}
  hide(){for(const r of this.pool)this.vis(r,false);this.lastDraw=null;}
  make(i,pawn,at){let row=this.pool[i];if(row&&W.alive(row.a))return row;
-  const hd=i===0;let sys;try{sys=hd?(this.playerFX ||=asset(fx('001_Player'))):(this.roadFX ||=asset(fx('002_Bell')));if(!sys)sys=(this.roadFX ||=asset(fx('002_Bell')));}catch(e){this.log('thread asset',String(e));}
+  const hd=i===0;let sys;
   // A private stock NiagaraActor: no Bell blueprint, checkpoint component,
   // dynamic-guide registration, attachment to a bell or shared system edits.
   const template=this.template===true;
@@ -26,29 +29,13 @@ class Threads{
    const n=template?a.Niagara:(a.GetNiagaraComponent?.()||a.NiagaraComponent||a.GetComponentByClass(UE.NiagaraComponent.StaticClass()));
    const spl=template?a.Spline:a.AddComponentByClass(UE.SplineComponent.StaticClass(),false,tr({x:0,y:0,z:0}),false);if(template){if(typeof a.UseDistanceCheck==='boolean')a.UseDistanceCheck=false;sys=sys||n.GetAsset?.();}
    if(!W.alive(n)||!W.alive(spl))throw Error('private spline / emitter unavailable');
-   n.SetAutoDestroy?.(false);n.SetAllowScalability?.(false);n.SetPaused?.(false);if(sys)n.SetAsset(sys,false);
-   n.SetVariableObject('User.UE_SplineObject',a);n.SetVariableFloat('User.UE_ForceStraight',0);n.SetVariableBool('User.UE_BurnBegin',false);
+   n.SetAutoDestroy?.(false);n.SetComponentTickEnabled?.(false);
    n.DeactivateImmediate?.();n.SetVisibility(false,true);n.SetHiddenInGame(true,true);spl.SetClosedLoop(false,false);
    row=this.pool[i]={a,n,spl,sys,head:hd,on:false,lit:false,tag:-1};try{Fiber.add(row,tr({x:0,y:0,z:0}));}catch(e){this.log('fiber setup',String(e));}return row;
   }catch(e){a.K2_DestroyActor();if(!template){this.template=true;this.log('private spline holder',String(e)+'; use owned spline template');return this.make(i,pawn,at);}throw e;}
  }
- shape(r,ps,before,after){if(ps.length<2)return;const arr=UE.NewArray(UE.Vector);let lo={x:Infinity,y:Infinity,z:Infinity},hi={x:-Infinity,y:-Infinity,z:-Infinity};
-  const o=W.plain(r.n.K2_GetComponentLocation());
-  for(const p of ps){arr.Add(W.vec(p));for(const k of ['x','y','z']){lo[k]=Math.min(lo[k],p[k]-o[k]);hi[k]=Math.max(hi[k],p[k]-o[k]);}}
-  // All holder transforms use identity rotation and unit scale. Expand exactly
-  // this segment's local bounds to include the visible animated strands.
-  for(const k of ['x','y','z']){lo[k]-=180;hi[k]+=180;}if(typeof r.n.SetSystemFixedBounds==='function'&&typeof UE.KismetMathLibrary.MakeBox==='function')r.n.SetSystemFixedBounds(UE.KismetMathLibrary.MakeBox(W.vec(lo),W.vec(hi)));else r.n.SetBoundsScale?.(8);
-  r.spl.SetSplinePoints(arr,WORLD,false);
-  for(let i=0;i<ps.length;i++){
-   const a=i?ps[i-1]:before||ps[0],b=i+1<ps.length?ps[i+1]:after||ps[i],p=ps[i];
-   if(typeof r.spl.SetSplinePointType==='function')r.spl.SetSplinePointType(i,UE.ESplinePointType.Linear,false);
-   else if(typeof r.spl.SetTangentsAtSplinePoint==='function'){
-    const d=B.unit(a,b),incoming=R.dist(a,p)||R.dist(p,b),outgoing=R.dist(p,b)||R.dist(a,p);
-    const tangent=n=>W.vec({x:d.x*n,y:d.y*n,z:d.z*n});
-    r.spl.SetTangentsAtSplinePoint(i,tangent(incoming),tangent(outgoing),WORLD,false);
-   }else r.spl.SetSplinePointType(i,UE.ESplinePointType.CurveClamped,false);
-  }r.spl.UpdateSpline();
-  Fiber.draw(r,r.head,this.log,ps);this.vis(r,true);
+ shape(r,ps,before,after){if(ps.length<2)return;
+  r.span=R.extent(ps);Fiber.draw(r,r.head,this.log,ps);this.vis(r,true);
  }
  maintainFloor(w,m,now){
   if(now<this.nextFloor)return;this.nextFloor=now+125;
@@ -66,9 +53,9 @@ class Threads{
   const begin=Math.max(0,Math.floor(m.arc/125)*125);
   for(let s=begin;s<=Math.min(r.length,m.arc+1450);s+=125)sample(s);
  }
- section(i,S,f,a,b,shapeKey){
+ section(i,S,f,a,b,shapeKey,checkedSlice){
   const present=this.pool[i];if(present?.on&&shapeKey!==null&&present.tag===shapeKey)return;
-  const slice=!f&&this.guarded?this.guard.section(i-1,a,b):B.section(this.route,f,a,b);if(!slice){this.vis(present,false);return;}
+  const slice=checkedSlice||(!f&&this.guarded?this.guard.section(i-1,a,b):B.section(this.route,f,a,b));if(!slice){this.vis(present,false);return;}
   const row=this.make(i,S.pawn,slice.ps[0]);this.shape(row,slice.ps,slice.before,slice.after);row.tag=shapeKey;
  }
  show(S){
@@ -122,25 +109,22 @@ class Threads{
   }
   this.motion=B.animate(this.motion,feet,now);this.attachment=B.attachment(this.attachment,w.anchor(),feet,now);
   const anchor=this.attachment.p,f=B.frame(r,m,anchor,this.motion);
+  let front=Math.min(drawEnd,m.arc+B.influence);
+  const head=B.section(r,f,m.arc,front);if(!head){this.hide();return;}
   if(typeof w.threadHit==='function'){
-   const reach=Math.min(drawEnd,m.arc+B.influence),stamp=this.clip;
-   if(!stamp||stamp.version!==S.version||now-stamp.at>90||R.dist(anchor,stamp.anchor)>20||Math.abs(m.arc-stamp.arc)>20||reach>stamp.reach+10){
-    let last=B.at(r,m.arc,f),safeEnd=Infinity;const steps=Math.max(1,Math.ceil((reach-m.arc)/55));
-    for(let i=1;i<=steps;i++){const s=m.arc+(reach-m.arc)*i/steps,p=B.at(r,s,f),hit=w.threadHit(last,p);
-     if(hit){safeEnd=Math.max(m.arc,s-(reach-m.arc)/steps-12);break;}last=p;}
-    this.clip={version:S.version,at:now,anchor:{...anchor},arc:m.arc,reach,end:safeEnd};
+   const n=head.ps.length-1;
+   for(let i=1;i<=n;i++)if(w.threadHit(head.ps[i-1],head.ps[i])){
+    front=m.arc+(front-m.arc)*(i-1)/n;drawEnd=front;head.ps.length=i;head.after=null;break;
    }
-   drawEnd=Math.min(drawEnd,this.clip.end);
-   if(drawEnd<=m.arc+8){this.hide();return;}
+   if(head.ps.length<2){this.hide();return;}
   }
-  const front=Math.min(drawEnd,m.arc+B.influence);
   this.guarded=typeof w.threadHit==='function';
   if(this.guarded&&drawEnd>front)drawEnd=this.guard.check(r,w,S.version,this.tileVersion,front,drawEnd,now);
   // The same 10 m interval follows the character. Its endpoint slides through
   // the stationary spline with a zero displacement and zero slope.
   const key=[S.version,m.arc,front,anchor.x,anchor.y,anchor.z,this.motion.vx*.035,this.motion.vy*.035,
    this.adjusting.size?now:0,this.tileVersion[Math.floor(m.arc/1100)]||0].map(x=>Math.round(x*5)).join('/');
-  this.section(0,S,f,m.arc,front,key);
+  this.section(0,S,f,m.arc,front,key,head);
   const tiles=Math.ceil(drawEnd/1100),first=Math.floor(front/1100);let built=0;
   for(let k=0;k<Math.max(tiles,this.pool.length-1);k++){
    const row=this.pool[k+1];if(k<first||k>=tiles||front>=drawEnd-.3){this.vis(row,false);continue;}
@@ -149,7 +133,7 @@ class Threads{
    if(k!==first&&(!row?.on||row.tag!==shapeKey)&&built++>=3){this.vis(row,false);continue;}
    this.section(k+1,S,null,a,b,shapeKey);
   }
-  if(this.ann!==this.version){this.ann=this.version;this.log('thread','knee='+Math.round(anchor.z-feet.z)+'cm rise=10m tip=-13cm path='+Math.round(r.length/100)+'m');}
+  if(this.ann!==this.version){this.ann=this.version;this.log('thread','mesh; knee='+Math.round(anchor.z-feet.z)+'cm tip=+10cm path='+Math.round(r.length/100)+'m');}
  }
 }
 exports.Threads=Threads;

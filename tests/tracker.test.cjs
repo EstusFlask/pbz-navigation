@@ -45,3 +45,15 @@ test('a heartbeat timeout releases a route and the same service can recover',()=
     h.advance(250);h.snapshot(item);h.tracker.poll();
     assert.equal(h.events.at(-1).item.id,item.key);
 });
+test('middle-click selection uses Lua hover coordinates and never loads the legacy JS tracker',()=>{
+    let written;const now=100000;
+    const upstairs={key:'third-floor',mapID:'pangzhen',location:[100,200,2300]};
+    const service=new LuaTracker({clock:()=>now,read:()=>JSON.stringify({protocol:'PBZQuestRouteTracker',version:1,
+        session:'live',revision:4,writtenAt:now,target:null,hover:upstairs,selectionRevision:9}),
+        write:text=>{written=JSON.parse(text);return true;}});
+    const tracker=new Tracker(id=>{if(id==='Mods/PbzTrackerTarget')return service;throw Error('legacy module '+id);},()=>{},()=>{});
+    tracker.poll();const point=service.hovered();
+    assert.equal(point.location[2],2300);
+    assert.equal(tracker.choose({}, {provider:'187',tracked:point}),true);
+    assert.equal(written.action,'select');assert.equal(written.key,'third-floor');assert.equal(written.selectionRevision,9);
+});

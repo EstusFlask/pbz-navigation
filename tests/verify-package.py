@@ -10,7 +10,7 @@ nav=root/'Quest_Navigation_0.8.5'
 parser=argparse.ArgumentParser()
 parser.add_argument('--manager-state',type=Path)
 args=parser.parse_args()
-archive=root/'dist/Quest_Navigation_0.8.5-local-fix2-navigation-only-full.zip'
+archive=root/'dist/Quest_Navigation_0.8.5-local-fix5-navigation-only-full.zip'
 with zipfile.ZipFile(archive) as z:
     names=set(z.namelist())
     assert len(names)==len(z.namelist()), 'duplicate archive paths'

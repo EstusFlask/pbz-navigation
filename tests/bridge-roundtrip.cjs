@@ -8,4 +8,7 @@ const api=new LuaTracker({read:()=>fs.readFileSync(path.join(folder,'PBZQuestRou
     write:text=>fs.writeFileSync(path.join(folder,'PBZQuestRoute-command.json'),text)});
 const tracker=new Tracker(()=>api,item=>events.push(item),()=>{});
 tracker.poll();assert.equal(events[0]?.id,'roundtrip');assert.equal(events[0]?.p.z,333);
-tracker.clear('route cleared');
+if(process.argv[3]==='middle'){
+    const point=api.hovered();assert.equal(point.location[2],2333);
+    assert.equal(tracker.choose({}, {provider:'187',tracked:point}),true);
+}else tracker.clear('route cleared');

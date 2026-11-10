@@ -34,7 +34,6 @@ function* anchorsJob(g,p,goal=false){
  return [...best.values()].sort((a,b)=>a.cost-b.cost).slice(0,7);
 }
 function join(w,feet,row){
- if(row.r<=18&&Math.abs(row.dz)<=37)return [feet,row.q];
  if(!w||row.r>760)return null;
  const n=Math.max(1,Math.ceil(row.r/58)),pts=[feet];let last=feet;
  for(let i=1;i<=n;i++){const t=i/n,q={x:feet.x+(row.q.x-feet.x)*t,y:feet.y+(row.q.y-feet.y)*t,z:feet.z+row.dz*t};
@@ -44,3 +43,20 @@ function join(w,feet,row){
 exports.surface=surface;exports.anchors=anchors;exports.join=join;
 
 exports.anchorsJob=anchorsJob;
+// Keep doorway/landing samples from the goal's floor. A grid starting at the
+// player's XY phase alone can miss a narrow upstairs opening.
+function* samplesJob(g,p){
+ if(!g.bin||!g.cells||!g.order||!g.pt)return [];
+ const cx=Math.floor(p.x/3200),cy=Math.floor(p.y/3200),rows=[];let work=0;
+ for(let x=cx-1;x<=cx+1;x++)for(let y=cy-1;y<=cy+1;y++){
+  const cell=g.bin.get(x+','+y);if(cell===undefined)continue;
+  for(let j=g.cells[cell+2];j<g.cells[cell+3];j++){
+   if((++work&127)===0)yield;
+   const id=g.order[j];if(g.walkNodes!==undefined&&id>=g.walkNodes)continue;
+   const q=g.pt(id),dz=Math.abs(q.z-p.z),distance=Math.hypot(q.x-p.x,q.y-p.y);
+   if(dz<=240&&distance<=1800)rows.push({q,score:distance+dz*2});
+  }
+ }
+ return rows.sort((a,b)=>a.score-b.score).slice(0,48).map(r=>r.q);
+}
+exports.samplesJob=samplesJob;

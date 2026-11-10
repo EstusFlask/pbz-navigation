@@ -60,6 +60,7 @@ class Tracker {
     }
     choose(host, item) {
         if (!this.api || item.provider !== '187' || !item.tracked) return false;
+        if(typeof this.api.choose==='function')return this.api.choose(item.tracked);
         // Calling the author's public toggle keeps its HUD marker and minimap
         // highlight in step with mouse middle-click and controller A.
         const UE=this.load('ue'), P=this.load('puerts');

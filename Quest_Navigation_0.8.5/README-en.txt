@@ -1,4 +1,4 @@
-Quest and Exploration Navigation 0.8.5-beta (local patch 0.8.5-local-fix2)
+Quest and Exploration Navigation 0.8.5-beta (local patch 0.8.5-local-fix5)
 
 Layout: PBZModLoader 1.0.0
 Release: 0.8.5-beta.
@@ -15,6 +15,10 @@ Choose one full archive. When switching layouts, back up and move out the old PB
 Remove legacy 0.7.x zzz_PBZQuestRoute_P.pak/.utoc/.ucas and PBZQuestRouteMouse before upgrading.
 
 CHANGES
+- fix5: repair local rock detours, keep a safe prefix/X/unfinished map tail during and after failed searches, and approach collectibles within interaction range. Follow uneven ground rather than its straight height interpolation.
+- fix5: chain static and loaded ladders, climbs, rope swings, slides and lifts with checked walking connectors; respect direction and unlock state. Movement actions still use the game's normal player controls.
+- fix4: validate floor/capsule clearance before accepting paths; compare checked 3D path length, including upstairs/downstairs and same-floor detours; remove known-blocked fallbacks. Draw an immediate mesh with no stock trailing particles and keep the endpoint above the floor.
+- 46 local regressions and Lua integration checks passed. The reported gear and upstairs locations still need in-game testing; loading, sampling and search budgets limit any shortest-path claim.
 - Local patch: bounded far-ribbon collision auditing, update throttling, no spline readbacks, and a navigation-owned UE4SS target bridge. No collector files are modified. Atlas data is unchanged. Not verified in game.
 - Confirm startup explicitly and prevent duplicate navigation hooks within a session.
 - Native Mods Menu layout and tracker resolution across original, native-menu and generated folders.
@@ -23,7 +27,7 @@ CHANGES
 
 CONTROLS
 - Track quests normally; a newly tracked quest replaces your manual pin.
-- Middle-click a regional-map location or item icon. Hold for about 0.6 seconds on blank map space to cancel.
+- Left-click a 1.0.9 collectible icon, or hover it and middle-click for navigation. Middle-click blank map space for a ground pin; hold for about 0.6 seconds to cancel.
 - Controller: position the cursor or snap to an item and press A. Hold A on blank map space to cancel.
 - Close the filter panel to place pins. Dragging does not place a pin; bell windows keep their native actions.
 - Map routes, world thread and minimap routes have separate switches. Choose continuous display or 30 seconds after Sense.
