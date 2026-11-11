@@ -11,7 +11,7 @@
   "authorField": "azqwq333 - original - kurosakana - fork",
   "category": "User Interface",
   "language": "Any",
-  "shortDescription": "Community fork of azqwq333's navigation mod: route checks, red-thread fixes and Map Tracker Plus (UE4SS) 1.0.9 target sync. / 任务与探索导航分支：路线校验、红绳修补及 1.0.9 收集目标联动。",
+  "shortDescription": "Follow routes to quests, map pins and collectibles. Fork of azqwq333's mod with route checks, world-thread fixes and Map Tracker Plus (UE4SS) 1.0.9 target sync. / 任务、地图标记与收集品导航。基于 azqwq333 原版，加入路线校验、引导线修复和 1.0.9 收集目标联动。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
   "archive": "dist/Quest_and_Exploration_Navigation_Fork_0.8.8-fork.1.zip",
   "fileDisplayName": "Quest and Exploration Navigation - Fork - Full PBZModLoader Package",
