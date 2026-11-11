@@ -1,0 +1,40 @@
+Quest and Exploration Navigation - Fork 0.8.6-fork.3
+Local code/package validation; this build has NOT been play-tested in game.
+
+Field evidence from fork.2:
+- 2026-11-10 21:29 UTC: XiGu atlas loaded in 527 ms; PangZhen in 1222 ms, triggering a slow-step cancellation. Another restart recorded 587 / 1145 ms.
+- Station roof currency key ends in 1546924373, coordinates [-33723.293,266338.12,-24843.48]. Its route repeatedly timed out after 30 seconds. These logs do not identify the exact failing physical contact.
+- Equivalent diagnostic routes were published repeatedly. No verified fork.3 roof arrival is claimed.
+
+PASS: 81 JavaScript regressions, zero failures.
+Commands:
+  node --expose-gc tests/stream-atlas.cjs
+  node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs
+New failures reproduced before correction: direct-approach variants starving a climb; 15 identical preview publications; cold interaction class load; synchronous atlas load; redundant idle trace and high-rate mesh uploads; high-rate route clearance.
+Checks include a third standing-point fallback, real XiGu columns/actor order and graph lookup, existing staircase/rock detours, directional interactions, ribbons, cancellation and collector target sync.
+
+Operation-count harness (not game FPS):
+- Identical idle near collision geometry: 1740 -> 116 queries per 1.02 seconds.
+- Moving head mesh uploads with 125 Hz callbacks: 63 -> 25 per second, default cap about 30 Hz.
+- Route clearance uses about 30 Hz and a 1 ms cooperative slice; main timer 16 ms.
+- Near collision cache expires after 250 ms; dynamic-door and exact rendered-polyline checks pass.
+
+Largest-world Node benchmark (not game frame timing):
+- Before: module import 620.4 ms, decode/index 254.6 ms, synchronous.
+- After: 528 cooperative pumps, about 960.2 ms total CPU and 4.6 ms observed maximum pump; simulated frame spacing gives about 9.4 seconds until ready. First regional loads can take several seconds.
+
+PASS: tests/run-lua-tests.py, actual Lua 5.4 target/hover/file round trips with JavaScript.
+PASS: native/build-native.py --ue4ss <local original UE4SS.dll> --test, ABI/hash gates/filtering/dispatch.
+PASS: tests/verify-package.py --manager-state <local mods.json>.
+- All original atlas column byte hashes and actor metadata hashes retained.
+- 1772 generated modules, largest 262175 bytes. All 291 legacy chunk facades return the exact original strings.
+- 2154 exact archive file matches; runtime/native/docs versions agree.
+- UE MM recognizes fork.2 update: 378/378 owned paths retained.
+- All 88 collector reference files match manager original hashes; zero collector-owned path overlap.
+PASS: git diff --check; collector and original world/face/chunk source directories have no diff.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.8.6-fork.3.zip
+Bytes: 120508101
+SHA256: 08993c228b6af93cc910bd28736a9088c0500f7da5019460173f10cac04de8df
+
+No installed game, manager state, collector files or remote Nexus draft were changed. Original-author permission remains pending. Stored draft artwork/description are historical fork.1 records. Remaining field checks: roof currency route and refresh, valley gear, third-floor targets, actual FPS and frame spikes. Search budgets/loading still limit coverage; no global shortest-path guarantee.

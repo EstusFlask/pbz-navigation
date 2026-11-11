@@ -1,0 +1,29 @@
+{
+  "status": "unpublished-awaiting-original-author-permission",
+  "draftId": 994,
+  "draftEditUrl": "https://www.nexusmods.com/games/phantombladezero/mods/994/edit/general",
+  "draftSavedSections": ["General", "Media", "Requirements - PBZModLoader 1.0.0 only; optional companions documented in description"],
+  "draftFileUploaded": false,
+  "name": "Quest and Exploration Navigation - Fork",
+  "version": "0.8.8-fork.1",
+  "upstreamVersion": "0.8.5-beta",
+  "localPatchBase": "0.8.5-local-fix5",
+  "authorField": "azqwq333 - original - kurosakana - fork",
+  "category": "User Interface",
+  "language": "Any",
+  "shortDescription": "Community fork of azqwq333's navigation mod: route checks, red-thread fixes and Map Tracker Plus (UE4SS) 1.0.9 target sync. / 任务与探索导航分支：路线校验、红绳修补及 1.0.9 收集目标联动。",
+  "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_0.8.8-fork.1.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork - Full PBZModLoader Package",
+  "fileCategory": "Main Files",
+  "fileDescription": "0.8.8-fork.1 single-route rollback and compact full package, based on delivered 0.8.7 behavior. Fewer atlas files and equivalent ribbon rendering optimizations; original data preserved. Navigation-owned UE4SS adapter; original collector 1.0.9 optional. No collector/runtime files. Update the existing navigation copy. Not tested in game.",
+  "tags": ["AI-Generated Content", "AI Media", "Bug Fixes", "Quality of Life", "User Interface"],
+  "requirements": [
+    {"modId": 113, "name": "PBZModLoader", "version": "1.0.0", "required": true, "note": "Required for this PBZModLoader-layout package."},
+    {"modId": 149, "name": "Mods Menu", "version": "0.7.2", "required": false, "note": "Optional navigation settings UI; config-file editing also works."},
+    {"modId": 187, "name": "Map Tracker Plus - Minimap and Collectibles (UE4SS)", "version": "1.0.9", "required": false, "note": "Optional collectible target/cancellation sync. Original files only; legacy minimap overlay, icon size and accessory hints are not ported."},
+    {"modId": 5, "name": "UE4SS for Phantom Blade Zero", "version": "1.0.3", "required": false, "note": "Required with optional collector sync: v3.0.1-1195-g1ceefac8 Shipping, exact runtime/collector entry hashes checked."}
+  ],
+  "permissionEvidence": null,
+  "published": false
+}

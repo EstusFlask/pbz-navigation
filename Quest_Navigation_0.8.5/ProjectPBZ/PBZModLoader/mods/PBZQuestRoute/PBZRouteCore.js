@@ -18,6 +18,34 @@ function decode(value,Type){
  }
  return new Type(bytes.buffer);
 }
+function* decodeJob(value,Type,read){
+ const streamed=value&&typeof value==='object'&&!Array.isArray(value)&&value.stream;
+ const parts=streamed?null:typeof value==='string'?[value]:value;
+ if(!streamed&&(!Array.isArray(parts)||!parts.length))throw Error('invalid atlas chunks');
+ const count=streamed?value.bytes:parts.reduce((n,s)=>n+s.length/4*3-(s.endsWith('==')?2:s.endsWith('=')?1:0),0);
+ if(!Number.isSafeInteger(count)||count<0||count%Type.BYTES_PER_ELEMENT)throw Error('misaligned streamed atlas');
+ const bytes=new Uint8Array(count);let j=0;yield;
+ for(let k=0;k<(streamed?value.chunks:parts.length);k++){
+  const s=streamed?read(value.stream+'/'+k):parts[k];yield;
+  if(typeof s!=='string'||s.length%4)throw Error('invalid atlas chunk');
+  const size=s.length/4*3-(s.endsWith('==')?2:s.endsWith('=')?1:0),end=j+size;
+  if(end>count)throw Error('oversized atlas chunk');
+  for(let block=0;block<s.length;block+=65536){
+   for(let i=block;i<Math.min(s.length,block+65536);i+=4){
+    const a=chars[s.charCodeAt(i)],b=chars[s.charCodeAt(i+1)],c=chars[s.charCodeAt(i+2)],d=chars[s.charCodeAt(i+3)];
+    bytes[j++]=(a<<2)|(b>>4);if(j<end)bytes[j++]=(b<<4)|(c>>2);if(j<end)bytes[j++]=(c<<6)|d;
+   }yield;
+  }
+ }
+ if(j!==count)throw Error('incomplete atlas column');return new Type(bytes.buffer);
+}
+function* graphJob(data,faces,read){
+ const decoded={faces:faces?yield* decodeJob(faces,Int32Array,read):null};
+ for(const k of ['p','v','e','arc','lab','cells','strong','dag'])decoded[k]=yield* decodeJob(data[k],Int32Array,read);
+ for(const k of ['off','weight','sizes','order'])decoded[k]=yield* decodeJob(data[k],Uint32Array,read);
+ decoded.metric=yield* decodeJob(data.metric,Uint16Array,read);yield;
+ return new Graph(data,faces,decoded);
+}
 const point=(a,i)=>({x:a[i*3],y:a[i*3+1],z:a[i*3+2]});
 const xy=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
 const lerp=(a,b,t)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t});
@@ -31,9 +59,9 @@ class Heap{
  pop(){const id=this.id[0],l=this.id.pop(),f=this.f.pop();if(this.id.length){let p=0;while(p*2+1<this.id.length){let q=p*2+1;if(q+1<this.id.length&&this.f[q+1]<this.f[q])q++;if(this.f[q]>=f)break;this.f[p]=this.f[q];this.id[p]=this.id[q];p=q;}this.id[p]=l;this.f[p]=f;}return id;}
 }
 class Graph{
- constructor(data,faces){if(!data||!data.world||!Number.isInteger(data.n)||data.n<1)throw Error('invalid route atlas');this.faces=faces?decode(faces,Int32Array):null;this.name=data.world;this.n=data.n;this.walkNodes=data.walkNodes||data.n;this.actors=data.actors;this.cache=new Map();this.bells=new Map();
-  for(const k of ['p','v','e','arc','lab','cells','strong','dag'])this[k]=decode(data[k],Int32Array);
-  for(const k of ['off','weight','sizes','order'])this[k]=decode(data[k],Uint32Array);this.metric=decode(data.metric,Uint16Array);
+ constructor(data,faces,decoded){if(!data||!data.world||!Number.isInteger(data.n)||data.n<1)throw Error('invalid route atlas');this.faces=decoded?decoded.faces:faces?decode(faces,Int32Array):null;this.name=data.world;this.n=data.n;this.walkNodes=data.walkNodes||data.n;this.actors=data.actors;this.cache=new Map();this.bells=new Map();
+  for(const k of ['p','v','e','arc','lab','cells','strong','dag'])this[k]=decoded?decoded[k]:decode(data[k],Int32Array);
+  for(const k of ['off','weight','sizes','order'])this[k]=decoded?decoded[k]:decode(data[k],Uint32Array);this.metric=decoded?decoded.metric:decode(data.metric,Uint16Array);
   this.bin=new Map();for(let i=0;i<this.cells.length;i+=4)this.bin.set(this.cells[i]+','+this.cells[i+1],i);
   this.nextStrong=new Map();for(let i=0;i<this.dag.length;i+=2){const k=this.dag[i],a=this.nextStrong.get(k)||[];a.push(this.dag[i+1]);this.nextStrong.set(k,a);}
   this.g=new Float64Array(this.n);this.seen=new Uint32Array(this.n);this.closed=new Uint32Array(this.n);this.parent=new Int32Array(this.n);this.gen=0;
@@ -180,10 +208,14 @@ function* itineraryJob(startGraph,goalGraph,start,goal,bells,bannedByWorld={},fi
 }
 exports.Graph=Graph;exports.itinerary=itinerary;exports.dist=dist;exports.xy=xy;exports.lerp=lerp;exports.clamp=clamp;exports.extent=extent;exports.nearestOnLine=nearestOnLine;
 exports.finite=p=>!!p&&[p.x,p.y,p.z].every(x=>Number.isFinite(x)&&Math.abs(x)<2e9);
-exports.markLocks=function(trip,reported){for(const leg of trip.legs){leg.locks=(leg.obstacles||[]).slice();const seen=new Set(leg.locks.map(r=>r.id));
+exports.markLocks=function(trip,reported,context){for(const leg of trip.legs){leg.locks=(leg.obstacles||[]).slice();const seen=new Set(leg.locks.map(r=>r.id));
  for(const r of reported){if(r.world!==leg.world||r.open||seen.has(r.id))continue;const match=leg.gates.some(g=>String(r.id).toLowerCase().includes(String(g.id).toLowerCase()));
-  if(match||nearestOnLine(r.p,leg.points).d<215){leg.locks.push(r);seen.add(r.id);}}}};
+  if(match||nearestOnLine(r.p,leg.points).d<215){leg.locks.push(r);seen.add(r.id);}}
+ const feet=context&&(!context.world||context.world===leg.world)?context.p||context:null;
+ leg.locks=require('./PBZRouteObstacles').visibleMarkers(leg,feet,leg.locks);
+}};
 
 exports.decode=decode;
+exports.decodeJob=decodeJob;exports.graphJob=graphJob;
 
 exports.itineraryJob=itineraryJob;

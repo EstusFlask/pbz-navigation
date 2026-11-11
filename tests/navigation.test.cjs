@@ -46,6 +46,64 @@ test('duplicate timer callbacks do not rebuild a moving ribbon twice within 16 m
     r.threads.show(r.state);
     assert.equal(r.drawn.length, before);
 });
+
+test('throttled ribbon callbacks do not re-read capsule feet',t=>{
+    const r=ribbon();let reads=0;
+    r.state.world.feet=()=>{reads++;return {x:0,y:0,z:0};};
+    r.threads.show(r.state);r.advance(8);r.threads.show(r.state);
+    t.diagnostic('feet reads for an accepted callback plus a throttled callback: '+reads);
+    assert.equal(reads,1,'the throttled callback still crossed into Unreal to read capsule state');
+});
+
+test('moving fiber uploads reuse unchanged vertex colors while positions continue updating',t=>{
+    let now=1000,colors=0;const uploads=[];
+    function Color(...rgba){colors++;this.rgba=rgba;}
+    const {draw,mesh}=load('PBZRouteFiber',{Date:{now:()=>now},ue:{ESplineCoordinateSpace:{},
+        NewArray:()=>({values:[],Add(value){this.values.push(value);}}),Vector:function(){},LinearColor:Color},
+        './PBZRouteWorld':{plain:()=>({x:0,y:0,z:0}),vec:p=>p}});
+    const row={fiber:{K2_GetComponentLocation(){},CreateMeshSection_LinearColor(...args){uploads.push(args);},UpdateMeshSection_LinearColor(...args){uploads.push(args);}}};
+    const points=Array.from({length:49},(_,i)=>({x:i*20,y:0,z:18}));
+    draw(row,true,()=>{},points);const first=colors;now+=40;
+    const moved=points.map((p,i)=>({...p,y:Math.sin(i/10)*5}));draw(row,true,()=>{},moved);
+    t.diagnostic('new color objects on second equal-topology update: '+(colors-first));
+    assert.equal(uploads.length,2);assert.equal(colors,first,'identical colors were reconstructed across the native bridge');
+    assert.notDeepEqual(uploads[0][1].values,uploads[1][1].values,'positions stopped updating with the color cache');
+    const expected=mesh(moved,{x:0,y:0,z:0}),plain=value=>JSON.parse(JSON.stringify(value));
+    assert.deepEqual(plain(uploads[1][1].values),plain(expected.v));assert.deepEqual(plain(uploads[1][2].values),plain(expected.normal));
+    assert.equal(uploads[0][8],uploads[1][7]);assert.deepEqual(plain(uploads[1][7].values.map(c=>c.rgba)),plain(expected.col));
+    now+=40;draw(row,true,()=>{},[...moved,{x:1000,y:0,z:18}]);assert.ok(colors>first,'a topology change did not rebuild colors');
+});
+
+test('an idle thread does not repeat its near collision sweep at render frequency',t=>{
+    const r=ribbon();let nearProbes=0;
+    r.state.world.threadHit=(a,b)=>{if(a.x<999)nearProbes++;return null;};
+    for(let i=0;i<60;i++){r.threads.show(r.state);r.advance(17);}
+    nearProbes=0;
+    for(let i=0;i<60;i++){r.threads.show(r.state);r.advance(17);}
+    t.diagnostic('idle near collision probes / 1.02 seconds: '+nearProbes);
+    assert.ok(nearProbes<=300,'unchanged geometry was sphere-traced every render update: '+nearProbes);
+});
+
+test('moving mesh uploads are capped at thirty per second even with 125 Hz callbacks',t=>{
+    const r=ribbon();let uploads=0;
+    const shape=r.threads.shape;
+    r.threads.shape=(row,...args)=>{if(row===r.threads.pool[0])uploads++;return shape(row,...args);};
+    for(let i=0;i<125;i++){
+        r.state.world.feet=()=>({x:i*4,y:0,z:0});
+        r.state.world.anchor=()=>({x:i*4,y:0,z:48});
+        r.threads.show(r.state);r.advance(8);
+    }
+    t.diagnostic('moving head mesh uploads / second: '+uploads);
+    assert.ok(uploads<=31,'expensive mesh uploads still follow render frequency: '+uploads);
+});
+
+test('the idle head collision cache expires when a door closes',()=>{
+    const r=ribbon();let closed=false;
+    r.state.world.threadHit=(a,b)=>closed&&a.x<500&&b.x>=500?{point:{x:500,y:0,z:18}}:null;
+    r.threads.show(r.state);closed=true;
+    for(let i=0;i<20;i++){r.advance(17);r.threads.show(r.state);}
+    assert.ok(r.threads.pool.filter(row=>row.on).every(row=>row.ps.every(p=>p.x<500)));
+});
 test('fiber uses the rendered samples without synchronous spline readbacks', () => {
     let reads = 0, writes = 0;
     const {draw} = load('PBZRouteFiber', {ue: {ESplineCoordinateSpace: {},
@@ -177,4 +235,10 @@ test('an approach endpoint does not cause arrival while still far from the actua
     assert.equal(arrival.check(S,{x:700,y:0,z:0},end,150),false);
     arrival.check(S,{x:850,y:0,z:0},end,200);
     assert.equal(arrival.check(S,{x:850,y:0,z:0},end,350),true);
+});
+test('capsule feet follow resized interaction/crouch dimensions instead of a stale standing height',()=>{
+    const {Ground}=load('PBZRouteWorld',{ue:{},puerts:{}});
+    const ground={h:90,r:40,cap:{GetScaledCapsuleHalfHeight:()=>45,GetScaledCapsuleRadius:()=>30,
+        K2_GetComponentLocation:()=>({X:0,Y:0,Z:145})}};
+    assert.equal(Ground.prototype.feet.call(ground).z,100);assert.equal(ground.h,45);assert.equal(ground.r,30);
 });

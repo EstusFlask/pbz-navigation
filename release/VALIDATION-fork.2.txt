@@ -1,0 +1,21 @@
+Quest and Exploration Navigation - Fork 0.8.6-fork.2
+Local validation; no in-game play test and no remote publication.
+
+PASS: 68 JavaScript regressions, 0 failures.
+Command: node --test --test-reporter=dot tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs
+Covers: station climb coordinates with simulated overlapping floors; buried action anchors; ladder, mantle, grapple, wall run, lift and directional descent; roof search ordering; landing/origin refresh; unknown-X deduplication; existing walking, ribbon and tracker regressions.
+The station physics and 134 cm animation-anchor bias are synthetic test conditions, not a recorded terrain mesh.
+
+PASS: tests/run-lua-tests.py
+Actual Lua 5.4 tracker target, hover, cancel and real-file round trips with JavaScript. Original collector modules unchanged.
+PASS: native/build-native.py --ue4ss <local UE4SS.dll> --test
+ABI, runtime hash, collector hash, filtering and host dispatch checks. Adapter version: 0.8.6-fork.2.
+PASS: tests/verify-package.py --manager-state <local mods.json>
+382 exact archive file matches; runtime/native/docs versions agree; UE MM recognizes navigation update (378/378 old paths); all 88 collector reference files match original manager hashes; zero collector-owned path overlap.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.8.6-fork.2.zip
+Bytes: 119721316
+SHA256: ff65db19ad6bcae7c1b76166a51e847270a20238081c6b9e8cb15ecafb5bb347
+
+Repository changes do not alter installed game files, manager state or the remote Nexus draft. Historical release/VALIDATION.txt and saved draft artwork/description remain fork.1 records. Author permission status remains pending.
+Remaining field checks: station-bell roof currency and refresh after climbing, repeated unknown Xs, third-floor targets and valley gear. Loading/search budgets still limit route coverage; no global shortest-path or measured FPS claim.

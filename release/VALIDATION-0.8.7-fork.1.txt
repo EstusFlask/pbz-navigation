@@ -1,0 +1,18 @@
+Quest and Exploration Navigation - Fork 0.8.7-fork.1
+Scope: versioning rules and synchronized version/package fields only.
+Runtime behavior is inherited from 0.8.6-fork.3; the 81 JS and Lua results recorded in VALIDATION-fork.3.txt are historical evidence, not rerun results for this version.
+
+PASS: native adapter rebuilt as 0.8.7-fork.1; ABI, runtime/collector hash gates, filtering and dispatch tests.
+PASS: archive/runtime/native/documentation version consistency.
+PASS: 2154 exact archive source matches and complete archive integrity.
+PASS: original atlas bytes, actor metadata and 291 legacy chunk string values retained.
+PASS: manager recognizes navigation update, 2150/2150 old owned paths retained.
+PASS: all 88 collector reference hashes match original manager data; zero collector path overlap.
+PASS: archive comparison with fork.3: only 7 expected version, native-version and documentation files differ; both JS entries differ only in the version literal.
+PASS: git diff --check; collector source directory has no diff.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.8.7-fork.1.zip
+Bytes: 120508448
+SHA256: e804f77b7b42bafe6153539ad1da2d674e0e5086e737acbe707ab3e66b917736
+
+No in-game verification was performed. Roof route and actual FPS limitations remain as documented for fork.3. Installed game/manager files and the remote draft were not modified; author permission remains pending.

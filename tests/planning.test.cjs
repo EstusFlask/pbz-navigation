@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const path=require('node:path'),fs=require('node:fs'),vm=require('node:vm');
 const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 function planner(world,options={}){
-    const p={x:0,y:0,z:0},goal={x:100,y:0,z:600};
+    const p={...(options.start||{x:0,y:0,z:0})},goal={x:100,y:0,z:600};
     const partial={IsValid:()=>true,IsPartial:()=>options.complete?false:true,PathPoints:{Num:()=>2,Get:i=>i?p:goal}};
     // The engine's incomplete path stops directly below the upstairs item.
     partial.PathPoints.Num=()=>options.detour?4:2;
@@ -12,23 +12,26 @@ function planner(world,options={}){
         const q=ps[i];return {X:q.x,Y:q.y,Z:q.z};
     };
     const UE={ESlateVisibility:{HitTestInvisible:0,Collapsed:1},ESplineCoordinateSpace:{World:0},
-        NavigationSystemV1:{FindPathToLocationSynchronously:()=>partial},BellManager:{StaticClass(){}}};
-    const W={finite:q=>q&&Number.isFinite(q.z),alive:o=>!!o,vec:q=>q,
+        NavigationSystemV1:{FindPathToLocationSynchronously:()=>partial},BellManager:{StaticClass:()=> 'bell'},MapSubsystem:{StaticClass:()=> 'map'},
+        GameplayStatics:{GetCurrentLevelName:()=> 'test'},PBZBlueprintFunctionLibrary:{GetPBZNarrativeComp:()=>null}};
+    const W={finite:q=>q&&Number.isFinite(q.z),alive:o=>!!o,vec:q=>q,norm:s=>String(s),
         plain:q=>({x:q.X,y:q.Y,z:q.Z})};
     const empty=function*(){return null;};
-    const mocks={ue:UE,puerts:{},'Library/TsHelper':{default:{getWorldSubsystem:()=>({})}},'Library/MapAreaGroups':{},
-        './PBZRouteTables':{data:{worlds:['test'],bells:{}}},
+    const map={GetMapIDByLocation:()=> 'test',GetCurrentMapID:()=> 'test',LockObjectInfos:{GetRef:()=>null}};
+    const mocks={ue:UE,puerts:{},'Library/TsHelper':{default:{getWorldSubsystem:(p,t)=>t==='map'?map:{}}},'Library/MapAreaGroups':{},
+        './PBZRouteTables':{data:{worlds:['test'],bells:{},areas:{}}},
         './PBZRouteWorld':W,'./PBZRoutePassages':options.passages||{refreshLadders(){},isLookout:()=>false,liveRouteJob:empty},
         './PBZRouteDrops':{installJob:empty},'./PBZRouteObstacles':{...require(root+'/PBZRouteObstacles'),installSeamsJob:empty},
         './PBZRouteSurface':{anchorsJob:function*(g,q,goal){return [{id:goal?1:0,q:{...q},r:0,dz:0}];}},
         './PBZPrivateRibbon':{},'./PBZRouteInk':{},'./PBZRouteItems':{},'./PBZRouteMinimap':{},'./PBZRouteScout':{}};
+    if(options.localWalk)mocks['./PBZRouteLocalWalk']=options.localWalk;
     const module={exports:{}};
     const local=id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id));
-    const source=fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+'\nexports.test={S,graphs,makePlan,nativeWalk};';
-    vm.runInNewContext('(function(require,module,exports){'+source+'\n})',{console,Date})(local,module,module.exports);
+    const source=fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+'\nexports.test={S,graphs,makePlan,nativeWalk,observe,planning,routeRequest,guardRoute,auditor,arm(dest){scout={snapshot:null};oldWorld="test";threads={hide(){}};S.manual=dest;const r=routeRequest(dest);previous={key:dest.key,p:dest.p,site:{...r.start},level:S.level,revision:r.revision,originRevision:r.originRevision};}};';
+    vm.runInNewContext('(function(require,module,exports){'+source+'\n})',{console:options.quiet?{log(){}}:console,Date})(local,module,module.exports);
     const api=module.exports.test,g=options.graph||{name:'test',sameComponent:()=>false,actors:[],observedPassages:new Map(),routeJob:function*(){return null;}};
-    api.graphs.set('test',g);Object.assign(api.S,{level:'test',pawn:{},world:{...world,feet:()=>p}});
-    return {api,goal,dest:{key:'upstairs',item:true,p:goal,world:'test'}};
+    api.graphs.set('test',g);Object.assign(api.S,{level:'test',pawn:{},world:{...world,feet:()=>({...p})}});
+    return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:'test'}};
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
 function staircase(){
@@ -206,4 +209,76 @@ test('collectible approach points do not treat a closed door as the target colli
         {point:{x:990,y:0,z:100},owners:['BP_ClosedDoor']}:{point,owners:['BP_Rubbish_123']}};
     const goals=run(Goals.approaches(world,point,140,{targetKey:'pbz:world:BP_Rubbish_123'}));
     assert.ok(goals.length);assert.ok(goals.every(p=>p.x>=1000));
+});
+test('observe restarts a pending job after landing on the roof without another map click',()=>{
+    const h=planner({floorAt:p=>({...p}),step:(a,b)=>({p:{...b}})},{quiet:true});h.api.arm(h.dest);
+    let closed=0;
+    h.api.planning.request(h.api.routeRequest(h.dest),function*(){try{while(true)yield;}finally{closed++;}},()=>{});
+    h.api.planning.pump();h.api.observe();
+    h.pose.z=600;h.api.observe();h.api.observe();
+    assert.equal(closed,1);assert.equal(h.api.planning.job.request.start.z,600);
+    assert.equal(h.api.planning.job.request.key,h.dest.key);
+    h.api.planning.clear('test cleanup');
+});
+
+test('a roof with a shallow overall bearing tries its climb before spending the walking-search budget',()=>{
+    let actions=0;
+    const empty=function*(){return null;};
+    const world={floorAt:p=>({...p,z:p.x<1000?0:600}),step:(a,b)=>{
+        const z=b.x<1000?0:600;return Math.abs(z-a.z)<80?{p:{...b,z}}:{why:'roof edge'};
+    }};
+    const passages={refreshLadders(){},isLookout:()=>false,liveRouteJob:function*(g,w,start,goal){
+        actions++;const points=[start,{x:900,y:0,z:0},{x:1000,y:0,z:600},goal];
+        return {legs:[{world:'test',points,checks:[],gates:[],physicalVerified:true,
+            moves:[{kind:'ascent',guid:'roof-climb',from:1,to:2,p:points[1],end:points[2]}],
+            walks:[{a:start,b:points[1],from:0,to:1,edge:-1},{a:points[2],b:goal,from:2,to:3,edge:-1}],
+            meters:require(root+'/PBZRouteCore').extent(points)/100}],transfer:null};
+    }};
+    const h=planner(world,{quiet:true,passages,localWalk:{search:function*(){
+        assert.equal(actions,1,'the valid climb was postponed behind an expensive walking search');return yield* empty();
+    }}});
+    Object.assign(h.goal,{x:3000,y:0,z:600});
+    const trip=run(h.api.makePlan(h.dest));assert.ok(trip&&!trip.legs[0].partial);
+    assert.equal(trip.legs[0].moves[0].guid,'roof-climb');
+});
+
+test('a nearby climb is considered before walking even when the player starts at the roof height',()=>{
+    let actions=0;
+    const world={floorAt:p=>({...p,z:0}),step:()=>({why:'blocked direct route'})};
+    const graph={name:'test',actors:[{kind:'ascent',path:[[900,0,-600],[1000,0,-134]]}],observedPassages:new Map(),
+        sameComponent:()=>false,routeJob:function*(){return null;}};
+    const passages={refreshLadders(){},isLookout:()=>false,liveRouteJob:function*(){actions++;return null;}};
+    const h=planner(world,{quiet:true,graph,passages,localWalk:{search:function*(){
+        assert.equal(actions,1,'overall floor height hid a lower approach followed by a climb');return null;
+    }}});
+    Object.assign(h.goal,{x:3000,y:0,z:0});run(h.api.makePlan(h.dest));assert.equal(actions,1);
+});
+test('diagnostic rechecks while moving do not append a trail of unknown X markers',()=>{
+    const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true});h.api.arm(h.dest);
+    const points=[{x:0,y:0,z:0},{x:300,y:0,z:0},{x:1000,y:0,z:0}];
+    const leg={world:'test',points,partial:true,diagnostic:true,verifiedEndIndex:1,moves:[],walks:[],checks:[],gates:[],
+        obstacles:[{id:'route:blocked',p:points[1],approach:points[1],unknown:true,icon:'barrier'}]};
+    Object.assign(h.api.S,{trip:{legs:[leg],transfer:null},active:0,line:points,targetKey:h.dest.key});
+    h.api.auditor.begin=(candidate,w,p,now)=>{h.api.auditor.job={};h.api.auditor.safe=p;h.api.auditor.origin=p;h.api.auditor.started=now;};
+    h.api.auditor.pump=()=>{h.api.auditor.job=null;return {mark:{id:'route:-1:'+h.pose.z,p:{...h.pose},edge:-1,unknown:true,reason:'no floor'}};};
+    for(let i=0;i<12;i++){h.pose.z=i*40;h.api.guardRoute(i*2000);}
+    assert.equal(leg.obstacles.length,1);assert.equal(leg.obstacles[0].id,'route:blocked');
+});
+
+test('route clearance does not run at the 125 Hz callback rate',()=>{
+    const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true});h.api.arm(h.dest);
+    const points=[{x:0,y:0,z:0},{x:1000,y:0,z:0}],leg={world:'test',points,moves:[],walks:[],checks:[],gates:[],obstacles:[]};
+    Object.assign(h.api.S,{trip:{legs:[leg]},line:points});
+    let calls=0;h.api.auditor.pump=()=>{calls++;return null;};
+    for(let t=0;t<1000;t+=8)h.api.guardRoute(t);
+    assert.ok(calls<=31,'route-wide bookkeeping ran '+calls+' times per second');
+});
+
+test('throttled route-clearance callbacks skip capsule reads as well as audit work',()=>{
+    const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true});h.api.arm(h.dest);
+    const points=[{x:0,y:0,z:0},{x:1000,y:0,z:0}],leg={world:'test',points,moves:[],walks:[],checks:[],gates:[],obstacles:[]};
+    Object.assign(h.api.S,{trip:{legs:[leg]},line:points});let reads=0;
+    h.api.S.world.feet=()=>{reads++;return points[0];};h.api.auditor.pump=()=>null;
+    for(let t=0;t<1000;t+=8)h.api.guardRoute(t);
+    assert.ok(reads<=31,'capsule reads still ran '+reads+' times per second');
 });

@@ -19,7 +19,12 @@ function supportHit(w,a,b){
 class Ground{
  constructor(pawn){this.pawn=pawn;this.cap=pawn.CapsuleComponent||pawn.GetCapsuleComponent();const m=pawn.CharacterMovement;this.h=this.cap.GetScaledCapsuleHalfHeight();this.r=this.cap.GetScaledCapsuleRadius();this.rise=Math.max(12,Math.min(65,Number(m?.MaxStepHeight)||45));this.normal=Math.max(.55,Math.min(.91,Number(m?.GetWalkableFloorZ?.())||.70));this.slope=Math.sqrt(1-this.normal*this.normal)/this.normal;
   const prof=String(this.cap.GetCollisionProfileName()||'Pawn');this.profile=/^(none|custom|nocollision)$/i.test(prof)?'Pawn':prof;this.ignored=UE.NewArray(UE.Actor);this.ignored.Add(pawn);this.color=new UE.LinearColor(0,0,0,0);this.calls=0;}
- feet(){const p=plain(this.cap.K2_GetComponentLocation());p.z-=this.h;return p;}
+ feet(){
+  const r=Number(this.cap.GetScaledCapsuleRadius?.()),h=Number(this.cap.GetScaledCapsuleHalfHeight?.());
+  if(Number.isFinite(r)&&r>4)this.r=r;
+  if(Number.isFinite(h)&&h>=this.r)this.h=h;
+  const p=plain(this.cap.K2_GetComponentLocation());p.z-=this.h;return p;
+ }
  hit(a,b,body=false,owners=false){const o=P.$ref(undefined),k=UE.KismetSystemLibrary,c=this.color;this.calls++;
   const tail=[this.profile,false,this.ignored,UE.EDrawDebugTrace.None,o,true,c,c,0];let yes;
   if(body){const lift=this.rise+3,half=Math.max(this.r,this.h-lift/2);const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(da),vec(db),Math.max(5,this.r*.98),half,...tail);}

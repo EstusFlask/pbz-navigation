@@ -1,0 +1,38 @@
+Quest and Exploration Navigation - Fork 0.8.8-fork.1
+Single-route rollback plus compact storage and equivalent rendering optimizations.
+
+BASELINE: delivered 0.8.7-fork.1. After normalizing version literals, every root runtime JS module matches the baseline except PBZQuestRoute.js (skip throttled capsule reads), PBZPrivateRibbon.js (same) and PBZRouteFiber.js (unchanged-topology color cache and redundant math removal). Routing, map painting, passage logic and tracker modules match baseline bytes. The experimental multi-route runtime module is absent.
+
+PASS: 84 JavaScript regressions, zero failures.
+Command: node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs
+New red-to-green checks: throttled ribbon feet reads 2 -> 1; throttled route-clearance capsule reads no longer follow 125 Hz callbacks; equal-topology color creations 294 -> 0 on a second moving upload, with positions/normals still updated and colors rebuilt on topology change.
+PASS: 21 differential geometry cases against the delivered baseline: vertices, normals, colors and indices match exactly.
+Command: node tests/compare-fiber.cjs build/rollback-baseline/PBZRouteFiber.js
+120 moving uploads: baseline 35280 color objects / 120 uploads; optimized 294 color objects / 120 uploads. No sampling, collision or refresh-rate reduction.
+
+LOCAL NODE LOADING SAMPLES, not game FPS:
+256 KiB: reads 519, CPU ms [1214.70,980.93,997.01], max-slice ms [4.51,7.36,4.71].
+512 KiB: reads 267, CPU ms [946.39,881.23,933.41], max-slice ms [7.45,4.81,5.37].
+CPU median about 997.01 -> 933.41 ms; observed slice ranges are similar. Preserve cooperative loading instead of synchronously importing the whole graph.
+Command: node tests/benchmark-atlas.cjs <generated-root>
+
+PASS: real Lua 5.4 original tracker target/hover/cancellation and Lua-file-JS round trips.
+Command: python tests/run-lua-tests.py
+PASS: native adapter ABI, runtime/collector hash gates, filtering and dispatch; rebuilt version 0.8.8-fork.1.
+Command: python native/build-native.py --ue4ss <local UE4SS.dll> --test
+PASS: package, data and manager validation.
+Command: python tests/verify-package.py --manager-state <local mods.json>
+- 1333 exact archive source matches, down from 2155 files (38.1% fewer).
+- 951 streamed modules instead of 1772; largest module 524319 bytes.
+- Every original atlas column and actor-order hash retained; all 291 compatibility chunks return the same original strings.
+- Manager recognizes the installed 0.9.0 package as an update: 1329/2151 owned paths overlap.
+- 822 obsolete navigation-owned entries retire in the manager's update plan; no collector entries are involved. This was a read-only plan, not an installation.
+- All 88 collector reference files match manager original hashes; zero collector path overlap.
+- Version consistency across runtime/native/docs passes; original world/face/chunk source and collector directories have no diff.
+PASS: git diff --check.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.8.8-fork.1.zip
+Bytes: 120193863
+SHA256: 856c83250ddf9212ebea1b0bf1e54c17b04706cb0c47d2bbe59132bf016e6c6c
+
+Install through the manager as an update to remove old navigation shards. A manual merge does not remove obsolete files: move out the old navigation script folder first, preserving the separate config. No installed game, manager state, collector files or remote draft were modified. In-game FPS and earlier route issues remain unverified; original-author permission status remains pending.

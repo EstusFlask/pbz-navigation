@@ -1,0 +1,34 @@
+Quest and Exploration Navigation - Fork 0.9.0-fork.1
+Integrated map alternatives; local validation only, not play-tested in game.
+
+PASS: 97 JavaScript regressions, zero failures.
+Command: node --test --test-reporter=spec tests/atlas.test.cjs tests/alternatives.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs
+New production checks cover:
+- Up to three distinct map colors while no complete primary exists; one color and unused images hidden after success.
+- No route text, icons or X markers from the color-line painter, including total failure with no primary trip.
+- Stable colors, corridor deduplication, a longer ladder/grapple prefix updating one candidate, and retention of action candidates.
+- Target/world isolation and snapshots that cannot become verified scene routes or change S.trip/S.line.
+- Foreground preemption, map-close cancellation, idle-only background work, bounded projection steps and persistent projection caches.
+- Real pbz_zhengdaodaying_wp replay produces three distinct map-only corridors without changing graph weights.
+- A checked ladder/grapple prefix is retained when its final walking connector fails; it is not reported as a complete scene route.
+- Existing terrain, floor, arrival, thread, tracker and streaming regressions.
+
+PASS: actual Lua 5.4 tracker target/hover/cancel round trips and real-file exchange with JavaScript.
+Command: python tests/run-lua-tests.py
+PASS: native adapter rebuilt as 0.9.0-fork.1, ABI/runtime hash/collector hash/filtering/host-dispatch checks.
+Command: python native/build-native.py --ue4ss <local original UE4SS.dll> --test
+PASS: complete package/manager verification.
+Command: python tests/verify-package.py --manager-state <local mods.json>
+- 2155 exact archive source matches; version strings agree across runtime/native/docs.
+- All original atlas bytes and actor hashes match; 1772 streamed modules and 291 legacy chunk entry points retain their data.
+- Manager identifies an update with 2150/2150 existing navigation-owned paths retained.
+- All 88 original collector file hashes match manager records; zero collector path overlap.
+PASS: git diff --check; original world/face/chunk source and collector directories have no diff.
+
+Cooperative targets (not measured FPS): background search <=8 generator steps / about 0.75 ms per 34 ms, <=6 attempts / about 6 s. Only open-map, foreground-idle failures request background alternatives. Map projection <=16 generator steps / about 1.25 ms per draw. Single engine/library steps can exceed a cooperative target. Existing scene update and collision rules remain in charge of the one scene strand.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.9.0-fork.1.zip
+Bytes: 120513440
+SHA256: adc97fbc3eb041933fa557fe8200a4cf2b8f886f049aad2f3c51e5880a0abca4
+
+Colored alternatives may contain blocked or unverified connections. They are for map inspection, not proof of reachability; they never drive arrival or scene clearance. In-game visuals/frame time, slippery terrain, complete traversal chains and earlier roof/gear reports still need field checks. No installed game, manager state, collector files or remote draft were modified. Original-author permission status remains pending.

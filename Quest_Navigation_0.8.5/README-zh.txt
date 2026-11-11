@@ -1,51 +1,66 @@
-任务与探索导航 0.8.5-beta（本地修补 0.8.5-local-fix5）
+任务与探索导航 - Fork
+版本：0.8.8-fork.1（实验性发布候选）
+基于 azqwq333 的 Quest and Exploration Navigation 0.8.5-beta 及 local-fix5。
+原作：https://www.nexusmods.com/phantombladezero/mods/472
+Fork 整理：kurosakana；代码与说明使用 AI 辅助生成。
 
-安装版本：PBZModLoader 1.0.0
-发布版本：0.8.5-beta
+发布状态
+尚待原作者授权。目前仅准备本地候选与未发布 Nexus 草稿。原页面要求修改和资产使用先取得许可，停止维护声明没有开放这些权限。
 
-安装
-1. 退出游戏，先安装 PBZModLoader 1.0.0
-2. 将本包 ProjectPBZ 文件夹合并到 Steam“管理 → 浏览本地文件”打开的 PBZ 根目录
-3. 确认入口：ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/main.js
-4. 使用 Map Collectible Tracker 1.0.9 时保留其原版文件，同时安装本导航包的 platform 目录，其中 PBZQuestRouteCompat 是导航自有的桥接组件。目前适配目标导航与取消同步，小地图路线、放大图标和自动饰品提示未迁移
-5. 正常通过 Steam 启动游戏
+依赖
+- 基础导航：PBZModLoader #113，1.0.0。
+- 可选导航设置：Mods Menu #149，0.7.2。
+- 可选收集物导航：Map Tracker Plus - Minimap and Collectibles (UE4SS) #187，1.0.9；本地包名 Map Collectible Tracker。
+- 1.0.9 桥接：UE4SS for Phantom Blade Zero #5，1.0.3（v3.0.1-1195-g1ceefac8 Shipping）。
+链接：https://www.nexusmods.com/phantombladezero/mods/编号
 
-本版保留 PBZModLoader 目录布局，Mods Menu 作为游戏内设置菜单可选
-两种完整包选一份，不要重复安装
-从另一种布局迁移时，备份并移出旧 PBZQuestRoute 文件夹，保留 Paks/~mods/PBZQuestRoute.txt 配置
-不要同时留下旧 0.7.x 的 zzz_PBZQuestRoute_P.pak、.utoc、.ucas 和 PBZQuestRouteMouse
+安装与更新
+1. 退出游戏，备份 ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt。
+2. 安装 PBZModLoader；需要收集联动时，另行安装对应 UE4SS 与原版 Map Tracker Plus 1.0.9。
+3. 停用旧导航，将旧脚本目录移到游戏外，保留配置。将本包 ProjectPBZ 和 platform 文件夹合并到 Steam“管理 → 浏览本地文件”打开的游戏根目录。
+4. 或向 UE Mod Manager 导入完整 ZIP，同时勾选导航游戏文件与 PBZQuestRouteCompat。共享路径可能让管理器识别为原导航更新，只启用一份导航；收集 Mod 保留原版。
+5. 导航入口：ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/main.js；桥接入口：platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll。
+6. 正常经 Steam 启动。
 
-本次改动
-- fix5：石头等局部障碍优先修补附近路线；搜索期间和失败后保留大地图安全前段、X 与未确认虚线，场景丝线不越过已确认受阻处。采集点可走到交互范围，不强求穿过物品碰撞中心。
-- fix5：修正起伏地面被直线高度插值误判为换楼层；连接静态及已加载的梯子、攀爬、抓绳/钩索、滑索和升降通道，支持多动作串联与方向、解锁状态检查。动作仍由玩家按游戏原键触发。
-- fix4：导航改为先检查地面和胶囊碰撞，再在可走路径上比较实际长度；上下楼、同层绕墙都参与实景搜索。拒绝已知受阻回退路线。丝线完全改用即时网格，停用原生拖尾粒子，端点留在地面上方。
-- 已通过 46 项本地回归及 Lua 联动检查；残偶谷底齿轮和三楼位置仍需游戏内复测。受场景加载、采样与搜索预算限制，不承诺整张地图的全局最短路径。
-- 本地补丁：红绳远段分帧碰撞校验、限制重复更新、消除样条回读，并添加导航自有的 UE4SS 目标桥接；不改收集 Mod 文件，未改路网，未进行游戏内验证
-- 增加明确的启动成功状态与失败记录，阻止同一会话重复安装导航钩子
-- 支持 Mods Menu 原生目录，修正物品联动在原生目录、原始目录和加载器生成目录之间的解析
-- 可选收集 Mod 缺失或启动失败不再让基础导航入口报失败
-- 保留 0.8.4 的路线、取消、到达收线、分帧搜索和路网数据
+本次只有一个 PBZModLoader 布局完整包，没有独立 Mods Menu 布局包。加载器、UE4SS 本体与收集 Mod 不在包内。不修改或替换 PbzMapTracker 文件。
+迁移时移出旧 JS 收集目录 ProjectPBZ/PBZModLoader/mods/pbz-map-tracker/，以及旧导航 0.7.x 的 zzz_PBZQuestRoute_P.pak/.utoc/.ucas、PBZQuestRouteMouse 和其他布局旧导航。不要同时启用两代收集 Mod。
 
-操作
-- 任务：用游戏原有任务追踪，新任务接替手动旗子
-- 鼠标：1.0.9 图标左键追踪，也可悬停后中键导航；区域地图空白处中键落旗，长按约 0.6 秒取消。物品导航保留高度，普通落旗按地图选路面
-- 手柄：移动地图准星，或吸附到物品后按 A，空白处长按约 0.6 秒取消
-- 落旗时关闭筛选面板，拖动不落旗，铃铛窗口保留正常操作
-- 地图线、场景红绳和小地图线分别开关，可选持续显示或洞照后显示 30 秒
-- 无任务和手动目标、且角色位于迷雾区时，按洞照感知可达的本区铃铛
-- 同层抵达后收线，走远不会自动恢复，需要重新选择目标
-- 跨区优先步行，需传送时分成出发铃铛和目标铃铛两段，传送仍由玩家操作
+收集兼容范围
+1.0.9 已适配：手动/自动目标、切换、收集完成、取消同步、悬停后中键选择，保留物品高度。
+旧 JS 0.6.7 联动的小地图路线叠加、放大图标与自动饰品提示没有迁移到 UE4SS 1.0.9。这些导航选项对 1.0.9 不生效；收集 Mod 自身的小地图、图标与追踪仍由它管理。旧 JS 代码保留不代表本次重新验证了旧版。
+桥接核对 UE4SS.dll 与收集入口校验值，其他构建停用收集联动，基础任务/落旗导航仍可用。查看桥接目录 PBZQuestRouteCompat-status.txt。
 
-设置与排查
-Mods Menu 默认 F9，在任务与探索导航条目调整
-配置文件：ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt
-开关：MapRoute、WorldThread、MinimapRoute、LargeItemIcons、AutoAccessory、FogBellSense，值为 on/off
-DisplayMode=Always 持续显示，DisplayMode=Sense30 洞照后显示 30 秒
-启动状态：游戏实际 Saved 目录中的 PBZQuestRoute-startup.txt
-运行日志：ProjectPBZ/Saved/PBZQuestRoute-log.txt
-使用时先确认落旗、取消、手柄选物和小地图是否正常，再确认场景红绳
+相对原版 0.8.5-beta 的改动
+- 接受路线前校验地面支撑和胶囊碰撞，比较可行三维步行长度，拒绝已知受阻回退。
+- 撤回 0.9.0 多路线，恢复 0.8.7 单路线；约 120 米局部尝试绕石头，保留地图安全前段、受阻 X 和未确认虚线，场景线停在已检查位置。
+- 采集点可选择同层交互范围内站位；修正起伏地面被误判为换层。
+- 串联已识别的梯子、攀爬、抓绳/钩索、滑索与升降通道，检查方向及解锁状态；动作由玩家执行。
+- 即时细线网格替换拖尾粒子，端点留在地面上方；远段碰撞与重复更新受预算限制。
+- 导航自有桥接同步原版收集 1.0.9 目标与取消，不改收集文件。
+- 修正交互锚点埋入地面时漏掉入口；落地、换层与胶囊尺寸改变后自动更新规划起点，不需重选目标。
+- 移除候选池、额外图搜索和三色地图；临时障碍去重与门锁约束沿用单路线版本。
+- 数据块由 256 KiB 合并为 512 KiB，加载模块从 1772 个降到 951 个，完整包约 1333 个文件，原数据不变。
+- 同拓扑丝线复用颜色数据，跳过节流回调的胶囊读取；不降低采样、碰撞检查或刷新频率。
+- 动作搜索不再先遍历全部物品接近点；附近攀爬入口不因角色与目标整体高度接近而被推迟。
+- 丝线约 30 次/秒更新，静止近段碰撞缓存 250 毫秒，重复受阻预览不再清空显示缓存。不在导航中主动加载交互类。
+- 路网按小块分帧加载，原始数据数值不变。首次加载区域需等待数秒，然后自动规划。
+- 统一运行时、原生组件、ZIP 和文档版本为 0.8.8-fork.1，菜单增加 Fork 标识。
 
-导航说明
-部分区域道路交错、楼层叠加，且包含特殊交互通道，目前仍可能出现绕路、漏路或错误衔接；遇到不通的路线请以实际场景为准，后续会继续修正
-包体主要是 11 个世界路网和行走表面数据，本次未改路网数据
-卸载时退出游戏，仅移出本包的 PBZQuestRoute 脚本文件夹与 ProjectPBZ/Content/Mods/PBZQuestRoute
+操作与设置
+任务沿用游戏追踪。1.0.9 图标可左键追踪，或悬停后中键导航。地图空白处中键落旗，长按约 0.6 秒取消。手柄沿用游戏确认键，通常为 A。
+落旗前关闭筛选面板；关闭地图查看场景线，WorldThread 需开启。Sense30 模式需先洞照。同层抵达后收线，再次选择才恢复。传送和通道动作由玩家操作。
+Mods Menu：默认 F9，任务与探索导航 - Fork。
+配置：ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt
+MapRoute、WorldThread、FogBellSense：on/off；DisplayMode：Always/Sense30。
+MinimapRoute、LargeItemIcons、AutoAccessory 为旧 JS 收集适配选项。
+启动状态：游戏实际 Saved 目录的 PBZQuestRoute-startup.txt。
+运行日志：ProjectPBZ/Saved/PBZQuestRoute-log.txt。
+
+限制与卸载
+84 项本地 JS 回归、21 种网格旧包对照、数据一致性、真实 Lua 联动、原生与 ZIP 检查已通过。此候选未在游戏内验证，不承诺具体 FPS、全局最短或旧路线问题已修好；11 个世界路网数值不变。管理器导入时选择更新现有导航，手动安装先移出旧脚本目录，避免旧分块残留。
+退出游戏，用管理器卸载本导航；或仅移出 PBZQuestRoute 脚本目录、ProjectPBZ/Content/Mods/PBZQuestRoute/、platform/steam/ue4ss/Mods/PBZQuestRouteCompat/。保留配置、收集 Mod 与共享运行时。恢复原版前先移出 Fork 脚本和桥接。
+
+致谢
+azqwq333：原导航系统、路网、行走表面及原包资产。
+PiPiFanDev：独立的 Map Tracker Plus，本包不包含或维护该 Mod。
+UE4SS 贡献者：公开运行时接口，保留随包 UE4SS-LICENSE.txt。

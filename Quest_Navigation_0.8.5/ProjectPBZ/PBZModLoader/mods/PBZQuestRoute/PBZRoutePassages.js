@@ -67,24 +67,25 @@ function title(move) {
   return labels[key]?.[english ? 1 : 0] || '';
 }
 function support(world,p,below=105) {
+  if(world.floorAt){const q=world.floorAt(p,true);if(q&&q.z-p.z<=180&&p.z-q.z<=below)return q;}
   const hit=world.hit({...p,z:p.z+68},{...p,z:p.z-below});
   return hit&&!hit.penetrating&&hit.nz>=world.normal-.025?hit.point:null;
 }
 function landing(world,p,kind) {
   const below=['swing','rappel','zipline','wallrun'].includes(kind)?475:kind==='lift'?100:240;
   const q=support(world,p,below);
-  return q&&p.z-q.z<=below&&q.z-p.z<=68?q:null;
+  return q&&p.z-q.z<=below&&q.z-p.z<=180?q:null;
 }
 function sweep(...args){const task=sweepJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
 function approach(...args){const task=approachJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
 function check(...args){const task=checkJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
 function* sweepJob(world,a,b) {
   const start=support(world,a),end=support(world,b);
-  if(!start||!end||Math.abs(start.z-a.z)>85||Math.abs(end.z-b.z)>85)return null;
+  if(!start||!end||Math.abs(start.z-a.z)>200||Math.abs(end.z-b.z)>200)return null;
   const count=Math.max(1,Math.ceil(R.dist(start,end)/52)),points=[start];let last=start;
   for(let i=1;i<=count;i++){yield;
-    const expected=R.lerp(start,end,i/count),step=world.step(last,expected,true);
-    if(!step.p||Math.abs(step.p.z-expected.z)>82)return null;
+    const expected=R.lerp(start,end,i/count),step=world.step(last,expected,false);
+    if(!step.p)return null;
     points.push(step.p);last=step.p;
   }
   return Math.abs(last.z-end.z)<52?points:null;
@@ -128,6 +129,9 @@ const liveWorlds = new WeakMap();
 const classObjects = new Map();
 function checkedWalk(...args){const task=checkedWalkJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
 function* checkedWalkJob(world,a,b,nativeWalk,options={}){
+  const firstFloor=support(world,a,240),lastFloor=support(world,b,240);yield;
+  if(!firstFloor||!lastFloor||Math.abs(firstFloor.z-a.z)>200||Math.abs(lastFloor.z-b.z)>200)return null;
+  a=firstFloor;b=lastFloor;
   if(R.dist(a,b)<1)return [a,b];
   if(R.dist(a,b)<850){const direct=yield* sweepJob(world,a,b);if(direct)return direct;}
   yield;const leg=nativeWalk(a,b,true);options.waypoints=leg?.points;yield;
@@ -189,7 +193,7 @@ function* refreshLoadedJob(g,world,pawn,start,goal){
  const P=require('puerts');
  for(const [asset,{definition,items}] of classes){
   let cls=classObjects.get(asset);
-  if(!cls){try{cls=UE.Class.Find?.(asset)||(items.size?UE.Class.Load?.(asset):null);}catch(_){}
+  if(!cls){try{cls=UE.Class.Find?.(asset);}catch(_){}
    if(cls)classObjects.set(asset,cls);yield;}
   if(!cls)continue;
   const out=P.$ref(undefined);UE.GameplayStatics.GetAllActorsOfClass(pawn,cls,out);yield;
@@ -224,19 +228,18 @@ function* refreshLoadedJob(g,world,pawn,start,goal){
  }
 }
 function updateLoaded(g,world,pawn,nativeWalk) {
-  if(!g||!world||!pawn||!UE.Class?.Load||!UE.GameplayStatics?.GetAllActorsOfClass)return;
+  if(!g||!world||!pawn||!UE.Class?.Find||!UE.GameplayStatics?.GetAllActorsOfClass)return;
   const cache=liveCache(g,world);
   const now=Date.now();
   if(now<cache.next||!cache.classes.length)return;
   cache.next=now+(cache.index===cache.classes.length-1?2500:650);
   const [asset,{items,definition}]=cache.classes[cache.index];cache.index=(cache.index+1)%cache.classes.length;
   if(!classObjects.has(asset)){
-    // Only request a class package if this map actually places that class.
-    // Additional subclasses of an already loaded family can still be discovered.
+    // Enumerate resident actors only. Loading a package does not stream its map
+    // instances, and can block the game thread for hundreds of milliseconds.
     let resident=null;
     try{resident=UE.Class.Find?.(asset);}catch(_){}
-    if(!resident&&!items.size)return;
-    const resolved=resident||UE.Class.Load(asset);
+    const resolved=resident;
     if(!resolved)return;
     classObjects.set(asset,resolved);
   }
@@ -285,8 +288,9 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
     const backward=feature.both?R.dist(start,path[path.length-1])+R.dist(goal,path[0]):Infinity;
     const score=Math.min(forward,backward);if(score<26000)candidates.push({...feature,runtimePath:path,score});
   }
+  options.report?.('action candidates',{count:candidates.length,start,goal});
   return yield* Transitions.route({name:g.name,world,start,goal,goals:options.goals,
-   features:candidates.sort((a,b)=>a.score-b.score),canTraverse:f=>g.canTraverse(f),onClosed:options.onClosed,
+   features:candidates.sort((a,b)=>a.score-b.score),canTraverse:f=>g.canTraverse(f),onClosed:options.onClosed,report:options.report,
    landing:function*(feature,p,side){
     const direct=landing(world,p,feature.kind);yield;if(direct&&!world.hit?.(direct,direct,true))return direct;
     for(const row of feature[side]||[]){const raw=row[1],q=world.floorAt({x:raw[0],y:raw[1],z:raw[2]},true);yield;

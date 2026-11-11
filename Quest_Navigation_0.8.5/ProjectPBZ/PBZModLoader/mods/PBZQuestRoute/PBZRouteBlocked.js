@@ -27,6 +27,9 @@ function offer(context,leg,start,goal){
  if(!leg)return;
  const safe=leg.points[leg.verifiedEndIndex],remaining=R.dist(safe,goal),score=R.dist(start,goal)-remaining;
  if(context.best&&score<context.bestScore-1)return;
+ const old=context.best?.legs[0],oldSafe=old?.points[old.verifiedEndIndex],block=leg.obstacles?.[0],oldBlock=old?.obstacles?.[0];
+ if(oldSafe&&score<context.bestScore+50&&R.dist(safe,oldSafe)<75&&block&&oldBlock&&
+  block.unknown===oldBlock.unknown&&block.locked===oldBlock.locked&&R.dist(block.p,oldBlock.p)<75)return;
  context.best={legs:[leg],transfer:null};context.bestScore=score;
  context.onDiagnostic?.(context.best);
 }

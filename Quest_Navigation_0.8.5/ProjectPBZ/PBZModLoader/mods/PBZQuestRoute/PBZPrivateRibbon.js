@@ -60,9 +60,9 @@ class Threads{
  }
  show(S){
   if(S.line.length<2){this.hide();return;}
-  const now=Date.now(),w=S.world,feet=w.feet();
-  if(this.lastDraw!==null&&this.lastDraw!==undefined&&this.version===S.version&&now-this.lastDraw<16)return;
-  this.lastDraw=now;
+  const now=Date.now(),w=S.world;
+  if(this.lastDraw!==null&&this.lastDraw!==undefined&&this.version===S.version&&now-this.lastDraw<34)return;
+  this.lastDraw=now;const feet=w.feet();
   if(this.version!==S.version){
    const newKey=(S.trip?.legs[S.active]?.world||'')+'/'+(S.targetKey||'')+'/'+S.active;
    const same=this.routeKey===newKey,old=this.route;
@@ -77,7 +77,7 @@ class Threads{
     }}
    this.hint=0;this.nextFloor=0;this.seenFloor=new Set();this.adjusting=new Set();
    this.floorDistance=new Float64Array(this.route.points.length).fill(Infinity);this.floorGoal=new Float64Array(this.route.points.length);
-   this.tileVersion=[];this.guard.reset();for(const r of this.pool){if(r){r.tag=null;this.vis(r,false);}}
+   this.tileVersion=[];this.headProof=null;this.guard.reset();for(const r of this.pool){if(r){r.tag=null;this.vis(r,false);}}
   }
   const r=this.route;if(r.points.length<2){this.hide();return;}
   const arrival=S.arrival||=new Arrival();
@@ -110,11 +110,16 @@ class Threads{
   this.motion=B.animate(this.motion,feet,now);this.attachment=B.attachment(this.attachment,w.anchor(),feet,now);
   const anchor=this.attachment.p,f=B.frame(r,m,anchor,this.motion);
   let front=Math.min(drawEnd,m.arc+B.influence);
-  const head=B.section(r,f,m.arc,front);if(!head){this.hide();return;}
+  let head=B.section(r,f,m.arc,front);if(!head){this.hide();return;}
+  const proofKey=JSON.stringify(head.ps),proof=this.headProof;
   if(typeof w.threadHit==='function'){
-   const n=head.ps.length-1;
-   for(let i=1;i<=n;i++)if(w.threadHit(head.ps[i-1],head.ps[i])){
-    front=m.arc+(front-m.arc)*(i-1)/n;drawEnd=front;head.ps.length=i;head.after=null;break;
+   if(proof&&proof.key===proofKey&&now<proof.until){head=proof.head;front=proof.front;drawEnd=Math.min(drawEnd,proof.end);}
+   else{
+    const n=head.ps.length-1;
+    for(let i=1;i<=n;i++)if(w.threadHit(head.ps[i-1],head.ps[i])){
+     front=m.arc+(front-m.arc)*(i-1)/n;drawEnd=front;head.ps.length=i;head.after=null;break;
+    }
+    this.headProof={key:proofKey,until:now+250,head,front,end:drawEnd};
    }
    if(head.ps.length<2){this.hide();return;}
   }

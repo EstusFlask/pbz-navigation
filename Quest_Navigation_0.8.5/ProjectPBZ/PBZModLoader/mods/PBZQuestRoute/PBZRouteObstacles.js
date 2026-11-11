@@ -9,9 +9,23 @@ function mark(leg,c,reason,hit,unknown=false){
   a:c.a,b:c.b,condition:c.kind};
 }
 function obstacle(leg,value){
+ if(value.transient){leg.obstacles=(leg.obstacles||[]).filter(r=>!r.transient);value={...value,id:'route:audit:current'};}
  const rows=leg.obstacles||=([]),i=rows.findIndex(r=>r.id===value.id);
  if(i>=0)rows[i]=value;else rows.push(value);
 }
+function visibleMarkers(leg,feet,rows=leg.locks||leg.obstacles||[]){
+ const arc=[0];for(let i=1;i<leg.points.length;i++)arc.push(arc[i-1]+R.dist(leg.points[i-1],leg.points[i]));
+ const at=p=>{const q=R.nearestOnLine(p,leg.points);return q.p?arc[q.i]+q.t*(arc[q.i+1]-arc[q.i]):0;};
+ const here=feet?at(feet):0,known=[],unknown=[];
+ for(const row of rows){if(!R.finite(row.p))continue;const distance=at(row.approach||row.p)-here;
+  if(row.unknown){if(distance>=-25)unknown.push({row,distance});}
+  else if(!row.transient||distance>=-25)known.push(row);
+ }
+ unknown.sort((a,b)=>a.distance-b.distance);
+ if(unknown.length)known.push(unknown[0].row);
+ return known;
+}
+exports.visibleMarkers=visibleMarkers;
 function clear(leg,edge,end){
  leg.obstacles=(leg.obstacles||[]).filter(r=>r.edge!==edge||[6,8,9,11,12].includes(r.condition)||r.b&&(!end||R.dist(r.b,end)>30));
  for(const c of leg.checks||[])if(c.kind===10&&c.edge===edge&&end&&R.dist(c.b,end)<30)c.verified=true;

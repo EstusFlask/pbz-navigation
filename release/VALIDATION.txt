@@ -1,0 +1,281 @@
+Quest and Exploration Navigation - Fork 0.8.6-fork.1
+Validation date: 2026-11-09 (America/Tijuana)
+Release state: unpublished; original-author permission pending
+
+This is local code/package validation, not an in-game test.
+
+node --test tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs
+TAP version 13
+# Subtest: far ribbon segments are collision checked beyond the moving first ten metres
+ok 1 - far ribbon segments are collision checked beyond the moving first ten metres
+  ---
+  duration_ms: 16.2663
+  ...
+# Subtest: duplicate timer callbacks do not rebuild a moving ribbon twice within 16 ms
+ok 2 - duplicate timer callbacks do not rebuild a moving ribbon twice within 16 ms
+  ---
+  duration_ms: 1.7599
+  ...
+# Subtest: fiber uses the rendered samples without synchronous spline readbacks
+ok 3 - fiber uses the rendered samples without synchronous spline readbacks
+  ---
+  duration_ms: 1.6922
+  ...
+# Subtest: far collision work is limited to twelve probes per callback
+ok 4 - far collision work is limited to twelve probes per callback
+  ---
+  duration_ms: 2.594
+  ...
+# Subtest: a wall which closes after auditing clips the cached far ribbon
+ok 5 - a wall which closes after auditing clips the cached far ribbon
+  ---
+  duration_ms: 4.438
+  ...
+# Subtest: route auditing does not consume two trace budgets within one frame
+ok 6 - route auditing does not consume two trace budgets within one frame
+  ---
+  duration_ms: 1.4423
+  ...
+# Subtest: short obstacle-clipped sections do not compress stock particles into a ball
+ok 7 - short obstacle-clipped sections do not compress stock particles into a ball
+  ---
+  duration_ms: 0.8045
+  ...
+# Subtest: short sections keep a useful sample spacing instead of packing 49 points together
+ok 8 - short sections keep a useful sample spacing instead of packing 49 points together
+  ---
+  duration_ms: 0.188
+  ...
+# Subtest: Lua hover hit testing retains item height and rejects a stale icon elsewhere
+ok 9 - Lua hover hit testing retains item height and rejects a stale icon elsewhere
+  ---
+  duration_ms: 0.8291
+  ...
+# Subtest: a lit strand is cleared immediately when an obstacle compresses its spline
+ok 10 - a lit strand is cleared immediately when an obstacle compresses its spline
+  ---
+  duration_ms: 0.7511
+  ...
+# Subtest: turning in place never activates the stock trailing particles even on a long strand
+ok 11 - turning in place never activates the stock trailing particles even on a long strand
+  ---
+  duration_ms: 0.6421
+  ...
+# Subtest: the end of the drawn ribbon stays above a flat supporting floor
+ok 12 - the end of the drawn ribbon stays above a flat supporting floor
+  ---
+  duration_ms: 0.143
+  ...
+# Subtest: a walking step cannot skip a hole or a high ledge between its endpoints
+ok 13 - a walking step cannot skip a hole or a high ledge between its endpoints
+  ---
+  duration_ms: 0.8612
+  ...
+# Subtest: a short start join is still checked for a blocking wall
+ok 14 - a short start join is still checked for a blocking wall
+  ---
+  duration_ms: 0.646
+  ...
+# Subtest: floor projection keeps the current floor under a low overpass
+ok 15 - floor projection keeps the current floor under a low overpass
+  ---
+  duration_ms: 0.6629
+  ...
+# Subtest: every rotating head segment is exactly the polyline checked against scene collision
+ok 16 - every rotating head segment is exactly the polyline checked against scene collision
+  ---
+  duration_ms: 2.4488
+  ...
+# Subtest: a small steep floor contact can use nearby capsule support without ignoring a large rock collision
+ok 17 - a small steep floor contact can use nearby capsule support without ignoring a large rock collision
+  ---
+  duration_ms: 0.7144
+  ...
+# Subtest: an approach endpoint does not cause arrival while still far from the actual collectible
+ok 18 - an approach endpoint does not cause arrival while still far from the actual collectible
+  ---
+  duration_ms: 0.416
+  ...
+# Subtest: static authored ladders are considered and can chain with a rope-swing action
+ok 19 - static authored ladders are considered and can chain with a rope-swing action
+  ---
+  duration_ms: 50.5234
+  ...
+# Subtest: conditional traversal routing can chain multiple actions instead of requiring one to reach the goal
+ok 20 - conditional traversal routing can chain multiple actions instead of requiring one to reach the goal
+  ---
+  duration_ms: 34.5462
+  ...
+# Subtest: bidirectional chains support returning downstairs, but locked and one-way links are not invented
+ok 21 - bidirectional chains support returning downstairs, but locked and one-way links are not invented
+  ---
+  duration_ms: 105.8735
+  ...
+# Subtest: a newly discovered fixed ladder is not automatically treated as a locked folding ladder
+ok 22 - a newly discovered fixed ladder is not automatically treated as a locked folding ladder
+  ---
+  duration_ms: 11.2647
+  ...
+# Subtest: lift and one-way rope-slide metadata are retained in a mixed action chain
+ok 23 - lift and one-way rope-slide metadata are retained in a mixed action chain
+  ---
+  duration_ms: 34.7476
+  ...
+# Subtest: a three-floor collectible uses the staircase instead of a ground-floor partial path
+ok 24 - a three-floor collectible uses the staircase instead of a ground-floor partial path
+  ---
+  duration_ms: 21.7868
+  ...
+# Subtest: no walking connection must not claim arrival on the wrong floor, even with an X preview
+ok 25 - no walking connection must not claim arrival on the wrong floor, even with an X preview
+  ---
+  duration_ms: 3.1608
+  ...
+# Subtest: local staircase search is bounded and cannot jump vertically to a disconnected platform
+ok 26 - local staircase search is bounded and cannot jump vertically to a disconnected platform
+  ---
+  duration_ms: 0.9681
+  ...
+# Subtest: same-floor routes must detour around a wall even if the native path claims to be complete
+ok 27 - same-floor routes must detour around a wall even if the native path claims to be complete
+  ---
+  duration_ms: 4.7861
+  ...
+# Subtest: checked grid search minimizes feasible 3D length rather than a weighted straight-line guess
+ok 28 - checked grid search minimizes feasible 3D length rather than a weighted straight-line guess
+  ---
+  duration_ms: 1.5423
+  ...
+# Subtest: a longer but feasible native route is compared with the shorter checked local route
+ok 29 - a longer but feasible native route is compared with the shorter checked local route
+  ---
+  duration_ms: 1.6906
+  ...
+# Subtest: having a ladder later in a leg does not skip checking an earlier walking wall
+ok 30 - having a ladder later in a leg does not skip checking an earlier walking wall
+  ---
+  duration_ms: 0.5676
+  ...
+# Subtest: a complete feasible route wins over a shorter verified streaming prefix
+ok 31 - a complete feasible route wins over a shorter verified streaming prefix
+  ---
+  duration_ms: 3.6621
+  ...
+# Subtest: downstairs search follows the same supported staircase instead of falling through the floor
+ok 32 - downstairs search follows the same supported staircase instead of falling through the floor
+  ---
+  duration_ms: 1.4302
+  ...
+# Subtest: checked off-grid doorway samples allow a narrow opening which the coarse grid misses
+ok 33 - checked off-grid doorway samples allow a narrow opening which the coarse grid misses
+  ---
+  duration_ms: 1.0833
+  ...
+# Subtest: walking validation replaces buried atlas heights with the actual supporting floor
+ok 34 - walking validation replaces buried atlas heights with the actual supporting floor
+  ---
+  duration_ms: 0.4073
+  ...
+# Subtest: a long flat collectible route repairs a small rock instead of rejecting the whole route
+ok 35 - a long flat collectible route repairs a small rock instead of rejecting the whole route
+  ---
+  duration_ms: 23.4374
+  ...
+# Subtest: a blocking candidate is published early with an X, a safe prefix and an unfinished tail
+ok 36 - a blocking candidate is published early with an X, a safe prefix and an unfinished tail
+  ---
+  duration_ms: 90.0229
+  ...
+# Subtest: a collectible approach may stop beside its collider without requiring a path through the object
+ok 37 - a collectible approach may stop beside its collider without requiring a path through the object
+  ---
+  duration_ms: 1.9357
+  ...
+# Subtest: the main navigation planner retains the ladder-plus-hook action chain
+ok 38 - the main navigation planner retains the ladder-plus-hook action chain
+  ---
+  duration_ms: 52.9244
+  ...
+# Subtest: a sparse path over connected uneven ground is not rejected by its straight height interpolation
+ok 39 - a sparse path over connected uneven ground is not rejected by its straight height interpolation
+  ---
+  duration_ms: 0.4263
+  ...
+# Subtest: collectible approach points do not treat a closed door as the target collider
+ok 40 - collectible approach points do not treat a closed door as the target collider
+  ---
+  duration_ms: 1.1144
+  ...
+# Subtest: actual route Tracker receives Lua selections and sends guarded cancellation
+ok 41 - actual route Tracker receives Lua selections and sends guarded cancellation
+  ---
+  duration_ms: 1.9103
+  ...
+# Subtest: partial files are ignored and stopped trackers release their route
+ok 42 - partial files are ignored and stopped trackers release their route
+  ---
+  duration_ms: 0.4226
+  ...
+# Subtest: heartbeat is quiet, automatic hints do not take over a quest, and new sessions reconnect
+ok 43 - heartbeat is quiet, automatic hints do not take over a quest, and new sessions reconnect
+  ---
+  duration_ms: 0.2238
+  ...
+# Subtest: stale snapshots from an earlier game do not start navigation
+ok 44 - stale snapshots from an earlier game do not start navigation
+  ---
+  duration_ms: 0.1228
+  ...
+# Subtest: a heartbeat timeout releases a route and the same service can recover
+ok 45 - a heartbeat timeout releases a route and the same service can recover
+  ---
+  duration_ms: 1.0562
+  ...
+# Subtest: middle-click selection uses Lua hover coordinates and never loads the legacy JS tracker
+ok 46 - middle-click selection uses Lua hover coordinates and never loads the legacy JS tracker
+  ---
+  duration_ms: 0.4037
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 345.2359
+
+Exit code: 0
+
+python tests/run-lua-tests.py
+PASS: actual Lua 1.0.9 selection, cancellation, stale commands, hint mode, heartbeat, cleanup
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] TARGET_CONNECTED Map Collectible Tracker 1.0.9
+
+PASS: original tracker target/hover APIs, middle-click selection preserves height, stale hover rejected, require restored
+PASS: Lua hovered item -> JavaScript middle-click -> Lua manual target, height 2333 preserved
+PASS: Lua 1.0.9 -> real files -> JavaScript route Tracker -> cancel -> Lua 1.0.9
+
+Exit code: 0
+
+python native/build-native.py --ue4ss <existing UE4SS.dll> --test
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\UE4SS.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\UE4SS.exp
+QuestRouteCompat.cpp
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\adapter.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\adapter.exp
+native-tests.cpp
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\native-tests.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\native-tests.exp
+PASS: native ABI size, runtime SHA gate, mod filtering, collector SHA gate, host dispatch
+D:\coding\git_rep\pbz-navigation\Quest_Navigation_0.8.5\platform\steam\ue4ss\Mods\PBZQuestRouteCompat\dlls\main.dll
+
+Exit code: 0
+
+Package verification (tests/verify-package.py --manager-state <local manager mods.json>):
+PASS: complete archive, 382 exact file matches, no collector-owned paths
+PASS: archive, runtime, native adapter and documentation versions agree: 0.8.6-fork.1
+UE MM: Quest Navigation 0.8.5-local-fix5-navigation-only-full: 378/378 existing paths; recognized update=True
+PASS: all 88 collector source files match the manager's original hashes; zero overlap
+
+The collector source files and original world data were not modified. No game or manager files were written.
+Full archive stays local; no mod file was uploaded to Nexus.

@@ -13,13 +13,15 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='0.8.5-local-fix5';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='0.8.8-fork.1';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
-const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces)=>new R.Graph(data,faces),log);
+const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
 let dir='',logPath='',mousePath='',ink,threads,previous=null,lastPoll=0,lastCfg=0,lastBells=0,permitted=[],lastSolve=0,oldWorld='',oldLocks='',lockRows=[],menu=false,serial=0;
 let previousID=null,pending=null,epoch=0,listenerSource=null,listener=null,scout,lastScout=0,retry=0;
 let deviationSince=0,corridor=null;
+let nextClearance=0;
+let stanceEpoch=0,wasGrounded=null,lastFoot=null,lastMode=null,pendingMode=false,poseReady=true,groundedNow=true;
 const failedEdges=new Map();
 const provenJoins=new Map();
 const confirmations=new WeakMap();let mini=null;
@@ -96,7 +98,7 @@ function locks(){const ms=T.getWorldSubsystem(S.pawn,UE.MapSubsystem.StaticClass
   const keyed=!!UE.SwitchLockObject&&o.IsA(UE.SwitchLockObject.StaticClass())&&(o.NeedItems?.Num()||0)>0;
   out.push({id:guid,p,world:worldOf(area),icon:directional?'locked':keyed?'keylock':'mechanism',label:directional?'单向门':keyed?'需解锁物品':door?'门闩未开':'机关待解锁'});}
  const tag=out.map(x=>x.id).sort().join('|');if(tag!==oldLocks){oldLocks=tag;S.lockVersion++;}lockRows=out;return out;}
-function markLocks(trip){R.markLocks(trip,lockRows);}
+function markLocks(trip){R.markLocks(trip,lockRows,S.world?{p:S.world.feet(),world:S.level}:undefined);}
 function* proofJob(leg,lookout,context){
  const weak=leg.checks.filter(c=>c.kind===8||c.kind===9||lookout&&c.kind===5);
  if(leg.world!==S.level)return weak.length?weak[0].edge:null;
@@ -163,13 +165,14 @@ function* proofJob(leg,lookout,context){
  return null;
 }
 function reset(){planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
-function setTrip(trip,dest,start,why){
+function setTrip(trip,dest,start,why,requestContext){
  if(trip?.legs.some(l=>l.diagnostic))why+=' [blocked preview]';
  else if(trip?.legs.some(l=>l.partial))why+=' [partial]';else if(trip)why+=' [complete]';
  S.arrival.select(dest);deviationSince=0;corridor=null;
  if(S.targetKey!==dest.key){guardBudget=null;nativeRepairKey='';blockedTrip=null;}auditor.reset();guardedLeg=null;S.threadEnd=null;
  S.trip=trip;S.targetKey=dest.key;S.active=0;S.line=trip?.legs[0].points||[];S.version++;
- previous={key:dest.key,p:dest.p,site:start,level:S.level};lastSolve=Date.now();
+ const snapshot=requestContext||routeRequest(dest,start);
+ previous={key:dest.key,p:dest.p,site:start,level:S.level,revision:snapshot.revision,originRevision:snapshot.originRevision};lastSolve=Date.now();
  if(!trip){threads.hide();retry=Math.min(retry+1,4);log('route status',why+' '+dest.key+' from '+[start.x,start.y,start.z].map(Math.round).join(','));return;}
  retry=0;for(const leg of trip.legs)for(const c of leg.checks||[])if((c.kind===10||c.kind===11||c.kind===12)&&!c.verified)Obstacles.obstacle(leg,Obstacles.mark(leg,c,c.kind===11?'folded ladder':c.kind===12?'drop landing pending':'atlas seam',null,c.kind!==11));markLocks(trip);log('route '+S.version,why+' '+dest.key+' legs='+trip.legs.map(l=>l.world+':'+Math.round(l.meters)+'m').join(' + ')+' transfer='+(trip.transfer?trip.transfer.from.name+' -> '+trip.transfer.to.name:'walk')+' actions='+trip.legs.map(l=>(l.moves||[]).map(m=>m.kind).join('>')).filter(Boolean).join('/'));
 }
@@ -198,8 +201,9 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  const legs=new Map(),lookout=Passages.isLookout(S.level,start,dest);
  const actionRoute=function*(landing){
   if(context.actionsTried||a!==b)return null;context.actionsTried=true;
+  context.report?.('action search',{start,landing});
   if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,start,landing);
-  return yield* Passages.liveRouteJob(a,S.world,start,landing,nativeWalk,{goals:approachGoals,onClosed:(first,action)=>{
+  return yield* Passages.liveRouteJob(a,S.world,start,landing,nativeWalk,{goals:approachGoals,report:context.report,onClosed:(first,action)=>{
    const source={world:S.level,points:[...first.points,...action.path,action.exit,dest.p],walks:[],moves:[],checks:[],gates:[]};
    const failure={prefix:first.points,p:action.entry,segment:first.points.length-1,locked:true,why:'closed traversal',prefixLeg:first};
    Blocked.offer(context,Blocked.fromFailure(source,failure,dest.p),start,dest.p);
@@ -220,7 +224,10 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   let accepted=native&&(yield* proofJob(native,lookout,context))===null?native:null;
   if(accepted&&!accepted.partial&&!matchesGoal(accepted))accepted=null;
   let assisted=null;
-  if(!accepted&&Math.abs(start.z-landing.z)>200&&Math.abs(start.z-landing.z)>R.xy(start,landing)*.25){
+  const goalAction=(a.actors||[]).some(f=>f.path?.length>1&&f.kind!=='gate'&&f.kind!=='bell'&&
+   Math.abs(f.path[f.path.length-1][2]-f.path[0][2])>200&&
+   [f.path[f.path.length-1],...(f.both?[f.path[0]]:[])].some(q=>Math.abs(q[2]-landing.z)<400&&R.xy(toPoint(q),landing)<4000));
+  if(!accepted&&(Math.abs(start.z-landing.z)>200||goalAction)){
    const via=yield* actionRoute(landing);if(via){let valid=true;for(const leg of via.legs)if((yield* proofJob(leg,lookout,context))!==null){valid=false;break;}if(valid)assisted=via.legs[0];}}
   if(assisted&&(!accepted||accepted.partial||assisted.meters<accepted.meters))accepted=assisted;
   if(R.dist(start,landing)<=12000){const local=yield* LocalWalk.search(S.world,start,landing,{waypoints:seeds,...(approachGoals.length?{goals:approachGoals}:{}),
@@ -262,27 +269,51 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  return depth===0?Blocked.finish(context):null;
 }
 function routeRequest(dest,start=S.world.feet()){
- return {key:dest.key,world:dest.world,level:S.level,p:dest.p,start,revision:(graphs.get(S.level)?.passageRevision||0)+'/'+S.lockVersion};
+ return {key:dest.key,world:dest.world,level:S.level,p:dest.p,start,revision:(graphs.get(S.level)?.passageRevision||0)+'/'+S.lockVersion+'/'+atlas.revision,
+  originRevision:stanceEpoch+'/'+Math.round(S.world?.h||0)+','+Math.round(S.world?.r||0)};
+}
+function standingAt(p){
+ const mode=S.pawn?.CharacterMovement?.MovementMode,modes=UE.EMovementMode;
+ if(modes&&[modes.MOVE_Falling,modes.MOVE_Flying,modes.MOVE_Swimming].some(v=>v!==undefined&&v===mode))return false;
+ const floor=S.world.floorAt?.(p);return !S.world.floorAt||!!floor&&Math.abs(floor.z-p.z)<=65;
+}
+function originChanged(old,current,trip){
+ if(!planning.changed(old,current))return false;
+ if(!planning.same(old,current)||old.revision!==current.revision||old.originRevision!==current.originRevision)return true;
+ const leg=trip?.legs[S.active];
+ if(leg&&!leg.diagnostic&&leg.physicalVerified&&leg.world===S.level){
+  const near=R.nearestOnLine(current.start,leg.points);
+  if(near.p&&near.d<260&&Math.abs(near.p.z-current.start.z)<75)return false;
+ }
+ return true;
 }
 function solve(dest,reason){
  if(!S.world||!R.finite(dest.p)||!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread)return;
- const start=S.world.feet(),request=routeRequest(dest,start),force=!previous||reason==='blocked approach changed'||reason==='loaded frontier';
+ const start=S.world.feet(),request=routeRequest(dest,start),force=!previous||reason==='blocked approach changed'||reason==='loaded frontier'||reason==='player context changed';
  S.lookoutHint=Passages.isLookout(S.level,start,dest);
- const context={onDiagnostic:trip=>{
+ const context={report:(phase,detail)=>log('route search',phase+' '+JSON.stringify(detail)),onDiagnostic:trip=>{
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
-  if(current?.key===dest.key&&S.level===request.level&&R.dist(current.p,dest.p)<190)setTrip(trip,dest,start,reason+' blocked; searching detour');
+  if(current?.key===dest.key&&S.level===request.level&&R.dist(current.p,dest.p)<190){
+   const now=routeRequest(current);if(originChanged(request,now,trip)&&standingAt(now.start)&&poseReady)return;
+   setTrip(trip,dest,start,reason+' blocked; searching detour',request);
+  }
  }};
  const accepted=planning.request(request,()=>makePlan(dest,!!dest.bell,false,false,context),(trip,selected,metrics)=>{
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(!current||current.key!==selected.key||S.level!==selected.level||R.dist(current.p,selected.p)>190)return;
+  const now=routeRequest(current);
+  if(originChanged(selected,now,trip||S.trip)){
+   if(standingAt(now.start)&&poseReady)solve(current,'player context changed');
+   return;
+  }
   // A failed route is a result. It stays stopped until selection, region,
   // destination, door/ladder state, or substantial movement actually changes.
   if(!trip&&(metrics.timeout||metrics.paused||metrics.error))trip=Blocked.finish(context);
-  setTrip(trip,dest,start,reason+' async cpu='+metrics.cpu+'ms wall='+metrics.wall+'ms');
+  setTrip(trip,dest,start,reason+' async cpu='+metrics.cpu+'ms wall='+metrics.wall+'ms',selected);
   if(!trip&&planning.failed)planning.failed.revision=routeRequest(dest,start).revision;
  },force);
  if(accepted){
-  previous={key:dest.key,p:{...dest.p},site:{...start},level:S.level};lastSolve=Date.now();
+  previous={key:dest.key,p:{...dest.p},site:{...start},level:S.level,revision:request.revision,originRevision:request.originRevision};lastSolve=Date.now();
   if(!S.trip||S.targetKey!==dest.key){S.trip=null;S.line=[];S.targetKey=dest.key;S.version++;threads.hide();}
  }
 }
@@ -291,8 +322,16 @@ function observe(){
  const foot=S.world.feet(),ms=T.getWorldSubsystem(S.pawn,UE.MapSubsystem.StaticClass());
  S.level=W.norm(UE.GameplayStatics.GetCurrentLevelName(S.pawn,true));
  const locID=low(ms.GetMapIDByLocation(W.vec(foot)));S.area=locID&&locID!=='none'?locID:low(ms.GetCurrentMapID());
+ if(oldWorld!==S.level){wasGrounded=null;lastFoot=null;lastMode=null;pendingMode=false;stanceEpoch++;}
  if(oldWorld!==S.level){planning.clear('region changed');oldWorld=S.level;previous=null;lastBells=0;scout.snapshot=null;for(const k of Object.keys(forbidden))delete forbidden[k];for(const k of Object.keys(passed))delete passed[k];failedEdges.clear();provenJoins.clear();graph(S.level)?.clearLiveEdges();safe('locks',locks);}
  const activeGraph=graph(S.level);
+ groundedNow=standingAt(foot);
+ poseReady=groundedNow&&(!lastFoot||Math.abs(lastFoot.z-foot.z)<20);
+ const movement=S.pawn?.CharacterMovement,mode=String(movement?.MovementMode??'')+'/'+String(movement?.CustomMovementMode??'');
+ if(wasGrounded===false&&groundedNow){stanceEpoch++;pendingMode=false;}
+ else if(lastMode!==null&&mode!==lastMode)pendingMode=true;
+ else if(pendingMode&&poseReady){stanceEpoch++;pendingMode=false;}
+ wasGrounded=groundedNow;lastFoot={...foot};lastMode=mode;
  if(activeGraph&&safe('ladder state',()=>Passages.refreshLadders(activeGraph,S.pawn))){previous=null;provenJoins.clear();log('ladder state','ready='+activeGraph.openPassages.size+' revision='+activeGraph.passageRevision);}
  const now=Date.now();for(const [key,t] of failedEdges){if(t>now)continue;const [world,id]=key.split('/');forbidden[world]?.delete(Number(id));failedEdges.delete(key);}
  const n=narrative();bind(n);const id=questID(n),native=tracked(n);
@@ -306,6 +345,13 @@ function observe(){
  if(!target||!target.p){S.lookoutHint=false;if(planning.job?.request.key.startsWith('fog:'))return;noRoute();return;}
  S.arrival.select(target);
  if(S.arrival.completedTarget===target.key){noRoute();return;}
+ const currentRequest=routeRequest(target,foot);
+ if(planning.pending&&poseReady&&planning.stale(currentRequest)&&originChanged(planning.job.request,currentRequest,S.trip)){
+  solve(target,'player context changed');return;
+ }
+ if(previous&&!planning.pending&&poseReady&&(previous.revision!==currentRequest.revision||previous.originRevision!==currentRequest.originRevision)){
+  solve(target,'player context changed');return;
+ }
  if(!menu&&!planning.pending)safe('loaded passage anchors',()=>Passages.updateLoaded(graphs.get(S.level),S.world,S.pawn,nativeWalk));
  if(!previous||previous.key!==target.key||previous.level!==S.level||R.dist(previous.p,target.p)>190){solve(target,'selection');return;}
  if(S.trip){const tr=S.trip.transfer;
@@ -313,8 +359,8 @@ function observe(){
   if(S.arrival.isDone(S))return;
   // Also visit arrival when a route has collapsed to one point or its FX is off.
   const leg=S.trip.legs[S.active];
-  if(leg.diagnostic&&!planning.pending&&now-lastSolve>1500&&R.dist(foot,previous.site)>140){solve(target,'blocked approach changed');return;}
-  if(leg.scenePartial&&R.dist(foot,leg.points[leg.points.length-1])<600&&now-lastSolve>2000&&R.dist(foot,previous.site)>140){solve(target,'loaded frontier');return;}
+  if(leg.diagnostic&&!planning.pending&&poseReady&&now-lastSolve>1500&&R.dist(foot,previous.site)>140){solve(target,'blocked approach changed');return;}
+  if(leg.scenePartial&&poseReady&&R.dist(foot,leg.points[leg.points.length-1])<600&&now-lastSolve>2000&&R.dist(foot,previous.site)>140){solve(target,'loaded frontier');return;}
   // A physical arrival remains a gameplay state independently of what gets drawn.
   const end=S.line[S.line.length-1];
   if(end&&S.arrival.check(S,foot,end,now)){
@@ -330,12 +376,15 @@ function observe(){
    if(corridor.clear){deviationSince=0;return;}
   }
   if(!deviationSince)deviationSince=now;
-  if(now-deviationSince>650&&now-lastSolve>1000&&R.dist(foot,previous.site)>140)solve(target,'off route');
+  if(poseReady&&now-deviationSince>650&&now-lastSolve>1000&&R.dist(foot,previous.site)>140)solve(target,'off route');
  }else if(!planning.pending&&!planning.blocked(routeRequest(target,foot)))solve(target,'context changed');
 }
 function guardRoute(now){
  const leg=S.trip?.legs[S.active];if(!leg||leg.world!==S.level)return;
+ if(guardedLeg===leg&&now<nextClearance&&groundedNow&&!(leg.diagnostic&&!poseReady))return;
  const feet=S.world.feet();
+ if(!groundedNow||leg.diagnostic&&!poseReady){S.threadEnd=feet;return;}
+ nextClearance=now+34;
  // Never release all of a provider's untested line just because it omitted
  // walking metadata. Missing segments are audited as walking below.
  if(!planning.pending&&guardRetry&&now>=guardRetry){
@@ -344,10 +393,10 @@ function guardRoute(now){
  }
  if(guardedLeg!==leg){guardedLeg=leg;auditor.begin(Blocked.auditLeg(leg),S.world,feet,now);S.threadEnd=auditor.safe;lastGuardVersion='';}
  else if(!auditor.job&&(now-auditor.started>1800||R.dist(feet,auditor.origin)>140))auditor.begin(Blocked.auditLeg(leg),S.world,feet,now);
- const hadJob=!!auditor.job,result=auditor.pump();
+ const hadJob=!!auditor.job,result=auditor.pump(Date.now,12,1);
  S.threadEnd=auditor.safe||feet;
  if(hadJob&&result?.mark){
-  Obstacles.obstacle(leg,result.mark);
+  if(!leg.diagnostic||!result.mark.unknown)Obstacles.obstacle(leg,{...result.mark,transient:true});
   log('blocked '+result.mark.edge,(result.mark.unknown?'pending ':'collision ')+result.mark.reason+' @'+[result.mark.p.x,result.mark.p.y,result.mark.p.z].map(Math.round).join(','));
   if(!result.mark.unknown){
    const g=graph(leg.world),banned=forbidden[leg.world]||=new Set();let added=0;
@@ -370,7 +419,7 @@ function guardRoute(now){
   const stop=R.nearestOnLine(block.approach||block.p,leg.points),end=R.nearestOnLine(S.threadEnd||feet,leg.points);
   if(stop.i+stop.t>=near.i+near.t-.02&&stop.i+stop.t<end.i+end.t)S.threadEnd=stop.p;
  }
- const sig=(leg.obstacles||[]).map(r=>r.id+'/'+r.unknown).join('|')+';'+(leg.checks||[]).filter(c=>(c.kind===10||c.kind===12)&&c.verified).map(c=>c.edge).join(',');
+ const sig=(leg.obstacles||[]).map(r=>r.id+'/'+r.unknown+'/'+[r.p.x,r.p.y,r.p.z].map(v=>Math.round(v/25)).join(',')).join('|')+';'+(leg.checks||[]).filter(c=>(c.kind===10||c.kind===12)&&c.verified).map(c=>c.edge).join(',');
  if(sig!==lastGuardVersion){lastGuardVersion=sig;markLocks(S.trip);S.version++;}
 }
 
@@ -388,7 +437,7 @@ function tick(){settings();const sampleTime=Date.now();
  if(gameContext&&(sampleTime-lastPlayerCheck>=300||!W.alive(S.pawn))){lastPlayerCheck=sampleTime;const p=UE.GameplayStatics.GetPlayerCharacter(gameContext,0);
   if(W.alive(p)&&p!==S.pawn){unbind();reset();S.pawn=p;S.world=null;oldWorld='';lastPoll=0;log('player','rebound after travel');}}
  if(!W.alive(S.pawn)){planning.cancel('no player');threads.hide();return;}if(!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread){planning.cancel('disabled');threads.hide();return;}
- if(!S.world)S.world=new W.Ground(S.pawn);const now=Date.now();
+ if(!S.world)S.world=new W.Ground(S.pawn);const now=Date.now();safe('atlas slice',()=>atlas.pump());
  if(now-lastPoll>=105){lastPoll=now;safe('tracking',observe);safe('tracker',()=>{tracker?.poll();if(waitingTracker){const item=waitingTracker;waitingTracker=null;trackerChanged(item,'restore');}});const router=T.getlocalPlayerSubsystem(S.pawn,UE.PBZUIActionRouterBase.StaticClass());menu=!!router&&router.GetActiveInputMode()===UE.ECommonInputMode.Menu;}
  safe('planning slice',()=>planning.pump());
  if(S.trip)safe('route clearance',()=>guardRoute(now));
@@ -569,6 +618,7 @@ function onMap(h){
    }
    if(action?.type==='pin'&&state.picker){
     const at=action.uv,inside=at.x>=0&&at.y>=0&&at.x<=1&&at.y<=1,here=graph(S.level),feet=S.world.feet();
+    if(!here){ink.draw(h,S,project,name,allowed,show());return;}
     const from=Surface.anchors(here,feet).filter(x=>x.r<80&&Math.abs(x.dz)<75).map(x=>x.id);if(!from.length)from.push(here.node(feet));
     const near=here.reachable(from),bs=bellList();
     const transfer=bs.some(b=>b.world===here.name&&near.has(here.strong[here.node(toPoint(b.at))]));
@@ -588,7 +638,7 @@ function onMap(h){
  ink.draw(h,S,project,name,allowed,show());
 }
 function wrap(proto,k,fn){const orig=proto?.[k];if(typeof orig!=='function')return false;proto[k]=function(...args){const result=orig.apply(this,args);safe(k,()=>fn.apply(this,args));return result;};return true;}
-function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(globalThis.PBZModsMenu||=[]).push({id:'PBZQuestRoute',file:'PBZQuestRoute.txt',version:BUILD,title:t('Quest & Exploration Navigation','任务与探索导航'),description:t('Tracker icons: left-click or middle-click after hovering. Middle-click blank map to pin; hold 0.6 s to clear. Controller: A.','收集图标可左键追踪，悬停后也可中键导航；地图空白处中键落旗、长按 0.6 秒取消；手柄用 A'),settings:[
+function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(globalThis.PBZModsMenu||=[]).push({id:'PBZQuestRoute',file:'PBZQuestRoute.txt',version:BUILD,title:t('Quest & Exploration Navigation - Fork','任务与探索导航 - Fork'),description:t('Tracker 1.0.9: left-click, or hover then middle-click. Blank map: middle-click to pin; hold 0.6 s to cancel. Minimap route, icon size and accessory hints apply to the legacy JS tracker only.','收集 1.0.9：左键追踪，或悬停后中键导航。地图空白处中键落旗、长按 0.6 秒取消。小地图路线、图标大小及饰品提示仅适用于旧 JS 收集版。'),settings:[
  {key:'MapRoute',type:'toggle',default:true,label:t('Map route','地图路线')},{key:'MinimapRoute',type:'toggle',default:true,label:t('Minimap route','小地图路线')},{key:'WorldThread',type:'toggle',default:true,label:t('Guiding thread','场景引路线')},
  {key:'LargeItemIcons',type:'toggle',default:true,label:t('Large unframed item icons','放大物品图标并移除黑底')},{key:'AutoAccessory',type:'toggle',default:true,label:t('Nearest accessory hint','自动提示最近饰品')},
  {key:'FogBellSense',type:'toggle',default:true,label:t('Sense a bell in fog','迷雾中洞照寻铃')},
@@ -611,4 +661,4 @@ exports.install=function(){if(globalThis.__PBZQuestRouteInstalled)return;dir=UE.
   paintMinimap:(view,player,rotation)=>safe('minimap route',()=>mini.draw(view,player,rotation,S,show())),
   removeMinimap:host=>mini.remove(host)
  };
- scout=new Scout(tables,log);const gi=P.argv.getByName('GameInstance');gameContext=gi;const existing=UE.GameplayStatics.GetPlayerCharacter(gi,0);if(W.alive(existing)){S.pawn=existing;S.world=null;}menuOptions();settings(true);globalThis.__PBZQuestRouteInstalled=true;setInterval(()=>safe('tick',tick),8);log('loaded',BUILD+' built-in atlases='+tables.worlds.length);};
+ scout=new Scout(tables,log);const gi=P.argv.getByName('GameInstance');gameContext=gi;const existing=UE.GameplayStatics.GetPlayerCharacter(gi,0);if(W.alive(existing)){S.pawn=existing;S.world=null;}menuOptions();settings(true);globalThis.__PBZQuestRouteInstalled=true;setInterval(()=>safe('tick',tick),16);log('loaded',BUILD+' built-in atlases='+tables.worlds.length);};
