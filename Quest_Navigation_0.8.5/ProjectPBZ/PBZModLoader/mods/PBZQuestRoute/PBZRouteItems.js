@@ -86,6 +86,32 @@ exports.findRow = findRow;
 exports.pickItem = pickItem;
 exports.mapIntent = mapIntent;
 exports.readItem = readItem;
+// A bell's actor location is the destination. Road connectivity must never
+// move an icon selection to another component or another floor.
+function pickBell(host, uv, width, height, bells, project, active=[]) {
+    if (!uv || !(width>0&&height>0)) return null;
+    const byID=new Map(bells.map(b=>[lower(b.id),b]));
+    for (const hit of candidates(host,uv,width,height)) {
+        const b=byID.get(lower(hit.id));
+        if (b) {
+            const pos=UE.WidgetLayoutLibrary.SlotAsCanvasSlot(hit.row.widget).GetPosition();
+            return {bell:b,p:{x:b.at[0],y:b.at[1],z:b.at[2]},uv:{x:Number(pos.X)/width,y:Number(pos.Y)/height},distance:hit.distance,source:'bell icon'};
+        }
+    }
+    // Some map versions keep their bell widgets outside focusItemMap. Only
+    // already activated bells may use this fallback; hidden bells stay hidden.
+    let best=null;
+    for (const b of active) {
+        if (!byID.has(lower(b.id))) continue;
+        if (findRow(host,b.id)) continue;
+        const p={x:b.at[0],y:b.at[1],z:b.at[2]},at=project(p,b.area);
+        if (!at || !Number.isFinite(at.x+at.y)) continue;
+        const distance=Math.hypot((uv.x-at.x)*width,(uv.y-at.y)*height);
+        if (distance<=22 && (!best || distance<best.distance)) best={bell:b,p,uv:at,distance,source:'active bell'};
+    }
+    return best;
+}
+exports.pickBell=pickBell;
 // Lua markers do not carry JS properties on their widgets. The navigation's
 // bridge publishes the hovered record; require a real projected icon hit.
 function pickTrackerItem(raw,uv,width,height,project){

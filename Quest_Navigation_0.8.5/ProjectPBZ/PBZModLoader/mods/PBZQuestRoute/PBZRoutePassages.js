@@ -173,6 +173,7 @@ function placedCurve(actor,kind){
   return result;
 }
 function liveCache(g,world){
+  world=world.sourceWorld||world;
   let cache=liveWorlds.get(world);
   if(!cache){
     const byClass=new Map(classCatalog.map(c=>[c.classPath,{definition:c,items:new Map()}]));
@@ -184,30 +185,34 @@ function liveCache(g,world){
   }
   return cache;
 }
-function* refreshLoadedJob(g,world,pawn,start,goal){
+function* refreshLoadedJob(g,world,pawn,start,goal,options={}){
  if(!g||!world||!pawn||!UE.Class||!UE.GameplayStatics?.GetAllActorsOfClass)return;
  const cache=liveCache(g,world),now=Date.now();
  const rank=row=>Math.min(50000,...[...row[1].items.values()].map(a=>{
   const p=a.path?.[0]||a.at;if(!p)return 50000;const q={x:p[0],y:p[1],z:p[2]};return Math.min(R.dist(start,q),R.dist(goal,q));}));
- const classes=cache.classes.slice().sort((a,b)=>rank(a)-rank(b)).slice(0,12);
+ const classes=cache.classes.slice().sort((a,b)=>rank(a)-rank(b));
+ const summary={resident:0,nearby:0,paths:0,kinds:{},missing:[]};
  const P=require('puerts');
  for(const [asset,{definition,items}] of classes){
   let cls=classObjects.get(asset);
   if(!cls){try{cls=UE.Class.Find?.(asset);}catch(_){}
    if(cls)classObjects.set(asset,cls);yield;}
   if(!cls)continue;
+  summary.resident++;
   const out=P.$ref(undefined);UE.GameplayStatics.GetAllActorsOfClass(pawn,cls,out);yield;
   const actors=P.$unref(out);
   for(let i=0;i<Math.min(256,actors?.Num()||0);i++){
    const actor=actors.Get(i);if(!W.alive(actor))continue;
    const guid=String(actor.GetName()),key=guid.toLowerCase(),location=W.plain(actor.K2_GetActorLocation());yield;
    if(!R.finite(location)||Math.min(R.dist(start,location),R.dist(goal,location))>14000)continue;
+   summary.nearby++;summary.kinds[definition.kind]=(summary.kinds[definition.kind]||0)+1;
    let item=items.get(key)||cache.known.get(key)||g.observedPassages.get(key);
-   const cached=cache.paths.get(item?.guid||guid);if(cached&&now-cached.at<5000)continue;
+   const cached=cache.paths.get(item?.guid||guid);if(cached&&now-cached.at<5000){summary.paths++;continue;}
    let path=placedCurve(actor,definition.kind);
    if(!path&&item?.local){const transform=actor.GetTransform?.()||actor.K2_GetActorTransform?.();
     if(transform)path=item.local.map(q=>W.plain(UE.KismetMathLibrary.TransformLocation(transform,new UE.Vector(...q))));}
-   if(!path)continue;
+   if(!path){if(summary.missing.length<4)summary.missing.push({guid,kind:definition.kind});continue;}
+   summary.paths++;
    if(!item){
     let folded=!!definition.fold;
     if(definition.kind==='ladder')try{folded||=W.alive(actor.HookTimelineComponent)||W.alive(actor.LadderTimelineComponent);}catch(_){}
@@ -226,6 +231,7 @@ function* refreshLoadedJob(g,world,pawn,start,goal){
    }
   }
  }
+ options.report?.('loaded actions',summary);
 }
 function updateLoaded(g,world,pawn,nativeWalk) {
   if(!g||!world||!pawn||!UE.Class?.Find||!UE.GameplayStatics?.GetAllActorsOfClass)return;
@@ -264,7 +270,8 @@ function updateLoaded(g,world,pawn,nativeWalk) {
      if(g.observedPassages.size>=240)continue;g.observedPassages.set(key,item);
     }
     cache.paths.set(item.guid,{path,at:now});
-    if(nativeWalk)LiveLinks.attach(g,item,path,p=>landing(world,p,item.kind),(a,b)=>checkedWalk(world,a,b,nativeWalk));
+    // Attachment runs in liveRouteJob after standing-pad and action checks;
+    // a timer discovery must not install an unchecked movement arc.
   }
 }
 function isLookout(world,start,dest) {
@@ -277,10 +284,11 @@ function isLookout(world,start,dest) {
 function liveRoute(...args){const task=liveRouteJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
 function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
   if(R.dist(start,goal)>19000)return null;
+  const clock=options.clock||Date.now;
   const candidates=[];
   let work=0;for(const feature of [...g.actors,...g.observedPassages.values()]) {if((++work&7)===0)yield;
     if(!feature.path)continue;
-    const live=liveWorlds.get(world)?.paths.get(feature.guid);
+    const live=liveWorlds.get(world.sourceWorld||world)?.paths.get(feature.guid);
     if(feature.conditional&&feature.local&&!live)continue;
     const path=live&&Date.now()-live.at<30000?live.path:feature.path.map(v=>({x:v[0],y:v[1],z:v[2]}));
     if(path.length<2||!path.every(R.finite))continue;
@@ -289,7 +297,12 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
     const score=Math.min(forward,backward);if(score<26000)candidates.push({...feature,runtimePath:path,score});
   }
   options.report?.('action candidates',{count:candidates.length,start,goal});
-  return yield* Transitions.route({name:g.name,world,start,goal,goals:options.goals,
+  return yield* Transitions.route({name:g.name,world,start,goal,goals:options.goals,clock,deadline:options.deadline,maxConnectors:options.maxConnectors,
+   allowPartial:options.allowPartial,onPartial:options.onPartial,
+   onAction:function*(action,settings){
+    const linked=yield* LiveLinks.attachCheckedJob(g,action,(a,b)=>checkedWalkJob(world,a,b,nativeWalk),{clock,deadline:settings.deadline});
+    if(linked)options.report?.('action attached',{guid:action.feature.guid,kind:action.feature.kind,entry:action.entry,exit:action.exit});
+   },
    features:candidates.sort((a,b)=>a.score-b.score),canTraverse:f=>g.canTraverse(f),onClosed:options.onClosed,report:options.report,
    landing:function*(feature,p,side){
     const direct=landing(world,p,feature.kind);yield;if(direct&&!world.hit?.(direct,direct,true))return direct;
@@ -306,7 +319,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
     if(points)return {points,meters:R.extent(points)/100};
     if(!settings.local||R.dist(a,b)>4500)return null;
     const vertical=Math.abs(a.z-b.z)>200;
-    const local=yield* Local.search(world,a,b,{maxMs:Math.max(1,Math.min(vertical?2400:1200,settings.deadline-Date.now())),
+    const local=yield* Local.search(world,a,b,{clock,maxMs:Math.max(1,Math.min(vertical?2400:1200,settings.deadline-clock())),
      maxNodes:vertical?1800:1000,waypoints:samples.waypoints});
     return local;
    }});

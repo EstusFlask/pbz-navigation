@@ -5,14 +5,24 @@ function alive(o){try{return !!o&&UE.KismetSystemLibrary.IsValid(o);}catch(_){re
 const norm=s=>String(s||'').toLowerCase().split('/').pop().split('.').pop().replace(/^uedpie_\d+_/,'');
 function supportHit(w,a,b){
  const hit=w.hit(a,b);
- if(!hit||hit.penetrating||hit.nz>=w.normal-.025)return hit;
+ if(hit&&(hit.penetrating||hit.nz>=w.normal-.025))return hit;
  // A centre ray on a rock's side is not the character's whole floor contact.
  // Sample inside the capsule footprint without weakening its body sweep.
- const d=Math.max(8,Math.min(22,(Number(w.r)||35)*.45));let best=null;
+ const d=Math.max(8,Math.min(22,(Number(w.r)||35)*.45)),samples=[];let best=null;
  for(const [x,y] of [[d,0],[-d,0],[0,d],[0,-d]]){
   const q=w.hit({x:a.x+x,y:a.y+y,z:a.z},{x:b.x+x,y:b.y+y,z:b.z});
   const reference=(a.z+b.z)/2;
-  if(q&&!q.penetrating&&q.nz>=w.normal-.025&&(!best||Math.abs(q.point.z-reference)<Math.abs(best.point.z-reference)))best=q;
+  const valid=q&&!q.penetrating&&q.nz>=w.normal-.025;
+  samples.push(valid?q:null);
+  if(valid&&(!best||Math.abs(q.point.z-reference)<Math.abs(best.point.z-reference)))best=q;
+ }
+ // Missing centre support needs ground on opposite sides of the capsule.
+ // A single nearby bank must not turn a pit or a platform edge into a walk.
+ if(!hit){
+  const pairs=[[samples[0],samples[1]],[samples[2],samples[3]]].filter(([a,b])=>a&&b&&Math.abs(a.point.z-b.point.z)<=12);
+  if(!pairs.length)return null;
+  const pair=pairs.sort((x,y)=>Math.abs((x[0].point.z+x[1].point.z)/2-(a.z+b.z)/2)-Math.abs((y[0].point.z+y[1].point.z)/2-(a.z+b.z)/2))[0];
+  best={...pair[0],point:{...pair[0].point,z:(pair[0].point.z+pair[1].point.z)/2}};
  }
  return best?{...best,point:{x:b.x,y:b.y,z:best.point.z}}:hit;
 }
@@ -55,22 +65,38 @@ class Ground{
  }
  step(a,b,expected){
   const n=Math.max(1,Math.ceil(R.xy(a,b)/35)),points=[];let previous=a;
+  const probe=(from,q,depth=0)=>{
+   const run=R.xy(from,q),reach=this.rise+run*this.slope+7;
+   const hit=supportHit(this,{x:q.x,y:q.y,z:from.z+reach},{x:q.x,y:q.y,z:from.z-reach-8});
+   let failure;
+   if(!hit)failure={why:'no supporting floor'};
+   else if(hit.penetrating||hit.nz<this.normal-.025)failure={hit:hit.point,why:'steep surface'};
+   else if(Math.abs(hit.point.z-from.z)>reach+1)failure={why:'different floor'};
+   else if(hit.nz>.98&&Math.abs(hit.point.z-from.z)>this.rise+2)failure={hit:hit.point,why:'ledge exceeds step height'};
+   else {
+    const wall=this.hit(from,hit.point,true);
+    if(wall)failure={hit:wall.point,normal:wall.normal,owners:wall.owners,why:'blocked body clearance'};
+    else return {p:hit.point,points:[hit.point]};
+   }
+   // Several individually legal risers can lie inside one 35 cm sample.
+   // Refine only rejected edges; keep every smaller body sweep and limit work.
+   if(depth<3&&run>8){
+    const first=probe(from,R.lerp(from,q,.5),depth+1);
+    if(first.p){const last=probe(first.p,q,depth+1);if(last.p)return {p:last.p,points:[...first.points,...last.points]};}
+   }
+   return failure;
+  };
   for(let i=1;i<=n;i++){
-   const q=R.lerp(a,b,i/n),run=R.xy(previous,q),reach=this.rise+run*this.slope+7;
-   const hit=supportHit(this,{x:q.x,y:q.y,z:previous.z+reach},{x:q.x,y:q.y,z:previous.z-reach-8});
-   if(!hit)return {why:'no supporting floor'};if(hit.penetrating||hit.nz<this.normal-.025)return {hit:hit.point,why:'steep surface'};
-   const p=hit.point,dz=p.z-previous.z;if(Math.abs(dz)>reach+1)return {why:'different floor'};
-   if(hit.nz>.98&&Math.abs(dz)>this.rise+2)return {hit:p,why:'ledge exceeds step height'};
+   const q=R.lerp(a,b,i/n),row=probe(previous,q);if(!row.p)return row;
+   const p=row.p;
    if(expected&&Math.abs(p.z-q.z)>200)return {why:'stacked floor mismatch'};
-   const wall=this.hit(previous,p,true);if(wall)return {hit:wall.point,normal:wall.normal,why:'blocked body clearance'};
-   points.push(p);previous=p;
+   points.push(...row.points);previous=p;
   }
   return {p:previous,points};
  }
  anchor(){const feet=this.feet(),mesh=this.pawn.Mesh;
-  // Alternating calf animation is not a stable attachment height. Use capsule
-  // proportions at knee level; retain only a little lateral body movement.
-  let joint=feet;const height=R.clamp(this.h*.5,43,49);
+  // Keep guidance at crouched-head height, independent of stance animation.
+  let joint=feet;const height=105;
   if(mesh&&typeof mesh.DoesSocketExist==='function'){
    if(this.bone===undefined)this.bone=['pelvis','Pelvis','Hips','hip'].find(k=>mesh.DoesSocketExist(k))||'';
    if(this.bone){const p=plain(mesh.GetSocketLocation(this.bone));if(R.finite(p)&&R.xy(p,feet)<90)joint=p;}

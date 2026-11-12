@@ -26,4 +26,5 @@ with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.write(streamed/name,scripts+'PBZRouteStreaming/'+name)
     archive.write(root/'docs/USER-GUIDE.md', 'INSTALL-README.md')
     archive.write(root/'release/CHANGELOG.md', 'CHANGELOG.md')
+    archive.write(root/'docs/BELL-ROUTE-AUDIT.md', 'BELL-ROUTE-AUDIT.md')
 print(f'{output} ({output.stat().st_size:,} bytes)', flush=True)

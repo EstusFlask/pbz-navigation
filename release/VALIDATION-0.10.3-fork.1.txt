@@ -1,0 +1,45 @@
+Quest and Exploration Navigation - Fork 0.10.3-fork.1
+Date: 2026-11-12
+Baseline: delivered 0.10.2-fork.1; prior ZIPs and validation records retained.
+
+FIELD EVIDENCE: 0.10.2 failures, not successful runs of this candidate.
+Read-only snapshots: build/field-20261112-0213/loader.log and route-log.txt.
+Cemetery start remains disconnected in original data; early scene search ended without exhausting the overall wall budget. Cave failures repeatedly selected measured blocked edges; later candidates descended/backtracked after the real upward climbs.
+Corrected investigation: the original actor-edge field is one-based. Both cave ascents already have original type-7 upward edges (including 766484 and 766481). Original cave-entry to second-exit routing is about 23.91 m and uses both ascents. Selecting the bell produces a different corridor; a complete grapple connection has not been confirmed.
+See docs/BELL-ROUTE-AUDIT.md for coordinates, timing and limitations.
+
+RED -> GREEN
+Command: node --require ./build/field-20261112-0213/replay-baseline.cjs --test --test-reporter=spec --test-name-pattern="measured atlas wall|known wall removes|local search still publishes|checked scene prefix can|validated two-climb|wall at the first portal|retries newly attached|small bell platform|scene search reports|pending atlas backtrack|prepared actions immediately|real cave ascent metadata|validated climb cannot" tests/planning.test.cjs tests/passages.test.cjs
+The replay reads 7 unchanged production files extracted from the delivered 0.10.2 ZIP. It does not modify the working tree or installed game.
+Output: build/field-20261112-0213/red-baseline-0.10.2.txt.
+13 selected: 12 fail, 1 passes (wall-attachment guard); 61 other tests filtered.
+Coverage: cancellation-safe measured exclusions; portal edge attribution; known-blocked atlas tails; missing distant floor; scene-preview priority; partial two-climb chains; action attachment and immediate retry; a narrow broad-grid start; search diagnostics; preserving a closer checked climb frontier over a pending backtrack.
+The real-data cave fixture explicitly asserts that original upward references exist. Attachment fixtures simulate standing pads and collision; no gameplay completion is inferred.
+
+PASS: 132 JavaScript regressions; zero failures/skips.
+Command: node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs
+Output: build/field-20261112-0213/js-tests-0.10.3.txt.
+
+PASS: original collector 1.0.9 real Lua 5.4 selections, hover, cancellation and file-JS-Lua round trips.
+Command: py -3.12 tests/run-lua-tests.py
+Output: build/field-20261112-0213/lua-0.10.3.txt.
+PASS: rebuilt native adapter 0.10.3-fork.1; ABI, runtime/collector hash gates, filtering and dispatch tests.
+Command: python native/build-native.py --ue4ss D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll --test
+Output: build/field-20261112-0213/native-0.10.3.txt.
+
+PASS: complete ZIP, 1336 exact source matches, synchronized versions, ZIP integrity; 951 streamed modules and 291 exact legacy chunk values.
+Commands: python tests/build-patch.py
+          python tests/verify-package.py --manager-state D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json
+Outputs: build/field-20261112-0213/package-build-0.10.3.txt and package-verify-0.10.3.txt.
+PASS: UE Mod Manager recognizes navigation as an update (1331/1331 paths); zero overlap with 90 installed collector paths.
+PASS: git diff --check; original collector/world/face/chunk source directories have no Git diff.
+PASS: manager-state SHA256 unchanged before/after packaging.
+No game installation, manager write or remote publication performed.
+Installed collector 1.0.12 remains outside the adapter pinned to original 1.0.9; its target sync is not certified.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.10.3-fork.1.zip
+Bytes: 119661469
+SHA256: 8d4a3ccc6fa795ba53f9c093bcffdd4778afe11c8efce2491ec862eb1f3fc156
+
+LIMITS
+Neither requested route has completed in a live game using this candidate. The final cave grapple, cemetery start geometry/descent and the full uphill detour remain unverified. Local scene searches remain bounded by streamed geometry, nodes, active execution and a 30-second wall limit. Unsupported drops above 310 cm are not silently allowed. Original world data is retained. No full-map success-rate, global-shortest-path or FPS claim.

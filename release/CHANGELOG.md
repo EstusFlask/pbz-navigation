@@ -1,3 +1,48 @@
+# 0.10.3-fork.1 — persistent wall exclusions and checked action frontiers
+
+- Remember measured collision edges before yielding into repairs, so movement cancellation cannot discard them. Preserve individual portal edge IDs through corridor smoothing instead of attributing every failure to the final edge.
+- Clip known-blocked atlas tails as well as failed native/direct chords. A checked scene prefix can replace a zero-progress atlas preview.
+- Retain a physically checked multi-action frontier when the final connector is unavailable. A farther pending atlas backtrack cannot replace a closer checked climb chain; complete checked alternatives remain eligible.
+- Attach prepared, direction-checked action pads using verified walking connectors and retry the atlas immediately. Timer discovery only caches actors, avoiding insertion of unchecked action approaches.
+- Keep local start searches when the distant goal floor is unloaded, publish checked progress at termination, and refine wholly trapped broad-grid rows to 70/35 cm. Add bounded resident-action extraction and search termination/rejection diagnostics.
+- Correct the cave investigation: the original one-based actor references already contain upward arcs for both cave ascents. The original route to the second ascent exit is about 23.91 m with both climbs; selecting the bell yields a different downhill/backtracking candidate. The full grapple connection remains unconfirmed.
+- 132 JavaScript regressions pass. Replay of the delivered 0.10.2 sources fails 12 of the 13 new cases; the remaining case guards against attaching through a wall. Real atlas data is used alongside simulated physics/loading. Neither complete reported route is certified by a successful live-game run. Retain the raised blue strand, original datasets, prior packages and collector boundary.
+
+中文：修复取消修补时丢失墙体、走廊封错边、已知穿墙尾段，以及已验攀爬前沿被更远的回头候选覆盖；已验动作及时接图，远端未加载也继续搜索起点，粗网格完全受困时细分出口并补充诊断。原表确有两次向上攀爬，之前“完全没接图”的判断不成立；完整钩索链与衣冠冢全程仍待游戏验证。132 项本地回归通过，不能据模拟场景宣称两条路线已走通。
+
+# 0.10.2-fork.1 — cave candidates, checked detours and a raised blue strand
+
+- Inspect authored same-world corridors before expensive failed native repairs. Retain pending atlas geometry and traversal actions; hide unchecked native/direct tails instead of drawing a wall-crossing chord.
+- Distinguish unloaded/unconfirmed passages from measured obstructions: mechanism hints for pending checks, X for physical barriers, and lock/item hints for known locks. Keep action landing failures at the last safe prefix.
+- Repair failed walking segments without discarding surrounding climbs/grapples. Try resident traversal connectors within the repair deadline and recheck the resulting route. Preserve known lock constraints.
+- Extend bounded long scene searches to 200 m, publish checked prefixes during search, retain progress along verified slopes, and score diagnostic progress by checked route length so necessary detours can move away from the destination. Permit short downward drops only after landing and descent clearance checks; no reverse climbing is inferred.
+- Change the world strand to blue at about 105 cm above ground through its endpoint. Collision clipping follows the actual raised shape; retain topology color caching.
+- 119 JavaScript regressions pass. New tests include original 198.8 m cave data with simulated scene limits, simulated uphill detours, short drops, action preservation/repair, planner progress and raised rendering. Physics fixtures are simulated; neither reported route has completed in a live game with this candidate. Preserve all previous releases and original world data.
+
+中文：根据 0.10.1 现场失败修补候选顺序、直线穿墙尾段、动作保留和待确认误标，加入经过检查的短跳落与长途实景绕行，保留沿已验坡道/山洞的进度。蓝线离地约 105 厘米。119 项 JS 回归通过；两条路线仍需游戏复测，不能据模拟用例宣称完整走通。
+
+# 0.10.1-fork.1 — preserve selected bells and reject failed traversal edges
+
+- Diagnose the reported Cemetery to Mo Jizi's Cenotaph failure from the complete retained loader session: one 38-pixel road snap selected [24160,67840,6769], about 101 m from Bell_YXZR_004. The goal remained wrong even when the player reached about 2.2 m from the bell.
+- Select visible bell icons with their own ID, location and height for mouse/gamepad input. Use projected activated bells only when their focus row is absent; preserve hidden icon and collectible priority. Approach the bell within a checked interaction distance.
+- Select the nearest road without connectivity changing the target, and cap ordinary map-pin snapping at 13 pixels. A distant road no longer becomes an unrelated click's navigation destination.
+- Preserve authored traversal edge IDs and return them on failed landings, allowing another atlas candidate instead of repeatedly choosing the same failed action. Validate terminal action landings without loosening physical checks.
+- 108 JavaScript regressions include production map-click paths with real reported coordinates and simulated projection, gamepad repeats, hidden bells, disconnected pins, alternative traversal selection and terminal landing support. Both complete reported routes still require fresh in-game testing. Prior archives and validation records are retained.
+
+中文：现场日志证实衣冠冢目标从一开始就吸附到了约 101 米外，走近铃铛也没有改变。修复铃铛选择与无上限的道路吸附，保留目标坐标/高度；动作落点失败保留边编号，允许搜索切换其他候选。108 项本地回归通过，新增场景和地图投影仍为模拟，不能宣称两条实景路线已走通。
+
+# 0.10.0-fork.1 — terrain, traversal chains and endpoint connectivity
+
+- Refine failed ground samples across dense legal stair treads; require opposite capsule support across narrow cracks. Keep wide pits, high ledges and body collisions blocked.
+- Scan all 17 resident traversal classes, including ziplines; defer physical action connectors in cost order so crowded starts do not exhaust the budget before a second action. Consider interactions for same-height obstructions and keep atlas attempts after partial native results.
+- Charge local, traversal and repair budgets for active execution rather than frame suspension. Preserve per-frame limits, slow-step protection and the overall 30-second wall-time limit.
+- Try collision-checked short walking repairs at disconnected endpoints of long atlas trips. Add only the measured direction and retain physical walking audits. Do not invent a connection from proximity alone.
+- Read typed locks before GUID-name filtering, enumerate available map layers, preserve required-item hints, and share known lock constraints with planning and live audits. Inventory ownership is not queried; position constraints remain approximate.
+- Audit 462 directed Lujiacun bell pairs against original data: 100 candidates and 362 disconnected-component pairs. Preserve the reported 198.8 m cave-detour candidate; its complete climbing/grapple chain and the cemetery-to-tomb route remain unverified in game. Add targeted rejection/budget logs.
+- 100 JavaScript regressions cover simulated terrain, production scheduling/planning, interaction chains, locks and real atlas candidate discovery. Retain the single-route UI, original atlas bytes and collector files. Use a new feature version because the historical 0.9.0 experiment was withdrawn; preserve its archive and records.
+
+中文：修补密集台阶、窄裂缝、滑索漏扫、多段动作搜索与分帧预算；长途端点只在实测可走后补接，已知门锁参与规划并保留钥匙/物品提示。保留用户确认有必要的山洞绕行，不按直线距离删路线。两条指定铃铛路线尚未在游戏复测；462 组合审计不是新版通行成功率。原路网和收集 Mod 保持原样，界面仍为单路线。
+
 # 0.8.8-fork.1 — single-route rollback, fewer data files and equivalent rendering optimizations
 
 - Roll back the multi-route experiment to delivered 0.8.7-fork.1 routing and map behavior, including checked prefixes, X markers and unfinished dashed tails. Remove candidate collection, background alternative searches and the experimental runtime module.

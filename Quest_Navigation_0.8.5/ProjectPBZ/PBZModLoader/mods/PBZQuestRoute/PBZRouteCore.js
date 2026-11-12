@@ -143,17 +143,17 @@ class Graph{
   const arcs=yield* this.pathJob(startNode,endNode,banned);if(!arcs)return null;
   const pp=[start],checks=[],gates=[],moves=[],walks=[];let ports=[],here=start,lastEdge=-1;
   const walk=(p,edge=lastEdge)=>{const a=pp[pp.length-1],from=pp.length-1;append(pp,p);if(pp.length>from+1)walks.push({a,b:p,edge,from,to:pp.length-1});};
-  const flush=function*(to){let count=0;for(const p of yield* followPortalsJob(here,ports,to)){walk(p);if((++count&127)===0)yield;}ports=[];here=to;};
+  const flush=function*(to){let count=0;for(const row of yield* followPortalsJob(here,ports,to,true)){walk(row.p,row.edge??lastEdge);if((++count&127)===0)yield;}ports=[];here=to;};
   let converted=0;for(const a of arcs){if((++converted&31)===0)yield;const k=a<0?~a:a;lastEdge=k;
    if(k>=this.e.length/6){
     const link=this.liveEdges[k-this.e.length/6];yield* flush(link.points[0]);const from=pp.length-1,indices=[];
-    for(let j=0;j<link.points.length;j++){const p=link.points[j];if(link.move.seam||j<=link.move.walkIn||j>link.move.walkOut)walk(p,k);else append(pp,p);indices.push(pp.length-1);}
+    for(let j=0;j<link.points.length;j++){const p=link.points[j];if(link.move.walk||link.move.seam||j<=link.move.walkIn||j>link.move.walkOut)walk(p,k);else append(pp,p);indices.push(pp.length-1);}
     here=link.points[link.points.length-1];
     if(link.move.seam)checks.push({edge:k,kind:10,a:link.points[0],b:here,from,to:pp.length-1});
-    else{if(link.move.drop)checks.push({edge:k,kind:12,a:link.move.p,b:link.move.end,from:indices[link.move.walkIn],to:indices[link.move.walkOut]});moves.push({...link.move,edge:k,from,to:pp.length-1,fold:link.move.fold&&!this.openPassages.has(link.move.guid.toLowerCase())});if(!this.canTraverse(link.move))checks.push({edge:k,kind:11,a:link.move.p||link.points[0],b:link.move.end||here,from,to:pp.length-1});}continue;
+    else if(!link.move.walk){if(link.move.drop)checks.push({edge:k,kind:12,a:link.move.p,b:link.move.end,from:indices[link.move.walkIn],to:indices[link.move.walkOut]});moves.push({...link.move,edge:k,from:indices[link.move.walkIn]??from,to:indices[link.move.walkOut]??pp.length-1,fold:link.move.fold&&!this.openPassages.has(link.move.guid.toLowerCase())});if(!this.canTraverse(link.move))checks.push({edge:k,kind:11,a:link.move.p||link.points[0],b:link.move.end||here,from,to:pp.length-1});}continue;
    }
    const ix=k*6,type=this.e[ix+2],to=this.pt(this.e[ix+(a<0?0:1)]);
-   if(type===0){ports.push([point(this.v,this.e[ix+3]),point(this.v,this.e[ix+4])]);continue;}
+   if(type===0){ports.push([point(this.v,this.e[ix+3]),point(this.v,this.e[ix+4]),k]);continue;}
    if(type===1){yield* flush(this.pt(this.e[ix+(a<0?1:0)]));walk(to,k);here=to;continue;}
    if(type===7||type===8){
     const entry=point(this.v,this.e[ix+(a<0?4:3)]),exit=point(this.v,this.e[ix+(a<0?3:4)]);yield* flush(entry);
@@ -161,7 +161,7 @@ class Graph{
     else{
      const actor=this.actors[this.e[ix+5]-1],path=a<0?actor.path.slice().reverse():actor.path,from=pp.length-1;
      for(let j=0;j<path.length;j++){const p=arr(path[j]);if(actor.kind==='lift'&&j>0)p.liftTravel=true;append(pp,p);}
-     moves.push({kind:actor.kind,p:entry,end:exit,guid:actor.guid,fold:actor.fold&&!this.openPassages.has(actor.guid.toLowerCase()),scripted:actor.kind==='lift'&&!actor.both,from,to:pp.length-1});
+     moves.push({kind:actor.kind,edge:k,p:entry,end:exit,guid:actor.guid,fold:actor.fold&&!this.openPassages.has(actor.guid.toLowerCase()),scripted:actor.kind==='lift'&&!actor.both,from,to:pp.length-1});
      if(!this.canTraverse(actor))checks.push({edge:k,kind:11,a:entry,b:exit,from,to:pp.length-1});
      const first=arr(path[0]),last=arr(path[path.length-1]),reach=actor.kind==='lift'?210:300;
      if(actor.conditional||xy(entry,first)>reach||xy(exit,last)>reach)checks.push({edge:k,kind:9,a:entry,b:exit,first,last,mode:actor.kind,guid:actor.guid,from});
@@ -175,7 +175,7 @@ class Graph{
    else{const reverse=type===6||a<0;begin=arr(reverse?actor.top:actor.at);end=arr(reverse?actor.at:actor.top);}
    yield* flush(begin);const from=pp.length-1;
    if(type===4||type===5)walk(end,k);
-   else{append(pp,end);moves.push({kind:type,p:begin,end,from,to:pp.length-1});if(type===6)checks.push({edge:k,kind:type,a:begin,b:end});if(type===2&&!this.canTraverse(actor))checks.push({edge:k,kind:11,a:begin,b:end,from,to:pp.length-1});}
+   else{append(pp,end);moves.push({kind:type,edge:k,p:begin,end,from,to:pp.length-1});if(type===6)checks.push({edge:k,kind:type,a:begin,b:end});if(type===2&&!this.canTraverse(actor))checks.push({edge:k,kind:11,a:begin,b:end,from,to:pp.length-1});}
    here=end;walk(to,k);here=to;
   }
   const lastFace=this.faces?require('./PBZRouteSurface').surface(this,endNode,goal):this.pt(endNode);
@@ -188,10 +188,11 @@ const arr=a=>({x:a[0],y:a[1],z:a[2]});
 function intersect(a,b,c,d){const X=b.x-a.x,Y=b.y-a.y,U=d.x-c.x,V=d.y-c.y,den=X*V-Y*U;if(Math.abs(den)<.01)return null;
  const A=c.x-a.x,B=c.y-a.y,t=(A*V-B*U)/den,u=(A*Y-B*X)/den;return t<-.001||t>1.001||u<-.001||u>1.001?null:{t,p:lerp(c,d,clamp(u))};}
 function followPortals(...args){const task=followPortalsJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
-function* followPortalsJob(a,ports,b){if(!ports.length)return [a,b];const mids=[a,...ports.map(p=>lerp(p[0],p[1],.5)),b],out=[a];let i=0,work=0;
+function* followPortalsJob(a,ports,b,tagged=false){if(!ports.length)return tagged?[{p:a},{p:b}]:[a,b];const mids=[a,...ports.map(p=>lerp(p[0],p[1],.5)),b],out=[a],edges=[undefined];let i=0,work=0;
+ const add=(p,index)=>{if(dist(out[out.length-1],p)>1){out.push(p);edges.push(ports[Math.min(index,ports.length-1)][2]);}};
  while(i<mids.length-1){for(let j=Math.min(mids.length-1,i+32);j>i;j--){let last=-1,cross=[],ok=true;
-   for(let k=i+1;k<j;k++){if((++work&127)===0)yield;const p=intersect(mids[i],mids[j],...ports[k-1]);if(!p||p.t+.0001<last){ok=false;break;}last=p.t;cross.push(p.p);}
-   if(ok){for(const p of cross)append(out,p);append(out,mids[j]);i=j;break;}}}return out;}
+   for(let k=i+1;k<j;k++){if((++work&127)===0)yield;const p=intersect(mids[i],mids[j],...ports[k-1]);if(!p||p.t+.0001<last){ok=false;break;}last=p.t;cross.push({p:p.p,index:k-1});}
+   if(ok){for(const row of cross)add(row.p,row.index);add(mids[j],j-1);i=j;break;}}}return tagged?out.map((p,j)=>({p,edge:edges[j]})):out;}
 function itinerary(...args){const task=itineraryJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
 function* itineraryJob(startGraph,goalGraph,start,goal,bells,bannedByWorld={},fixedEnd,fixedStart){
  const nodes=(g,id,p)=>{if(!g.bells.has(id))g.bells.set(id,g.node(p));return g.bells.get(id);};

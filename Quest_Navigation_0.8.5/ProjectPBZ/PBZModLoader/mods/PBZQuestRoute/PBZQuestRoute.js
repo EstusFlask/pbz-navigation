@@ -2,18 +2,20 @@
 const UE=require('ue'),P=require('puerts'),T=require('Library/TsHelper').default,Groups=require('Library/MapAreaGroups');
 const R=require('./PBZRouteCore'),Surface=require('./PBZRouteSurface'),W=require('./PBZRouteWorld');
 const {Threads}=require('./PBZPrivateRibbon'),{Ink}=require('./PBZRouteInk'),{Picker}=require('./PBZRoutePicker');
-const {pickItem,mapIntent,pickTrackerItem}=require('./PBZRouteItems'),{Arrival}=require('./PBZRouteArrival');
+const {pickItem,mapIntent,pickTrackerItem,pickBell}=require('./PBZRouteItems'),{Arrival}=require('./PBZRouteArrival');
 const {Tracker}=require('./PBZRouteTracker'),{Pointer}=require('./PBZRoutePointer');
 const Passages=require('./PBZRoutePassages'),Obstacles=require('./PBZRouteObstacles'),Drops=require('./PBZRouteDrops');
 const LocalWalk=require('./PBZRouteLocalWalk');
 const Feasibility=require('./PBZRouteFeasibility');
 const Blocked=require('./PBZRouteBlocked'),Repair=require('./PBZRouteRepair'),Goals=require('./PBZRouteGoals');
+const Locks=require('./PBZRouteLocks');
+const Connectivity=require('./PBZRouteConnectivity');
 const planning=new (require('./PBZRouteJobs').Planner)(log);
 const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudget=null,blockedTrip=null,nativeRepairKey='',lastGuardVersion=-1;
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='0.8.8-fork.1';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='0.10.3-fork.1';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
@@ -87,23 +89,21 @@ function bellList(force=false){if(!S.world)return [];if(!force&&Date.now()-lastB
  const bm=T.getWorldSubsystem(S.pawn,UE.BellManager.StaticClass()),ids=[],disabled=new Set();
  for(const [v,callback] of [[bm.ActivateBellIDs,s=>ids.push(s)],[bm.DisableTeleportBellIDs,s=>disabled.add(s)]]){const n=v?.Num()||0;for(let i=0;i<n;i++)callback(low(v.Get(i)));}
  permitted=ids.filter(k=>!disabled.has(k)&&!k.startsWith('brokenbell')).map(k=>tables.bells[k]).filter(Boolean);return permitted;}
-function locks(){const ms=T.getWorldSubsystem(S.pawn,UE.MapSubsystem.StaticClass()),mp=ms.LockObjectInfos,objs=[];
- for(const area of Object.keys(tables.areas)){const groups=mp.GetRef(area)?.MapLockGroups;if(!groups)continue;
-  for(const layer of [0,1,2,3]){const list=groups.GetRef(layer)?.LockObjArray;for(let j=0;j<(list?.Num()||0);j++){const o=list.Get(j);if(o)objs.push([area,o]);}}}
- const out=[];for(const [area,o] of objs){if(!W.alive(o))continue;
-  const guid=String(o.GuidString);if(o.bUnLocked)continue;
-  const p=xyz(o.ActorLocation);if(!R.finite(p))continue;
-  const door=/door|gate|men_|shanzhai/i.test(guid),mech=/blocker|chain|switch|barrier/i.test(guid);if(!door&&!mech)continue;
-  const directional=!!UE.DoorDirLockObject&&o.IsA(UE.DoorDirLockObject.StaticClass());
-  const keyed=!!UE.SwitchLockObject&&o.IsA(UE.SwitchLockObject.StaticClass())&&(o.NeedItems?.Num()||0)>0;
-  out.push({id:guid,p,world:worldOf(area),icon:directional?'locked':keyed?'keylock':'mechanism',label:directional?'单向门':keyed?'需解锁物品':door?'门闩未开':'机关待解锁'});}
- const tag=out.map(x=>x.id).sort().join('|');if(tag!==oldLocks){oldLocks=tag;S.lockVersion++;}lockRows=out;return out;}
+function locks(){const ms=T.getWorldSubsystem(S.pawn,UE.MapSubsystem.StaticClass());
+ const out=Locks.read(ms?.LockObjectInfos,tables.areas,{UE,alive:W.alive,point:xyz,worldOf});
+ const tag=Locks.signature(out);if(tag!==oldLocks){oldLocks=tag;S.lockVersion++;auditor.cache.clear();guardedLeg=null;}
+ lockRows=out;return out;}
 function markLocks(trip){R.markLocks(trip,lockRows,S.world?{p:S.world.feet(),world:S.level}:undefined);}
+function rememberCollision(leg,failure){
+ if(failure.unknown||failure.edge<0||failure.edge===undefined)return;
+ const banned=forbidden[leg.world]||=new Set();
+ banned.add(failure.edge);failedEdges.set(leg.world+'/'+failure.edge,Date.now()+30000);
+}
 function* proofJob(leg,lookout,context){
  const weak=leg.checks.filter(c=>c.kind===8||c.kind===9||lookout&&c.kind===5);
  if(leg.world!==S.level)return weak.length?weak[0].edge:null;
- const w=S.world,foot=w.feet(),good=passed[leg.world]||=new Set();let count=0;
- const reject=(c,hit,unknown)=>{Obstacles.obstacle(leg,Obstacles.mark(leg,c,'passage check',hit,unknown));return c.edge;};
+ const w=context?.world||Locks.constrain(S.world,lockRows,leg.world),foot=w.feet(),good=passed[leg.world]||=new Set();let count=0;
+ const reject=(c,hit,unknown)=>{rememberCollision(leg,{edge:c.edge,unknown});context?.report?.('passage rejected',{world:leg.world,edge:c.edge,kind:c.kind,guid:c.guid,p:hit||c.a,unknown});Obstacles.obstacle(leg,Obstacles.mark(leg,c,'passage check',hit,unknown));return c.edge;};
  // Verify every conditional connection before displaying the leg. The older
  // 85 m / 12-check streaming budget does not certify one of these gaps.
  const replacements=[];
@@ -144,22 +144,26 @@ function* proofJob(leg,lookout,context){
    const mid={x:b.x,y:b.y,z:a.z+24};const hit=w.hit(a,mid,true)||w.hit(mid,b,true);if(hit)return reject(cross,hit.point,false);
   }good.add(cross.edge);}
  let physical=yield* Feasibility.check(w,leg,foot);
+ if(!physical.ok)rememberCollision(leg,physical);
+ if(!physical.ok)context?.report?.('walking rejected',{world:leg.world,edge:physical.edge,why:physical.why,p:physical.p,
+  a:physical.a,b:physical.b,locked:!!physical.locked,segment:physical.segment,actions:leg.moves?.map(m=>({edge:m.edge,kind:m.kind,guid:m.guid}))});
  if(!physical.ok&&context){
   const previewGoal=context.goalWorld===leg.world?context.goal:leg.points[leg.points.length-1];
   Blocked.offer(context,Blocked.fromFailure(leg,physical,previewGoal),context.start,previewGoal);
   let candidate=leg;
   while(!physical.ok&&(context.repairs||0)<2){
    context.repairs=(context.repairs||0)+1;
-   context.repairDeadline||=Date.now()+3500;
-   const fixed=yield* Repair.repair(w,candidate,physical,foot,{deadline:context.repairDeadline});if(!fixed)break;
+   const clock=context.clock||Date.now;context.repairDeadline??=clock()+3500;
+   const fixed=yield* Repair.repair(w,candidate,physical,foot,{clock,deadline:context.repairDeadline,
+    traverse:leg.provider==='atlas'?context.repairTraversal:undefined});if(!fixed)break;
    candidate=fixed.candidate;physical=fixed.verdict;
-   if(!physical.ok)Blocked.offer(context,Blocked.fromFailure(candidate,physical,previewGoal),context.start,previewGoal);
+   if(!physical.ok){rememberCollision(candidate,physical);Blocked.offer(context,Blocked.fromFailure(candidate,physical,previewGoal),context.start,previewGoal);}
    else Object.assign(leg,candidate);
   }
  }
  if(!physical.ok){
   const c={edge:physical.edge,a:physical.a||foot,b:physical.b||physical.p||foot};
-  Obstacles.obstacle(leg,Obstacles.mark(leg,c,physical.why,physical.p,false));return physical.edge;
+  Obstacles.obstacle(leg,Obstacles.mark(leg,c,physical.why,physical.p,!!physical.unknown,physical.block));return physical.edge;
  }
  Object.assign(leg,physical.leg);
  return null;
@@ -186,70 +190,119 @@ function nativeWalk(start,goal,allowPartial=false){
  if(points.length<2||points.some(p=>!R.finite(p))||R.dist(start,points[0])>140||!partial&&(R.xy(goal,points[points.length-1])>140||Math.abs(goal.z-points[points.length-1].z)>110))return null;
  // Partial paths may supply doorway samples to checked local search, but
  // makePlan never presents one as a complete route to the selected item.
- const leg={world:S.level,points,checks:[],gates:[],moves:[],walks:points.slice(1).map((b,i)=>({a:points[i],b,edge:-1,from:i,to:i+1})),meters:R.extent(points)/100,partial};
+ const leg={world:S.level,provider:'native',points,checks:[],gates:[],moves:[],walks:points.slice(1).map((b,i)=>({a:points[i],b,edge:-1,from:i,to:i+1})),meters:R.extent(points)/100,partial};
  if(partial)Obstacles.obstacle(leg,{id:'native-frontier',world:S.level,p:points[points.length-1],unknown:true,icon:'mechanism',label:'前方通路待确认'});return leg;
 }
 function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=0){
  const a=graph(S.level),b=graph(dest.world),start=S.world.feet();if(!a||!b||!R.finite(dest.p))return null;
+ const routeWorld=context.world||=Locks.constrain(S.world,lockRows,S.level);
+ const clock=context.clock||Date.now;
  context.start||={...start};context.goal||={...dest.p};context.goalWorld||=dest.world;
  safe('ladder state',()=>Passages.refreshLadders(a,S.pawn));if(b!==a)safe('ladder state',()=>Passages.refreshLadders(b,S.pawn,false));
  const starts=(yield* Surface.anchorsJob(a,start)),ends=dest.node!==undefined?[{id:dest.node,q:dest.p}]:(yield* Surface.anchorsJob(b,dest.p,true));
+ if(depth===0)context.report?.('atlas endpoints',{start,goal:dest.p,starts:starts.map(r=>r.id),ends:ends.map(r=>r.id),
+  sharedComponent:starts.some(s=>ends.some(e=>a===b&&a.sameComponent(s.id,e.id)))});
  const targetFloor=dest.item&&dest.world===S.level?S.world.floorAt(dest.p,true):null;yield;
- const approachGoals=dest.provider==='187'&&dest.world===S.level?(yield* Goals.approaches(S.world,dest.p,140,{targetKey:dest.key})):[];
+ const approachGoals=(dest.provider==='187'||dest.bell)&&dest.world===S.level?(yield* Goals.approaches(S.world,dest.p,140,{targetKey:dest.key})):[];
  const matchesGoal=leg=>!approachGoals.length?(!targetFloor||Math.abs(leg.points[leg.points.length-1].z-targetFloor.z)<=90):
   approachGoals.some(p=>R.xy(p,leg.points[leg.points.length-1])<185&&Math.abs(p.z-leg.points[leg.points.length-1].z)<=90);
  const legs=new Map(),lookout=Passages.isLookout(S.level,start,dest);
+ context.repairTraversal||=function*(from,to,settings){
+  if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,from,to,{report:context.report});
+  const trip=yield* Passages.liveRouteJob(a,routeWorld,from,to,nativeWalk,{clock,deadline:settings.deadline,maxConnectors:32,report:context.report});
+  return trip?.legs[0]||null;
+ };
  const actionRoute=function*(landing){
   if(context.actionsTried||a!==b)return null;context.actionsTried=true;
   context.report?.('action search',{start,landing});
-  if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,start,landing);
-  return yield* Passages.liveRouteJob(a,S.world,start,landing,nativeWalk,{goals:approachGoals,report:context.report,onClosed:(first,action)=>{
+  if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,start,landing,{report:context.report});
+  return yield* Passages.liveRouteJob(a,routeWorld,start,landing,nativeWalk,{clock,goals:approachGoals,allowPartial:true,report:context.report,onPartial:trip=>{
+   context.partial=trip;context.actionPartial=trip;const leg=trip.legs[0];
+   Blocked.offer(context,Blocked.fromFailure(leg,{prefix:leg.points,prefixLeg:leg,segment:leg.points.length-1,unknown:true,
+    p:leg.points[leg.points.length-1],why:'traversal chain continues'},dest.p),start,dest.p);
+  },onClosed:(first,action)=>{
    const source={world:S.level,points:[...first.points,...action.path,action.exit,dest.p],walks:[],moves:[],checks:[],gates:[]};
    const failure={prefix:first.points,p:action.entry,segment:first.points.length-1,locked:true,why:'closed traversal',prefixLeg:first};
    Blocked.offer(context,Blocked.fromFailure(source,failure,dest.p),start,dest.p);
   }});
  };
  yield;
- if(a===b&&!seams&&!drops){
-  const landing=approachGoals.length?approachGoals.slice().sort((p,q)=>R.dist(start,p)-R.dist(start,q))[0]:targetFloor||(dest.item&&ends.length?ends[0].q:dest.p);
-  let native=safe('current scene route',()=>nativeWalk(start,landing,true));
-  if(!native&&R.dist(start,landing)<=16000){const points=[start,landing];
-   native={world:S.level,points,checks:[],gates:[],moves:[],obstacles:[],partial:false,
-    walks:[{a:start,b:landing,from:0,to:1,edge:-1}],meters:R.dist(start,landing)/100};}
-  if(native?.partial){const points=native.points.slice();if(R.dist(points[points.length-1],landing)>1)points.push(landing);
-   native={...native,points,partial:false,obstacles:[],walks:points.slice(1).map((b,i)=>({a:points[i],b,from:i,to:i+1,edge:-1}))};}
-  const goalSamples=typeof Surface.samplesJob==='function'?(yield* Surface.samplesJob(b,landing)):[];
-  const doorSamples=(b.actors||[]).filter(f=>f.kind==='gate'&&f.at&&R.dist(toPoint(f.at),landing)<1800).slice(0,16).map(f=>toPoint(f.at));
-  const seeds=[...goalSamples,...doorSamples,...(native?.points||[])];
-  let accepted=native&&(yield* proofJob(native,lookout,context))===null?native:null;
-  if(accepted&&!accepted.partial&&!matchesGoal(accepted))accepted=null;
-  let assisted=null;
-  const goalAction=(a.actors||[]).some(f=>f.path?.length>1&&f.kind!=='gate'&&f.kind!=='bell'&&
-   Math.abs(f.path[f.path.length-1][2]-f.path[0][2])>200&&
-   [f.path[f.path.length-1],...(f.both?[f.path[0]]:[])].some(q=>Math.abs(q[2]-landing.z)<400&&R.xy(toPoint(q),landing)<4000));
-  if(!accepted&&(Math.abs(start.z-landing.z)>200||goalAction)){
-   const via=yield* actionRoute(landing);if(via){let valid=true;for(const leg of via.legs)if((yield* proofJob(leg,lookout,context))!==null){valid=false;break;}if(valid)assisted=via.legs[0];}}
-  if(assisted&&(!accepted||accepted.partial||assisted.meters<accepted.meters))accepted=assisted;
-  if(R.dist(start,landing)<=12000){const local=yield* LocalWalk.search(S.world,start,landing,{waypoints:seeds,...(approachGoals.length?{goals:approachGoals}:{}),
-    ...(accepted?{maxMs:2000,maxNodes:1800}:{})});
-   if(local&&(!accepted||accepted.partial||local.meters<accepted.meters)){local.world=S.level;return {legs:[local],transfer:null};}}
-  if(accepted)return {legs:[accepted],transfer:null};
- }
- const getJoin=s=>{if(!legs.has(s.id))legs.set(s.id,Surface.join(S.world,start,s));return legs.get(s.id);};
+ const getJoin=s=>{if(!legs.has(s.id))legs.set(s.id,Surface.join(routeWorld,start,s));return legs.get(s.id);};
  const plan=function*(s,e,entry,nearPads=false){
   const restrictions=nearPads?{...forbidden,[a.name]:{has:k=>forbidden[a.name]?.has(k)||
    (a.e[k*6+2]===7&&a.actors[a.e[k*6+5]-1]?.conditional)}}:forbidden;
   for(let attempt=0;attempt<(nearPads?3:lookout?9:4);attempt++){
   const r=yield* R.itineraryJob(a,b,s.q,dest.item?e.q:dest.p,entry,restrictions,e.id,s.id);if(!r)return null;let rejected=false;
+  for(const l of r.legs)l.provider='atlas';
+  context.report?.('atlas candidate',{legs:r.legs.map(l=>({world:l.world,meters:l.meters,actions:l.moves?.map(m=>({kind:m.kind,guid:m.guid})),checks:l.checks?.length}))});
   const lead=getJoin(s);if(!lead)return null;const first=r.legs[0];first.points=[...lead.slice(0,-1),...first.points];first.meters=R.extent(first.points)/100;
   for(const c of first.checks)if(c.from!==undefined){c.from+=lead.length-1;if(c.to!==undefined)c.to+=lead.length-1;}
   for(const c of [...(first.walks||[]),...(first.moves||[])]){c.from+=lead.length-1;c.to+=lead.length-1;}
   first.walks=[...lead.slice(1).map((b,i)=>({a:lead[i],b,edge:-1,from:i,to:i+1})),...(first.walks||[])];
-  for(const leg of r.legs){yield;const bad=yield* proofJob(leg,lookout,context);if(bad!==null){if(!leg.obstacles?.length){const c=leg.checks.find(c=>c.edge===bad);if(c)Obstacles.obstacle(leg,Obstacles.mark(leg,c,'unverified passage',null,true));}(forbidden[leg.world]||=new Set()).add(bad);const special=leg.checks.some(c=>c.edge===bad&&(c.kind===8||c.kind===9||lookout&&c.kind===5));failedEdges.set(leg.world+'/'+bad,Date.now()+(special?45000:5500));rejected=true;break;}}
+  context.atlasSeeds=first.points.slice();
+  Blocked.offer(context,Blocked.fromFailure(first,{prefix:[first.points[0]],segment:0,unknown:true,why:'checking authored corridor'},dest.p),start,dest.p);
+  for(const leg of r.legs){yield;const bad=yield* proofJob(leg,lookout,context);if(bad!==null){if(!leg.obstacles?.length){const c=leg.checks.find(c=>c.edge===bad);if(c)Obstacles.obstacle(leg,Obstacles.mark(leg,c,'unverified passage',null,true));}(forbidden[leg.world]||=new Set()).add(bad);const special=leg.checks.some(c=>c.edge===bad&&(c.kind===8||c.kind===9||lookout&&c.kind===5));const key=leg.world+'/'+bad;failedEdges.set(key,Math.max(failedEdges.get(key)||0,Date.now()+(special?45000:5500)));rejected=true;break;}}
   if(!rejected){const last=r.legs[r.legs.length-1];
    if(last.world===S.level&&!last.partial&&!matchesGoal(last))return null;
+   if(Blocked.regressesFromActions(context.actionPartial?.legs[0],r.legs[0],dest.p))return null;
    return r;}}return null;
  };
+ // Inspect the authored corridor before the costly scene-grid searches. A
+ // moving player must not have to stand still until a failed chord is repaired.
+ if(a===b&&!context.atlasTried){
+  context.atlasTried=true;
+  for(const s of starts)for(const e of ends){
+   if(!a.sameComponent(s.id,e.id))continue;
+   const route=yield* plan(s,e,[]);
+   if(route){if(!route.legs.some(l=>l.partial))return route;context.partial=route;}
+  }
+ }
+ if(a===b&&!seams&&!drops){
+  const linkedBefore=a.liveEdges?.length||0;
+  const landing=approachGoals.length?approachGoals.slice().sort((p,q)=>R.dist(start,p)-R.dist(start,q))[0]:targetFloor||(dest.item&&ends.length?ends[0].q:dest.p);
+  let native=safe('current scene route',()=>nativeWalk(start,landing,true));
+  if(!native&&R.dist(start,landing)<=16000){const points=[start,landing];
+   native={world:S.level,provider:'direct',points,checks:[],gates:[],moves:[],obstacles:[],partial:false,
+    walks:[{a:start,b:landing,from:0,to:1,edge:-1}],meters:R.dist(start,landing)/100};}
+  if(native?.partial){const points=native.points.slice();if(R.dist(points[points.length-1],landing)>1)points.push(landing);
+   native={...native,points,partial:false,obstacles:[],walks:points.slice(1).map((b,i)=>({a:points[i],b,from:i,to:i+1,edge:-1}))};}
+  const goalSamples=typeof Surface.samplesJob==='function'?(yield* Surface.samplesJob(b,landing)):[];
+  const doorSamples=(b.actors||[]).filter(f=>f.kind==='gate'&&f.at&&R.dist(toPoint(f.at),landing)<1800).slice(0,16).map(f=>toPoint(f.at));
+  const seeds=[...goalSamples,...doorSamples,...(native?.points||[]),...(context.atlasSeeds||[])];
+  let accepted=native&&(yield* proofJob(native,lookout,context))===null?native:null;
+  if(accepted&&!accepted.partial&&!matchesGoal(accepted))accepted=null;
+  let assisted=null;
+  // Same-height gaps can require a rope or a climb/down-climb chain too.
+  // Discover resident interactions before spending the local walking budget.
+  if(!accepted||accepted.partial){
+   const via=yield* actionRoute(landing);if(via){let valid=true;for(const leg of via.legs)if((yield* proofJob(leg,lookout,context))!==null){valid=false;break;}if(valid)assisted=via.legs[0];}}
+  if(assisted&&(!accepted||accepted.partial||assisted.meters<accepted.meters))accepted=assisted;
+  if((a.liveEdges?.length||0)>linkedBefore){
+   for(const s of starts)for(const e of ends){
+    if(!a.sameComponent(s.id,e.id))continue;
+    const linked=yield* plan(s,e,[]);if(!linked)continue;
+    if(!linked.legs.some(l=>l.partial))return linked;
+    context.partial=linked;
+   }
+  }
+  if((!accepted||accepted.partial)&&!context.endpointRepair){
+   context.endpointRepair=true;
+   yield* Connectivity.installJob(a,routeWorld,starts,ends,start,landing,{clock,report:context.report});
+  }
+  if(!context.sceneTried&&R.dist(start,landing)<=20000){context.sceneTried=true;
+   const broad=R.dist(start,landing)>12000;
+   context.report?.('scene walking search',{broad,spacing:broad?140:70});
+   const local=yield* LocalWalk.search(routeWorld,start,landing,{clock,report:context.report,waypoints:seeds,allowDrops:true,onProgress:progress=>{
+    progress.world=S.level;progress.provider='scene';
+    Blocked.offer(context,Blocked.fromFailure(progress,{prefix:progress.points,prefixLeg:progress,segment:progress.points.length-1,
+     p:progress.points[progress.points.length-1],unknown:true,why:'scene search continues'}),start,dest.p);
+   },
+    ...(broad?{maxDistance:20000,spacing:140,maxNodes:6000}:{}),...(approachGoals.length?{goals:approachGoals}:{}),
+    ...(accepted?{maxMs:2000,maxNodes:1800}:{})});
+   if(local&&(!accepted||accepted.partial||local.meters<accepted.meters)){local.world=S.level;return {legs:[local],transfer:null};}}
+  if(accepted&&!accepted.partial)return {legs:[accepted],transfer:null};
+  if(accepted)context.partial={legs:[accepted],transfer:null};
+ }
  if(a===b){for(const s of starts)for(const e of ends){if(!a.sameComponent(s.id,e.id))continue;
   if(lookout){const near=yield* plan(s,e,[],true);if(near)return near;}
   const route=yield* plan(s,e,[]);if(route)return route;}
@@ -266,7 +319,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   yield* Obstacles.installSeamsJob(a);if(b!==a)yield* Obstacles.installSeamsJob(b);a.allowSeams=b.allowSeams=true;
   try{const repaired=yield* makePlan(dest,walkOnly,true,drops,context,depth+1);if(repaired)return repaired;}finally{a.allowSeams=b.allowSeams=false;a.allowBlockedTraverse=b.allowBlockedTraverse=false;}
  }
- return depth===0?Blocked.finish(context):null;
+ return depth===0?context.partial||Blocked.finish(context):null;
 }
 function routeRequest(dest,start=S.world.feet()){
  return {key:dest.key,world:dest.world,level:S.level,p:dest.p,start,revision:(graphs.get(S.level)?.passageRevision||0)+'/'+S.lockVersion+'/'+atlas.revision,
@@ -281,8 +334,9 @@ function originChanged(old,current,trip){
  if(!planning.changed(old,current))return false;
  if(!planning.same(old,current)||old.revision!==current.revision||old.originRevision!==current.originRevision)return true;
  const leg=trip?.legs[S.active];
- if(leg&&!leg.diagnostic&&leg.physicalVerified&&leg.world===S.level){
-  const near=R.nearestOnLine(current.start,leg.points);
+ if(leg&&(leg.physicalVerified||leg.diagnostic&&leg.verifiedEndIndex>0)&&leg.world===S.level){
+  const corridor=leg.diagnostic?leg.points.slice(0,leg.verifiedEndIndex+1):leg.points;
+  const near=R.nearestOnLine(current.start,corridor);
   if(near.p&&near.d<260&&Math.abs(near.p.z-current.start.z)<75)return false;
  }
  return true;
@@ -298,7 +352,7 @@ function solve(dest,reason){
    setTrip(trip,dest,start,reason+' blocked; searching detour',request);
   }
  }};
- const accepted=planning.request(request,()=>makePlan(dest,!!dest.bell,false,false,context),(trip,selected,metrics)=>{
+ const accepted=planning.request(request,clock=>{context.clock=clock;return makePlan(dest,!!dest.bell,false,false,context);},(trip,selected,metrics)=>{
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(!current||current.key!==selected.key||S.level!==selected.level||R.dist(current.p,selected.p)>190)return;
   const now=routeRequest(current);
@@ -391,8 +445,8 @@ function guardRoute(now){
   guardRetry=0;const target=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(target?.key===S.targetKey&&!S.arrival.isDone(S)){solve(target,'blocked detour');return;}
  }
- if(guardedLeg!==leg){guardedLeg=leg;auditor.begin(Blocked.auditLeg(leg),S.world,feet,now);S.threadEnd=auditor.safe;lastGuardVersion='';}
- else if(!auditor.job&&(now-auditor.started>1800||R.dist(feet,auditor.origin)>140))auditor.begin(Blocked.auditLeg(leg),S.world,feet,now);
+ if(guardedLeg!==leg){guardedLeg=leg;auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now);S.threadEnd=auditor.safe;lastGuardVersion='';}
+ else if(!auditor.job&&(now-auditor.started>1800||R.dist(feet,auditor.origin)>140))auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now);
  const hadJob=!!auditor.job,result=auditor.pump(Date.now,12,1);
  S.threadEnd=auditor.safe||feet;
  if(hadJob&&result?.mark){
@@ -474,6 +528,23 @@ function mapAcceptsItems(h){
  return !h.BigMapMode&&h.CanUIInput?.()!==false&&!h.isModalOpen?.()&&!h.isOpenCompletion?.()&&
   !h.pbzFilterOpen?.()&&!h.__pbzTrackerControls?.open;
 }
+function selectionIntent(h,uv,width,height,pad,type){
+ const intent=mapIntent(h,uv,width,height,pad,type);
+ if(intent.item||!mapAcceptsPins(h))return intent;
+ const area=low(h.CurrentDisplayMapID),name=worldOf(area),ms=T.getWorldSubsystem(h,UE.MapSubsystem.StaticClass());
+ const project=(p,requestedArea)=>{const at=ms.ProjectWorldLocationToMap(W.vec(p),requestedArea||h.CurrentDisplayMapID);return {x:Number(at.X),y:Number(at.Y)};};
+ const bells=Object.values(tables.bells).filter(b=>b.world===name&&
+  (low(b.area)===area||Groups.isInSameMapGroup(area,low(b.area))||low(h.mapIDToBigMapID(b.area)||b.area)===area));
+ const bell=pickBell(h,uv,width,height,bells,project,bellList());
+ return bell?{...intent,allowed:true,bell}:intent;
+}
+function selectBell(hit,device,area){
+ const b=hit.bell;
+ tracker?.clear('bell selected');epoch++;questGate.pause(questID(narrative()));S.scout=null;S.arrival.restart();
+ S.manual={p:{...hit.p},uv:{...hit.uv},world:b.world,area,bell:b.id,item:true,key:'bell:'+b.world+'/'+low(b.id)};
+ previous=null;S.version++;solve(S.manual,device+' bell');
+ log('selection',JSON.stringify({source:hit.source,bell:b.id,world:b.world,goal:S.manual.p,pixels:hit.distance}));
+}
 function confirmation(h){let value=confirmations.get(h);if(!value){value=new ItemConfirm();confirmations.set(h,value);}return value;}
 function confirmMapItem(h,device='native',repeat=false){
  if(!S.world||!W.alive(S.pawn)||(!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread)||!mapAcceptsItems(h))return false;
@@ -481,9 +552,14 @@ function confirmMapItem(h,device='native',repeat=false){
  const pad=h.getCurrentInputType()===UE.ECommonInputType.Gamepad;
  let uv={x:Number(focus.X),y:Number(focus.Y)};
  if(!pad){const sample=pointerSample(h);if(sample)uv=sample.uv;}
- const intent=mapIntent(h,uv,Number(size.X),Number(size.Y),pad,h.getCurrentInputType());
- if(!intent.item)return false;
+ const intent=selectionIntent(h,uv,Number(size.X),Number(size.Y),pad,h.getCurrentInputType());
+ if(!intent.item&&!intent.bell)return false;
  if(repeat)return true;
+ if(intent.bell){
+  if(!confirmation(h).claim('bell/'+intent.bell.bell.id,Date.now()))return true;
+  const state=maps.get(h);if(state)state.press.reset(true);
+  selectBell(intent.bell,device,low(h.CurrentDisplayMapID));return true;
+ }
  const item=intent.item;
  if(!confirmation(h).claim(item.area+'/'+item.id,Date.now()))return true;
  const area=low(h.CurrentDisplayMapID),state=maps.get(h);if(state)state.press.reset(true);
@@ -502,7 +578,7 @@ function padSample(h){
  const size=h.CurrentMapSize?.(),focus=h.FocusPoint;if(!size||!focus)return null;
  const width=Number(size.X),height=Number(size.Y),uv={x:Number(focus.X),y:Number(focus.Y)};
  if(!(width>0&&height>0))return null;
- const intent=mapIntent(h,uv,width,height,true,UE.ECommonInputType.Gamepad);
+ const intent=selectionIntent(h,uv,width,height,true,UE.ECommonInputType.Gamepad);
  return {now:Date.now(),area:low(h.CurrentDisplayMapID),width,height,uv,
   allowed:!!S.world&&W.alive(S.pawn)&&(S.cfg.MapRoute||S.cfg.MinimapRoute||S.cfg.WorldThread)&&mapAcceptsPins(h)&&intent.allowed&&!intent.item};
 }
@@ -595,11 +671,11 @@ function onMap(h){
    if(!o||!(w>0&&height>0))return;
    const left=Number(o.X),top=Number(o.Y),pos=pad?h.FocusPoint:h.getMouseLocalPosition();
    const uv=pad?{x:Number(pos.X),y:Number(pos.Y)}:{x:(Number(pos.X)-left)/w,y:(Number(pos.Y)-top)/height};
-   const intent=mapIntent(h,uv,w,height,pad,type);
+   const intent=selectionIntent(h,uv,w,height,pad,type);
    const allowedInput=(intent.item?mapAcceptsItems(h):mapAcceptsPins(h))&&intent.allowed;
    // Fallback for maps whose preview callback is owned by another mod. A
    // snapped item activates on the press edge, before the reticle can drift.
-   if(pad&&down&&!pointer?.owns(now)&&!state.press.lastDown&&!state.press.suppress&&allowedInput&&intent.item){
+   if(pad&&down&&!pointer?.owns(now)&&!state.press.lastDown&&!state.press.suppress&&allowedInput&&(intent.item||intent.bell)){
     confirmMapItem(h,'pad fallback');state.press.reset(true);
     ink.draw(h,S,project,name,allowed,show());return;
    }
@@ -616,21 +692,20 @@ function onMap(h){
     if(item){selectItem(item,'mouse',name,area,h);
      ink.draw(h,S,project,name,allowed,show());return;}
    }
+   if(action?.type==='pin'){
+    const selected=selectionIntent(h,action.uv,w,height,pad,type);
+    if(selected.bell){selectBell(selected.bell,device,area);ink.draw(h,S,project,name,allowed,show());return;}
+   }
    if(action?.type==='pin'&&state.picker){
     const at=action.uv,inside=at.x>=0&&at.y>=0&&at.x<=1&&at.y<=1,here=graph(S.level),feet=S.world.feet();
     if(!here){ink.draw(h,S,project,name,allowed,show());return;}
-    const from=Surface.anchors(here,feet).filter(x=>x.r<80&&Math.abs(x.dz)<75).map(x=>x.id);if(!from.length)from.push(here.node(feet));
-    const near=here.reachable(from),bs=bellList();
-    const transfer=bs.some(b=>b.world===here.name&&near.has(here.strong[here.node(toPoint(b.at))]));
-    const seeds=g===here?from.slice():[];if(transfer)for(const b of bs)if(b.world===name)seeds.push(g.node(toPoint(b.at)));
-    const reachable=g.reachable(seeds),snap=state.picker.pick(at,reachable,w,height,g===here?feet:null);
-    let best=snap;
-    if(inside&&(!snap||snap.pixels>13)){const exact=state.picker.pick(at,null,w,height,g===here?feet:null);if(exact&&(!snap||exact.pixels+8<snap.pixels))best=exact;}
+    const snap=state.picker.pick(at,null,w,height,g===here?feet:null);
+    const best=snap&&snap.pixels<=13?snap:null;
     if(best||inside){
      tracker?.clear('map pin selected');
      epoch++;questGate.pause(questID(narrative()));S.scout=null;S.arrival.restart();S.manual={p:best?.p,node:best?.id,uv:inside?{...at}:best.uv,world:name,area,key:'pin:'+name+'/'+(++serial)};previous=null;S.version++;
      if(best)solve(S.manual,device+' pin');else noRoute();
-     log('pin',device+' '+area+' distance '+(best?Math.round(best.pixels)+'px':'paper only'));
+     log('pin',JSON.stringify({device,area,uv:at,node:best?.id,goal:best?.p,pixels:snap?.pixels,source:best?'nearest road':'paper only'}));
     }
    }
   }

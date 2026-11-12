@@ -10,7 +10,7 @@ function add(r,transform){if(!UE.ProceduralMeshComponent?.StaticClass)throw Erro
  if(!material)throw Error('ribbon material unavailable');
  const m=r.a.AddComponentByClass(UE.ProceduralMeshComponent.StaticClass(),false,transform,false);if(!W.alive(m))throw Error('ribbon mesh component could not be created');
  m.SetCollisionEnabled(UE.ECollisionEnabled.NoCollision);m.SetGenerateOverlapEvents(false);m.SetCastShadow(false);m.SetMaterial(0,material);
- try{const dynamic=m.CreateDynamicMaterialInstance?.(0,material);if(dynamic)for(const key of ['Color','BaseColor','Tint'])dynamic.SetVectorParameterValue(key,new UE.LinearColor(.7,.012,.015,1));}catch(_){}
+ try{const dynamic=m.CreateDynamicMaterialInstance?.(0,material);if(dynamic)for(const key of ['Color','BaseColor','Tint'])dynamic.SetVectorParameterValue(key,new UE.LinearColor(.04,.3,1,1));}catch(_){}
  r.fiber=m;}
 function mesh(ps,org,radius=.82,{colors=true,indices=true}={}){
  const v=[],normal=[],col=[],idx=[],rings=6;
@@ -18,7 +18,7 @@ function mesh(ps,org,radius=.82,{colors=true,indices=true}={}){
   const u=unit(cross(Math.abs(t.z)>.96?{x:1,y:0,z:0}:{x:0,y:0,z:1},t)),w=cross(t,u);
   for(let j=0;j<rings;j++){const [ca,sa]=ring[j],n={x:ca*u.x+sa*w.x,y:ca*u.y+sa*w.y,z:ca*u.z+sa*w.z},p=ps[i];
    v.push({x:p.x-org.x+n.x*radius,y:p.y-org.y+n.y*radius,z:p.z-org.z+n.z*radius});normal.push(n);
-   if(colors){const twist=.5+.5*Math.cos(j*2.09+i*.77);col.push([.24+.19*twist,.012+.017*twist,.012+.012*twist,1]);}
+   if(colors){const twist=.5+.5*Math.cos(j*2.09+i*.77);col.push([.018+.018*twist,.16+.12*twist,.68+.26*twist,1]);}
    if(indices&&i+1<ps.length){const x=i*rings+j,y=i*rings+(j+1)%rings;idx.push(x,y,x+rings,y,y+rings,x+rings);}}}
  return {v,normal,col,idx};
 }

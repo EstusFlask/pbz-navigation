@@ -138,7 +138,7 @@ class Threads{
    if(k!==first&&(!row?.on||row.tag!==shapeKey)&&built++>=3){this.vis(row,false);continue;}
    this.section(k+1,S,null,a,b,shapeKey);
   }
-  if(this.ann!==this.version){this.ann=this.version;this.log('thread','mesh; knee='+Math.round(anchor.z-feet.z)+'cm tip=+10cm path='+Math.round(r.length/100)+'m');}
+  if(this.ann!==this.version){this.ann=this.version;this.log('thread','blue mesh; height='+Math.round(anchor.z-feet.z)+'cm path='+Math.round(r.length/100)+'m');}
  }
 }
 exports.Threads=Threads;

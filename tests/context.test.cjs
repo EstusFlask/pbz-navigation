@@ -51,3 +51,22 @@ test('equivalent failed candidates do not repeatedly rebuild the same diagnostic
  }
  assert.equal(publishes,1,'unchanged safe prefixes repeatedly reset all collision/mesh caches');
 });
+
+test('walking-search budgets exclude the time spent waiting between game frames',()=>{
+ const Local=require(root+'/PBZRouteLocalWalk');let now=0,result,metrics;
+ const planner=new Planner(()=>{},()=>now),start={x:0,y:0,z:0},goal={x:560,y:0,z:0};
+ const world={floorAt:p=>({...p,z:0}),step:(a,b)=>{now+=.01;return {p:{...b,z:0}};}};
+ planner.request(request(start),clock=>Local.search(world,start,goal,{clock:clock||(()=>now),maxMs:10}),
+  (value,selected,stats)=>{result=value;metrics=stats;});
+ for(let frame=0;frame<100&&planner.pending;frame++){planner.pump();now+=20;}
+ assert.ok(result,'a few milliseconds of walking checks expired while the generator waited for frames');
+ assert.ok(result.points.at(-1).x===560);assert.ok(metrics.cpu<10);assert.ok(metrics.wall>10);
+});
+
+test('execution-time search budgets retain the overall wall-time timeout',()=>{
+ let now=0,result,metrics;const planner=new Planner(()=>{},()=>now);
+ planner.request(request({x:0,y:0,z:0}),function*(clock){while(true){assert.equal(clock(),0);yield;}},
+  (value,selected,stats)=>{result=value;metrics=stats;});
+ for(let frame=0;frame<40&&planner.pending;frame++){planner.pump();now+=1000;}
+ assert.equal(planner.pending,false);assert.equal(result,null);assert.equal(metrics.timeout,true);
+});

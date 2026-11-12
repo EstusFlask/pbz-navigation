@@ -44,41 +44,58 @@ function* route(options){
    action.id='action:'+actions.length;
    action.cost=R.dist(entry,action.path[0])+R.extent(action.path)+R.dist(action.path[action.path.length-1],exit);
    actions.push(action);
+   if(options.onAction)yield* options.onAction(action,{deadline:prepareUntil});
   }
   // Keep a search window for the nearby actions already validated above.
   if(clock()>prepareUntil)break;
  }
  options.report?.('action pads',{ready:actions.length,closed:closed.length,rejected:rejected.slice(0,6),remainingMs:Math.round(deadline-clock())});
  const heuristic=p=>Math.min(...goals.map(q=>R.dist(p,q)));
+ let frontier=null;
+ const assembled=row=>{const chain=[];for(let p=row;p;p=p.parent)chain.push(p);chain.reverse();return assemble(options.name,start,chain.flatMap(p=>p.segments));};
+ const partial=row=>{const leg=assembled(row);return {legs:[{...leg,provider:'scene',partial:true,scenePartial:true,
+  obstacles:[{id:'action-frontier',world:options.name,p:row.p,unknown:true,icon:'mechanism',label:'前方通路待确认'}]}],transfer:null};};
  const cache=new Map();let connectors=0;
  const connection=function*(a,b,goalEdge=false){
   const key=[a.x,a.y,a.z,b.x,b.y,b.z,goalEdge].join('/');if(cache.has(key))return cache.get(key);
-  if(++connectors>48||clock()>deadline)return null;
+  if(++connectors>(options.maxConnectors||128)||clock()>deadline)return null;
   const result=yield* walk(a,b,{deadline,local:!goalEdge||Math.abs(a.z-b.z)<200});
   cache.set(key,result);return result;
  };
  function* search(goalLimit){
  const open=[{id:'start',p:start,cost:0,score:heuristic(start),parent:null,segments:[]}],best=new Map([['start',0]]),seen=new Set();
  while(open.length&&clock()<=deadline){
-  open.sort((a,b)=>a.score-b.score);const row=open.shift();if(seen.has(row.id)||best.get(row.id)!==row.cost)continue;
+  open.sort((a,b)=>a.score-b.score||Number(!!a.pending)-Number(!!b.pending));const row=open.shift();
+  if(row.pending){
+   if(seen.has(row.id)||row.score>=(best.get('goal')??Infinity)||best.get(row.parent.id)!==row.parent.cost)continue;
+   const leg=yield* connection(row.parent.p,row.target,!row.action);if(!leg)continue;
+   const cost=row.parent.cost+leg.meters*100+(row.action?.cost||0);
+   if(cost<(best.get(row.id)??Infinity)){
+    best.set(row.id,cost);open.push({id:row.id,p:row.action?.exit||row.target,cost,
+     score:cost+(row.action?heuristic(row.action.exit):0),parent:row.parent,segments:row.action?[leg,{action:row.action}]:[leg]});
+   }
+   continue;
+  }
+  if(seen.has(row.id)||best.get(row.id)!==row.cost)continue;
   if(row.id==='goal'){
-   const chain=[];for(let p=row;p;p=p.parent)chain.push(p);chain.reverse();
-   return {legs:[assemble(options.name,start,chain.flatMap(p=>p.segments))],transfer:null};
+   return {legs:[assembled(row)],transfer:null};
+  }
+  if(options.allowPartial&&row.id!=='start'&&heuristic(row.p)<heuristic(start)-140&&(!frontier||heuristic(row.p)<heuristic(frontier.p)-50)){
+   frontier=row;options.onPartial?.(partial(row));
   }
   seen.add(row.id);
   for(const target of goals.slice().sort((a,b)=>R.dist(row.p,a)-R.dist(row.p,b)).slice(0,goalLimit)){
-   if(row.cost+R.dist(row.p,target)>=(best.get('goal')??Infinity))continue;
-   const leg=yield* connection(row.p,target,true);if(!leg)continue;
-   const cost=row.cost+leg.meters*100;
-   if(cost<(best.get('goal')??Infinity)){best.set('goal',cost);open.push({id:'goal',p:target,cost,score:cost,parent:row,segments:[leg]});}
+   const score=row.cost+R.dist(row.p,target);if(score>=(best.get('goal')??Infinity))continue;
+   open.push({id:'goal',pending:true,target,score,parent:row});
   }
   const next=actions.filter(a=>!seen.has(a.id)).sort((a,b)=>R.dist(row.p,a.entry)+heuristic(a.exit)-R.dist(row.p,b.entry)-heuristic(b.exit));
   for(const action of next){
    if(row.cost+R.dist(row.p,action.entry)+action.cost+heuristic(action.exit)>=(best.get('goal')??Infinity))continue;
-   const first=yield* connection(row.p,action.entry);if(!first)continue;
-   const cost=row.cost+first.meters*100+action.cost;
-   if(cost<(best.get(action.id)??Infinity)){best.set(action.id,cost);open.push({id:action.id,p:action.exit,cost,
-    score:cost+heuristic(action.exit),parent:row,segments:[first,{action}]});}
+   // Queue an optimistic edge before doing its expensive physical walk. This
+   // lets a promising first action reach the next action while other entry
+   // probes remain pending, instead of exhausting the budget on the start.
+   const score=row.cost+R.dist(row.p,action.entry)+action.cost+heuristic(action.exit);
+   open.push({id:action.id,pending:true,target:action.entry,action,score,parent:row});
   }
  }
  return null;
@@ -90,6 +107,8 @@ function* route(options){
  if(options.onClosed)for(const action of closed.slice(0,3)){
   const first=yield* connection(start,action.entry);if(first)options.onClosed(first,action);
  }
- return null;
+ options.report?.('action search exhausted',{connectors,ready:actions.length,remainingMs:Math.round(deadline-clock()),
+  reason:clock()>deadline?'time budget':connectors>=(options.maxConnectors||128)?'connector budget':'no checked chain'});
+ return options.allowPartial&&frontier?partial(frontier):null;
 }
 exports.route=route;

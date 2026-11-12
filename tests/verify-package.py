@@ -17,6 +17,8 @@ archive=root/release['archive']
 scripts='ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/'
 streamed=root/'build/streamed-atlas'
 stream_state=json.loads((streamed/'manifest.json').read_text(encoding='utf-8'))
+documents={'INSTALL-README.md':root/'docs/USER-GUIDE.md','CHANGELOG.md':root/'release/CHANGELOG.md',
+    'BELL-ROUTE-AUDIT.md':root/'docs/BELL-ROUTE-AUDIT.md'}
 def module_value(name,prefix):
     text=(streamed/name).read_text(encoding='utf-8')
     assert text.startswith(prefix)
@@ -39,7 +41,7 @@ with zipfile.ZipFile(archive) as z:
     assert len(names)==len(z.namelist()), 'duplicate archive paths'
     expected={p.relative_to(nav).as_posix() for p in nav.rglob('*') if p.is_file()}
     expected.update(scripts+'PBZRouteStreaming/'+name for name in stream_state['files'])
-    assert names==expected|{'INSTALL-README.md','CHANGELOG.md'}, 'incomplete navigation package'
+    assert names==expected|set(documents), 'incomplete navigation package'
     assert not any('/mods/pbzmaptracker/' in n.lower() for n in names), 'collector file included'
     assert z.testzip() is None
     version=release['version']
@@ -47,10 +49,10 @@ with zipfile.ZipFile(archive) as z:
         assert ("'"+version+"'") in z.read(scripts+name).decode('utf-8'), 'runtime version mismatch'
     adapter='platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll'
     assert version.encode('utf-16le') in z.read(adapter), 'native adapter version mismatch'
-    for name in ['README-en.txt','README-zh.txt','INSTALL-README.md','CHANGELOG.md']:
+    for name in ['README-en.txt','README-zh.txt',*documents]:
         assert version in z.read(name).decode('utf-8'), 'documentation version mismatch'
     for name in names:
-        source=root/'docs/USER-GUIDE.md' if name=='INSTALL-README.md' else root/'release/CHANGELOG.md' if name=='CHANGELOG.md' else streamed/name[len(scripts+'PBZRouteStreaming/'):] if name.startswith(scripts+'PBZRouteStreaming/') else root/'build/legacy-atlas'/Path(name).name if name.startswith(scripts+'PBZRouteChunks/') else nav/name
+        source=documents[name] if name in documents else streamed/name[len(scripts+'PBZRouteStreaming/'):] if name.startswith(scripts+'PBZRouteStreaming/') else root/'build/legacy-atlas'/Path(name).name if name.startswith(scripts+'PBZRouteChunks/') else nav/name
         assert hashlib.sha256(z.read(name)).digest()==hashlib.sha256(source.read_bytes()).digest(),name
     print(f'PASS: complete archive, {len(names)} exact file matches, no collector-owned paths')
     print(f'PASS: archive, runtime, native adapter and documentation versions agree: {version}')
@@ -74,8 +76,14 @@ with zipfile.ZipFile(archive) as z:
         assert len(owners)==1 and 'Quest' in owners[0]['name'], 'download takes ownership of another mod'
         tracker=next(m for m in mods if m['name']=='Map Collectible Tracker')
         assert not any(key(f['target'],f['fileName']) in entries for f in tracker['files'])
-        original=root/'Map_Collectible_Tracker_1.0.9/platform/steam/ue4ss/Mods'
-        for file in tracker['files']:
-            source=original/file['fileName']
-            assert hashlib.sha256(source.read_bytes()).hexdigest().casefold()==file['sha256'].casefold(),source
-        print(f"PASS: all {len(tracker['files'])} collector source files match the manager's original hashes; zero overlap")
+        print(f"PASS: zero package overlap with all {len(tracker['files'])} installed collector paths")
+        # A newer collector is not the pinned 1.0.9 fixture. Keep ownership
+        # checks for every version, but never certify another version's sync.
+        if str(tracker.get('version',''))=='1.0.9':
+            original=root/'Map_Collectible_Tracker_1.0.9/platform/steam/ue4ss/Mods'
+            for file in tracker['files']:
+                source=original/file['fileName']
+                assert hashlib.sha256(source.read_bytes()).hexdigest().casefold()==file['sha256'].casefold(),source
+            print(f"PASS: all {len(tracker['files'])} collector source files match the manager's original 1.0.9 hashes")
+        else:
+            print(f"NOTE: installed collector {tracker.get('version','unknown')} differs from pinned 1.0.9; original-reference comparison is not applicable and its target sync is NOT certified")

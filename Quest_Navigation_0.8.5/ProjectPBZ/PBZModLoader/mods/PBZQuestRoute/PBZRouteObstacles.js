@@ -2,11 +2,11 @@
 const R=require('./PBZRouteCore');
 const key=p=>[p.x,p.y,p.z].map(x=>Math.round(x/6)).join(',');
 const id=(a,b)=>key(a)+'>'+key(b);
-function mark(leg,c,reason,hit,unknown=false){
+function mark(leg,c,reason,hit,unknown=false,block){
  const p=hit||R.lerp(c.a,c.b,.5);
  return {id:'route:'+c.edge+':'+id(c.a,c.b),world:leg.world,p,approach:c.a,edge:c.edge,
-  icon:c.kind===11?'locked':'barrier',label:c.kind===11?'折梯未放下，需从另一侧解锁':c.kind===12&&unknown?'跳落通道，落点待确认':unknown?'此段通路待确认':'道路受阻，需绕行',reason,unknown,
-  a:c.a,b:c.b,condition:c.kind};
+  icon:c.kind===11?'locked':unknown?'mechanism':'barrier',label:c.kind===11?'折梯未放下，需从另一侧解锁':c.kind===12&&unknown?'跳落通道，落点待确认':unknown?'此段通路待确认':'道路受阻，需绕行',reason,unknown,
+  a:c.a,b:c.b,condition:c.kind,...block};
 }
 function obstacle(leg,value){
  if(value.transient){leg.obstacles=(leg.obstacles||[]).filter(r=>!r.transient);value={...value,id:'route:audit:current'};}
@@ -36,7 +36,7 @@ function* sweep(w,a,b){
  let p=first;const n=Math.max(1,Math.ceil(R.xy(a,b)/62));
  for(let j=1;j<=n;j++){
   const row=w.step(p,R.lerp(a,b,j/n),true);
-  if(!row.p)return {ok:false,unknown:!row.hit,p:row.hit||p,safe:p,normal:row.normal,why:row.why};
+  if(!row.p)return {ok:false,unknown:!row.hit,p:row.hit||p,safe:p,normal:row.normal,why:row.why,block:row.block};
   p=row.p;yield p;
  }
  if(Math.abs(p.z-b.z)>125)return {ok:false,unknown:true,p,why:'destination is on another floor'};
@@ -57,7 +57,7 @@ class Auditor{
    if(near.d>18){
     const check=sweep(w,feet,near.p);let row;
     do{row=check.next();if(!row.done)yield;}while(!row.done);
-    if(!row.value.ok)return {mark:{...mark(leg,join,row.value.why,row.value.p,row.value.unknown),approach:feet},normal:row.value.normal};
+    if(!row.value.ok)return {mark:{...mark(leg,join,row.value.why,row.value.p,row.value.unknown,row.value.block),approach:feet},normal:row.value.normal};
    }
    self.safe=near.p;
    for(let i=near.i;i<leg.points.length-1;i++){
@@ -87,7 +87,7 @@ class Auditor{
     do{row=test.next();if(!row.done){self.safe=row.value;yield;}}while(!row.done);
     if(!row.value.ok){
      self.cache.delete(cacheKey);
-     return {mark:{...mark(leg,c,row.value.why,row.value.p,row.value.unknown),approach:row.value.safe||self.safe},normal:row.value.normal};
+     return {mark:{...mark(leg,c,row.value.why,row.value.p,row.value.unknown,row.value.block),approach:row.value.safe||self.safe},normal:row.value.normal};
     }
     clear(leg,c.edge,b);self.safe=b;self.cache.set(cacheKey,{at:now,p:b});
     if(self.cache.size>1800)self.cache.delete(self.cache.keys().next().value);

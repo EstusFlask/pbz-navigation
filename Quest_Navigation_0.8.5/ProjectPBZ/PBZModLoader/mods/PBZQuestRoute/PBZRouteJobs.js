@@ -19,22 +19,26 @@ class Planner {
   if(this.same(this.job?.request,request)&&!changed)return false;
   if(!force&&!changed&&this.blocked(request))return false;
   this.cancel('new target');this.stats.requests++;
-  const iterator=factory();
+  // Search budgets count execution, not time spent suspended between frames.
+  // Keep the separate wall-time limit below for the whole request.
+  const budget={cpu:0,active:null},searchClock=()=>budget.cpu+(budget.active===null?0:this.clock()-budget.active);
+  const iterator=factory(searchClock);
   this.failed=null;
-  this.job={request:{...request,start:{...request.start},p:{...request.p}},iterator,done,started:this.clock(),cpu:0,pumps:0,maxSlice:0};
+  this.job={request:{...request,start:{...request.start},p:{...request.p}},iterator,done,budget,started:this.clock(),cpu:0,pumps:0,maxSlice:0};
   this.report('planner queued',request.key);return true;
  }
  pump(){
   const t=this.clock();if(!this.job||t<this.nextPump)return false;
-  this.nextPump=t+16;const job=this.job;let result,steps=0;
+  this.nextPump=t+16;const job=this.job;let result,steps=0;job.budget.active=t;
   try{
    // Leave most of the game thread's frame for gameplay. The step bound also
    // works when a host has only a coarse millisecond clock.
    do{result=job.iterator.next();steps++;if(result.done)break;}while(steps<24&&this.clock()-t<1.25);
   }catch(error){
+   job.budget.active=null;
    this.cancel('planner error');this.failed=job.request;this.report('planner error',String(error));job.done(null,job.request,{error:String(error)});return true;
   }
-  const elapsed=this.clock()-t;job.cpu+=elapsed;job.pumps++;job.maxSlice=Math.max(job.maxSlice,elapsed);this.stats.pumps++;this.stats.steps+=steps;this.stats.maxSlice=Math.max(this.stats.maxSlice,elapsed);
+  const elapsed=this.clock()-t;job.budget.cpu+=elapsed;job.budget.active=null;job.cpu+=elapsed;job.pumps++;job.maxSlice=Math.max(job.maxSlice,elapsed);this.stats.pumps++;this.stats.steps+=steps;this.stats.maxSlice=Math.max(this.stats.maxSlice,elapsed);
   if(elapsed>50){
    this.cancel('slow native or setup step');this.failed=job.request;
    this.report('planner paused',job.request.key+' step='+Math.round(elapsed)+'ms; explicit retry required');

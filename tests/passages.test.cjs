@@ -19,6 +19,59 @@ function fixture(conditional=false){
  return {api:module.exports,g,world,native,UE:mocks.ue,start:{x:0,y:0,z:0},goal:{x:1400,y:0,z:1200}};
 }
 function run(job){let row,n=0;do{row=job.next();assert.ok(++n<100000);}while(!row.done);return row.value;}
+
+test('prepared actions immediately join the atlas even when the final hook is not loaded',()=>{
+ const h=fixture(false),columns={p:[0,0,0,500,0,0,650,0,600,900,0,600,1100,0,1200,1400,0,1200],v:[],
+  e:[0,1,1,0,0,0,2,3,1,0,0,0,4,5,1,0,0,0],arc:[0,~0,1,~1,2,~2],lab:[0,0,1,1,2,2],cells:[0,0,0,6],
+  strong:[0,0,1,1,2,2],dag:[],off:[0,1,2,3,4,5,6],weight:[500,250,300],sizes:[2,2,2],order:[0,1,2,3,4,5],metric:Array(24).fill(0)};
+ for(const a of h.g.actors){a.kind='ascent';a.both=false;}
+ h.g=new R.Graph({world:'fixture',n:6,actors:h.g.actors},null,columns);
+ const unloaded={x:1700,y:0,z:1800};
+ run(h.api.liveRouteJob(h.g,h.world,h.start,unloaded,h.native,{allowPartial:true}));
+ const atlas=h.g.route(h.start,h.goal,{startNode:0,endNode:5});
+ assert.ok(atlas,'preparing a real action chain left its atlas components disconnected');
+ assert.deepEqual(atlas.moves.map(m=>m.guid),['ladder','hook']);
+ assert.equal(h.g.path(5,0),null,'the two one-way ascents invented reverse movement');
+ const F=require(root+'/PBZRouteFeasibility'),checked=run(F.check(h.world,atlas,h.start));
+ assert.ok(checked.ok,'the graph lost walking/action boundaries while joining the chain');
+});
+
+test('real cave ascent metadata can reattach through simulated clear standing pads while retaining original upward edges',()=>{
+ const audit=require('./audit-bells.cjs'),g=audit.load(),h=fixture(false);
+ const suffixes=['1365678961','1894210710'];
+ const original=g.actors,selected=original.filter(a=>a.path&&suffixes.some(s=>a.guid.endsWith(s)));
+ assert.equal(selected.length,2);
+ for(const actor of selected){const index=original.indexOf(actor)+1;let upward=0;
+  for(let k=0;k<g.e.length;k+=6)if(g.e[k+2]===7&&g.e[k+5]===index)upward++;
+  assert.ok(upward,'the one-based actor index must retain its original ascent arcs');
+ }
+ // Focus this physical fixture on the two known actors. Raw graph routing
+ // below uses the restored complete actor table, not reindexed metadata.
+ g.actors=selected;
+ const levels=[-3589,-3300,-2641],floor=p=>{
+  const z=levels.slice().sort((a,b)=>Math.abs(a-p.z)-Math.abs(b-p.z))[0];return Math.abs(z-p.z)<180?{...p,z}:null;
+ };
+ const world={normal:.7,rise:45,slope:1,r:35,floorAt:floor,
+  hit:(a,b,body)=>{const p=floor(a);return !body&&p&&p.z<=a.z&&p.z>=b.z?{point:p,nz:1}:null;},
+  step:(a,b)=>{const p=floor(b);return p&&Math.abs(p.z-a.z)<80?{p}:{why:'climb required'};}};
+ const native=(a,b)=>Math.abs(a.z-b.z)<80?{points:[a,b],moves:[],walks:[],checks:[],gates:[],meters:R.dist(a,b)/100}:null;
+ const start={x:-55727,y:120389,z:-3589},goal={x:-57007,y:120429,z:-2641};
+ try{run(h.api.liveRouteJob(g,world,start,goal,native));}finally{g.actors=original;}
+ for(const suffix of suffixes)assert.ok(g.liveEdges.some(e=>e.move.guid.endsWith(suffix)&&e.move.kind==='ascent'),
+  'the checked standing pads for cave ascent '+suffix+' were not attached');
+ const S=require(root+'/PBZRouteSurface'),s=S.anchors(g,start)[0],e=S.anchors(g,goal,true)[0];
+ assert.ok(g.route(s.q,e.q,{startNode:s.id,endNode:e.id}),'restoring metadata broke the original atlas route');
+});
+
+test('a validated climb cannot attach through a wall between its entry and the atlas',()=>{
+ const h=fixture(false),actor={...h.g.actors[0],both:false},columns={p:[0,0,0,650,0,600],v:[],e:[],arc:[],lab:[0,1],
+  cells:[0,0,0,2],strong:[0,1],dag:[],off:[0,0,0],weight:[],sizes:[1,1],order:[0,1],metric:Array(8).fill(0)};
+ h.g=new R.Graph({world:'fixture',n:2,actors:[actor]},null,columns);
+ const old=h.world.step;
+ h.world.step=(a,b)=>a.x<250&&b.x>=250?{hit:b,why:'wall before climb'}:old(a,b);
+ run(h.api.liveRouteJob(h.g,h.world,{x:450,y:0,z:0},{x:800,y:0,z:600},h.native));
+ assert.equal(h.g.liveEdges.length,0,'an action with a valid entry bypassed an unwalkable atlas connector');
+});
 test('static authored ladders are considered and can chain with a rope-swing action',()=>{
  const h=fixture(false),trip=run(h.api.liveRouteJob(h.g,h.world,h.start,h.goal,h.native));
  assert.ok(trip,'static actions were excluded or only one action was tried');
@@ -161,4 +214,41 @@ for(const kind of ['drop','slide','rappel','zipline'])test(kind+' keeps its down
  assert.ok(trip,kind+' was dropped by the same standing-pad bias');
  assert.equal(trip.legs[0].moves.at(-1).kind,kind);
  assert.equal(run(h.api.liveRouteJob(h.g,h.world,h.start,h.goal,h.native)),null,'invented an uphill '+kind);
+});
+
+test('preflight discovers a loaded zipline even without an offline placement',()=>{
+ const h=fixture(false);h.g.actors=[];
+ const p=t=>({X:650-150*t,Y:0,Z:600*(1-t)});
+ const actor={GetName:()=> 'new-zipline',K2_GetActorLocation:()=>p(0),
+  RopeSpline:{GetSplineLength:()=>620,GetLocationAtDistanceAlongSpline:d=>p(d/620)}};
+ h.UE.Class={Find:name=>name.includes('RopeSliding')?name:null};
+ h.UE.GameplayStatics={GetAllActorsOfClass:(pawn,cls,out)=>{out.value={Num:()=>1,Get:()=>actor};}};
+ run(h.api.refreshLoadedJob(h.g,h.world,{},h.start,h.goal));
+ const found=h.g.observedPassages.get('new-zipline');
+ assert.ok(found,'the first twelve class limit permanently excluded the zipline class');
+ assert.equal(found.kind,'zipline');assert.equal(found.both,false);
+});
+
+test('many nearby bidirectional interactions cannot consume every connector before the second action',()=>{
+ const T=require(root+'/PBZRouteTransitions');
+ const features=Array.from({length:24},(_,i)=>({guid:'ladder-'+i,kind:'ladder',both:true,
+  runtimePath:[{x:100+i*5,y:0,z:0},{x:100+i*5,y:0,z:600}]}));
+ features[23]={guid:'hook',kind:'swing',both:true,runtimePath:[{x:300,y:0,z:600},{x:400,y:0,z:1200}]};
+ const trip=run(T.route({name:'test',start:{x:0,y:0,z:0},goal:{x:500,y:0,z:1200},features,clock:()=>0,
+  canTraverse:()=>true,landing:function*(f,p){return p;},
+  walk:function*(a,b){return a.z===b.z?{points:[a,b],meters:R.dist(a,b)/100}:null;}}));
+ assert.ok(trip,'all 48 probes were spent on start-to-action edges and the hook was never reached');
+ assert.equal(trip.legs[0].moves.at(-1).guid,'hook');assert.equal(trip.legs[0].moves.length,2);
+});
+
+test('a validated two-climb chain remains available as partial guidance when the final hook is not loaded',()=>{
+ const T=require(root+'/PBZRouteTransitions'),start={x:0,y:0,z:0},goal={x:1200,y:0,z:1400};
+ const features=[{guid:'cave-climb-1',kind:'ascent',runtimePath:[{x:200,y:0,z:0},{x:300,y:0,z:300}]},
+  {guid:'cave-climb-2',kind:'ascent',runtimePath:[{x:600,y:0,z:300},{x:700,y:0,z:900}]}];
+ const trip=run(T.route({name:'test',start,goal,features,clock:()=>0,allowPartial:true,canTraverse:()=>true,
+  landing:function*(f,p){return p;},validate:function*(){return true;},
+  walk:function*(a,b){return a.z===b.z?{points:[a,b],meters:R.dist(a,b)/100}:null;}}));
+ assert.ok(trip?.legs[0].partial,'the useful climbs disappeared because the final connector failed');
+ assert.deepEqual(trip.legs[0].moves.map(m=>m.guid),['cave-climb-1','cave-climb-2']);
+ assert.equal(trip.legs[0].points.at(-1).z,900);
 });

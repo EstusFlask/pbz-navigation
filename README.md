@@ -18,15 +18,16 @@
 - **源码位置**：`Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/`。`main.js → PBZRouteEntry.js → PBZQuestRoute.js`；历史目录名和内部 `PBZQuestRoute` 安装/配置标识保留。
 - **寻路分工**：`World/Surface/Feasibility` 管脚点、地面、碰撞和楼层；`LocalWalk/Repair/Goals` 管局部 A*、绕障和物品接近点；`Passages/Transitions/LiveLinks` 管已加载通道、入口出口、方向、解锁和多动作串联；`Jobs` 管分帧规划与取消。
 - **路网构建**：原始 `PBZRouteWorlds/Faces/Chunks` 保留。`tests/stream-atlas.cjs` 生成忽略的 `build/` 缓存；512 KiB 数据块打包为 `PBZRouteStreaming`，旧块路径用等价兼容入口保留。`Atlas` 分帧加载后自动重算；使用构建脚本打包，避免旧缓存混入安装包。
-- **显示与状态**：恢复 `0.8.7-fork.1` 单路线；`Blocked/Obstacles/Ink` 管安全前段、X 与未确认虚线。`PrivateRibbon/RibbonMath/RouteFiber` 管无拖尾细线网格，缓存同拓扑的颜色；场景线不越过已知障碍。`Arrival/Selection/Tracker` 管目标、到达与联动。
-- **当前范围**：`0.9.0` 多路线已撤回。当前只做单路线精简与等效性能优化；细节和验证依据见 [回退与精简](docs/COMPACT-SINGLE-ROUTE.md)。
+- **显示与状态**：恢复单路线；Blocked/Obstacles/Ink 区分安全前段、实测阻挡 X 与待确认机关/虚线。PrivateRibbon/RibbonMath/RouteFiber 管离地约 105 厘米的蓝色细线，缓存同拓扑颜色；场景线不越过已知障碍。
+- **当前范围**：0.10.3-fork.1 修补取消修补时丢失墙体、道路边归属错误、已知受阻尾段和已验攀爬前沿被回头候选覆盖；动作通过检查后及时接图，远端未加载不再阻止起点搜索，困住的长途粗网格细分并记录结束原因。保留约 105 厘米蓝线。132 项 JS 回归通过，两条指定路线尚未完整游戏验证。原图已有山洞两次向上攀爬，完整钩索链仍不确定，见 [铃铛审计](docs/BELL-ROUTE-AUDIT.md)。0.9.0 多路线已撤回，历史包和记录保留；此前精简依据见 [回退与精简](docs/COMPACT-SINGLE-ROUTE.md)。
 - **收集桥接**：导航自己的 `platform/steam/ue4ss/Mods/PBZQuestRouteCompat/`，C++ 启动钩子在收集 Mod 的 VM 内连接目标/悬停服务，经 Saved JSON 与 JS 同步。`native/` 为入口源码；固定 UE4SS 1195 Shipping ABI，并校验原版收集 1.0.9 入口哈希。旧 JS 0.6.7 的小地图路线、图标放大、自动饰品提示未移植。
 - **排错入口**：读取游戏 `ProjectPBZ/PBZModLoader/loader.log`、`ProjectPBZ/Saved/PBZQuestRoute-log.txt`；目标快照通常在 `%LOCALAPPDATA%/ProjectPBZ/Saved/PBZQuestRoute-tracker.json`。上下层故障同时查规划起点是否过期、脚点高度、通道落点与状态、到达判定和 X 去重；不要把有预算的搜索失败宣称为不可达或全局最短。
 
 ```powershell
 node --expose-gc tests/stream-atlas.cjs
-node --test tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs
-python tests/run-lua-tests.py
+node --test tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs
+node tests/audit-bells.cjs
+py -3.12 tests/run-lua-tests.py
 python native/build-native.py --ue4ss "现有 UE4SS.dll 路径" --test
 python tests/build-patch.py
 python tests/verify-package.py

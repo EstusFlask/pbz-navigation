@@ -1,0 +1,51 @@
+Quest and Exploration Navigation - Fork 0.10.0-fork.1
+Date: 2026-11-12
+Baseline: 0.8.8-fork.1 / Git 8bcbba9. Single-route UI retained.
+
+PASS: 100 JavaScript regressions, zero failures/skips.
+Command: node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs
+- Real Ground module with simulated rays: dense legal stairs both directions, narrow cracks, wide pits and high ledges.
+- Loaded zipline discovery beyond the old twelve-class preflight and a crowded 24-feature two-action chain.
+- Production Planner scheduling: walking search first failed because suspended frames consumed its budget, then passed with execution-time accounting. The overall wall-time timeout still passes.
+- Main navigation planner: a 180 m trip checks and installs a short endpoint staircase link, retries the atlas and retains its distant streaming frontier; no unchecked reverse link or scripted walking action.
+- Opaque typed key locks, requirement changes, nonstandard map layers, checked bypass, floor/world exclusions, actual unlock release and live-audit key metadata.
+
+REAL DATA AUDIT, not live traversability or a new-build success rate:
+Command: node tests/audit-bells.cjs
+- 280797-node original Zhengdao world; 22 Lujiacun bells; 462 directed combinations.
+- 100 offline candidates; 362 disconnected-component pairs.
+- Great Corridor Bridge -> Xiao Zhang's Hideout: 198.80 m, only one explicit downward action. Retained following the user's cave/climb/grapple explanation, but the complete interaction chain is NOT certified.
+- Reverse: 186.37 m with an ascent action.
+- Cemetery <-> Mo Jizi's Cenotaph: disconnected in original atlas. Real-data regression discovers nearby opposite-network candidates without installing an unmeasured bridge.
+- Detailed report: docs/BELL-ROUTE-AUDIT.md; generated JSON: build/bell-route-audit.json.
+
+PASS: real Lua 5.4 original 1.0.9 target/hover/cancellation and file-JavaScript round trips.
+Command: py -3.12 tests/run-lua-tests.py
+The cached lupa dependency is CPython 3.12. Plain python currently selects 3.14 and cannot import that binary; no dependency or game files were changed to address this.
+
+PASS: rebuilt native adapter version 0.10.0-fork.1; ABI size, runtime SHA gate, mod filtering, original collector SHA gate and host dispatch.
+Command: python native/build-native.py --ue4ss D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll --test
+
+PASS: full archive, data and manager ownership validation.
+Commands: python tests/build-patch.py
+          python tests/verify-package.py --manager-state D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json
+- 1336 exact source-file matches; no duplicate archive entries; ZIP integrity passes.
+- 951 streamed modules, largest 524319 bytes; every column and actor-order hash matches original data.
+- All 291 legacy atlas compatibility chunk paths return original strings.
+- Runtime entries, native DLL, package fields, bilingual READMEs, install guide, changelog and included bell-audit report agree on version.
+- Manager recognizes an update to installed navigation 0.8.8-fork.1: 1329/1329 existing owned paths overlap.
+- Zero package overlap with all 90 installed collector-owned paths.
+
+CURRENT COMPATIBILITY LIMIT:
+The manager and installed collector are now 1.0.12, not the repository's original 1.0.9 reference. Its entry SHA is 69cd340bf377dde2196eb1f19862dffb7385db62922dfafdf2efdf0599677930; the pinned 1.0.9 entry SHA is 196e2780771516feb76603f60c05f81921cfa32346024b6e0ee2c897ec3c5192.
+The initial manager check rejected that reference mismatch. The verifier now always checks ownership overlap and compares original source hashes only for installed version 1.0.9; it explicitly reports other versions as NOT certified. The adapter's exact hash gate was preserved, so 1.0.12 collectible sync remains disabled. Bell/map-pin navigation is independent. This validation is not a 1.0.12 compatibility claim.
+
+PASS: git diff --check.
+PASS: no Git diff in original collector, world, face or chunk source directories.
+No game installation, manager-state write or remote publication was performed. Prior archives and validation records remain present.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.10.0-fork.1.zip
+Bytes: 119646882
+SHA256: 25aa6e99a3b464ab9421e5ec6caf43bb82d5f4b9f077750ce76cea73976ed9d4
+
+Both user-reported bell routes still require live-game testing. Do not claim that all 462 combinations now work. Lock constraints are position-based approximations and do not query inventory ownership. Endpoint recovery is bounded and cannot repair every disconnected island. The original atlas was not regenerated. No FPS or global-shortest-path claim.

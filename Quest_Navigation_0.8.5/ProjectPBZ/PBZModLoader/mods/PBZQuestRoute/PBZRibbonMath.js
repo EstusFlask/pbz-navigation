@@ -31,7 +31,7 @@ function around(raw){
  for(let i=1;i<curve.length;i++){const a=curve[i-1],b=curve[i],n=Math.ceil(dist(a,b)/53);for(let k=1;k<=n;k++)append(out,lerp(a,b,k/n));}
  return out;
 }
-const influence=1000,farLift=18,kneeLift=48,tailLength=155;
+const influence=1000,farLift=105,tailLength=155;
 const smooth=x=>{x=R.clamp(x);return x*x*(3-2*x);};
 function road(raw){
  const points=around(raw),arc=[0];
@@ -67,15 +67,15 @@ function attachment(prev,anchor,foot,now){
 function frame(r,m,anchor,motion){
  const origin=floor(r,m.arc),ahead=floor(r,Math.min(r.length,m.arc+35));
  const planar=Math.hypot(ahead.x-origin.x,ahead.y-origin.y)||1;
- const startTail=smooth((r.length-m.arc)/tailLength),nearHeight=R.clamp(anchor.z-origin.z,30,64);
- const baseHeight=origin.z+nearHeight*startTail+10*(1-startTail);
+ const startTail=smooth((r.length-m.arc)/tailLength),nearHeight=R.clamp(anchor.z-origin.z,90,120);
+ const baseHeight=origin.z+nearHeight*startTail+farLift*(1-startTail);
  return {start:m.arc,anchor,shift:{x:anchor.x-origin.x,y:anchor.y-origin.y},
   side:{x:-(ahead.y-origin.y)/planar,y:(ahead.x-origin.x)/planar},
   nearHeight,startTail,baseHeight,motion};
 }
 function at(r,s,f){
  const p=floor(r,s),endDist=Math.max(0,r.length-s),tail=smooth(endDist/tailLength);
- const rest=farLift*tail+10*(1-tail);
+ const rest=farLift;
  if(!f){p.z+=rest;return p;}
  const d=Math.max(0,s-f.start),restWeight=smooth(d/influence),pull=1-restWeight;
  const startTail=f.startTail;

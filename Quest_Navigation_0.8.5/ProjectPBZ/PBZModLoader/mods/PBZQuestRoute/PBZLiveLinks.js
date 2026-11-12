@@ -29,4 +29,27 @@ function attach(g,feature,curve,support,walk) {
    {kind:feature.kind,guid:feature.guid,p:entry,end:exit,fold:feature.fold,scripted:feature.kind==='lift'&&!feature.both,walkIn:start.points.length-1,walkOut:start.points.length+travel.length-1});
  }
 }
-exports.attach=attach;
+// Reuse a prepared action, including its checked standing positions and
+// direction. Only measured walking connectors may attach it to the atlas.
+function* attachCheckedJob(g,action,walk,options={}){
+ if(!g.addLiveEdge||!g.bin||!g.canTraverse(action.feature))return false;
+ const {feature,path,entry,exit}=action,clock=options.clock||Date.now;
+ if(g.liveEdges?.some(link=>link.move.guid===feature.guid&&link.move.kind===feature.kind&&
+  R.dist(link.move.p,entry)<35&&R.dist(link.move.end,exit)<35))return false;
+ let start,end;
+ for(const row of pads(g,entry)){
+  if(options.deadline!==undefined&&clock()>options.deadline)return false;
+  const points=yield* walk(row.q,entry);if(points){start={id:row.id,points};break;}
+ }
+ if(!start)return false;
+ for(const row of pads(g,exit)){
+  if(options.deadline!==undefined&&clock()>options.deadline)return false;
+  const points=yield* walk(exit,row.q);if(points){end={id:row.id,points};break;}
+ }
+ if(!end)return false;
+ const travel=path.map((p,i)=>i&&feature.kind==='lift'?{...p,liftTravel:true}:p);
+ return g.addLiveEdge(start.id,end.id,[...start.points,...travel,...end.points],
+  {kind:feature.kind,guid:feature.guid,p:entry,end:exit,fold:feature.fold,scripted:feature.kind==='lift'&&!feature.both,
+   walkIn:start.points.length-1,walkOut:start.points.length+travel.length-1});
+}
+exports.attach=attach;exports.attachCheckedJob=attachCheckedJob;

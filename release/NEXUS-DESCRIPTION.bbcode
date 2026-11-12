@@ -3,7 +3,7 @@ This page is unpublished. A public fork will only be released after permission t
 本页保持未发布；取得修改和重新发布原 Mod 及随包资产的明确许可后再公开。
 
 [size=5][b]Quest and Exploration Navigation - Fork[/b][/size]
-[b]Version 0.8.6-fork.1 | Experimental[/b]
+[b]Version 0.10.3-fork.1 | Experimental[/b]
 Show routes to quests, map pins and collectibles on the regional map, then follow a guiding thread in the game world.
 
 This community fork is based on [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333's Quest and Exploration Navigation 0.8.5-beta[/url] and the local-fix5 patches. It adds route checks, local obstacle detours, fixes for traversal connections and target sync with Map Tracker Plus (UE4SS) 1.0.9.
@@ -12,11 +12,15 @@ The original author has stopped maintaining the mod. kurosakana maintains this f
 
 [size=4][b]Changes from upstream[/b][/size]
 [list]
+[*][b]0.10.3 follow-up repairs.[/b] Preserve measured walls across cancelled repairs and attribute failed portals correctly. Clip blocked atlas tails; keep checked multi-climb frontiers when the final grapple is unavailable. Attach validated action pads while planning, refine trapped broad-grid starts and retain local progress when the distant goal is unloaded. Both complete routes still require game verification.
+[*][b]0.10.2 route repairs.[/b] Inspect authored cave corridors first; hide unchecked native/direct tails and retain pending action chains. Repair walking gaps without losing climbs/grapples, try resident interactions, check short downward drops, and extend bounded scene searches to 200 m. Pending passages use mechanism hints; X marks measured obstructions. The blue scene strand runs about 105 cm above ground. Both reported routes still require fresh in-game testing.
+[*][b]0.10.1 bell targeting.[/b] Preserve the selected bell location instead of replacing it with a reachable road. Fix the reported cenotaph target snapping about 101 m away; bound ordinary road snapping to 13 pixels. Retain traversal edge IDs so rejected landings allow alternate candidates. Fresh live-game testing remains required.
+[*][b]0.10.0 routing repairs.[/b] Refine dense stair/crack support checks, scan all resident traversal classes including ziplines, defer action connectors and count execution time rather than frame suspension. Try physically checked endpoint links on long trips and preserve typed lock/item hints. The two reported bell routes still need in-game verification; the 198.8 m cave-detour candidate is retained, not certified.
 [*][b]Route checks.[/b] Check that the ground supports the route and that the player character has enough room to pass (capsule clearance). Compare feasible walking distances in three dimensions and reject fallback paths that are known to be blocked.
-[*][b]Local detours.[/b] Try to route around rocks and other obstacles within about 120 m. While searching, or if a search fails, the map keeps the checked part of the route, an X at the blockage and a dashed tail for the unchecked remainder. The world thread stops at the end of the checked section.
+[*][b]Local detours.[/b] Normal scene searches cover about 120 m; long searches extend to 200 m within node/time limits. Keep checked map prefixes and pending authored tails. Failed native/direct candidates have no unchecked tail; the world strand stops at the checked frontier.
 [*][b]Collectible approach points.[/b] Guide the player to interaction range on the same floor as the item. Account for uneven ground so that a straight height interpolation is not mistaken for a floor change.
 [*][b]Traversal connections.[/b] Connect recognized ladders, climbs, rope/grapple links, slides and lifts. Check their direction and unlock state. You still perform each traversal action yourself.
-[*][b]World thread.[/b] Replace the original trailing particles with a thin-line mesh that appears immediately. Keep its endpoints above ground and limit collision checks on distant sections and repeated updates.
+[*][b]World thread.[/b] Replace the original trailing particles with a thin-line mesh that appears immediately. Use blue at about 105 cm above ground, including endpoints; check the raised shape and limit distant checks and repeated updates.
 [*][b]Map Tracker Plus 1.0.9 sync.[/b] Use an adapter included with navigation to sync selected targets, target changes, collection and cancellation. Hover over an item and middle-click to select it with its actual height preserved.
 [/list]
 
@@ -86,7 +90,7 @@ Keep your settings, the collector and shared runtimes. To return to the original
 The fork code and this description were produced with AI assistance. The AI-Generated Content and AI Media tags are declared. The cover is a schematic title card, not an in-game screenshot.
 
 [size=5][b]中文说明[/b][/size]
-[b]任务与探索导航 - Fork，0.8.6-fork.1（实验版）[/b]
+[b]任务与探索导航 - Fork，0.10.3-fork.1（实验版）[/b]
 在区域地图上查看任务、地图标记和收集品的路线，关闭地图后，沿场景中的引导线前进。
 
 本分支基于 [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333 的原版 0.8.5-beta[/url] 与本地 fix5 补丁。主要改动包括路线校验、局部绕障、通行连接修复，以及 Map Tracker Plus（UE4SS）1.0.9 的收集目标联动。
@@ -95,8 +99,12 @@ The fork code and this description were produced with AI assistance. The AI-Gene
 
 [b]本版改动[/b]
 [list]
+[*][b]0.10.3 复测修补：[/b]移动取消不丢失已测墙体，走廊撞墙封对边，裁掉已知受阻尾段。最后钩索暂不可用时保留已验连续攀爬；动作通过检查后及时接图，起点窄出口细分搜索，远端未加载也保留起点进度。两条路线仍未完整游戏验证。
+[*][b]0.10.2 路线修补：[/b]优先检查山洞候选；失败原生/直线不画未验尾段，保留待确认动作链。局部修补保留攀爬/钩索并尝试驻留交互补接，检查短跳落，长途实景搜索可到 200 米。待确认用机关提示，实测阻挡用 X。场景线改蓝、离地约 105 厘米。两条指定路线仍需实景复测。
+[*][b]0.10.1 铃铛目标修复：[/b]中键/手柄选择铃铛保留其坐标，修复衣冠冢目标吸附至约 101 米外；普通落旗吸附限制为 13 像素。攀爬动作保留边编号，落点失败后可排除对应连接并继续探索。新版实景路线仍需复测。
+[*][b]0.10.0 寻路修补：[/b]密集台阶/窄裂缝支撑细分、全部驻留交互类含滑索预扫描、延迟动作连接检查，以及只计执行时间的分帧搜索预算。长途端点经碰撞检查后才补接，保留门锁及钥匙/物品提示。大廊桥至小张藏身处和乱葬岗至墨玑子衣冠冢仍需游戏复测；198.8 米山洞绕行候选保留，尚未确认完整动作链。
 [*][b]路线校验：[/b]确认脚下有地面、角色有足够空间通过，检查角色胶囊体是否碰撞。比较可行路线的三维步行长度，排除已知受阻的备用路径。
-[*][b]局部绕障：[/b]尝试在约 120 米范围内绕过石头等障碍。搜索期间或搜索失败后，地图保留已检查的前段，在阻挡处显示 X，未确认的后段用虚线表示。场景引导线只延伸到已检查的位置。
+[*][b]局部绕障：[/b]常规搜索约 120 米，长途实景搜索可到 200 米，受节点和时间预算限制。地图保留已检查前段与原路网待确认虚线；失败的原生/合成直线不保留未检查尾段，场景线停在已检查位置。
 [*][b]收集品接近点：[/b]引导至物品同层、可交互范围内的位置。处理起伏地面，避免将直线高度插值误判为换层。
 [*][b]通行连接：[/b]串联已识别的梯子、攀爬、抓绳/钩索、滑索和升降通道，并检查方向与解锁状态。具体动作仍需玩家执行。
 [*][b]场景引导线：[/b]用即时显示的细线网格替换原拖尾粒子，让端点保持在地面上方，并限制远段碰撞检查和重复更新。

@@ -1,0 +1,37 @@
+Quest and Exploration Navigation - Fork 0.10.2-fork.1
+Date: 2026-11-12
+Baseline: delivered 0.10.1-fork.1; previous ZIPs and validation records retained.
+
+FIELD EVIDENCE: failures of 0.10.1, not successful runs of this candidate.
+Read-only copies: build/field-20261112-0128/loader.log and route-log.txt.
+Cave target and cenotaph target now match the original bell coordinates.
+Cave candidate was delayed behind native repair and moving-origin restarts; native body collisions and unconfirmed actions were visible as misleading guidance.
+Cemetery start is disconnected in the original atlas; slope rejections persisted while the player moved to the upper route.
+Details, coordinates, timestamps and limitations: docs/BELL-ROUTE-AUDIT.md.
+
+RED -> GREEN: production planner, route feasibility/repair, blocked progress and renderer seams.
+New fixtures cover atlas-first ordering, pending cave action retention, detour progress away from the goal, original 198.8 m cave data with simulated loading limits, simulated 180 m uphill routing, retaining surrounding actions and adding a checked traversal connector, downward-only short drops and obstructed descent rejection, safe search progress without straight tails, unsupported landing prefixes, slope-origin stability, and the blue raised strand with actual-height collision checks.
+Physics, scene loading and interaction fixtures are simulated; original atlas data is real.
+
+PASS: 119 JavaScript regressions, zero failures/skips.
+Command: node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs
+Output: build/field-20261112-0128/js-tests-0.10.2.txt.
+PASS: original collector 1.0.9 real Lua 5.4 target/hover/cancel and file-JS-Lua round trips.
+Command: py -3.12 tests/run-lua-tests.py
+
+PASS: rebuilt native adapter 0.10.2-fork.1, ABI, runtime hash, collector hash and host dispatch tests.
+Command: python native/build-native.py --ue4ss D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll --test
+PASS: complete archive, source bytes, version synchronization, stream/legacy data equivalence, ZIP integrity and manager ownership checks.
+Commands: python tests/build-patch.py
+          python tests/verify-package.py --manager-state D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json
+Outputs: build/field-20261112-0128/native-0.10.2-fork.1.txt, package-build-0.10.2-fork.1.txt, package-verify-0.10.2-fork.1.txt.
+PASS: git diff --check; no diff in original collector/world/face/chunk source directories.
+PASS: manager-state SHA256 unchanged before/after builds and ownership checks.
+No game installation, manager-state write or remote publication performed.
+Installed collector 1.0.12 is not certified by the adapter pinned to original 1.0.9.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.10.2-fork.1.zip
+Bytes: 119655557
+SHA256: 6cb680dc999659ed2f2630cee303cb502cfada3eee1d094d1792d1a7c7591a80
+
+Neither complete requested route has been verified in a live game with this candidate. Original disconnected components and incomplete interaction chains remain possible. Normal local scene search is about 120 m, long-range search at most 200 m, bounded by scene residency, nodes, execution budget and a 30-second wall limit. No full-map success-rate, global-shortest-path or FPS claim.

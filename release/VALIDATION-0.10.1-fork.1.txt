@@ -1,0 +1,55 @@
+Quest and Exploration Navigation - Fork 0.10.1-fork.1
+Date: 2026-11-12
+Baseline: delivered 0.10.0-fork.1. Previous archive and validation record retained.
+
+FIELD EVIDENCE (old build), not a successful run of this candidate:
+- Read-only capture of the complete retained PBZModLoader/loader.log session.
+- One mouse pin at local 01:00:59, snap distance 38 px.
+- All 55 retained atlas-endpoint records used goal [24160,67840,6769].
+- Bell_YXZR_004 in the original table is [14107,69330,6393], about 101 m away.
+- At 01:05:21, player [14040.85,69120.15,6370.76] was about 2.2 m from the bell; goal was still the remote road.
+- 80 rejected traversal-landing records. Authored action moves lacked their edge ID, so landing failures returned -1 and could not exclude the failed graph edge.
+- Field copies are retained in ignored build/field-20261112/. Detailed evidence and scope: docs/BELL-ROUTE-AUDIT.md.
+
+RED -> GREEN, production seams:
+Command: node --test tests/map-target.test.cjs
+- Before fixing the map selection: native bell became an ordinary pin; an empty-paper click chose the remote road.
+- Integration fixture executes onMap, Items and Picker, using the reported wrong goal and original bell coordinates.
+- Map projection, widgets and world physics are simulated, not a replay of measured game UI pixels.
+- Final coverage includes mouse bell selection, absent focus-row fallback for activated bells, hidden-bell exclusion, gamepad repeat suppression, bounded ordinary road selection and disconnected-near-road selection.
+
+Command: node --test --test-reporter=spec --test-name-pattern="unsupported authored" tests/planning.test.cjs
+- Before preserving action edge IDs: main planner repeatedly rejected the stale landing and returned an incomplete route.
+- After fixing: failed edge 0 is excluded and supported-detour action is selected.
+- Terminal action landing support is separately verified; physical thresholds were not relaxed.
+
+PASS: 108 JavaScript regressions; zero failures/skips.
+Command: node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs
+Output capture: build/field-20261112/js-tests-0.10.1.txt.
+
+PASS: real Lua 5.4 original collector 1.0.9 selection/hover/cancellation and file-JavaScript round trips.
+Command: py -3.12 tests/run-lua-tests.py
+
+PASS: native adapter rebuilt as 0.10.1-fork.1, ABI size, runtime SHA gate, mod filtering, collector SHA gate and host dispatch.
+Command: python native/build-native.py --ue4ss D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll --test
+
+PASS: full archive, data and manager ownership checks.
+Commands: python tests/build-patch.py
+          python tests/verify-package.py --manager-state D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json
+- 1336 exact source-file matches; no duplicate archive paths; ZIP integrity passes.
+- 951 streamed modules, largest 524319 bytes; column and actor metadata hashes match the original.
+- 291 legacy atlas entry paths retain exact original strings.
+- Runtime entries, native adapter, release fields and included documentation agree on version.
+- Manager recognizes an update to installed navigation 0.10.0-fork.1: 1331/1331 owned paths overlap.
+- Zero overlap with all 90 installed collector paths.
+- Installed collector remains 1.0.12; the bridge is still pinned to original 1.0.9 and 1.0.12 sync is NOT certified.
+
+PASS: git diff --check.
+PASS: no diff in original collector/world/face/chunk source directories.
+No game installation, manager-state write or remote publication was performed.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.10.1-fork.1.zip
+Bytes: 119650037
+SHA256: db13835b55b6b0efc9744d4922746166a46e8719baf596e7544cf626ef99a159
+
+This candidate has not completed the two requested routes in a live game. Re-select the bell after updating; the previous session's road pin is not a bell destination. Original graph disconnections and incomplete action coverage remain possible. No full-map success-rate, global-shortest-path or FPS claim.

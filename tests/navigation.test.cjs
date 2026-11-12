@@ -184,6 +184,18 @@ test('the end of the drawn ribbon stays above a flat supporting floor',()=>{
     const r=B.road([{x:0,y:0,z:0},{x:1000,y:0,z:0}]);
     for(let s=0;s<=r.length;s+=10)assert.ok(B.at(r,s,null).z>=6,'rendered endpoint goes under the floor');
 });
+
+test('the blue strand stays at crouched-head height along the whole route and checks that height',()=>{
+ const r=ribbon();r.state.world.anchor=()=>({x:0,y:0,z:105});
+ r.state.world.threadHit=(a,b)=>a.z>80&&b.z>80&&a.x<1700&&b.x>=1700?{point:{x:1700,y:0,z:105}}:null;
+ for(let i=0;i<35;i++){r.threads.show(r.state);r.advance(17);}
+ assert.ok(r.drawn.some(ps=>ps.at(-1).x>1600));
+ assert.ok(r.drawn.every(ps=>ps.every(p=>p.z>=90&&p.z<=120)),'part of the strand still drops to knee or floor height');
+ assert.ok(r.drawn.every(ps=>ps.every(p=>p.x<1700)),'collision was checked below the actual raised strand');
+ const {mesh}=load('PBZRouteFiber',{ue:{ESplineCoordinateSpace:{}},'./PBZRouteWorld':{}});
+ const cols=mesh([{x:0,y:0,z:105},{x:100,y:0,z:105}],{x:0,y:0,z:0}).col;
+ assert.ok(cols.every(c=>c[2]>c[0]*2&&c[2]>c[1]),'the mesh is not blue');
+});
 test('a walking step cannot skip a hole or a high ledge between its endpoints',()=>{
     const {Ground}=load('PBZRouteWorld',{ue:{},puerts:{}});
     const make=floor=>({rise:45,slope:1,normal:.7,hit(a,b,body){if(body)return null;const z=floor(b.x);return z!==null&&z<=a.z&&z>=b.z?{point:{x:b.x,y:b.y,z},nz:1}:null;}});
