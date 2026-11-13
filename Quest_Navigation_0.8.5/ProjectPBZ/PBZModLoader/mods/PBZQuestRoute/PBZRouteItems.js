@@ -86,6 +86,29 @@ exports.findRow = findRow;
 exports.pickItem = pickItem;
 exports.mapIntent = mapIntent;
 exports.readItem = readItem;
+function collectible(item){
+    return !!item&&!item.tracked?.collected&&!/^pbz:(bell|quest|player|soul|lock|mechanism|wharf):/i.test(item.id)&&
+        !/^(bell|quest|player|soul|lock|mechanism|wharf)$/i.test(item.tracked?.kind||'');
+}
+// Lua markers live in a separate VM and never enter the native focusItemMap.
+// Use its currently displayed marker set, then the same world-to-map transform.
+function directionalItems(host,width,height,markers,project,belongs){
+    const items=new Map();
+    for(const [id,row] of host.focusItemMap||[]){
+        const item=readItem(host,id,row,width,height);
+        if(collectible(item)&&belongs(item.area))items.set(item.id,{...item,slotID:id});
+    }
+    for(const raw of markers||[]){
+        if(!belongs(raw.mapID)||raw.collected||raw.visible===false)continue;
+        const p=raw.location;if(!Array.isArray(p)||p.length<3||!p.slice(0,3).every(Number.isFinite))continue;
+        const point={x:p[0],y:p[1],z:p[2]},uv=project(point,raw.mapID);
+        const item={id:raw.key,area:lower(raw.mapID),p:point,uv,provider:'187',tracked:raw,name:raw.title||raw.name||''};
+        if(collectible(item))items.set(item.id,item);
+    }
+    return [...items.values()].filter(item=>item.uv&&Number.isFinite(item.uv.x+item.uv.y)&&(item.uv.x!==0||item.uv.y!==0)&&
+        item.uv.x>=0&&item.uv.y>=0&&item.uv.x<=1&&item.uv.y<=1);
+}
+exports.directionalItems=directionalItems;
 // A bell's actor location is the destination. Road connectivity must never
 // move an icon selection to another component or another floor.
 function pickBell(host, uv, width, height, bells, project, active=[]) {

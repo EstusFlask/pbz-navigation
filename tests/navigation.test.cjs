@@ -130,6 +130,16 @@ test('a wall which closes after auditing clips the cached far ribbon', () => {
     for(let i=0;i<30;i++){r.threads.show(r.state);r.advance(17);}
     assert.ok(r.threads.pool.filter(row=>row.on).every(row=>row.ps.every(p=>p.x<1700)));
 });
+
+test('expired far proofs hide their unchecked suffix on the first refresh frame', () => {
+    const r=ribbon();let closed=false;
+    r.state.world.threadHit=(a,b)=>closed&&a.x<1700&&b.x>=1700?{point:{x:1700,y:0,z:105}}:null;
+    for(let i=0;i<30;i++){r.threads.show(r.state);r.advance(34);}
+    assert.ok(r.threads.pool.some(row=>row.on&&row.ps.at(-1).x>3200));
+    closed=true;r.advance(1000);r.threads.show(r.state);
+    assert.ok(r.threads.pool.filter(row=>row.on).every(row=>row.ps.every(p=>p.x<1700)),
+        'an expired safe endpoint released the old wall-crossing suffix while revalidation was still pending');
+});
 test('route auditing does not consume two trace budgets within one frame',()=>{
     const {Auditor}=require(path.join(root,'PBZRouteObstacles'));
     const auditor=new Auditor();let steps=0,now=1000;

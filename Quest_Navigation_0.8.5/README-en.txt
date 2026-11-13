@@ -1,10 +1,13 @@
 Quest and Exploration Navigation - Fork
-Version: 1.1.1 (experimental release candidate)
+Version: 1.2.1 (experimental release candidate)
+1.2.1 fixes missing D-pad input with CommonUI/player-controller polling and shared event/repeat gating. Grouped maps retain collectibles from other streamed worlds and project using each item map ID. A live 1.2.0 snapshot supplied 175 markers; the new controller behavior still needs in-game retesting.
+1.2.0 revokes expired ribbon proofs, checks triangle-only collision and preserves checked map corners. Blocked suffixes stay unconfirmed. On the map, D-pad snaps to the nearest visible collectible in that direction, skipping native bells; A confirms its real 3D location. Moving the stick, changing map/layer or hiding the item releases focus. Local integration tests pass for both tracker versions; in-game retesting is pending.
 Based on azqwq333's Quest and Exploration Navigation 0.8.5-beta and local-fix5.
 Original: https://www.nexusmods.com/phantombladezero/mods/472
 Fork preparation: kurosakana. Code and documentation use AI assistance.
 
 CURRENT COVERAGE
+1.2.0 adds the wall-safety and D-pad changes described above. The earlier routing/traversal limits below still apply.
 1.1.1 recognizes native tracker bell keys and preserves bridge identity/coordinates. Unopened bells use overland routes, with checked local repair for blocked roadbook candidates. Closed gates remain blocked while open side passages may be searched. Activated tracker bells retain the earlier transfer comparison. New local detour search/result/validation logs explain attempts and outcomes. Live-game retesting remains pending.
 1.1.0 expands recognized traversal families, includes 487 placed interaction instances and 86 directional 3D roadbook candidates, and retains the two existing measured references. Candidates require current floor/collision/mechanism checks. Sailing and recognized attached cinematic rides preserve the selected target and replan afterwards. Of 140 worksheet links, 52 still lack geometry/identity/scene data. Full sailing paths, general story riding and dedicated chase routes are not implemented. See MOVEMENT-COVERAGE.md. No new live-game verification.
 1.0.2 keeps inactive bell targets on overland routes and compares loaded scene walking before committing to a transfer. Traversal actions can connect through checked walking-only atlas corridors (up to 120 m; each atlas search at most 750 ms wall time / 512 generator advances, within the action deadline). Down-slides use their top trigger; rappelling reads the native landing transform. Existing two directed reference courses and loading feedback remain. Physics are simulated in regressions; fresh in-game validation remains pending.

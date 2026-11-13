@@ -2,7 +2,8 @@
 const UE=require('ue'),P=require('puerts'),T=require('Library/TsHelper').default,Groups=require('Library/MapAreaGroups');
 const R=require('./PBZRouteCore'),Surface=require('./PBZRouteSurface'),W=require('./PBZRouteWorld');
 const {Threads}=require('./PBZPrivateRibbon'),{Ink}=require('./PBZRouteInk'),{Picker}=require('./PBZRoutePicker');
-const {pickItem,mapIntent,pickTrackerItem,pickBell}=require('./PBZRouteItems'),{Arrival}=require('./PBZRouteArrival');
+const {pickItem,mapIntent,pickTrackerItem,pickBell,directionalItems,readItem,findRow}=require('./PBZRouteItems'),{Arrival}=require('./PBZRouteArrival');
+const {PadFocus,directions:padDirections}=require('./PBZRoutePadFocus'),padFocus=new PadFocus();
 const {Tracker}=require('./PBZRouteTracker'),{Pointer}=require('./PBZRoutePointer');
 const Passages=require('./PBZRoutePassages'),Obstacles=require('./PBZRouteObstacles'),Drops=require('./PBZRouteDrops');
 const LocalWalk=require('./PBZRouteLocalWalk');
@@ -21,7 +22,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.1.1';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.2.1';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
@@ -679,6 +680,7 @@ function mapAcceptsItems(h){
   !h.pbzFilterOpen?.()&&!h.__pbzTrackerControls?.open;
 }
 function selectionIntent(h,uv,width,height,pad,type){
+ const focused=pad&&focusedPadItem(h,width,height);if(focused)return {item:focused,allowed:true,focus:focused.id};
  const intent=mapIntent(h,uv,width,height,pad,type);
  if(intent.item||!mapAcceptsPins(h))return intent;
  const area=low(h.CurrentDisplayMapID),name=worldOf(area),ms=T.getWorldSubsystem(h,UE.MapSubsystem.StaticClass());
@@ -732,10 +734,61 @@ function padSample(h){
  return {now:Date.now(),area:low(h.CurrentDisplayMapID),width,height,uv,
   allowed:!!S.world&&W.alive(S.pawn)&&(S.cfg.MapRoute||S.cfg.MinimapRoute||S.cfg.WorldThread)&&mapAcceptsPins(h)&&intent.allowed&&!intent.item};
 }
+function focusedPadItem(h,width,height){
+ const item=padFocus.current(h,width,height);if(!item)return null;
+ if(!S.world||!mapAcceptsPins(h)||h.getCurrentInputType()!==UE.ECommonInputType.Gamepad){padFocus.release(h);return null;}
+ const native=findRow(h,item.slotID||item.id),rows=globalThis.PBZMapTrackerBridge?.target?.markers?.()||[];
+ const valid=native?readItem(h,item.slotID||item.id,native,width,height):rows.some(p=>p.key===item.id&&!p.collected&&p.visible!==false&&
+  p.location[0]===item.p.x&&p.location[1]===item.p.y&&p.location[2]===item.p.z);
+ if(!valid){padFocus.release(h);return null;}
+ return item;
+}
+function movePadFocus(h,key,repeat,source='event'){
+ if(!mapAcceptsPins(h)||h.getCurrentInputType()!==UE.ECommonInputType.Gamepad||!S.world||!W.alive(S.pawn)||
+  !S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread)return false;
+ const size=h.CurrentMapSize?.(),width=Number(size?.X),height=Number(size?.Y);if(!(width>0&&height>0))return false;
+ const area=low(h.CurrentDisplayMapID),ms=T.getWorldSubsystem(h,UE.MapSubsystem.StaticClass());
+ // The displayed chart can include another streamed world (PangZhen/HouJie).
+ // Match the game's chart membership, while keeping the item's actual world.
+ const belongs=id=>low(id)===area||Groups.isInSameMapGroup(area,low(id))||low(h.mapIDToBigMapID(id)||id)===area;
+ const project=(p,id)=>{const at=ms.ProjectWorldLocationToMap(W.vec(p),id||h.CurrentDisplayMapID);return at?{x:Number(at.X),y:Number(at.Y)}:null;};
+ const service=globalThis.PBZMapTrackerBridge?.target,markers=service?.markers?.()||[],items=directionalItems(h,width,height,markers,project,belongs);
+ const item=padFocus.move(h,items,key,width,height,Date.now(),repeat);
+ if(!item){if(!repeat)log('pad focus',JSON.stringify({source,direction:key,chart:area,markers:markers.length,candidates:items.length,selected:null}));return items.length>0;}
+ // Suppress the stock bell latch until an actual stick move leaves this UV.
+ h.lastSnappedIconID='';h.pushSnapTargetID='';h.timeSinceAxisInput=999;h.SlotWidgetGroup?.ClearSelection?.();
+ h.FocusToPoint(new UE.Vector2D(item.uv.x,item.uv.y));
+ const row=findRow(h,item.slotID||item.id);if(row)h.selectMapSlot?.(row.widget,row.itemType,true);
+ if(item.provider==='187')service?.focus?.(item.tracked);
+ log('pad focus',JSON.stringify({source,direction:key,chart:area,markers:markers.length,candidates:items.length,selected:item.id}));
+ return true;
+}
+function padDirection(h,key,down,now,source){
+ if(!mapAcceptsPins(h)||h.getCurrentInputType()!==UE.ECommonInputType.Gamepad){padFocus.resetInput(h);return false;}
+ const sample=padFocus.input(h,key,down,now);if(!sample)return false;
+ if(sample.fire)sample.state.handled=movePadFocus(h,key,sample.repeat,source);
+ return sample.state.handled;
+}
+function pollPadDirections(h,state,now){
+ if(!mapAcceptsPins(h)||h.getCurrentInputType()!==UE.ECommonInputType.Gamepad){padFocus.resetInput(h);return;}
+ const router=T.getlocalPlayerSubsystem(h,UE.PBZUIActionRouterBase.StaticClass()),pc=h.GetOwningPlayer?.();
+ if(typeof router?.IsUIKeyHeld!=='function'&&typeof pc?.IsInputKeyDown!=='function')return;
+ const keys=state.directionKeys||=new Map();
+ for(const name of Object.keys(padDirections)){
+  let key=keys.get(name);if(!key){key=new UE.Key(name);keys.set(name,key);}
+  const held=!!router?.IsUIKeyHeld?.(key)||!!pc?.IsInputKeyDown?.(key);
+  padDirection(h,name,held,now,'poll');
+ }
+}
 function bindPadTap(proto){
- const original=proto.OnPreviewKeyDown,originalUp=proto.OnKeyUp;
+ const original=proto.OnPreviewKeyDown,originalUp=proto.OnKeyUp,originalSnap=proto.updateGamepadSnap;
+ if(typeof originalSnap==='function')Object.defineProperty(proto,'updateGamepadSnap',{value:function(...args){
+  const size=this.CurrentMapSize?.();if(size&&focusedPadItem(this,Number(size.X),Number(size.Y)))return;
+  return originalSnap.apply(this,args);
+ },writable:true,configurable:true});
  const onKey=function(geometry,event){
   const name=String(UE.KismetInputLibrary.GetKey(event)?.KeyName||'');
+  if(padDirections[name]&&safe('pad directional item',()=>padDirection(this,name,true,Date.now(),'event')))return UE.WidgetBlueprintLibrary.Handled();
   if(name==='Gamepad_FaceButton_Bottom'){
    const repeat=!!UE.KismetInputLibrary.InputEvent_IsRepeat?.(event);
    if(safe('pad map event',()=>confirmMapItem(this,'pad',repeat)))return UE.WidgetBlueprintLibrary.Handled();
@@ -747,6 +800,8 @@ function bindPadTap(proto){
   return original?original.apply(this,arguments):UE.WidgetBlueprintLibrary.Unhandled();
  };
  const onUp=function(geometry,event){
+  const name=String(UE.KismetInputLibrary.GetKey(event)?.KeyName||'');
+  if(padDirections[name])padFocus.input(this,name,false,Date.now());
   if(String(UE.KismetInputLibrary.GetKey(event)?.KeyName||'')==='Gamepad_FaceButton_Bottom'){
    const input=pads.get(this),gate=confirmations.get(this);
    if(input?.press){const sample=safe('pad release',()=>padSample(this));if(sample)input.up(sample);else input.cancel();return UE.WidgetBlueprintLibrary.Handled();}
@@ -756,7 +811,7 @@ function bindPadTap(proto){
  };
  Object.defineProperty(proto,'OnPreviewKeyDown',{value:onKey,writable:true,configurable:true});
  Object.defineProperty(proto,'OnKeyUp',{value:onUp,writable:true,configurable:true});
- log('pad input','event press/release for pins; shared item confirm and hold cancel');
+ log('pad input','D-pad nearest directional collectible; A confirm, hold cancel');
 }
 function pointerSample(h){
  const size=h.CurrentMapSize?.(),origin=h.PBZMapCanvasSlotWeak?.GetPosition?.(),pos=h.getMouseLocalPosition?.();
@@ -800,6 +855,7 @@ function onMap(h){
  let state=maps.get(h);if(!state){state={area:'',stamp:textFile(mousePath),press:new MapPress(),read:0,lockTime:0};maps.set(h,state);}
  const now=Date.now();
  const type=h.getCurrentInputType(),pad=type===UE.ECommonInputType.Gamepad,device=pad?'pad':'mouse';
+ if(pad)safe('pad direction poll',()=>pollPadDirections(h,state,now));else padFocus.resetInput(h);
  const pointer=pad?pads.get(h):pointers.get(h),sample=pointer&&(pad?padSample(h):pointerSample(h));
  if(sample)pointer.hold(sample);else pointer?.cancel();
  const eventActions=pointer?.take(area)||[],pointerAction=eventActions[eventActions.length-1];
@@ -863,7 +919,7 @@ function onMap(h){
  ink.draw(h,S,project,name,allowed,show());
 }
 function wrap(proto,k,fn){const orig=proto?.[k];if(typeof orig!=='function')return false;proto[k]=function(...args){const result=orig.apply(this,args);safe(k,()=>fn.apply(this,args));return result;};return true;}
-function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(globalThis.PBZModsMenu||=[]).push({id:'PBZQuestRoute',file:'PBZQuestRoute.txt',version:BUILD,title:t('Quest & Exploration Navigation - Fork','任务与探索导航 - Fork'),description:t('Tracker 1.0.9: left-click, or hover then middle-click. Blank map: middle-click to pin; hold 0.6 s to cancel. Minimap route, icon size and accessory hints apply to the legacy JS tracker only.','收集 1.0.9：左键追踪，或悬停后中键导航。地图空白处中键落旗、长按 0.6 秒取消。小地图路线、图标大小及饰品提示仅适用于旧 JS 收集版。'),settings:[
+function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(globalThis.PBZModsMenu||=[]).push({id:'PBZQuestRoute',file:'PBZQuestRoute.txt',version:BUILD,title:t('Quest & Exploration Navigation - Fork','任务与探索导航 - Fork'),description:t('Tracker 1.0.9/1.0.14: left-click or middle-click. Controller: D-pad selects a collectible, A confirms. Blank map: middle-click to pin; hold 0.6 s to cancel. Minimap route, icon size and accessory hints apply to the legacy JS tracker only.','收集1.0.9/1.0.14：左键追踪，或悬停后中键导航。手柄十字键选物品、A确认。地图空白处中键落旗、长按 0.6 秒取消。小地图路线、图标大小及饰品提示仅适用于旧 JS 收集版。'),settings:[
  {key:'MapRoute',type:'toggle',default:true,label:t('Map route','地图路线')},{key:'MinimapRoute',type:'toggle',default:true,label:t('Minimap route','小地图路线')},{key:'WorldThread',type:'toggle',default:true,label:t('Guiding thread','场景引路线')},
  {key:'LargeItemIcons',type:'toggle',default:true,label:t('Large unframed item icons','放大物品图标并移除黑底')},{key:'AutoAccessory',type:'toggle',default:true,label:t('Nearest accessory hint','自动提示最近饰品')},
  {key:'FogBellSense',type:'toggle',default:true,label:t('Sense a bell in fog','迷雾中洞照寻铃')},
@@ -876,7 +932,7 @@ exports.install=function(){if(globalThis.__PBZQuestRouteInstalled)return;dir=UE.
  wrap(sense,'K2_ActivateAbility',onSense);
  wrap(m,'Tick',function(){try{onMap(this);}catch(e){ink.hide(this);throw e;}});bindPadTap(m);bindMouse(m);chooseUI(m,'toggleTrackQuestPoint',false);
  const journal=require('UI/Widget/DisplayQuest').QuestUIMixinInterface.prototype;chooseUI(journal,'toggleHoveredQuestPoint',true);
- wrap(m,'FinishCurrentWidget',function(){ink.remove(this);maps.delete(this);pointers.delete(this);pads.delete(this);confirmations.delete(this);});wrap(m,'ReleaseScriptReferences',function(){ink.remove(this);maps.delete(this);pointers.delete(this);pads.delete(this);confirmations.delete(this);});
+ wrap(m,'FinishCurrentWidget',function(){ink.remove(this);maps.delete(this);pointers.delete(this);pads.delete(this);confirmations.delete(this);padFocus.clear(this);});wrap(m,'ReleaseScriptReferences',function(){ink.remove(this);maps.delete(this);pointers.delete(this);pads.delete(this);confirmations.delete(this);padFocus.clear(this);});
  tracker=new Tracker(function(id){const bridge=globalThis.PBZMapTrackerBridge;if(id==='Mods/PbzTrackerTarget'&&bridge?.target)return bridge.target;if(bridge?.load&&id.startsWith('Mods/Pbz'))return bridge.load(id.slice(5));return require(id);},trackerChanged,log);
  globalThis.PBZQuestRouteBridge={
   version:BUILD,

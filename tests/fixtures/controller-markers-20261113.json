@@ -1,0 +1,2281 @@
+{
+  "source": "Live 1.2.0 marker records captured with the map open on 2026-11-13. displayMapID is the grouped-chart replay scenario from loader.log; projection and input are simulated in tests.",
+  "displayMapID": "pangzhen",
+  "markers": [
+    {
+      "title": "黑石碎片",
+      "key": "pbz:native:heishiitemdata:pangzhen:pbz_pangzhen_wp-bp_rubbish_c_uaid_60cf848217ca909302_1604663733:-187292:116383:-1821",
+      "location": [
+        -187292.0,
+        116383.0,
+        -1821.0
+      ],
+      "name": "黑石碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "PangZhen"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:pangzhen:pbz_pangzhen_wp-bp_flowinteract_memoryflower_c_uaid_60cf848217ca6eb302_1458926999_092b07de4b0d14e4bfdca19298473c65:-186568:112745:-1469",
+      "location": [
+        -186568.0,
+        112745.0,
+        -1469.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "PangZhen"
+    },
+    {
+      "title": "未激活：铃铛 · 戏梦山庄正门",
+      "key": "pbz:bell:bell_xm_015",
+      "location": [
+        -187915.0,
+        114639.0,
+        -1056.0
+      ],
+      "name": "戏梦山庄正门",
+      "visible": true,
+      "collected": false,
+      "mapID": "PangZhen"
+    },
+    {
+      "title": "任务物品 · 失去光彩的破损玉佩",
+      "key": "pbz:world:flow:pbz_houjie_wp-bp_npcspawner_c_uaid_dc567bdb4e5eed0803_1152666059_884e0a644d6a4efd51b3709eb156242f",
+      "location": [
+        -249596.86,
+        40418.43,
+        -5728.728
+      ],
+      "name": "失去光彩的破损玉佩",
+      "visible": true,
+      "collected": false,
+      "mapID": "HouJie"
+    },
+    {
+      "title": "材料 · 抛光铸造金属",
+      "key": "pbz:world:pbz_houjie_wp-bp_rubbish_c_uaid_60cf84809909ccb202_1370091552",
+      "location": [
+        -265165.9,
+        99279.8,
+        -8260.754
+      ],
+      "name": "抛光铸造金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "HouJie"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bd52e102_1496427681_e5951fd94472896d40cff9966e9c8e73:-192656:84545:5176",
+      "location": [
+        -192656.0,
+        84545.0,
+        5176.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_60cf848a91ca9b9e02_1410806975_a141f5cb4e42665b78ca768dc7a848a0:-210201:99628:4074",
+      "location": [
+        -210201.0,
+        99628.0,
+        4074.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_60cf848a91ca9b9e02_1410902035_c920ebe44b5975d8e2a34ea375ab1259:-204431:82209:5625",
+      "location": [
+        -204431.0,
+        82209.0,
+        5625.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bdd0d802_1248445221_8622650747e21daa2505a4aa85cb04a2:-223996:60059:14538",
+      "location": [
+        -223996.0,
+        60059.0,
+        14538.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_60cf848a91ca9b9e02_1410673879_1ac1556d460486b78511e78b3dad54ff:-195571:65865:9168",
+      "location": [
+        -195571.0,
+        65865.0,
+        9168.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_60cf848a91ca9b9e02_1410916043_0c6f48ee43c7d4a4896a48a984f8c69f:-227451:69215:14923",
+      "location": [
+        -227451.0,
+        69215.0,
+        14923.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_60cf848a91ca9b9e02_1410653860_374beda74649aa9c57f84d904241ae80:-211696:110861:3767",
+      "location": [
+        -211696.0,
+        110861.0,
+        3767.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bd3de702_1755407861_df6305f64b3432cca16439b847a775bb:-215606:78522:7442",
+      "location": [
+        -215606.0,
+        78522.0,
+        7442.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bd1d0c03_1936181817_70beed5b446bb181a31335958e2c2ccf:-200820:84577:5321",
+      "location": [
+        -200820.0,
+        84577.0,
+        5321.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bde2ed02_1722488801_a99699f6453b10b9d0ed11bc73c84332:-229188:62298:14861",
+      "location": [
+        -229188.0,
+        62298.0,
+        14861.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bdd3d802_2141488761_d17c48834fc517e6330aa7b5e68e6b2d:-212946:95409:5124",
+      "location": [
+        -212946.0,
+        95409.0,
+        5124.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_60cf848a91ca9b9e02_1410691893_f03d30e84142c459211cac8605b0fe63:-210230:82058:6960",
+      "location": [
+        -210230.0,
+        82058.0,
+        6960.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bdd3d802_1948871757_adfd99024fd2d6f768c8598f9882c7bf:-187170:91221:4460",
+      "location": [
+        -187170.0,
+        91221.0,
+        4460.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bd52e102_1702703683_b90b524e4ac1df87c8be2286068644d8:-196919:85287:5443",
+      "location": [
+        -196919.0,
+        85287.0,
+        5443.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "记忆之花",
+      "key": "pbz:native:memoryflowerdata:ximeng:pbz_ximeng_wp-bp_flowinteract_memoryflower_c_uaid_74563c6bc2bd77ff02_1802284919_683d89694d71b556675739bac3764658:-207631:106683:3507",
+      "location": [
+        -207631.0,
+        106683.0,
+        3507.0
+      ],
+      "name": "记忆之花",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "龙柱",
+      "key": "pbz:native:longzhu:ximeng:pbz_ximeng_wp-bp_flowinteractactor_dragonpillar_c_uaid_60cf848a91ca9b9e02_1410757962_8e18730141395e6b8386f7ad0dd3d275+pbz_ximeng_wp-bp_flowinteractactor_dragonpillar_c_uaid_60cf848a91ca9b9e02_1410757962_c7ef952d4892f8117fabb0bf66e77de0:-231928:86285:7682",
+      "location": [
+        -231928.0,
+        86285.0,
+        7682.0
+      ],
+      "name": "龙柱",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "武器 · 偃月刀",
+      "key": "pbz:weapon:ximeng:renouyanyuedao:-189554:91291:3878",
+      "location": [
+        -189554.0,
+        91291.0,
+        3878.0
+      ],
+      "name": "偃月刀",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "杀气武器 · 虎炮",
+      "key": "pbz:shaqi:ximeng:tigercannon:-203186:84588:5520",
+      "location": [
+        -203186.0,
+        84588.0,
+        5520.0
+      ],
+      "name": "虎炮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品 · 影魅面具",
+      "key": "pbz:accessory:ximeng:ac_evadephantom:-214247:77890:7380",
+      "location": [
+        -214247.0,
+        77890.0,
+        7380.0
+      ],
+      "name": "影魅面具",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品 · 百相傩面",
+      "key": "pbz:accessory:ximeng:ac_magicweapon:-230793:65774:15588",
+      "location": [
+        -230793.0,
+        65774.0,
+        15588.0
+      ],
+      "name": "百相傩面",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品 · 月雷华灯",
+      "key": "pbz:accessory:ximeng:ac_electrified:-205027:61668:6906",
+      "location": [
+        -205027.0,
+        61668.0,
+        6906.0
+      ],
+      "name": "月雷华灯",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 圣躯府邸",
+      "key": "pbz:bell:bell_xm_006",
+      "location": [
+        -207295.0,
+        95239.0,
+        4265.0
+      ],
+      "name": "圣躯府邸",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 柳风亭",
+      "key": "pbz:bell:bell_xm_018",
+      "location": [
+        -218158.0,
+        97407.0,
+        6553.0
+      ],
+      "name": "柳风亭",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 吹火楼下",
+      "key": "pbz:bell:bell_xm_016",
+      "location": [
+        -219380.0,
+        73706.0,
+        9950.0
+      ],
+      "name": "吹火楼下",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 傩面祭台",
+      "key": "pbz:bell:bell_xm_019",
+      "location": [
+        -229874.0,
+        67442.0,
+        15435.0
+      ],
+      "name": "傩面祭台",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 演武场",
+      "key": "pbz:bell:bell_xm_012",
+      "location": [
+        -184997.0,
+        98092.0,
+        3139.0
+      ],
+      "name": "演武场",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 戏园",
+      "key": "pbz:bell:bell_xm_011",
+      "location": [
+        -195830.0,
+        76381.0,
+        6598.0
+      ],
+      "name": "戏园",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 戏梦山庄龙柱",
+      "key": "pbz:bell:bell_xm_dp_005",
+      "location": [
+        -230043.0,
+        83346.0,
+        7126.0
+      ],
+      "name": "戏梦山庄龙柱",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 后山",
+      "key": "pbz:bell:bell_xm_010",
+      "location": [
+        -214049.0,
+        68531.0,
+        10096.0
+      ],
+      "name": "后山",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 灵堂",
+      "key": "pbz:bell:bell_xm_003",
+      "location": [
+        -211341.0,
+        73912.0,
+        6693.0
+      ],
+      "name": "灵堂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 连廊",
+      "key": "pbz:bell:bell_xm_013",
+      "location": [
+        -215086.0,
+        84699.0,
+        6932.0
+      ],
+      "name": "连廊",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 冷荼书房",
+      "key": "pbz:bell:bell_xm_004",
+      "location": [
+        -209927.0,
+        101580.0,
+        3722.0
+      ],
+      "name": "冷荼书房",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 竹影道",
+      "key": "pbz:bell:bell_xm_017",
+      "location": [
+        -198776.0,
+        62627.0,
+        9448.0
+      ],
+      "name": "竹影道",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 圣躯心池",
+      "key": "pbz:bell:bell_xm_007",
+      "location": [
+        -200451.0,
+        90551.0,
+        4401.0
+      ],
+      "name": "圣躯心池",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "未激活：铃铛 · 戏梦山庄小张藏身处",
+      "key": "pbz:bell:bell_xm_xiaozhang_005",
+      "location": [
+        -202733.0,
+        69648.0,
+        7440.0
+      ],
+      "name": "戏梦山庄小张藏身处",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "琥珀 · 杀气琥珀碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd190003_1373911563",
+      "location": [
+        -204751.31,
+        105488.125,
+        3516.5854
+      ],
+      "name": "杀气琥珀碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "琥珀 · 杀气琥珀碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd1a0003_2017367741",
+      "location": [
+        -193221.45,
+        90203.35,
+        4192.4976
+      ],
+      "name": "杀气琥珀碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "琥珀 · 杀气琥珀碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd1a0003_2113456742",
+      "location": [
+        -175278.58,
+        81322.96,
+        8306.098
+      ],
+      "name": "杀气琥珀碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "黑石 · 黑石碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd1b0003_1111035919",
+      "location": [
+        -221440.34,
+        73340.484,
+        15352.403
+      ],
+      "name": "黑石碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "琥珀 · 杀气琥珀碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd1b0003_1192641920",
+      "location": [
+        -205693.16,
+        56323.914,
+        10687.38
+      ],
+      "name": "杀气琥珀碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd1b0003_1930897927",
+      "location": [
+        -227139.45,
+        70691.484,
+        14923.026
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd1c0003_1648855106",
+      "location": [
+        -223540.17,
+        59435.414,
+        14532.0
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕长板金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd1e0003_2045936459",
+      "location": [
+        -229600.95,
+        64697.797,
+        14753.592
+      ],
+      "name": "无瑕长板金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 污秽残晶",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd240003_2144487620",
+      "location": [
+        -216329.94,
+        67705.04,
+        10095.0
+      ],
+      "name": "污秽残晶",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂、嬴式机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd660003_1776147823",
+      "location": [
+        -202921.77,
+        61102.273,
+        10060.0
+      ],
+      "name": "熔合万物之溶剂、嬴式机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂、无瑕长板金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd690003_1472528357",
+      "location": [
+        -197258.1,
+        68062.28,
+        8910.0
+      ],
+      "name": "熔合万物之溶剂、无瑕长板金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属、熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6a0003_1804043551",
+      "location": [
+        -203144.53,
+        71524.55,
+        8035.0
+      ],
+      "name": "无瑕铸造金属、熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 影之消退符、大师药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6b0003_1109056728",
+      "location": [
+        -199752.02,
+        71760.07,
+        6710.0
+      ],
+      "name": "影之消退符、大师药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 影之消退符、大师药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6b0003_1406778729",
+      "location": [
+        -204512.33,
+        59047.27,
+        6810.0
+      ],
+      "name": "影之消退符、大师药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属、熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6b0003_2100027737",
+      "location": [
+        -185988.48,
+        78390.66,
+        6735.0
+      ],
+      "name": "无瑕铸造金属、熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂、熟练药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6c0003_1862821918",
+      "location": [
+        -180863.64,
+        84479.49,
+        7294.444
+      ],
+      "name": "熔合万物之溶剂、熟练药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品 · 刽子手头巾",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6d0003_1779634100",
+      "location": [
+        -183360.48,
+        87118.336,
+        7195.5503
+      ],
+      "name": "刽子手头巾",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属、无瑕双生金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6e0003_1345337287",
+      "location": [
+        -180084.73,
+        89834.445,
+        6045.038
+      ],
+      "name": "无瑕铸造金属、无瑕双生金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 穿行符、污秽残晶",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6e0003_1657420289",
+      "location": [
+        -179688.7,
+        101362.5,
+        4375.0
+      ],
+      "name": "穿行符、污秽残晶",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 兵刃逆炼符、提纯靛晶",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6f0003_1610313530",
+      "location": [
+        -186712.25,
+        90954.98,
+        4440.0
+      ],
+      "name": "兵刃逆炼符、提纯靛晶",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd6f0003_1783616531",
+      "location": [
+        -187073.88,
+        86260.31,
+        4325.0
+      ],
+      "name": "无瑕铸造金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 大师药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd700003_1335425710",
+      "location": [
+        -193602.83,
+        83377.27,
+        5150.0
+      ],
+      "name": "大师药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂、无瑕铸造金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd710003_1217958892",
+      "location": [
+        -193298.55,
+        82133.49,
+        6380.0
+      ],
+      "name": "熔合万物之溶剂、无瑕铸造金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂、天樟古木",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd710003_1804006899",
+      "location": [
+        -213040.83,
+        75339.14,
+        6955.0
+      ],
+      "name": "熔合万物之溶剂、天樟古木",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂、无瑕双生金属、无瑕长板金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd730003_1574005265",
+      "location": [
+        -223952.4,
+        89861.86,
+        7135.0
+      ],
+      "name": "熔合万物之溶剂、无瑕双生金属、无瑕长板金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕长板金属、无瑕双生金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd730003_2005168267",
+      "location": [
+        -214540.27,
+        111147.65,
+        4325.0
+      ],
+      "name": "无瑕长板金属、无瑕双生金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕长板金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd740003_1783844450",
+      "location": [
+        -220716.11,
+        108083.31,
+        5760.4355
+      ],
+      "name": "无瑕长板金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕双生金属、无瑕长板金属、精密机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd750003_1710780632",
+      "location": [
+        -210842.27,
+        98716.805,
+        4055.9827
+      ],
+      "name": "无瑕双生金属、无瑕长板金属、精密机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 天外异铜、万锻天外异铜",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd760003_1475859815",
+      "location": [
+        -200284.5,
+        89093.12,
+        4400.0
+      ],
+      "name": "天外异铜、万锻天外异铜",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属、无瑕双生金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd760003_1493912816",
+      "location": [
+        -201730.06,
+        89767.195,
+        4400.0
+      ],
+      "name": "无瑕铸造金属、无瑕双生金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "珍宝 · 云月金簪",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd90fe02_1197995028",
+      "location": [
+        -206493.33,
+        93116.62,
+        4240.8706
+      ],
+      "name": "云月金簪",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "珍宝 · 将军铜镜",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd90fe02_1771103035",
+      "location": [
+        -191869.45,
+        83688.03,
+        4523.7036
+      ],
+      "name": "将军铜镜",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "珍宝 · 金银香囊",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd90fe02_2021102037",
+      "location": [
+        -189546.14,
+        73472.164,
+        6841.8203
+      ],
+      "name": "金银香囊",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属、熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bd9df702_2006048174",
+      "location": [
+        -210346.08,
+        75362.19,
+        6707.872
+      ],
+      "name": "无瑕铸造金属、熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "黑石 · 黑石碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bdd6ff02_1700267753",
+      "location": [
+        -174914.31,
+        90015.414,
+        7042.2466
+      ],
+      "name": "黑石碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "黑石 · 黑石碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bdd7ff02_1160523931",
+      "location": [
+        -219597.84,
+        90741.805,
+        6838.83
+      ],
+      "name": "黑石碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 兵刃逆炼符、穿行符、无瑕长板金属 等4种",
+      "key": "pbz:world:pbz_ximeng_wp-bp_chest_c_uaid_74563c6bc2bdec0103_1550784488",
+      "location": [
+        -228059.02,
+        89679.19,
+        7090.037
+      ],
+      "name": "兵刃逆炼符、穿行符、无瑕长板金属 等4种",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 迷幻香灰",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd100103_1354651016",
+      "location": [
+        -209926.17,
+        98969.18,
+        4155.0
+      ],
+      "name": "迷幻香灰",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "黑石 · 黑石碎片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd160003_1756046033",
+      "location": [
+        -207561.5,
+        95654.68,
+        4323.671
+      ],
+      "name": "黑石碎片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品 · 羽扇残羽",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd170003_1523515210",
+      "location": [
+        -222670.44,
+        72677.43,
+        10391.108
+      ],
+      "name": "羽扇残羽",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 穿行符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd1b0003_1729203926",
+      "location": [
+        -230398.75,
+        65842.51,
+        15528.823
+      ],
+      "name": "穿行符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 兵刃逆炼符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd1c0003_1374409104",
+      "location": [
+        -223354.2,
+        66554.03,
+        14497.403
+      ],
+      "name": "兵刃逆炼符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd1c0003_1467414105",
+      "location": [
+        -228523.17,
+        61016.64,
+        14753.087
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熟练药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd1f0003_2104082637",
+      "location": [
+        -227908.34,
+        61689.848,
+        14920.819
+      ],
+      "name": "熟练药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 兵刃逆炼符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd1f0c03_1915271183",
+      "location": [
+        -213311.95,
+        86450.75,
+        7057.461
+      ],
+      "name": "兵刃逆炼符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 穿行符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd1f0c03_1931466184",
+      "location": [
+        -213162.14,
+        86440.945,
+        7139.0435
+      ],
+      "name": "穿行符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 万锻天外异铜",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd220003_2040244211",
+      "location": [
+        -220984.75,
+        68237.445,
+        14294.433
+      ],
+      "name": "万锻天外异铜",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd240003_1900224618",
+      "location": [
+        -222551.56,
+        72439.62,
+        11885.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 污秽残晶",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd300a03_1681219278",
+      "location": [
+        -199362.8,
+        89991.83,
+        4410.36
+      ],
+      "name": "污秽残晶",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 热魔火炭",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd35b802_1393077667",
+      "location": [
+        -230197.44,
+        63136.55,
+        14857.24
+      ],
+      "name": "热魔火炭",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd36b802_1384103847",
+      "location": [
+        -228333.2,
+        65871.59,
+        14465.456
+      ],
+      "name": "无瑕铸造金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd36b802_2113858852",
+      "location": [
+        -222245.03,
+        71925.17,
+        15413.504
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 嬴式机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd39b802_1235768383",
+      "location": [
+        -222037.34,
+        73740.54,
+        10371.0
+      ],
+      "name": "嬴式机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 禁忌天樟古木",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd40b802_1828612639",
+      "location": [
+        -202105.08,
+        68935.375,
+        7435.0
+      ],
+      "name": "禁忌天樟古木",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 极热魔火炭",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd40b802_1968052641",
+      "location": [
+        -195133.61,
+        77341.8,
+        6568.238
+      ],
+      "name": "极热魔火炭",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 星表",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd41b802_1334691823",
+      "location": [
+        -189572.7,
+        74219.836,
+        6940.0
+      ],
+      "name": "星表",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕双生金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd41b802_1380602824",
+      "location": [
+        -189274.52,
+        78141.07,
+        6796.29
+      ],
+      "name": "无瑕双生金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 极热魔火炭",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd41b802_1564473828",
+      "location": [
+        -184588.19,
+        81141.91,
+        6720.0
+      ],
+      "name": "极热魔火炭",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd42b802_1483730016",
+      "location": [
+        -196923.23,
+        86973.26,
+        4464.355
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 影之消退符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd44b802_1374700426",
+      "location": [
+        -207366.16,
+        108486.88,
+        3680.0
+      ],
+      "name": "影之消退符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 热魔火炭",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd44b802_1926501433",
+      "location": [
+        -208155.47,
+        91806.69,
+        4313.862
+      ],
+      "name": "热魔火炭",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 热魔火炭",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd45b802_1981206624",
+      "location": [
+        -194455.17,
+        88671.67,
+        4450.48
+      ],
+      "name": "热魔火炭",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd45b802_2146030626",
+      "location": [
+        -193273.75,
+        73433.2,
+        6600.0
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd5a0003_2016701692",
+      "location": [
+        -209498.19,
+        68372.76,
+        9985.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 兵刃逆炼符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd5b0003_1502915869",
+      "location": [
+        -211089.81,
+        66863.664,
+        10095.0
+      ],
+      "name": "兵刃逆炼符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 供奉圣母的香灰",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd5fe502_1548908507",
+      "location": [
+        -192296.14,
+        87460.68,
+        4380.0
+      ],
+      "name": "供奉圣母的香灰",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 迷幻香灰",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd660003_1465306822",
+      "location": [
+        -205871.77,
+        65048.883,
+        10285.0
+      ],
+      "name": "迷幻香灰",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 嬴式机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd680003_1671942176",
+      "location": [
+        -205977.19,
+        60279.336,
+        10150.0
+      ],
+      "name": "嬴式机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd680003_1935023177",
+      "location": [
+        -204112.83,
+        63483.473,
+        10485.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd680003_1956211178",
+      "location": [
+        -204902.83,
+        62448.473,
+        10485.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 嬴式机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd690003_1263190356",
+      "location": [
+        -207154.38,
+        57476.383,
+        10695.1455
+      ],
+      "name": "嬴式机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 穿行符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd690003_1958428358",
+      "location": [
+        -200388.14,
+        67336.086,
+        8845.0
+      ],
+      "name": "穿行符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6a0003_1324096548",
+      "location": [
+        -200300.53,
+        66354.195,
+        8770.0
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6a0003_1558869549",
+      "location": [
+        -201498.86,
+        70812.11,
+        8753.399
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熟练药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6a0003_1726638550",
+      "location": [
+        -203226.17,
+        72719.695,
+        8800.0
+      ],
+      "name": "熟练药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6c0003_1227971914",
+      "location": [
+        -186436.92,
+        81804.484,
+        6760.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "成长资源 · 兵刃逆炼符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6c0003_1432038915",
+      "location": [
+        -184578.17,
+        84385.49,
+        6690.0
+      ],
+      "name": "兵刃逆炼符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6c0003_1539108916",
+      "location": [
+        -181996.94,
+        81807.54,
+        7335.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 万锻天外异铜",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6c0003_1664721917",
+      "location": [
+        -177443.73,
+        82915.3,
+        8156.104
+      ],
+      "name": "万锻天外异铜",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6c0003_2094843919",
+      "location": [
+        -174576.61,
+        89381.586,
+        6805.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6d0003_1149957096",
+      "location": [
+        -179596.86,
+        86439.26,
+        6850.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熟练药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6d0003_1353840099",
+      "location": [
+        -180765.0,
+        89730.0,
+        7170.0
+      ],
+      "name": "熟练药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6d0003_1927468101",
+      "location": [
+        -173120.98,
+        91324.016,
+        6805.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6e0003_1841656291",
+      "location": [
+        -183523.19,
+        102930.37,
+        4075.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 废弃的武训",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6e0003_1954050292",
+      "location": [
+        -186439.9,
+        98082.77,
+        3128.811
+      ],
+      "name": "废弃的武训",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "任务物品 · 戏票",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd6e0003_2116851297",
+      "location": [
+        -190675.47,
+        88812.89,
+        4170.0
+      ],
+      "name": "戏票",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕长板金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd700003_1093887708",
+      "location": [
+        -194260.73,
+        82817.54,
+        4525.0
+      ],
+      "name": "无瑕长板金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 精密机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd700003_1164555709",
+      "location": [
+        -192931.58,
+        82255.33,
+        4525.0
+      ],
+      "name": "精密机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 污秽残晶",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd700003_1737351714",
+      "location": [
+        -196672.98,
+        85140.26,
+        4817.5884
+      ],
+      "name": "污秽残晶",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 供奉圣母的香灰",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd710003_1762404898",
+      "location": [
+        -215311.72,
+        78753.04,
+        7425.0
+      ],
+      "name": "供奉圣母的香灰",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熟练药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd710003_2000219900",
+      "location": [
+        -214108.44,
+        74728.25,
+        7280.0
+      ],
+      "name": "熟练药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd720003_1101487077",
+      "location": [
+        -214595.23,
+        81248.4,
+        6865.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 供奉圣母的香灰",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd720003_1470245078",
+      "location": [
+        -210874.97,
+        85094.99,
+        7060.0
+      ],
+      "name": "供奉圣母的香灰",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熟练药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd720003_1671980079",
+      "location": [
+        -209630.0,
+        82830.0,
+        7075.0
+      ],
+      "name": "熟练药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕铸造金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd720003_1835799081",
+      "location": [
+        -209330.0,
+        83640.0,
+        6960.0
+      ],
+      "name": "无瑕铸造金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd730003_1182632259",
+      "location": [
+        -216060.0,
+        88315.0,
+        7060.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd730003_1282152260",
+      "location": [
+        -221860.47,
+        88052.11,
+        7190.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd730003_1362927261",
+      "location": [
+        -225536.56,
+        89469.01,
+        6230.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd730003_1412700262",
+      "location": [
+        -222210.0,
+        90185.0,
+        7290.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 嬴式机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd730003_1514347263",
+      "location": [
+        -224980.48,
+        90729.19,
+        7145.0
+      ],
+      "name": "嬴式机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 无瑕双生金属",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd730003_1875792266",
+      "location": [
+        -225836.72,
+        95004.79,
+        7150.0
+      ],
+      "name": "无瑕双生金属",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 禁忌天樟古木",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd730003_2115473268",
+      "location": [
+        -214917.12,
+        107706.11,
+        4955.517
+      ],
+      "name": "禁忌天樟古木",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 禁忌天樟古木",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd740003_1368236445",
+      "location": [
+        -224359.19,
+        99321.43,
+        5655.0
+      ],
+      "name": "禁忌天樟古木",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 极热魔火炭",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd740003_1486194447",
+      "location": [
+        -224140.0,
+        99140.0,
+        5640.0
+      ],
+      "name": "极热魔火炭",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd740003_1608128448",
+      "location": [
+        -222164.1,
+        106417.97,
+        5665.0
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd740003_1675053449",
+      "location": [
+        -222123.7,
+        106033.3,
+        5655.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "货币",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd740003_1928097451",
+      "location": [
+        -213737.77,
+        110105.95,
+        4145.0
+      ],
+      "name": "货币",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 污秽残晶",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd740003_1995371452",
+      "location": [
+        -211610.19,
+        110196.53,
+        3837.9854
+      ],
+      "name": "污秽残晶",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 嬴式机关齿轮",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd750003_1142622629",
+      "location": [
+        -211670.77,
+        109116.15,
+        3820.0
+      ],
+      "name": "嬴式机关齿轮",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 提纯靛晶",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd750003_1366716630",
+      "location": [
+        -208352.83,
+        107031.81,
+        3525.0
+      ],
+      "name": "提纯靛晶",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 穿行符",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd750003_1944564633",
+      "location": [
+        -211693.75,
+        100343.05,
+        4155.0
+      ],
+      "name": "穿行符",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 供奉圣母的香灰",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd750003_2078588636",
+      "location": [
+        -210707.61,
+        99611.36,
+        5102.94
+      ],
+      "name": "供奉圣母的香灰",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 大师药师记忆",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd760003_1166666813",
+      "location": [
+        -211485.0,
+        99620.0,
+        5105.0
+      ],
+      "name": "大师药师记忆",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品碎片 · 傩面碎片·喜",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7ace02_1662532064",
+      "location": [
+        -232339.36,
+        61451.81,
+        14827.22
+      ],
+      "name": "傩面碎片·喜",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品碎片 · 傩面碎片·怒",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7ace02_1672150065",
+      "location": [
+        -232242.61,
+        61355.066,
+        14827.22
+      ],
+      "name": "傩面碎片·怒",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品碎片 · 傩面碎片·哀",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7ace02_1674053066",
+      "location": [
+        -232146.33,
+        61258.773,
+        14827.22
+      ],
+      "name": "傩面碎片·哀",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品碎片 · 傩面碎片·哀",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7aff02_1954688457",
+      "location": [
+        -206204.17,
+        56339.832,
+        10792.34
+      ],
+      "name": "傩面碎片·哀",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "珍宝 · 将军铜镜",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7bce02_1272536243",
+      "location": [
+        -232163.52,
+        61627.65,
+        14827.22
+      ],
+      "name": "将军铜镜",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "珍宝 · 金银香囊",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7bce02_1272568244",
+      "location": [
+        -232066.78,
+        61530.902,
+        14827.22
+      ],
+      "name": "金银香囊",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "珍宝 · 云月金簪",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7bce02_1272573245",
+      "location": [
+        -231970.48,
+        61434.61,
+        14827.22
+      ],
+      "name": "云月金簪",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 迷幻香灰",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd7dce02_1771669810",
+      "location": [
+        -221670.23,
+        73664.3,
+        15369.403
+      ],
+      "name": "迷幻香灰",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 合金钢片",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd80ff02_1652915524",
+      "location": [
+        -207314.33,
+        93080.71,
+        4275.2603
+      ],
+      "name": "合金钢片",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 断魂山地志",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bd81ff02_1631359703",
+      "location": [
+        -210389.12,
+        70087.94,
+        6789.963
+      ],
+      "name": "断魂山地志",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 最初的混沌容器",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdb40503_2132237817",
+      "location": [
+        -208767.78,
+        92049.78,
+        4304.343
+      ],
+      "name": "最初的混沌容器",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 带有三种字迹的残页",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdce0503_1667344386",
+      "location": [
+        -219876.31,
+        90669.41,
+        6949.1606
+      ],
+      "name": "带有三种字迹的残页",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 备用圣躯",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdd1ff02_1378407660",
+      "location": [
+        -207311.11,
+        93642.83,
+        4259.1343
+      ],
+      "name": "备用圣躯",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 圣母娘娘真身图",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdd1ff02_1733153661",
+      "location": [
+        -211710.48,
+        99078.445,
+        4148.0776
+      ],
+      "name": "圣母娘娘真身图",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 关于“玉琮”的研究笔录",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdd2ff02_1901410857",
+      "location": [
+        -219843.55,
+        90694.92,
+        6936.1646
+      ],
+      "name": "关于“玉琮”的研究笔录",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 冷荼亲信的回报",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdd8b702_1939800399",
+      "location": [
+        -210368.33,
+        98638.54,
+        5102.212
+      ],
+      "name": "冷荼亲信的回报",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 郎君的玉面",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdd90403_2107571288",
+      "location": [
+        -96301.12,
+        27678.736,
+        6900.0
+      ],
+      "name": "郎君的玉面",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "读物 · 三杰赋",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdd9b702_1435257579",
+      "location": [
+        -197448.52,
+        85342.1,
+        4807.5884
+      ],
+      "name": "三杰赋",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品碎片 · 傩面碎片·喜",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bddae302_1734620634",
+      "location": [
+        -212583.0,
+        106555.17,
+        3865.0
+      ],
+      "name": "傩面碎片·喜",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "饰品碎片 · 傩面碎片·怒",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bddb0403_1383103781",
+      "location": [
+        -175055.0,
+        85515.0,
+        7840.0
+      ],
+      "name": "傩面碎片·怒",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "药瓶 · 法事药酒",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bddbd802_1177204803",
+      "location": [
+        -182676.17,
+        88724.414,
+        6230.0
+      ],
+      "name": "法事药酒",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    },
+    {
+      "title": "材料 · 熔合万物之溶剂",
+      "key": "pbz:world:pbz_ximeng_wp-bp_rubbish_c_uaid_74563c6bc2bdf5e502_1563716950",
+      "location": [
+        -218120.0,
+        85190.0,
+        7060.0
+      ],
+      "name": "熔合万物之溶剂",
+      "visible": true,
+      "collected": false,
+      "mapID": "XiMeng"
+    }
+  ]
+}

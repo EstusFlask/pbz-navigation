@@ -39,20 +39,22 @@ function M.install(options)
         local ok, err = f:write(text); f:close(); assert(ok, err)
     end
     read, write = options.read or read, options.write or write
-    local control = {session = tostring(now()) .. '-' .. tostring({}), revision = 0, selectionRevision = 0, active = true}
+    local control = {session = tostring(now()) .. '-' .. tostring({}), revision = 0, selectionRevision = 0, markerRevision = 0, active = true}
     local current, unsubscribe, lastCommand, lastWrite, reason, selection, hover, hoverSignature
+    local markers, markerIndex, markerSignature = {}, {}, nil
     local undoSelection = {}
     local function plainOf(target)
         if not target then return nil end
         local plain = {}
-        for _, key in ipairs({'key','mapID','location','title','name','trackingMode','hintOnly'}) do plain[key] = target[key] end
+        for _, key in ipairs({'key','mapID','location','title','name','trackingMode','hintOnly','kind','collected','visible'}) do plain[key] = target[key] end
         return plain
     end
     local function publish()
         local target = current and current.read().target
         write('PBZQuestRoute-tracker.json', json.encode({protocol=PROTOCOL,version=1,session=control.session,
             revision=control.revision,writtenAt=now(),target=plainOf(target),reason=reason,
-            hover=hover,selectionRevision=control.selectionRevision}))
+            hover=hover,selectionRevision=control.selectionRevision,
+            markers=markers,markerRevision=control.markerRevision}))
         lastWrite = now()
     end
     local function refreshHover()
@@ -64,6 +66,26 @@ function M.install(options)
         control.selectionRevision = control.selectionRevision + 1
         publish()
     end
+    local function refreshMarkers(rows)
+        local nextRows, index = {}, {}
+        for _, row in ipairs(type(rows)=='table' and rows or {}) do
+            local p=plainOf(row)
+            if p and p.key and p.mapID and type(p.location)=='table' and #p.location>=3
+                and not p.collected and p.visible~=false then
+                local valid=true
+                for i=1,3 do local n=p.location[i];if type(n)~='number' or n~=n or math.abs(n)==math.huge then valid=false end end
+                if valid and not index[p.key] then
+                    p.location={p.location[1],p.location[2],p.location[3]}
+                    nextRows[#nextRows+1]=p;index[p.key]=p
+                end
+            end
+        end
+        local signature=json.encode(nextRows)
+        if signature==markerSignature then return end
+        markers,markerIndex,markerSignature=nextRows,index,signature
+        control.markerRevision=control.markerRevision+1
+        publish()
+    end
     function control.watchSelection(service)
         if service and not M.selectionService(service) then
             if options.report then options.report('SELECTION_CONTRACT_UNSUPPORTED') end
@@ -71,6 +93,8 @@ function M.install(options)
         end
         for _, undo in ipairs(undoSelection) do undo() end
         undoSelection = {}; selection = service; hover = nil; hoverSignature = nil
+        markers,markerIndex,markerSignature={},{},nil
+        control.markerRevision=control.markerRevision+1
         control.selectionRevision = control.selectionRevision + 1
         if service then
             for _, name in ipairs({'select','selectAt','selectIndex','selectNext','selectPrevious','clearSelection','setMarkers'}) do
@@ -78,6 +102,7 @@ function M.install(options)
                 if type(original) == 'function' then
                     local wrapped = function(...)
                         local result = table.pack(original(...))
+                        if name=='setMarkers' then pcall(refreshMarkers,select(1,...)) end
                         pcall(refreshHover)
                         return table.unpack(result, 1, result.n)
                     end
@@ -129,7 +154,14 @@ function M.install(options)
                 lastCommand = text
                 local selected = current and current.read().target
                 -- Late cancellation cannot clear a newer item or another session.
-                if cmd.action == 'select' and cmd.session == control.session and selection
+                if (cmd.action=='focus' or cmd.action=='select') and cmd.session==control.session and selection
+                    and cmd.markerRevision==control.markerRevision and markerIndex[cmd.key]
+                    and type(selection.select)=='function' then
+                    selection.select(cmd.key)
+                    if cmd.action=='select' and selection.selectedKey()==cmd.key then
+                        selection.trackSelected({selectReason='navigation controller item'})
+                    end
+                elseif cmd.action == 'select' and cmd.session == control.session and selection
                     and cmd.selectionRevision == control.selectionRevision and selection.selectedKey() == cmd.key then
                     selection.trackSelected({selectReason='navigation middle-click'})
                 elseif selected and cmd.session == control.session and cmd.revision == control.revision

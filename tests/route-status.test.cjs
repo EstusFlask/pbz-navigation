@@ -8,11 +8,11 @@ function widgets(){
   constructor(type){this.type=type;this.Font={};this.children=[];this.visibility=1;this.text='';this.writes=0;this.valid=true;made.push(this);}
   SetVisibility(v){this.visibility=v;}SetRenderOpacity(v){this.opacity=v;}
   SetFont(v){this.Font=v;}SetShadowOffset(){}SetShadowColorAndOpacity(){}SetColorAndOpacity(){}
-  SetText(v){this.text=v;this.writes++;}SetBrushFromTexture(){}SetRenderTransformPivot(){}SetRenderTransformAngle(){}
+  SetText(v){this.text=v;this.writes++;}SetBrushFromTexture(){}SetRenderTransformPivot(){}SetRenderTransformAngle(v){this.angle=v;}
   RemoveFromParent(){this.removed=true;this.valid=false;}StopAnimationsAndLatentActions(){}
   AddToViewport(z){this.viewport=z;}GetChildrenCount(){return this.children.length;}GetChildAt(i){return this.children[i];}
   AddChildToOverlay(w){return this.add(w);}AddChildToCanvas(w){return this.add(w);}
-  add(w){this.children.push(w);const slot={SetAnchors(v){this.anchors=v;},SetAlignment(v){this.align=v;},SetPosition(v){this.position=v;},SetSize(){},SetAutoSize(){},SetZOrder(){},SetOffsets(){},SetHorizontalAlignment(){},SetVerticalAlignment(){}};w.slot=slot;return slot;}
+  add(w){this.children.push(w);const slot={SetAnchors(v){this.anchors=v;},SetAlignment(v){this.align=v;},SetPosition(v){this.position=v;},SetSize(v){this.size=v;},SetAutoSize(){},SetZOrder(){},SetOffsets(){},SetHorizontalAlignment(){},SetVerticalAlignment(){}};w.slot=slot;return slot;}
  }
  const vector=function(X,Y){Object.assign(this,{X,Y});},object=function(...values){this.values=values;};
  const UE={Vector2D:vector,LinearColor:object,SlateColor:object,Anchors:object,Margin:object,
@@ -72,4 +72,20 @@ test('map loading replaces the premature no-route label, then clears when the se
  assert.deepEqual(labels(),['正在计算路线…（已等待 5 秒）'],'elapsed time did not invalidate the map label cache');
  S.routeStatus='';ink.draw(host,S,()=>({x:.5,y:.5}),'here',()=>true,true);assert.deepEqual(labels(),['暂未找到连通道路']);
  ink.clearAll();assert.equal(ink.hosts.size,0);
+});
+
+test('the map preserves a checked right-angle detour instead of rounding through the inside wall',()=>{
+ const h=widgets(),module={exports:{}};
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteInk.js','utf8')+'\n})')(
+  id=>id==='ue'?h.UE:id==='./PBZRouteWorld'?h.W:id==='./PBZRoutePassages'?{}:require(path.resolve(root,id)),module,module.exports);
+ const ink=new module.exports.Ink('',()=>{}),points=[{x:100,y:100,z:0},{x:500,y:100,z:0},{x:500,y:500,z:0}];
+ const host={WidgetTree:{RootWidget:new h.Widget('map-root')},PBZMapCanvasSlotWeak:{GetPosition:()=>({X:0,Y:0})},
+  CurrentDisplayMapID:'here',CurrentLayer:0,CurrentMapSize:()=>({X:1000,Y:1000})};
+ const S={world:{feet:()=>points[0]},arrival:{},cfg:{MapRoute:true},targetKey:'corner',version:1,active:0,
+  trip:{legs:[{world:'here',physicalVerified:true,points}]}};
+ ink.draw(host,S,p=>({x:p.x/1000,y:p.y/1000}),'here',()=>true,true);
+ const images=h.made.filter(w=>w.type==='image'&&w.visibility===0);assert.ok(images.length);
+ for(const w of images){const p=w.slot.position;
+  assert.ok(!(p.X<500-.01&&p.Y>100+.01),'cosmetic smoothing drew a shortcut inside the wall at '+JSON.stringify(p));
+ }
 });

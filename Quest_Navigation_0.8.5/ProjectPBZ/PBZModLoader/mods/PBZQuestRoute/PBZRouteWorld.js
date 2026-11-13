@@ -59,10 +59,16 @@ class Ground{
   if(Number.isFinite(h)&&h>=this.r)this.h=h;
   const p=plain(this.cap.K2_GetComponentLocation());p.z-=this.h;return p;
  }
- hit(a,b,body=false,owners=false){const o=P.$ref(undefined),k=UE.KismetSystemLibrary,c=this.color;this.calls++;
+ hit(a,b,body=false,owners=false){const o=P.$ref(undefined),k=UE.KismetSystemLibrary,c=this.color;
   const tail=[this.profile,false,this.ignored,UE.EDrawDebugTrace.None,o,true,c,c,0];let yes;
-  if(body){const lift=this.rise+3,half=Math.max(this.r,this.h-lift/2);const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(da),vec(db),Math.max(5,this.r*.98),half,...tail);}
-  else yes=k.LineTraceSingleByProfile(this.pawn,vec(a),vec(b),...tail);
+  // A simple-collision miss is not proof of empty space: some cooked meshes
+  // expose only triangle collision. Keep the pawn profile for both queries.
+  for(const complex of [false,true]){
+   tail[1]=complex;this.calls++;
+   if(body){const lift=this.rise+3,half=Math.max(this.r,this.h-lift/2);const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(da),vec(db),Math.max(5,this.r*.98),half,...tail);}
+   else yes=k.LineTraceSingleByProfile(this.pawn,vec(a),vec(b),...tail);
+   if(yes&&P.$unref(o)?.bBlockingHit)break;
+  }
   if(!yes)return null;const h=P.$unref(o);if(!h||!h.bBlockingHit)return null;
   const point=plain(h.ImpactPoint),nz=Number(h.ImpactNormal.Z);if(!R.finite(point))return null;
   const {component,...limits}=contact(this,h,!body);
@@ -79,9 +85,13 @@ class Ground{
  }
  threadHit(a,b){
   const k=UE.KismetSystemLibrary;if(typeof k.SphereTraceSingleByProfile!=='function')return this.hit(a,b);
-  const out=P.$ref(undefined),c=this.color;this.calls++;
-  const yes=k.SphereTraceSingleByProfile(this.pawn,vec(a),vec(b),7,this.profile,false,this.ignored,UE.EDrawDebugTrace.None,out,true,c,c,0);
-  if(!yes)return null;const h=P.$unref(out);return h?.bBlockingHit?{point:plain(h.ImpactPoint)}:null;
+  const out=P.$ref(undefined),c=this.color;
+  for(const complex of [false,true]){
+   this.calls++;
+   const yes=k.SphereTraceSingleByProfile(this.pawn,vec(a),vec(b),7,this.profile,complex,this.ignored,UE.EDrawDebugTrace.None,out,true,c,c,0);
+   const h=yes&&P.$unref(out);if(h?.bBlockingHit)return {point:plain(h.ImpactPoint)};
+  }
+  return null;
  }
  standingFloor(p){
   // CharacterMovement uses the pawn's actual collision responses and its

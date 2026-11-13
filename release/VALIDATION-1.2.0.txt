@@ -1,0 +1,59 @@
+Version: 1.2.0 (local experimental update)
+Validation date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.0.zip
+
+Diagnosis / failing-before, passing-after reproductions
+- node --test --test-reporter=spec tests/navigation.test.cjs tests/terrain-regression.test.cjs
+  Before the changes: 34 passed, 2 failed. Expired far proofs kept the old
+  safe endpoint during a budget-limited refresh and exposed a newly blocked
+  suffix on its first refresh frame. Ground capsule traces also missed a
+  simulated wall with triangle collision and no simple collision.
+  Both new regressions pass with the current implementation.
+- node --test --test-reporter=spec tests/route-status.test.cjs
+  The new rendered-map test first failed: cosmetic rounding moved the line
+  inside a right-angle wall (492.0556, 100.6111). It now passes while the
+  checked corner remains at (500, 100).
+- node --test tests/map-target.test.cjs tests/tracker.test.cjs tests/locks.test.cjs
+  New directional-focus, marker-command and blocked-map-suffix tests first
+  failed before their implementations, and pass with the current code.
+- py -3.12 tests/run-lua-tests.py
+  The new real-module test first failed because no visible marker catalogue
+  was published. It now exercises catalogue revisions, focus without tracking,
+  confirmation at the original Z, missing/stale/session-invalid commands,
+  old hover commands and cleanup on both real collector versions.
+
+Current automated checks
+- All tests/*.test.cjs: 257 passed, 0 failed; engine physics/input/render APIs
+  are mocked. Raw TAP: build/validation-1.2.0-js.txt.
+- Real Map Tracker 1.0.9 and 1.0.14 Lua 5.4 modules: PASS. Includes real JSON
+  file round trips for middle-click, controller focus/confirmation without
+  prior hover, original 2333 cm item height and cancellation.
+  Raw output: build/validation-1.2.0-lua.txt.
+- Native adapter rebuilt with the existing read-only UE4SS.dll: PASS ABI size,
+  runtime SHA gate, collector filtering and version-independent host dispatch.
+  Runtime/native adapter/documentation version: 1.2.0.
+- node tests/audit-bells.cjs: PASS, retained existing connectivity gaps and
+  live-verification requirements; no new full-map coverage claim.
+- git diff --check: PASS. No temporary [DEBUG-...] instrumentation added.
+
+Package verification
+- py -3.12 tests/verify-package.py: PASS, 1374 exact file matches; no
+  collector-owned paths. All original atlas column hashes and 291 legacy
+  chunk strings retained; runtime, native adapter and package docs are 1.2.0.
+- Archive bytes: 120568045
+- Archive SHA256: 9f19ced651f36a29012944085f9c0327ed8fc4d4694dad8fabd2d132875ccd88
+- dist contains only the current 1.2.0 complete package.
+
+Scope / remaining live verification
+- This is local source, module and package validation. The 1.2.0 package has
+  not been installed or tested inside the running game; controller routing,
+  real scene collision and FPS still need in-game validation.
+- Keep the existing bounded trace/search work. A simple-collision miss adds
+  a triangle-collision query with the same profile; actual frame cost is not
+  measured. Dynamic obstacle changes within a still-valid collision cache
+  retain the existing bounded refresh delay.
+- Existing full-map and traversal coverage limitations remain. This change
+  closes the reproduced safety/display gaps; it cannot certify every map.
+- No changes to the game installation, manager, collector-owned files or
+  remote Nexus page. Previous 1.1.1 ZIP preserved with SHA256 in
+  build/release-archive/pre-1.2.0-20261113; see DIST-ARCHIVE-20261113.json.

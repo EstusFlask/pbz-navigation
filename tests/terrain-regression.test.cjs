@@ -6,6 +6,28 @@ const moduleWorld={exports:{}};
 vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteWorld.js','utf8')+'\n})')(
  id=>id==='ue'||id==='puerts'?{}:require(path.resolve(root,id)),moduleWorld,moduleWorld.exports);
 const {Ground}=moduleWorld.exports;
+
+test('walking and ribbon traces detect a wall with triangle collision but no simple collision',()=>{
+ const queries=[];
+ const trace=(...args)=>{
+  const profileIndex=typeof args[3]==='number'?(typeof args[4]==='number'?5:4):3;
+  const complex=args[profileIndex+1];queries.push(complex);
+  if(!complex)return false;
+  args[profileIndex+4].value={bBlockingHit:true,ImpactPoint:{X:50,Y:0,Z:100},ImpactNormal:{X:-1,Y:0,Z:0}};
+  return true;
+ };
+ const UE={KismetSystemLibrary:{LineTraceSingleByProfile:trace,CapsuleTraceSingleByProfile:trace,SphereTraceSingleByProfile:trace},
+  Vector:class{constructor(X,Y,Z){Object.assign(this,{X,Y,Z});}},NewArray:()=>({Add(){}}),LinearColor:class{},EDrawDebugTrace:{None:0}};
+ const mod={exports:{}};
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteWorld.js','utf8')+'\n})')(
+  id=>id==='ue'?UE:id==='puerts'?{$ref:value=>({value}),$unref:ref=>ref.value}:require(path.resolve(root,id)),mod,mod.exports);
+ const cap={GetScaledCapsuleHalfHeight:()=>90,GetScaledCapsuleRadius:()=>35,GetCollisionProfileName:()=> 'Pawn'};
+ const w=new mod.exports.Ground({CapsuleComponent:cap}),a={x:0,y:0,z:0},b={x:100,y:0,z:0};
+ assert.ok(w.hit(a,b,true),'walking capsule passed through a triangle-only wall');
+ assert.ok(w.threadHit({...a,z:105},{...b,z:105}),'the drawn thread passed through the same wall');
+ assert.ok(w.hit(a,b),'floor/lock line queries skipped triangle collision');
+ assert.ok(queries.includes(true));
+});
 function terrain(floor){
  const world=Object.create(Ground.prototype);Object.assign(world,{rise:45,normal:.7,slope:1,r:35,h:90});
  world.hit=(a,b,body)=>{

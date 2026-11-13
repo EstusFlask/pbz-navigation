@@ -32,6 +32,32 @@ selection.setMarkers({{key='upstairs-hover',mapID='pangzhen',location={100,200,2
 selection.select('upstairs-hover')
 f=assert(io.open(bridge_test_root .. '/PBZQuestRoute-tracker.json','rb'));snapshot=require('dkjson').decode(f:read('*a'));f:close()
 assert(snapshot.hover.key=='upstairs-hover' and snapshot.hover.location[3]==2300)
+assert(snapshot.markers and #snapshot.markers==1 and snapshot.markers[1].key=='upstairs-hover',
+    'the visible marker catalogue was not published for directional controller selection')
+local markerRevision=snapshot.markerRevision
+selection.setMarkers({
+    {key='upstairs-hover',mapID='pangzhen',location={100,200,2300}},
+    {key='right-item',mapID='pangzhen',location={300,200,3300}},
+})
+f=assert(io.open(bridge_test_root .. '/PBZQuestRoute-tracker.json','rb'));snapshot=require('dkjson').decode(f:read('*a'));f:close()
+assert(snapshot.markerRevision>markerRevision and #snapshot.markers==2)
+local function sendMarker(action,key,revision,session)
+    local value={protocol=snapshot.protocol,version=1,session=session or snapshot.session,action=action,key=key,markerRevision=revision}
+    local out=assert(io.open(bridge_test_root .. '/PBZQuestRoute-command.json','wb'));out:write(require('dkjson').encode(value));out:close()
+    control.bridge.poll()
+end
+sendMarker('focus','right-item',snapshot.markerRevision)
+assert(selection.selectedKey()=='right-item' and api.read().target.key=='host-selected','D-pad focus changed the tracked target')
+sendMarker('select','right-item',snapshot.markerRevision)
+assert(api.read().target.key=='right-item' and api.read().target.location[3]==3300,'A did not confirm the directional item')
+sendMarker('select','upstairs-hover',snapshot.markerRevision-1)
+assert(api.read().target.key=='right-item','stale marker catalogue changed the tracked target')
+sendMarker('select','upstairs-hover',snapshot.markerRevision,'previous-session')
+assert(api.read().target.key=='right-item','previous-session marker command was accepted')
+sendMarker('select','missing',snapshot.markerRevision)
+assert(api.read().target.key=='right-item','missing marker command changed the target')
+selection.select('upstairs-hover')
+f=assert(io.open(bridge_test_root .. '/PBZQuestRoute-tracker.json','rb'));snapshot=require('dkjson').decode(f:read('*a'));f:close()
 local cmd={protocol=snapshot.protocol,version=1,session=snapshot.session,action='select',key='upstairs-hover',selectionRevision=snapshot.selectionRevision}
 f=assert(io.open(bridge_test_root .. '/PBZQuestRoute-command.json','wb'));f:write(require('dkjson').encode(cmd));f:close()
 control.bridge.poll()

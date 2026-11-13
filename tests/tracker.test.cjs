@@ -57,3 +57,14 @@ test('middle-click selection uses Lua hover coordinates and never loads the lega
     assert.equal(tracker.choose({}, {provider:'187',tracked:point}),true);
     assert.equal(written.action,'select');assert.equal(written.key,'third-floor');assert.equal(written.selectionRevision,9);
 });
+
+test('D-pad can focus and confirm a visible Lua item without a pre-existing hover',()=>{
+ let written;const now=100000,point={key:'upper',mapID:'pangzhen',location:[100,200,2300]};
+ const service=new LuaTracker({clock:()=>now,read:()=>JSON.stringify({protocol:'PBZQuestRouteTracker',version:1,
+  session:'live',revision:1,writtenAt:now,target:null,markerRevision:7,markers:[point]}),
+  write:text=>{written=JSON.parse(text);return true;}});
+ assert.equal(service.markers()[0].key,'upper');
+ assert.equal(service.focus(point),true);assert.equal(written.action,'focus');assert.equal(written.markerRevision,7);
+ assert.equal(service.choose(point),true);assert.equal(written.action,'select');assert.equal(written.key,'upper');
+ assert.equal(written.markerRevision,7);assert.equal(service.focus({...point,key:'missing'}),false);
+});

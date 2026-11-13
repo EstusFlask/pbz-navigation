@@ -1,3 +1,26 @@
+# 1.2.1 — D-pad delivery and grouped-map item focus
+
+- 1.2.0 handled D-pad presses only in the map's preview callback. Poll the CommonUI held-key router and the owning player controller as well, so selection still runs when no preview event is delivered. Event and polling paths share press/release state, a 350 ms initial hold delay and 180 ms repeat interval; one physical press cannot skip two items.
+- Remove world equality from collectible chart membership. A merged chart may show HouJie or XiMeng items from another streamed world; use the native map-group/map-ID resolver and keep the selected item's own world and XYZ. Project each Lua item with its own map ID and discard the missing-projection origin.
+- Add `pad focus` diagnostics with source, direction, chart, marker/candidate counts and selected key. Teleport menus and modal/filter UI retain their original controls.
+- Capture 175 real 1.2.0 marker records with the user's map open. Replay actual cross-world records through the map tick and A-confirmation path without calling preview handlers. Retain the 1.2.0 wall-safety changes.
+
+Validation: 264 JavaScript regressions, both real Lua integrations, native adapter and complete ZIP checks; see VALIDATION-1.2.1.txt. The live check confirms the 1.2.0 marker catalogue is available. The new 1.2.1 input behavior has not yet been retested in game.
+
+中文：修复十字键实际收不到预览事件时无响应，以及合并地图跨世界物品被过滤/投影错误的问题。轮询与事件共用去重和长按节流；175条真实标记用于回放。新版游戏按键效果仍待复测。
+
+# 1.2.0 — wall-safe route display and directional controller selection
+
+- Revoke an expired far-ribbon collision proof before starting its incremental refresh. Reset its safe endpoint and release only the rechecked prefix; an old endpoint can no longer expose a wall-crossing suffix while the trace budget is exhausted. Keep the existing twelve-probe and time limits.
+- A simple-collision miss now triggers a triangle-collision query with the same pawn collision profile. Apply this to walking capsules, supporting-floor/lock rays and the raised guiding thread, including its line-query fallback.
+- Preserve projected route corners instead of applying cosmetic rounding and pixel-tolerance shortcuts. When an obstruction is known, retain its red marker/section and show the remaining route as unconfirmed.
+- Add D-pad selection of the nearest visible collectible in a 90-degree screen-direction sector. Skip native bells/quests and collected/hidden icons; repeated presses advance without wrapping, with bounded key repeat. A confirms the original item coordinates and floor. Stick movement, map/layer changes or removal of the item release the focus; native bell snapping cannot steal an active item selection.
+- Publish the currently displayed Lua marker set through the navigation-owned bridge. Focus/confirm commands require its current revision and session; reject stale or missing markers. Support both real tracker 1.0.9/1.0.14 modules and legacy JS marker slots without changing collector-owned files.
+
+Validation: see VALIDATION-1.2.0.txt for the failing-before/passing-after reproductions, full JavaScript suite, real Lua modules/file round trips, native adapter and complete ZIP checks. Collision and input engine calls are simulated; this package has not been retested in game. Existing full-map coverage limits remain.
+
+中文：修复远段检查过期复用旧终点、精细碰撞漏检、地图圆角抄近路及阻挡后段仍画可行白线。新增十字键按方向选择最近可见收集物、A保留真实楼层确认，并防止铃铛抢焦点；更新导航自有Lua桥接，保留收集Mod原文件。游戏现场仍待复测。
+
 # 1.1.1 — tracker bell identity and checked obstruction detours
 
 - Recognize the native tracker's explicit `pbz:bell:<id>` selection when its 3D position matches the game bell table. Preserve its original key and coordinates. Unopened tracker bells now enter overland/roadbook planning; activated tracker bells retain the previous walking/transfer comparison through the real selection/solve path.

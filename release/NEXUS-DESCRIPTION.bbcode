@@ -1,11 +1,13 @@
 [size=5][b]Quest and Exploration Navigation - Fork[/b][/size]
-[b]Version 1.1.1 | Experimental[/b]
+[b]Version 1.2.1 | Experimental[/b]
 Routes to quests, map pins and collectibles on the regional map, with a raised blue guiding thread in the game world.
 
 Based on [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333's Quest and Exploration Navigation 0.8.5-beta[/url] and the local-fix5 patches. azqwq333 created the original navigation system, all 11 world graphs, walking-surface datasets and original bundled assets. kurosakana maintains this fork independently; this fork does not imply endorsement by the original author.
 
-[size=4][b]What's included in 1.1.1[/b][/size]
+[size=4][b]What's included in 1.2.1[/b][/size]
 [list]
+[*][b]1.2.1 controller hotfix:[/b] D-pad held-key polling works when preview callbacks are omitted; event/poll input shares repeat gating. Grouped-map collectibles retain their real world and map projection. Live marker data was captured; the new controls still need in-game retesting.[/*]
+[*][b]1.2.0 wall safety and controller focus:[/b] expired ribbon proofs release only rechecked prefixes; triangle-only collision is checked; map detour corners are preserved and blocked suffixes stay unconfirmed. D-pad picks the nearest visible collectible in its direction, skips native bells and retains focus for A confirmation. In-game retesting is pending.[/*]
 [*][b]1.1.1 detour fix:[/b] native tracker bell markers retain bell identity; unopened bells use overland routing. Blocked roadbook candidates can try checked local detours, including open side passages around closed gates. Locks/collision remain enforced. In-game retesting is pending.[/*]
 [*][b]Experimental traversal expansion:[/b] 487 placed interaction instances and 86 directional roadbook candidates, validated against current scene physics and conditions. Sailing/recognized cinematic rides retain the target and replan afterwards. 52 of 140 links, full sailing routes and dedicated chase routes remain unresolved. See MOVEMENT-COVERAGE.md.[/*]
 [*][b]1.1.0 routing fixes:[/b] inactive bells keep overland routes. Compare loaded walking before committing to an item transfer; connect traversal actions through checked ground corridors, use down-slide top triggers and native rappel landings. These changes still need live-game testing.[/*]
@@ -55,7 +57,7 @@ PBZQuestRouteCompat belongs to navigation. Do not replace PbzMapTracker files. T
 [b]Uninstall:[/b] close the game and remove navigation through the manager. For manual removal, remove ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/, ProjectPBZ/Content/Mods/PBZQuestRoute/ and platform/steam/ue4ss/Mods/PBZQuestRouteCompat/. Keep your configuration, collector and shared runtimes.
 
 [size=5][b]中文说明[/b][/size]
-[b]任务与探索导航 - Fork，1.1.1（实验版）[/b]
+[b]任务与探索导航 - Fork，1.2.1（实验版）[/b]
 1.1.0：未激活铃铛走陆路；修复近处物品跳过实景步行检查；动作间补接经检查的地面路网，修正下滑入口与沿绳落地。游戏内效果待复测。
 地图显示任务、标记和收集品路线，关闭地图后沿离地约 105 厘米的蓝线前进。本分支基于 azqwq333 原版 0.8.5-beta 与 local-fix5，由 kurosakana 独立维护。原导航、11 个世界路网、行走表面数据及原包资产归 azqwq333，不表示原作者背书。
 

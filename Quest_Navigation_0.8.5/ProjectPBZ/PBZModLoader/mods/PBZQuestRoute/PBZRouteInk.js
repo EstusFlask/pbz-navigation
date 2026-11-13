@@ -11,13 +11,6 @@ function simplify(points,tolerance){
   if(idx>=0){keep.add(idx);stack.push([i,idx],[idx,j]);}}
  return [...keep].sort((a,b)=>a-b).map(i=>points[i]);
 }
-function rounded(points){
- const out=[points[0]],mix=(a,b,t)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
- for(let i=1;i+1<points.length;i++){const a=points[i-1],p=points[i],b=points[i+1],l=R.xy(a,p),r=R.xy(b,p),k=Math.min(l*.42,r*.42,11);
-  if(k<1.1){out.push(p);continue;}const m=mix(p,a,k/l),n=mix(p,b,k/r);out.push(m);
-  for(let j=1;j<=6;j++){const t=j/6;out.push(mix(mix(m,p,t),mix(p,n,t),t));}}
- if(points.length>1)out.push(points[points.length-1]);return out;
-}
 class Ink{
  constructor(path,log){this.path=path;this.log=log;this.state=new WeakMap();this.hosts=new Set();}
  remove(host){const s=this.state.get(host);if(s&&W.alive(s.canvas))s.canvas.RemoveFromParent();this.state.delete(host);this.hosts.delete(host);}
@@ -62,7 +55,9 @@ class Ink{
    ob.wid.SetText(str);ob.wid.SetColorAndOpacity(new UE.SlateColor(col,UE.ESlateColorStylingMode.UseColor_Specified));ob.sl.SetPosition(V(x,y));ob.wid.SetVisibility(visible);};
   const px=u=>({x:u.x*w,y:u.y*h});const chalk=C(1,1,1,1),light=C(.99,.955,.83,1);
   const legs=!overview&&enabled&&S.trip?S.trip.legs.slice(S.active).filter(l=>l.world===displayWorld):[];
-  const paintRun=(raw,style="walk")=>{if(raw.length<2)return;const ps=simplify(rounded(simplify(raw,1.1)),.42);
+  // Only merge collinear samples. Pixel-tolerance simplification and cosmetic
+  // corner rounding changed the checked detour into an unchecked wall chord.
+  const paintRun=(raw,style="walk")=>{if(raw.length<2)return;const ps=simplify(raw,.000001);
    for(let i=1;i<ps.length;i++){const a=ps[i-1],b=ps[i],len=R.xy(a,b);if(len<.55)continue;
     if(style!=='walk'){
      const tint=style==='blocked'?C(1,.13,.09,1):C(.8,.77,.66,.95);

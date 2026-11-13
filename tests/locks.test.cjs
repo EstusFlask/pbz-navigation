@@ -3,6 +3,14 @@ const test=require('node:test'),assert=require('node:assert/strict'),path=requir
 const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const L=require(root+'/PBZRouteLocks'),Local=require(root+'/PBZRouteLocalWalk'),O=require(root+'/PBZRouteObstacles');
 const lock={id:'key-door',world:'test',p:{x:280,y:0,z:0},locked:true,icon:'keylock',label:'需钥匙/物品解锁'};
+
+test('a newly detected blocker makes the remaining map route unconfirmed',()=>{
+ const leg={world:'test',points:[{x:0,y:0,z:0},{x:1000,y:0,z:0}],
+  obstacles:[{p:{x:280,y:0,z:0},approach:{x:240,y:0,z:0},unknown:false}]};
+ const parts=O.portions([{s:0,uv:{x:.1,y:.5}},{s:1000,uv:{x:.9,y:.5}}],0,O.intervals(leg));
+ assert.equal(parts.at(-1).style,'unknown','the map still presented the route beyond the blocked wall as a clear walk');
+ assert.ok(parts.some(p=>p.style==='blocked'));
+});
 function run(job){let r,n=0;do{r=job.next();assert.ok(++n<100000);}while(!r.done);return r.value;}
 test('known locks can be bypassed by a physically checked alternative and do not block another floor',()=>{
  const world={floorAt:p=>p,step:(a,b)=>({p:b})},view=L.constrain(world,[lock],'test');

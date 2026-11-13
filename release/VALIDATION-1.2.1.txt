@@ -1,0 +1,61 @@
+Version: 1.2.1 (local controller hotfix)
+Validation date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.1.zip
+
+Field evidence and diagnosis
+- The installed loader log confirms 1.2.0 was running; this was not a missing
+  update. Its D-pad implementation only handled OnPreviewKeyDown, while the
+  map already needed a held-key polling fallback for A.
+- With the user's map held open, the actual tracker snapshot contained 175
+  markers: 3 PangZhen, 2 HouJie and 170 XiMeng records. The marker transport
+  was working. tests/fixtures/controller-markers-20261113.json retains these
+  game records without the runtime session/target metadata. displayMapID in
+  that fixture is a grouped-chart replay scenario from loader.log; native
+  projection and input are simulated, not a captured engine execution.
+- The 1.2.0 filter required each marker world to equal the displayed chart
+  world. Native MapAreaGroups/mapIDToBigMapID membership can span worlds.
+  Item projection must also use the item's own map ID, as the native map's
+  ConvertWorldLocationToScreen path does.
+
+Failing-before / passing-after loop
+  node --test --test-reporter=spec tests/map-target.test.cjs
+- The new missing-preview and grouped HouJie cases first failed on 1.2.0,
+  then passed after polling and chart membership were corrected.
+- The own-map-ID projection case first failed and now passes. A missing
+  (0,0) projection cannot become a selectable icon.
+- A further mixed event/poll regression exposed stale-focus release erasing
+  the current press gate (5 focus writes instead of 4); separating focus
+  release from input reset fixes that double step.
+- Current file: 18 passed, including CommonUI router and raw controller
+  polling, real HouJie coordinates through map tick/A confirmation without
+  preview callbacks, XiMeng grouping, unrelated-map exclusion, event/poll
+  coalescing, held-repeat timing, missing/hidden markers and teleport menus.
+
+Current automated checks
+- All tests/*.test.cjs: 264 passed, 0 failed. Physics/input/projection calls
+  remain simulated. Raw TAP: build/validation-1.2.1-js.txt.
+- Real tracker 1.0.9/1.0.14 Lua integrations and real JSON file round trips:
+  PASS. Raw output: build/validation-1.2.1-lua.txt.
+- Native adapter rebuilt as 1.2.1: PASS ABI size, runtime SHA gate,
+  collector filtering and version-independent host dispatch.
+- PBZRibbonGuard.js, PBZRouteWorld.js, PBZRouteInk.js and
+  PBZRouteObstacles.js retain the delivered 1.2.0 wall fixes byte-for-byte.
+
+Package verification
+- py -3.12 tests/verify-package.py: PASS, 1374 exact file matches; no
+  collector-owned files. All atlas column hashes and 291 legacy chunk
+  strings retained. Runtime, native adapter and docs all report 1.2.1.
+- Archive bytes: 120569689
+- Archive SHA256: c43fb00346c5445fc9c36fb6a4e6c73f00bfeca1d423de5f2e7adc4cbab56b26
+- dist contains only the 1.2.1 complete package.
+
+Remaining live verification
+- The field check reads the live 1.2.0 marker catalogue and logs. It does not
+  demonstrate that the 1.2.1 D-pad fix works in game. That needs installation,
+  a full restart and another controller check.
+- Existing whole-map, traversal, wall-scene and FPS limitations remain.
+- The agent did not modify the installed game, manager, collector files or
+  remote Nexus page. The delivered 1.2.0 ZIP is archived with verified SHA256
+  under build/release-archive/pre-1.2.1-20261113; see DIST-ARCHIVE-20261113.json.
+- Operational pad focus logs report source, direction, chart, marker/candidate
+  counts and selected key. No temporary [DEBUG-...] instrumentation remains.
