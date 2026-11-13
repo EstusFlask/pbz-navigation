@@ -1,3 +1,14 @@
+# 1.0.2 — inactive bells, checked traversal connectors and nearby item walks
+
+- Bell markers share the item target flag. Prevent inactive or currently non-teleportable bell targets from entering item-transfer planning; retain the existing two directed reference courses and ordinary walking/action fallbacks. Activated targets retain their existing transfer behavior.
+- Do not return a transfer before checking the loaded scene's walking/action/local candidates. Compare every complete candidate with the transfer using the existing 85% threshold; pending/blocked walks still retain the checked transfer. The reported dock item is about 64 m away, while logs selected a 241 m transfer. Its real-atlas regression fails with the pristine old planner and passes with this change.
+- When native walking is absent/incomplete between traversal actions, try the original atlas's walking-only corridor and physically validate it. Exclude movement edges, wrong floors, walls and locks. Bound each atlas query to 120 m, 750 ms wall time, 512 generator advances and the current action deadline; close abandoned generators.
+- Down-slides use their actual TopCollision approach before the ledge spline. Rappelling appends the native GetRappellingLandTargetWorldTransform landing to the existing rope curve. Direction and current mechanism conditions remain enforced.
+
+Validation: see VALIDATION-1.0.2.txt. New tests first failed for inactive-bell transfer planning, short-walk preemption, 60 m inter-action corridors, down-slide triggers and native rappel landings. Coordinates/atlas and reflected signatures are real; physics remain simulated. No new full-map manual courses, trail persistence or live-game success claim. Game and manager are read-only; this local package has not been uploaded.
+
+中文：修复未解锁铃铛误推荐传送、近处物品跳过实景步行比较，以及攀爬/钩索之间不使用已有地面路网的问题；补下滑顶部入口与沿绳原生落点。保留既有路书和规则，完整游戏效果待复测。
+
 # 1.0.1 — route loading feedback and consolidated public release
 
 - Release the current route-feedback build under the user-requested 1.0.1 version. Align the JS entry points, native adapter, package metadata, bilingual instructions and audit headers.

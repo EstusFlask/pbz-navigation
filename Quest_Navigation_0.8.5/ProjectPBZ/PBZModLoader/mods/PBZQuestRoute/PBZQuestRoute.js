@@ -18,7 +18,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.0.1';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.0.2';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
@@ -233,6 +233,7 @@ function nativeWalk(start,goal,allowPartial=false){
 }
 function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=0){
  const bellApproach=atArrivalBell(dest);
+ const inactiveBell=!!dest.bell&&!bellList().some(b=>low(b.id)===low(dest.bell));
  if(depth===0){
   const guide=yield* Guides.plan(Locks.constrain(S.world,lockRows,S.level),S.level,dest,S.world.feet(),{graph:graphs.get(S.level),report:context.report});
   if(guide){const g=graph(S.level);if(g&&Passages.refreshLoadedJob)yield* Passages.refreshLoadedJob(g,S.world,S.pawn,S.world.feet(),dest.p,{report:context.report});Guides.refreshActions(guide.legs[0],g);return guide;}
@@ -274,7 +275,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  };
  yield;
  const getJoin=s=>{if(!legs.has(s.id))legs.set(s.id,Surface.join(routeWorld,start,s));return legs.get(s.id);};
- if(depth===0&&!walkOnly&&!bellApproach&&dest.item&&R.dist(start,dest.p)>2500){
+ if(depth===0&&!walkOnly&&!bellApproach&&!inactiveBell&&dest.item&&R.dist(start,dest.p)>2500){
   context.bellTransfer=yield* BellTransfer.plan(a,b,start,dest.p,bellList(),{banned:forbidden,
    approaches:function*(at,bell){return yield* Goals.approaches(routeWorld,at,140,{targetKey:'bell:'+bell.id});},
    ready:function*(p,goals){
@@ -342,7 +343,6 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    if(route){if(!route.legs.some(l=>l.partial))return choose(route);context.partial=route;}
   }
  }
- if(context.bellTransfer)return context.bellTransfer;
  if(a===b&&!seams&&!drops){
   const linkedBefore=a.liveEdges?.length||0;
   const landing=approachGoals.length?approachGoals.slice().sort((p,q)=>R.dist(start,p)-R.dist(start,q))[0]:targetFloor||(dest.item&&ends.length?ends[0].q:dest.p);
@@ -367,7 +367,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    for(const s of starts)for(const e of ends){
     if(!a.sameComponent(s.id,e.id))continue;
     const linked=yield* plan(s,e,[]);if(!linked)continue;
-    if(!linked.legs.some(l=>l.partial))return linked;
+    if(!linked.legs.some(l=>l.partial))return choose(linked);
     context.partial=linked;
    }
   }
@@ -385,10 +385,11 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    },
     ...(broad?{maxDistance:20000,spacing:140,maxNodes:6000}:{}),...(approachGoals.length?{goals:approachGoals}:{}),
     ...(accepted?{maxMs:2000,maxNodes:1800}:{})});
-   if(local&&(!accepted||accepted.partial||local.meters<accepted.meters)){local.world=S.level;return {legs:[local],transfer:null};}}
-  if(accepted&&!accepted.partial)return {legs:[accepted],transfer:null};
+   if(local&&(!accepted||accepted.partial||local.meters<accepted.meters)){local.world=S.level;return choose({legs:[local],transfer:null});}}
+  if(accepted&&!accepted.partial)return choose({legs:[accepted],transfer:null});
   if(accepted)context.partial={legs:[accepted],transfer:null};
  }
+ if(context.bellTransfer)return context.bellTransfer;
  if(a===b){for(const s of starts)for(const e of ends){if(!a.sameComponent(s.id,e.id))continue;
   if(lookout){const near=yield* plan(s,e,[],true);if(near)return near;}
   const route=yield* plan(s,e,[]);if(route)return route;}
@@ -400,7 +401,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   yield* Drops.installJob(a);if(b!==a)yield* Drops.installJob(b);a.allowDrops=b.allowDrops=true;
   try{const lowered=yield* makePlan(dest,walkOnly,seams,true,context,depth+1);if(lowered)return lowered;}finally{a.allowDrops=b.allowDrops=false;}
  }
- if(!walkOnly&&!dest.item&&!bellApproach){const entry=bellList();for(const s of starts)for(const e of ends){const route=yield* plan(s,e,entry);if(route)return route;}}
+ if(!walkOnly&&!dest.item&&!bellApproach&&!inactiveBell){const entry=bellList();for(const s of starts)for(const e of ends){const route=yield* plan(s,e,entry);if(route)return route;}}
  if(!seams){
   yield* Obstacles.installSeamsJob(a);if(b!==a)yield* Obstacles.installSeamsJob(b);a.allowSeams=b.allowSeams=true;
   try{const repaired=yield* makePlan(dest,walkOnly,true,drops,context,depth+1);if(repaired)return repaired;}finally{a.allowSeams=b.allowSeams=false;a.allowBlockedTraverse=b.allowBlockedTraverse=false;}

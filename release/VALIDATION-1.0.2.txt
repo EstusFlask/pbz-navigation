@@ -1,0 +1,70 @@
+Version: 1.0.2
+Date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.0.2.zip
+Bytes: 120309162
+SHA256: 641bda4e1a2a399f04302831079e36206d781348e9fc82742a7bd62c927e3dfc
+
+Root causes and changes:
+- Bell markers carry item=true. Inactive/non-teleportable bell targets now skip
+  item-transfer planning, preserving existing directed guide and land fallbacks.
+  Activated bells retain the existing recommendation behavior.
+- A transfer candidate returned before scene walking/action/local checks after
+  atlas rejection. Move that fallback after scene checks and compare every full
+  candidate using the unchanged 85% rule. Keep checked transfers while pending.
+- Action connectors ignored existing atlas ground corridors if native navmesh
+  was missing/partial and endpoints exceeded the 45 m local connector range.
+  Add walking-only atlas fallback, fully checked for support/clearance/locks.
+  Limit each query to 120 m, 750 ms wall time, 512 generator advances and the
+  parent action deadline. Close unfinished generators.
+- DownSliding EdgeSpline midpoint could already be airborne: prefer the real
+  TopCollision trigger while keeping the edge/exit curve and one-way direction.
+- Rope spline ends were mistaken for rappel landings: append the read-only
+  native GetRappellingLandTargetWorldTransform Translation when available.
+
+Reproduction:
+- Minimized inactive-bell and 64 m scene-walk scenarios failed before edits.
+- Three traversal cases failed before edits: 60 m corridor between climbs,
+  airborne down-slide spline with valid top trigger, native rappel landing.
+  Logs: build/navigation-fixes-actions-red.txt and navigation-fixes-actions.txt.
+- Field dock coordinates and measured floor use the original pangzhen atlas.
+  Its start polygon is 1005.708 cm, measured support 947.216 cm; that 58.49 cm
+  offset exceeds the existing 51 cm atlas join tolerance. Preserve the tolerance
+  and let scene walking compete with the transfer instead.
+  Old pristine planner: field regression FAILS, recommends mirror transfer.
+  Fixed planner: PASSES, complete short walk with a usable transfer alternative.
+  Logs: build/navigation-fixes-dock-red.txt and navigation-fixes-dock.txt.
+  Physics and the departure approach remain simulated, not reconstructed.
+
+Verification:
+PASS: 214/214 JavaScript tests, zero failures/skips.
+  build/validation-102-js.txt
+PASS: real Map Tracker 1.0.9/1.0.14 Lua target/hover/file/cancel integration,
+  height preservation, contract guards, 170 hints and cleanup.
+  build/validation-102-lua.txt
+PASS: rebuilt 1.0.2 native adapter, ABI/runtime hash gate, mod filtering and
+  version-independent host dispatch.
+  build/validation-102-native.txt
+PASS: complete package built from the current 951-module streamed atlas.
+  build/validation-102-build.txt
+PASS: 1,349 exact archive file matches; runtime/native/docs all 1.0.2; streamed
+  original atlas/actor hashes and 291 legacy chunk strings unchanged;
+  no collector-owned paths.
+  build/validation-102-package.txt
+PASS: git diff --check; no DEBUG instrumentation left in navigation sources.
+
+Validation infrastructure:
+- Original 1.0.9 collector folder is absent from HEAD. Repair the fixture resolver
+  to read its immutable Git tree ec3108f43146f274ae9acd74f96ac1ef24ca4e29 into
+  build/test-references, retaining the original entry SHA check. Do not restore
+  the removed root folder. Lua/native/package tests then pass.
+- Archive 1.0.1 under build/release-archive/pre-1.0.2-20261113; verify identical
+  SHA256 before/after move. Persistent record: release/DIST-ARCHIVE-20261113.json.
+  dist contains only 1.0.2. Version lock/minimum/history updated together.
+
+Limitations:
+No new game run, installation or Nexus upload. Collision/reflected API tests
+remain simulated. Full-map manual XYZ routes remain unfinished, with only the
+same two existing directed reference courses enabled. Unloaded regions, missing
+atlas links and unsupported mechanisms can still fail. No trail sampling,
+persistence or runtime network calls. Game/manager files stayed read-only.
+No Git commit was created.

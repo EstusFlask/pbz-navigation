@@ -1,10 +1,11 @@
 Quest and Exploration Navigation - Fork
-Version: 1.0.1 (experimental release candidate)
+Version: 1.0.2 (experimental release candidate)
 Based on azqwq333's Quest and Exploration Navigation 0.8.5-beta and local-fix5.
 Original: https://www.nexusmods.com/phantombladezero/mods/472
 Fork preparation: kurosakana. Code and documentation use AI assistance.
 
 CURRENT COVERAGE
+1.0.2 keeps inactive bell targets on overland routes and compares loaded scene walking before committing to a transfer. Traversal actions can connect through checked walking-only atlas corridors (up to 120 m; each atlas search at most 750 ms wall time / 512 generator advances, within the action deadline). Down-slides use their top trigger; rappelling reads the native landing transform. Existing two directed reference courses and loading feedback remain. Physics are simulated in regressions; fresh in-game validation remains pending.
 1.0.1 shows persistent blue route-calculation/loading text with elapsed seconds above gameplay and beside the selected map target. Clear it on completion, cancellation or reset and restart timing on a new target. Do not display a no-route map label while work is pending. Widget reuse and status reads add no planner requests. All 1,334 installed 0.15.1 runtime files match its archive; field logs confirm 10-14 second waits. This update adds feedback, not a speed improvement. 202 JavaScript tests pass; the new HUD appearance is not game-verified.
 0.15.1 fixes checked bell recommendations being hidden by rejected walking previews, return transfers after arrival, and worse transfers when already near the better item bell. Rank checked access above continuous atlas corridors and proximity-only estimates; reject known walls, locks and unavailable traversals. Add at most two bounded local departure detours per request (60 m / 1,600 nodes / 900 ms execution each), keeping floor/slope/capsule checks. Reject incomplete departures. 195 JavaScript tests pass, including the reported valley currency on the real atlas. Both valley scenarios still need game testing. No trail learning or persistence.
 

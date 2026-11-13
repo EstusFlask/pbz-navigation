@@ -21,13 +21,13 @@ function planner(world,options={}){
     const map=options.map||{GetMapIDByLocation:()=> 'test',GetCurrentMapID:()=> 'test',LockObjectInfos:{GetRef:()=>null}};
     Object.assign(UE,options.UE);
     const mocks={ue:UE,puerts:{},'Library/TsHelper':{default:{getWorldSubsystem:(p,t)=>t==='map'?map:{}}},'Library/MapAreaGroups':{},
-        './PBZRouteTables':{data:{worlds:[level],bells:Object.fromEntries((options.bells||[]).map(b=>[b.id,b])),areas:options.areas||{}}},
+        './PBZRouteTables':{data:{worlds:[level],bells:Object.fromEntries((options.bells||[]).map(b=>[b.id.toLowerCase(),b])),areas:options.areas||{}}},
         './PBZRouteWorld':W,'./PBZRoutePassages':options.passages||{refreshLadders(){},resetLadders(){},isLookout:()=>false,liveRouteJob:empty},
         './PBZRouteDrops':{installJob:empty},'./PBZRouteObstacles':{...require(root+'/PBZRouteObstacles'),installSeamsJob:empty},
         './PBZRouteSurface':{...require(root+'/PBZRouteSurface'),anchorsJob:function*(g,q,goal){return [{id:goal?1:0,q:{...q},r:0,dz:0}];}},
         './PBZPrivateRibbon':{},'./PBZRouteInk':{},'./PBZRouteItems':{},'./PBZRouteMinimap':{},'./PBZRouteScout':{}};
     if(options.localWalk)mocks['./PBZRouteLocalWalk']=options.localWalk;
-    if(options.bells){const array=xs=>({Num:()=>xs.length,Get:i=>xs[i]});const bellService={ActivateBellIDs:array(options.bells.map(b=>b.id)),DisableTeleportBellIDs:array([])};
+    if(options.bells){const array=xs=>({Num:()=>xs.length,Get:i=>xs[i]});const bellService={ActivateBellIDs:array(options.activeBellIDs||options.bells.map(b=>b.id)),DisableTeleportBellIDs:array([])};
         mocks['Library/TsHelper'].default.getWorldSubsystem=(p,t)=>t==='map'?map:bellService;}
     if(options.surface)mocks['./PBZRouteSurface']=options.surface;
     const module={exports:{}};
@@ -764,7 +764,7 @@ test('a checked scene prefix can replace a zero-progress atlas preview',()=>{
  assert.ok(context.best.legs[0].points[context.best.legs[0].verifiedEndIndex].y>=700,'provider rank hid a physically checked route in favour of an untested atlas');
 });
 
-function bellHarness(direct=false,localWalk={search:function*(){return null;}},extraBells=[]){
+function bellHarness(direct=false,localWalk={search:function*(){return null;}},extraBells=[],options={}){
  const bells=[{id:'start-bell',world:'test',area:'xigu',name:'起点铃铛',at:[200,0,0]},
   {id:'item-bell',world:'test',area:'xigu',name:'物品附近铃铛',at:[18000,0,500]},...extraBells];
  const g={name:'test',bells:new Map(),actors:[],observedPassages:new Map(),sameComponent:()=>true,h:()=>0,
@@ -774,7 +774,7 @@ function bellHarness(direct=false,localWalk={search:function*(){return null;}},e
    return {world:'test',points:ps,checks:[],gates:[],moves:[],walks:ps.slice(1).map((b,i)=>({a:ps[i],b,from:i,to:i+1,edge:-1})),meters:require(root+'/PBZRouteCore').extent(ps)/100};
   }};
  const h=planner({floorAt:p=>p.x<1000?p:null,step:(a,b)=>b.x<1000?{p:b}:{why:'remote scene unloaded'}},
-  {quiet:true,bells,graph:g,localWalk});
+  {quiet:true,bells,graph:g,localWalk,...options});
  Object.assign(h.goal,{x:20000,y:0,z:500});h.dest.provider='187';h.bells=bells;return h;
 }
 test('an unloaded valley item still gets a checked route to a transfer bell',()=>{
@@ -788,6 +788,47 @@ test('a long same-map atlas corridor does not bypass the shorter bell transfer',
  const h=bellHarness(true);h.api.S.world.floorAt=p=>p;h.api.S.world.step=(a,b)=>({p:b});
  const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
  assert.equal(trip?.transfer?.to.id,'item-bell','the complete direct corridor returned before comparing bells');
+});
+test('a nearby scene-walkable item is checked before committing to a distant bell transfer',()=>{
+ const h=bellHarness();Object.assign(h.goal,{x:6400,y:0,z:0});
+ h.bells[1].at=[6000,0,0];
+ h.api.S.world.floorAt=p=>p;h.api.S.world.step=(a,b)=>({p:b});
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(trip,'the loaded walking approach was never tried');
+ assert.equal(!!trip.transfer,false,'a 64 m walk was replaced by a much longer transfer');
+ assert.ok(!trip.legs[0].partial);assert.ok(trip.legs[0].meters<70);
+});
+test('selecting an inactive bell keeps an overland route instead of recommending a transfer',()=>{
+ const h=bellHarness(false,undefined,[{id:'not-yet-activated',world:'test',at:[6400,0,0]}],
+  {activeBellIDs:['start-bell','item-bell']});h.dest.bell='not-yet-activated';
+ h.bells[1].at=[6000,0,0];
+ h.api.S.world.floorAt=p=>p;h.api.S.world.step=(a,b)=>({p:b});
+ Object.assign(h.goal,{x:6400,y:0,z:0});
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(trip);assert.equal(!!trip.transfer,false,'an inactive bell target entered item teleport planning');
+});
+test('an activated bell target retains the existing shorter transfer recommendation',()=>{
+ const h=bellHarness();h.dest.bell='item-bell';
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.to.id,'item-bell');
+});
+test('the reported ice-lake dock item keeps its short loaded walk with the real atlas',t=>{
+ const sample=require('./fixtures/dock-item-20261113.json'),R=require(root+'/PBZRouteCore');
+ const data=require(root+'/PBZRouteTables').data,bells=[data.bells[sample.fromBell],data.bells[sample.toBell]];
+ const graph=new R.Graph(require(root+'/PBZRouteWorlds/'+sample.world).data,require(root+'/PBZRouteFaces/'+sample.world).faces);
+ const departure={x:bells[0].at[0],y:bells[0].at[1],z:bells[0].at[2]};
+ // Keep a usable bell approach as well as the field's measured player floor.
+ // The real start polygon is about 58 cm above that floor, so its atlas join
+ // fails while the loaded scene still offers a continuous short walk.
+ const floor=p=>R.xy(p,sample.start)<10000?{...p,z:sample.floorZ+
+  (departure.z-sample.floorZ)*Math.max(0,1-R.xy(p,departure)/1500)}:null;
+ const h=planner({floorAt:floor,step:(a,b)=>floor(b)?{p:floor(b)}:{why:'unloaded scene'}},
+  {quiet:true,level:sample.world,start:sample.start,bells,graph,surface:require(root+'/PBZRouteSurface')});
+ Object.assign(h.goal,sample.goal);Object.assign(h.dest,{provider:'187',key:sample.itemKey});
+ const events=[],trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0,report:(event,data)=>events.push({event,...data})}));
+ assert.ok(events.some(e=>e.event==='bell transfer'),'the field replay must exercise its usable transfer alternative');
+ assert.ok(trip);assert.equal(!!trip.transfer,false,'the dock item still recommends the four-image mirror detour');
+ assert.ok(!trip.legs[0].partial);assert.ok(trip.legs[0].meters<sample.reportedTransferMeters*.5);
 });
 test('teleporting to the destination bell restarts planning for the original item',()=>{
  const h=bellHarness();h.api.arm(h.dest);const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));

@@ -7,7 +7,7 @@ function fixture(conditional=false){
  const W={alive:o=>!!o,plain:p=>({x:p.X,y:p.Y,z:p.Z})};
  const module={exports:{}},mocks={ue:{ESplineCoordinateSpace:{World:0}},puerts:{$ref:value=>({value}),$unref:ref=>ref.value},'./PBZRouteWorld':W};
  const load=id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id));
- vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRoutePassages.js','utf8')+'\nexports.placedCurve=placedCurve;\n})',{Date,console})(load,module,module.exports);
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRoutePassages.js','utf8')+'\nexports.placedCurve=placedCurve;exports.checkedWalkJob=checkedWalkJob;\n})',{Date,console})(load,module,module.exports);
  const floor=p=>p.x>=-100&&p.x<=500?0:p.x>=650&&p.x<=900?600:p.x>=1100&&p.x<=1500?1200:null;
  const world={normal:.7,rise:45,slope:1,r:35,floorAt:p=>{const z=floor(p);return z===null?null:{...p,z};},
   step:(a,b)=>{const z=floor(b);return z!==null&&Math.abs(z-a.z)<80?{p:{...b,z}}:{why:'gap'};},
@@ -112,6 +112,62 @@ test('static authored ladders are considered and can chain with a rope-swing act
  const h=fixture(false),trip=run(h.api.liveRouteJob(h.g,h.world,h.start,h.goal,h.native));
  assert.ok(trip,'static actions were excluded or only one action was tried');
  assert.deepEqual(Array.from(trip.legs[0].moves,m=>m.kind),['ladder','swing']);
+});
+test('two climbs use the existing checked atlas walk when their platforms exceed the local connector range',()=>{
+ const h=fixture(),columns={p:[-1000,0,0,0,0,0,0,0,600,6000,0,600,6000,0,1200,7000,0,1200],v:[],
+  e:[0,1,1,0,0,0,2,3,1,0,0,0,4,5,1,0,0,0],arc:[0,~0,1,~1,2,~2],lab:[0,0,1,1,2,2],
+  cells:[-1,0,0,1,0,0,1,3,1,0,3,6],strong:[0,0,1,1,2,2],dag:[],off:[0,1,2,3,4,5,6],
+  weight:[1000,6000,1000],sizes:[2,2,2],order:[0,1,2,3,4,5],metric:Array(24).fill(0)};
+ const actors=[{guid:'first',kind:'ascent',both:false,fold:false,path:[[0,0,0],[0,0,600]]},
+  {guid:'second',kind:'ascent',both:false,fold:false,path:[[6000,0,600],[6000,0,1200]]}];
+ const graph=new R.Graph({world:'fixture',n:6,actors},null,columns);
+ const world={normal:.7,rise:45,slope:1,r:35,floorAt:p=>({...p}),hit:()=>null,
+  step:(a,b)=>Math.abs(a.z-b.z)<50?{p:b}:{why:'climb required'}};
+ const trip=run(h.api.liveRouteJob(graph,world,{x:-1000,y:0,z:0},{x:7000,y:0,z:1200},()=>null,{clock:()=>0}));
+ assert.ok(trip,'a real 60 m atlas corridor could not join the two climbs without native navmesh');
+ assert.deepEqual(Array.from(trip.legs[0].moves,m=>m.guid),['first','second']);
+ assert.ok(run(require(root+'/PBZRouteFeasibility').check(world,trip.legs[0],trip.legs[0].points[0])).ok);
+});
+test('a loaded down-slide starts at its supported top trigger before crossing the airborne ledge',()=>{
+ const h=fixture();h.g.actors=[];
+ const at=(X,Z)=>({K2_GetComponentLocation:()=>({X,Y:0,Z})});
+ const spline=(X,Z)=>({GetSplineLength:()=>100,GetLocationAtDistanceAlongSpline:()=>({X,Y:0,Z})});
+ const actor={GetName:()=> 'ledge-drop',K2_GetActorLocation:()=>({X:200,Y:0,Z:600}),
+  TopCollision:at(-60,600),EdgeSpline:spline(200,600),EndEdgeSpline:spline(500,0)};
+ const floor=p=>p.x<=0?600:p.x>=400?0:null;
+ Object.assign(h.world,{floorAt:p=>floor(p)===null?null:{...p,z:floor(p)},hit:(a,b,body)=>{
+  const z=floor(a);return !body&&z!==null&&z<=a.z&&z>=b.z?{point:{...a,z},nz:1}:null;
+ },step:(a,b)=>floor(b)!==null&&Math.abs(a.z-floor(b))<50?{p:{...b,z:floor(b)}}:{why:'ledge'}});
+ h.UE.Class={Find:p=>p.includes('DownSliding')?p:null};
+ h.UE.GameplayStatics={GetAllActorsOfClass:(pawn,cls,out)=>{out.value={Num:()=>1,Get:()=>actor};}};
+ const start={x:-200,y:0,z:600},goal={x:700,y:0,z:0};
+ run(h.api.refreshLoadedJob(h.g,h.world,{},start,goal));
+ const trip=run(h.api.liveRouteJob(h.g,h.world,start,goal,()=>null,{clock:()=>0}));
+ assert.ok(trip,'the spline midpoint in midair hid the usable top trigger');
+ assert.equal(trip.legs[0].moves[0].kind,'drop');
+ assert.equal(run(h.api.liveRouteJob(h.g,h.world,goal,start,()=>null,{clock:()=>0})),null);
+});
+test('rappelling uses the native world landing transform beyond the suspended rope endpoint',()=>{
+ const h=fixture(),v=(X,Z)=>({X,Y:0,Z});
+ const actor={K2_GetActorLocation:()=>v(0,1000),
+  RopeSpline:{GetSplineLength:()=>1000,GetLocationAtDistanceAlongSpline:d=>v(d*.5,1000-d*.7)},
+  GetRappellingLandTargetWorldTransform:()=>({Translation:v(700,0)})};
+ const points=h.api.placedCurve(actor,'rappel');
+ assert.deepEqual(JSON.parse(JSON.stringify(points.at(-1))),{x:700,y:0,z:0});
+ assert.ok(points.some(p=>p.x===500&&p.z===300),'the measured rope curve must remain in the action');
+});
+for(const blocked of ['wall','lock','action','floor'])test('an atlas action connector cannot bypass a '+blocked,()=>{
+ const h=fixture(),a={x:0,y:0,z:600},b={x:6000,y:0,z:600};
+ const world={normal:.7,floorAt:p=>p,hit:()=>null,step:(p,q)=>blocked==='wall'||blocked==='lock'?{why:blocked,hit:q,locked:blocked==='lock'}:{p:q}};
+ const graph={routeJob:function*(){return {points:[a,blocked==='floor'?{...b,z:0}:b],meters:60,
+  moves:blocked==='action'?[{from:0,to:1,kind:'hook'}]:[],walks:[],checks:[],gates:[]};}};
+ assert.equal(run(h.api.checkedWalkJob(world,a,b,()=>null,{graph,clock:()=>0})),null);
+});
+test('an unfinished atlas connector respects its deadline and closes its generator',()=>{
+ const h=fixture();let now=0,closed=false;
+ const world={floorAt:p=>p,hit:()=>null},graph={routeJob:function*(){try{while(true){now+=100;yield;}}finally{closed=true;}}};
+ assert.equal(run(h.api.checkedWalkJob(world,{x:0,y:0,z:0},{x:6000,y:0,z:0},()=>null,{graph,clock:()=>now,deadline:200})),null);
+ assert.equal(closed,true);assert.ok(now<=300);
 });
 test('conditional traversal routing can chain multiple actions instead of requiring one to reach the goal',()=>{
  const h=fixture(true),trip=run(h.api.liveRouteJob(h.g,h.world,h.start,h.goal,h.native));

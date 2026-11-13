@@ -1,0 +1,13 @@
+{
+  "source": "PBZModLoader/loader.log, 2026-11-13 00:35:57-00:35:58 America/Tijuana",
+  "world": "pbz_pangzhen_wp",
+  "itemKey": "pbz:world:pbz_pangzhen_wp-bp_rubbish_c_uaid_e89c25a75120abfc02_1551115936",
+  "start": {"x": -176663.74778442216, "y": -2118.0579063196155, "z": 949.1139880448366},
+  "floorZ": 947.2160007002476,
+  "goal": {"x": -178373.84, "y": -8245.427, "z": 961.84076},
+  "fromBell": "bell_lyz_010",
+  "toBell": "bell_lyz_011",
+  "reportedAtlasMeters": 69.64443041910913,
+  "reportedTransferMeters": 241.16920100914476,
+  "physics": "Regression uses a simulated loaded floor and bell approach; coordinates, measured player floor and atlas are real."
+}

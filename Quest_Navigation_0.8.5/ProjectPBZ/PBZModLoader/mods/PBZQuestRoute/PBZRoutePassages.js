@@ -136,15 +136,36 @@ function* checkedWalkJob(world,a,b,nativeWalk,options={}){
   a=firstFloor;b=lastFloor;
   if(R.dist(a,b)<1)return [a,b];
   if(R.dist(a,b)<850){const direct=yield* sweepJob(world,a,b);if(direct)return direct;}
+  const verify=function*(leg){
+   if(!leg||leg.partial||!leg.points?.length||(leg.moves||[]).length)return null;
+   const first=leg.points[0],last=leg.points[leg.points.length-1];
+   if(R.xy(first,a)>=80||R.xy(last,b)>=90||Math.abs(first.z-a.z)>=105||Math.abs(last.z-b.z)>=110)return null;
+   const checked=yield* Feasible.check(world,{...leg,world:'connector',checks:leg.checks||[],gates:[],moves:[],walks:leg.walks||[]},a);
+   if(!checked.ok||checked.leg.partial)return null;
+   const points=checked.leg.points,end=points[points.length-1];
+   if(R.dist(end,b)>1){const join=yield* sweepJob(world,end,b);if(!join)return null;return [...points,...join.slice(1)];}
+   return points;
+  };
   yield;const leg=nativeWalk(a,b,true);options.waypoints=leg?.points;yield;
-  if(!leg||leg.partial||!leg.points.length)return null;
-  const first=leg.points[0],last=leg.points[leg.points.length-1];
-  if(R.xy(first,a)>=80||R.xy(last,b)>=90||Math.abs(first.z-a.z)>=105||Math.abs(last.z-b.z)>=110)return null;
-  const checked=yield* Feasible.check(world,{...leg,world:'connector',checks:leg.checks||[],gates:[],moves:[],walks:leg.walks||[]},a);
-  if(!checked.ok||checked.leg.partial)return null;
-  const points=checked.leg.points,end=points[points.length-1];
-  if(R.dist(end,b)>1){const join=yield* sweepJob(world,end,b);if(!join)return null;return [...points,...join.slice(1)];}
-  return points;
+  const native=yield* verify(leg);if(native)return native;
+  // A streamed native navmesh can stop between two valid actions even when
+  // the shipped atlas contains their complete ground corridor. Use only its
+  // walking edges, then check every floor and capsule segment in the scene.
+  const g=options.graph;
+  if(!g?.routeJob||R.dist(a,b)>12000)return null;
+  const banned={has:k=>{
+   if(k<g.e?.length/6)return [2,3,6,7].includes(g.e[k*6+2]);
+   const move=g.liveEdges?.[k-(g.e?.length||0)/6]?.move;
+   return !!move&&!move.walk;
+  }};
+  const clock=options.clock||Date.now,deadline=Math.min(options.deadline??Infinity,clock()+750);
+  const task=g.routeJob(a,b,{banned});let row,steps=0;
+  try{
+   while(clock()<=deadline&&steps++<512){row=task.next();if(row.done)break;yield;}
+  }finally{if(!row?.done)task.return?.();}
+  const corridor=row?.done?row.value:null;
+  if(corridor?.points?.length)options.waypoints=[...(options.waypoints||[]),...corridor.points];
+  return yield* verify(corridor);
 }
 function sceneComponents(actor){
   const read=actor.K2_GetComponentsByClass||actor.GetComponentsByClass;
@@ -182,7 +203,7 @@ function placedCurve(actor,kind){
    case 'ascent':result=[location('BoxA')||location('Box')||root,...curve('EdgeSpline',true)];
     if(result.length<2){const end=location('EndPositionStatic');if(end)result=[location('Box')||root,end];}break;
    case 'mantle':result=[location('FrontCollision')||root,...curve('FrontEdgeSpline',true),...curve('BackEdgeSpline',true)];break;
-   case 'drop':result=[...curve('EdgeSpline',true),...curve('EndEdgeSpline',true)];break;
+   case 'drop':{const top=location('TopCollision');result=[...(top?[top]:[]),...curve('EdgeSpline',true),...curve('EndEdgeSpline',true)];break;}
    case 'ladder':result=[location('BottomCollision'),location('TopCollision')];break;
    case 'swing':result=[location('ASide')||location('BoxA'),location('BSide')||location('BoxB')];break;
    case 'hook':result=[location('TriggerSphere')||location('TriggerBox'),location('GrabPoint'),location('LandArea')];break;
@@ -190,6 +211,10 @@ function placedCurve(actor,kind){
   }
   if(result.length<2||!result.every(R.finite)||R.dist(result[0],result[result.length-1])<36)return null;
   if(['rappel','zipline','drop','slide'].includes(kind)&&result[0].z<result[result.length-1].z)result.reverse();
+  if(kind==='rappel')try{
+   const transform=actor.GetRappellingLandTargetWorldTransform?.(),end=W.plain(transform?.Translation);
+   if(R.finite(end)&&end.z<=result[0].z&&R.dist(end,result[result.length-1])>1)result.push(end);
+  }catch(_){}
   return result;
 }
 function liveCache(g,world){
@@ -350,7 +375,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
   return yield* Transitions.route({name:g.name,world,start,goal,goals:options.goals,clock,deadline:options.deadline,maxConnectors:options.maxConnectors,
    allowPartial:options.allowPartial,onPartial:options.onPartial,
    onAction:function*(action,settings){
-    const linked=yield* LiveLinks.attachCheckedJob(g,action,(a,b)=>checkedWalkJob(world,a,b,nativeWalk),{clock,deadline:settings.deadline});
+    const linked=yield* LiveLinks.attachCheckedJob(g,action,(a,b)=>checkedWalkJob(world,a,b,nativeWalk,{graph:g,clock,deadline:settings.deadline}),{clock,deadline:settings.deadline});
     if(linked)options.report?.('action attached',{guid:action.feature.guid,kind:action.feature.kind,entry:action.entry,exit:action.exit});
    },
    features:candidates.sort((a,b)=>a.score-b.score),canTraverse:f=>f.state?.ready!==false&&g.canTraverse(f),onClosed:options.onClosed,report:options.report,
@@ -365,7 +390,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
    },
    validate:function*(a){return yield* checkJob(world,{kind:9,mode:a.feature.kind,guid:a.feature.guid,a:a.entry,b:a.exit,first:a.path[0],last:a.path[a.path.length-1]});},
    walk:function*(a,b,settings){
-    const samples={};let points=yield* checkedWalkJob(world,a,b,nativeWalk,samples);
+    const samples={graph:g,clock,deadline:settings.deadline};let points=yield* checkedWalkJob(world,a,b,nativeWalk,samples);
     if(points)return {points,meters:R.extent(points)/100};
     if(!settings.local||R.dist(a,b)>4500)return null;
     const vertical=Math.abs(a.z-b.z)>200;

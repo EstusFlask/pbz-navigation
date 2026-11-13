@@ -9,18 +9,21 @@ import hashlib
 import subprocess
 import tarfile
 
+# Immutable original fixture tree, retained after its source folder was removed.
+PINNED_TREE = 'ec3108f43146f274ae9acd74f96ac1ef24ca4e29'
+
 
 def original_fixture(root):
     folder = 'Map_Collectible_Tracker_1.0.9'
     current = root / folder
     if current.is_dir():
         return current
-    tree = subprocess.check_output(['git', 'rev-parse', 'HEAD:'+folder], cwd=root, text=True).strip()
+    tree = subprocess.check_output(['git', 'rev-parse', PINNED_TREE+'^{tree}'], cwd=root, text=True).strip()
     output = root / 'build/test-references' / ('collector-1.0.9-'+tree)
     # git archive can apply the host's checkout EOL conversion. The native
     # compatibility gate is byte-exact, so materialize the original LF bytes.
     blob = subprocess.check_output(['git', '-c', 'core.autocrlf=false', '-c', 'core.eol=lf',
-                                    'archive', 'HEAD:'+folder], cwd=root)
+                                    'archive', tree], cwd=root)
     output.mkdir(parents=True, exist_ok=True)
     with tarfile.open(fileobj=io.BytesIO(blob)) as archive:
         for item in archive.getmembers():
