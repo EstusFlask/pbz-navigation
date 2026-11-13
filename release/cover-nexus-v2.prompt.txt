@@ -1,0 +1,20 @@
+Generation mode: built-in image_gen tool
+Asset: cover-nexus-v2.png
+Purpose: Nexus Mods cover for Quest and Exploration Navigation - Fork
+Artwork: original AI-generated concept art, not an in-game screenshot.
+
+Use case: ads-marketing.
+Asset type: finished landscape Nexus Mods cover image for a Phantom Blade Zero community navigation mod. A single polished 16:9 cover, ideally 1920x1080. Fill the whole frame.
+Primary request: create a premium wuxia action-game mod cover that clearly communicates quest and exploration navigation through a thin luminous BLUE guidance thread in a dark ancient Chinese environment.
+Scene/backdrop: a misty ancient Chinese mountain temple approach, weathered stone stairs bending around a rock wall, roof eaves and a distant gate. Beautiful atmospheric ink-wash-inspired painted game key art, intricate environmental texture, strong spatial depth, smoke-gray and charcoal with restrained warm stone highlights. Dramatic yet readable. This is original concept art, not a gameplay screenshot.
+Subject: a small back-facing lone swordsman silhouette on the right third, dressed in dark wuxia travel robes, looking toward the temple path. A fine clear electric-blue guiding thread floats roughly waist-high above the path and curves naturally around the stone obstacle toward the distant gate. The route must visibly follow the traversable path and stairs. This blue thread is the one vivid accent and the visual signature; elegant and thin, with restrained glow and a small destination point. No multiple routes or UI panels.
+Composition/framing: LEFT approximately 55% has a naturally very dark atmospheric gradient and quiet negative space for typography; RIGHT approximately 45% carries the evocative temple, swordsman, and route, with the blue line starting near the lower middle and guiding the eye into the right background. All major text remains inside generous safe margins and is readable at small thumbnail size. Strong editorial hierarchy, premium professional game-cover design, balanced negative space.
+Text (verbatim, English only):
+At upper left, small spaced clean lettering: "PHANTOM BLADE ZERO"
+Below it, medium-large bold condensed type: "QUEST & EXPLORATION"
+Below it, the largest dominant word in the entire image: "NAVIGATION"
+Directly below the title, a small elegant outlined badge: "FORK"
+Near the bottom left, small simple line: "BLUE WORLD GUIDANCE"
+At very bottom right, tiny unobtrusive label: "CONCEPT ART"
+Typography: crisp expertly typeset off-white sans serif, with NAVIGATION exceptionally bold and confidently spaced, a restrained cyan accent rule. Exact spelling and no extra text. Render the words as professional integrated cover typography, not handwritten environmental signs.
+Constraints: preserve the relationship to this actual mod: quest/exploration guidance, blue world line, independent community fork. No version numbers, no claims of full-map coverage or shortest paths, no fake screenshots or fake map UI. No Nexus logo, no official game logo imitation, no brand marks, no watermark, no decorative technical diagrams, no grids, no modern GPS/navigation screen, no red route, no neon cyberpunk, no busy collage. The final result should feel like a striking wuxia game mod thumbnail, not a software presentation.
