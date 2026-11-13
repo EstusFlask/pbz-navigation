@@ -23,6 +23,11 @@ local f=assert(io.open(bridge_test_root .. '/PBZQuestRoute-tracker.json','rb'))
 local snapshot=require('dkjson').decode(f:read('*a'));f:close()
 assert(snapshot.target.key=='host-selected' and snapshot.target.location[3]==33)
 local control=rawget(_G,'__PBZQuestRouteHost')
+local hinted=false
+for _,p in ipairs(require('PbzMapCatalog').points) do
+ if p.contents[1] and p.contents[1].nameKey=='Item_Weapon_TierUp_001' then hinted=p.sourceHint:find('虎炮')~=nil end
+end
+assert(hinted,'host did not connect item hints to the collector catalogue')
 selection.setMarkers({{key='upstairs-hover',mapID='pangzhen',location={100,200,2300},x=10,y=20,width=30,height=30}})
 selection.select('upstairs-hover')
 f=assert(io.open(bridge_test_root .. '/PBZQuestRoute-tracker.json','rb'));snapshot=require('dkjson').decode(f:read('*a'));f:close()

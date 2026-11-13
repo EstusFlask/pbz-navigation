@@ -3,6 +3,7 @@ const R=require('./PBZRouteCore');
 const key=p=>[p.x,p.y,p.z].map(x=>Math.round(x/6)).join(',');
 const id=(a,b)=>key(a)+'>'+key(b);
 function mark(leg,c,reason,hit,unknown=false,block){
+ block||=c.block;if(c.unknown!==undefined)unknown=c.unknown;
  const p=hit||R.lerp(c.a,c.b,.5);
  return {id:'route:'+c.edge+':'+id(c.a,c.b),world:leg.world,p,approach:c.a,edge:c.edge,
   icon:c.kind===11?'locked':unknown?'mechanism':'barrier',label:c.kind===11?'折梯未放下，需从另一侧解锁':c.kind===12&&unknown?'跳落通道，落点待确认':unknown?'此段通路待确认':'道路受阻，需绕行',reason,unknown,
@@ -55,9 +56,13 @@ class Auditor{
    if(!near.p)return {complete:true};
    const join={a:feet,b:near.p,edge:-1,from:near.i,to:near.i+near.t};
    if(near.d>18){
+    if(leg.guide){
+     if(!require('./PBZRouteGuides').attachment(leg,w,feet,near))return {mark:{...mark(leg,join,'fixed route join pending',feet,true),approach:feet}};
+    }else{
     const check=sweep(w,feet,near.p);let row;
     do{row=check.next();if(!row.done)yield;}while(!row.done);
     if(!row.value.ok)return {mark:{...mark(leg,join,row.value.why,row.value.p,row.value.unknown,row.value.block),approach:feet},normal:row.value.normal};
+    }
    }
    self.safe=near.p;
    for(let i=near.i;i<leg.points.length-1;i++){
@@ -74,12 +79,19 @@ class Auditor{
      cross.verified=true;leg.obstacles=(leg.obstacles||[]).filter(x=>x.edge!==cross.edge||x.condition!==12);
     }
     if(move&&!walking){
+     if(move.block)return {mark:{...mark(leg,c,'closed traversal',a,!!move.block.unknown,move.block),approach:a}};
+     const lock=w.blockAt?.(a,b);if(lock)return {mark:{...mark(leg,c,'locked passage',lock.p,false,lock),approach:a}};
      const closed=(leg.obstacles||[]).find(x=>[6,8,9,11,12].includes(x.condition)&&(
       x.edge>=0&&x.edge===cross?.edge||R.dist(x.approach||x.p,move.p||a)<80));
      if(move.fold||closed)return {mark:closed||mark(leg,{...c,kind:11},'folded ladder',a,false)};
      // These are explicitly authored actions (ladder/wall run/lift/drop),
      // not an inferred straight connection across an absent walking edge.
-     self.safe=b;yield;continue;
+     if(leg.guide)clear(leg,c.edge,b);self.safe=b;yield;continue;
+    }
+    if(leg.guide){
+     const lock=w.blockAt?.(a,b),hit=lock?null:w.hit?.(a,b,true),block=lock||w.describeBlocker?.(hit?.actor);
+     if(lock||hit)return {mark:{...mark(leg,c,lock?'locked passage':'blocked guide clearance',lock?.p||hit.point,false,block),approach:self.safe},normal:hit?.normal};
+     clear(leg,c.edge,b);self.safe=b;yield;continue;
     }
     const cacheKey=leg.world+'/'+id(a,b),cached=self.cache.get(cacheKey);
     if(cached&&now-cached.at<1800){self.safe=cached.p;yield;continue;}
@@ -157,6 +169,7 @@ exports.crossesBlock=crossesBlock;
 // dashed until scene collision checks certify it; a physical blocker is red.
 function intervals(leg){
  const cuts=[];
+ if(leg.guide)cuts.push({lo:0,hi:R.extent(leg.points)+1,unknown:true});
  if(leg.diagnostic){const n=leg.verifiedEndIndex??0;cuts.push({lo:R.extent(leg.points.slice(0,n+1)),hi:R.extent(leg.points)+1,unknown:true});}
  const at=p=>{const q=R.nearestOnLine(p,leg.points);let s=0;for(let i=0;i<q.i;i++)s+=R.dist(leg.points[i],leg.points[i+1]);return s+(q.p?R.dist(leg.points[q.i],q.p):0);};
  for(const c of leg.checks||[])if((c.kind===10||c.kind===11||c.kind===12)&&!c.verified){const a=at(c.a),b=at(c.b);cuts.push({lo:Math.min(a,b),hi:Math.max(a,b),unknown:c.kind!==11});}

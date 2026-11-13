@@ -62,10 +62,8 @@ class QuestRouteCompat final : public RC::CppUserModBase {
         RC::LuaMadeSimple::Lua&, RC::LuaMadeSimple::Lua*) noexcept {
         if (std::wstring_view(name.data, name.size) != L"PbzMapTracker") return;
         try {
-            const auto tracker=own_root().parent_path() / "PbzMapTracker" / "Scripts" / "main.lua";
-            if (sha256(tracker) != "196e2780771516feb76603f60c05f81921cfa32346024b6e0ee2c897ec3c5192") {
-                status("Collector is not the original 1.0.9; target adapter remains off."); return;
-            }
+            // Entry text changes with every collector release. The Lua host
+            // checks the target/selection contracts in the collector's own VM.
             const auto script=own_root() / "Scripts" / "PBZTrackerHost.lua";
             main.execute_file(std::wstring_view(script.native()));
             status("Navigation target adapter attached; no collector files were written.");
@@ -74,7 +72,7 @@ class QuestRouteCompat final : public RC::CppUserModBase {
     }
 public:
     QuestRouteCompat() {
-        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"0.10.3-fork.1";
+        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"1.0.1";
         ModDescription=L"Navigation-owned target bridge; no Map Tracker file replacements";
         ModAuthors=L"kurosakana (fork); original navigation by azqwq333";
         register_on_lua_start(&lua_started);

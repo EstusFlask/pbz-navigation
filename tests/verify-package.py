@@ -4,8 +4,10 @@ import argparse
 import base64
 import hashlib
 import json
+import re
 import subprocess
 import zipfile
+from collector_fixture import original_fixture
 
 root=Path(__file__).resolve().parents[1]
 nav=root/'Quest_Navigation_0.8.5'
@@ -13,12 +15,26 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--manager-state',type=Path)
 args=parser.parse_args()
 release=json.loads((root/'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))
+lock=json.loads((root/'release/VERSION-LOCK.json').read_text(encoding='utf-8'))
+version=str(release['version'])
+def version_key(value):
+    match=re.fullmatch(r'(\d+)\.(\d+)\.(\d+)(?:-fork\.\d+)?', value)
+    assert match, 'invalid release version: '+value
+    return tuple(map(int,match.groups()))
+assert version == str(lock['currentVersion']), 'release differs from VERSION-LOCK currentVersion'
+assert version_key(version) >= version_key(str(lock['minimumVersion'])), 'release below VERSION-LOCK minimumVersion'
+assert version_key(version) >= max(map(version_key,lock.get('history',[])),default=(0,0,0)), 'release below VERSION-LOCK history'
 archive=root/release['archive']
+assert archive == root/'dist'/f'Quest_and_Exploration_Navigation_Fork_{version}.zip', 'archive filename/version mismatch'
 scripts='ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/'
 streamed=root/'build/streamed-atlas'
 stream_state=json.loads((streamed/'manifest.json').read_text(encoding='utf-8'))
 documents={'INSTALL-README.md':root/'docs/USER-GUIDE.md','CHANGELOG.md':root/'release/CHANGELOG.md',
-    'BELL-ROUTE-AUDIT.md':root/'docs/BELL-ROUTE-AUDIT.md'}
+    'BELL-ROUTE-AUDIT.md':root/'docs/BELL-ROUTE-AUDIT.md',
+    'GAME-TRAVERSAL-AUDIT.md':root/'docs/GAME-TRAVERSAL-AUDIT.md',
+    'MANUAL-ROUTES.md':root/'docs/MANUAL-ROUTES.md',
+    'BELL-NETWORK-COVERAGE.md':root/'docs/BELL-NETWORK-COVERAGE.md',
+    'ITEM-DESCRIPTION-AUDIT.md':root/'docs/ITEM-DESCRIPTION-AUDIT.md'}
 def module_value(name,prefix):
     text=(streamed/name).read_text(encoding='utf-8')
     assert text.startswith(prefix)
@@ -77,13 +93,14 @@ with zipfile.ZipFile(archive) as z:
         tracker=next(m for m in mods if m['name']=='Map Collectible Tracker')
         assert not any(key(f['target'],f['fileName']) in entries for f in tracker['files'])
         print(f"PASS: zero package overlap with all {len(tracker['files'])} installed collector paths")
-        # A newer collector is not the pinned 1.0.9 fixture. Keep ownership
-        # checks for every version, but never certify another version's sync.
-        if str(tracker.get('version',''))=='1.0.9':
-            original=root/'Map_Collectible_Tracker_1.0.9/platform/steam/ue4ss/Mods'
+        # Only certify versions exercised by the real Lua integration suite.
+        tracker_version=str(tracker.get('version',''))
+        if tracker_version in ('1.0.9','1.0.14'):
+            fixture=original_fixture(root) if tracker_version=='1.0.9' else next(root.glob('Map_Collectible_Tracker_1.0.14*'))
+            original=fixture/'platform/steam/ue4ss/Mods'
             for file in tracker['files']:
                 source=original/file['fileName']
                 assert hashlib.sha256(source.read_bytes()).hexdigest().casefold()==file['sha256'].casefold(),source
-            print(f"PASS: all {len(tracker['files'])} collector source files match the manager's original 1.0.9 hashes")
+            print(f"PASS: all {len(tracker['files'])} collector source files match the tested original {tracker_version} hashes")
         else:
-            print(f"NOTE: installed collector {tracker.get('version','unknown')} differs from pinned 1.0.9; original-reference comparison is not applicable and its target sync is NOT certified")
+            print(f"NOTE: collector {tracker_version} is outside the tested fixtures; runtime API checks apply but this version has no certified integration result")

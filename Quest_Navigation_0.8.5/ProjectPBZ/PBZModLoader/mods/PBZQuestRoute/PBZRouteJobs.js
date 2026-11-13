@@ -33,7 +33,7 @@ class Planner {
   try{
    // Leave most of the game thread's frame for gameplay. The step bound also
    // works when a host has only a coarse millisecond clock.
-   do{result=job.iterator.next();steps++;if(result.done)break;}while(steps<24&&this.clock()-t<1.25);
+   do{result=job.iterator.next();steps++;if(result.done)break;}while(steps<192&&this.clock()-t<2);
   }catch(error){
    job.budget.active=null;
    this.cancel('planner error');this.failed=job.request;this.report('planner error',String(error));job.done(null,job.request,{error:String(error)});return true;

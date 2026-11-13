@@ -11,26 +11,26 @@
     <text x="88" y="328" font-size="76" font-weight="650" fill="#f3f0e9">Navigation</text>
     <rect x="546" y="267" width="166" height="78" rx="5" fill="#c74347"/>
     <text x="573" y="319" font-size="41" font-weight="650" fill="#fff">FORK</text>
-    <text x="94" y="395" font-size="27" fill="#b7c2ce">0.8.6-fork.1 · experimental candidate</text>
+    <text x="94" y="395" font-size="27" fill="#b7c2ce">1.0.1 · experimental</text>
     <text x="94" y="449" font-size="24" fill="#e0dcd5">Route checks · World thread · Collectible target sync</text>
     <g transform="translate(92 510)">
       <path d="M0 113H215Q248 113 248 80V45Q248 15 279 15H458Q493 15 493 49V112H677" fill="none" stroke="#e0dcd5" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M0 113H215Q248 113 248 80V45Q248 15 279 15H458Q493 15 493 49V112H677" fill="none" stroke="#e75257" stroke-width="10" opacity=".1"/>
+      <path d="M0 113H215Q248 113 248 80V45Q248 15 279 15H458Q493 15 493 49V112H677" fill="none" stroke="#4da5ff" stroke-width="10" opacity=".1"/>
       <rect x="302" y="60" width="135" height="106" rx="8" fill="#24303a" stroke="#5a6877"/>
       <path d="M215 113H302M437 113H493" stroke="#8190a0" stroke-dasharray="7 9" stroke-width="3" opacity=".65"/>
       <circle cy="113" r="11" fill="#e0dcd5"/>
-      <circle cx="677" cy="112" r="11" fill="#e75257"/>
-      <path d="M677 112V42L730 58 677 77" fill="#e75257"/>
+      <circle cx="677" cy="112" r="11" fill="#4da5ff"/>
+      <path d="M677 112V42L730 58 677 77" fill="#4da5ff"/>
       <text x="335" y="123" fill="#8d9ba9" font-size="18">DETOUR</text>
       <text x="0" y="208" fill="#8393a3" font-size="17" letter-spacing="1">SCHEMATIC · NOT AN IN-GAME SCREENSHOT</text>
     </g>
     <line x1="92" y1="770" x2="1508" y2="770" stroke="#43505d"/>
     <text x="94" y="819" font-size="22" fill="#aebbc9">Original navigation: azqwq333 · Fork: kurosakana</text>
-    <text x="94" y="856" font-size="18" fill="#8393a3">Based on 0.8.5-beta · Prepared for review; author permission pending</text>
+    <text x="94" y="856" font-size="18" fill="#8393a3">Based on 0.8.5-beta · Independent community fork</text>
     <rect x="1050" y="491" width="458" height="217" rx="8" fill="#111922" stroke="#3a4856"/>
     <text x="1082" y="541" font-size="18" letter-spacing="3" fill="#8c9dab">OPTIONAL COLLECTOR</text>
     <text x="1082" y="590" font-size="33" fill="#f3f0e9">Map Tracker Plus</text>
-    <text x="1082" y="632" font-size="27" fill="#d6b2b3">UE4SS · 1.0.9</text>
+    <text x="1082" y="632" font-size="27" fill="#d6b2b3">UE4SS · 1.0.9 / 1.0.14</text>
     <text x="1082" y="675" font-size="19" fill="#aebbc9">Targets + cancellation sync</text>
   </g>
 </svg>

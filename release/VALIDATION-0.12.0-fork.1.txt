@@ -1,0 +1,81 @@
+Quest and Exploration Navigation - Fork 0.12.0-fork.1
+Date: 2026-11-12
+Baseline: delivered 0.11.0-fork.1. Prior packages and validation records retained.
+
+FIELD EVIDENCE (OLD VERSION FAILURE)
+Read-only snapshots: build/field-20261112-latest/PBZQuestRoute-log.txt,
+PBZQuestRoute-trails-v1.json and loader.log. Loaded version: 0.11.0-fork.1.
+Both reported bell routes still fail in the user's live-game tests.
+At 20:12:58.032 a checked route completes, CPU 198ms / wall 2731ms;
+at 20:12:58.045 approximately 154cm of same-height movement triggers another solve.
+Resident-action diagnostics repeatedly show 26 nearby actors but only 3 paths;
+the ascent component extraction remains missing. These are failure observations,
+not a live-game success result for the new candidate.
+
+CHANGES AND REPRODUCTION SIGNALS
+Remove player-route memory, sampling, file persistence and LearnRoutes settings.
+Read actual character/component walkability, native forced-slide regions/direction,
+inherited traversal components, GapBlocker requirements and current lock/mechanism
+conditions. Discovery expands from 17 to 29 class entries; it is not a claim of
+complete support for every discovered resource type.
+Regression work observed red -> green for a stale candidate retry restarting a
+finished route, small same-floor movement restarting a frontier, an ordinary hop
+cancelling a pending search, inherited ascent components and resident hook state.
+The same-height landing beyond an unwalkable gap still invalidates the origin.
+Hook RequirementNotMeet blocks the actual passage-planning flow; refreshing to
+RequirementMeet releases the action. Engine API/physics are simulated at these
+seams; native signatures were separately checked against installed metadata.
+
+PASS: 150 JavaScript regressions; zero failures/skips.
+node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs
+Output: build/test-0.12.0-js.txt.
+Includes retry thresholds, ordinary hops/gaps/ramps, component slope/no-step rules,
+resident hook conditions, door item map/name/count reading without mutation calls,
+ladder and moving/broken-lift state, native slide signatures and scan throttling.
+
+PASS: original collector 1.0.9 Lua 5.4 selection/hover/cancel and real file
+Lua -> JavaScript -> Lua round trips.
+py -3.12 tests/run-lua-tests.py
+Output: build/test-0.12.0-lua.txt.
+PASS: rebuilt native adapter 0.12.0-fork.1; ABI sizes, runtime/collector SHA gates,
+mod filtering and dispatch tests.
+python native/build-native.py --ue4ss D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll --test
+Output: build/test-0.12.0-native.txt.
+
+PASS: complete ZIP, 1339 exact source/document matches, ZIP integrity and synchronized
+archive/runtime/native/document versions. New mechanism/terrain modules and game
+traversal audit are included; no trail module, extracted game file, tool or key.
+PASS: 951 streamed modules, 291 exact original legacy chunk values and all streamed
+column/actor metadata hashes. Original atlas sources remain unchanged.
+python tests/build-patch.py
+python tests/verify-package.py --manager-state D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json
+Outputs: build/test-0.12.0-package-build.txt and test-0.12.0-package-verify.txt.
+PASS: manager recognizes update to installed navigation: 1331/1332 existing paths.
+PASS: zero overlap with all 90 installed collector paths.
+PASS: git diff --check; collector and original world/face/chunk sources have no diff.
+PASS: resource-audit source fingerprints match the local read-only extracts.
+PASS: manager-state SHA256 unchanged before/after final build and verification:
+9c41599f7f066c405c10e3d6ba6b74030ab1627d515f081bae50772aa4d2e8e7
+Game and Mod Manager were read-only; no automatic installation or publication.
+Installed collector 1.0.12 remains outside the adapter's pinned 1.0.9 scope.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.12.0-fork.1.zip
+Bytes: 119680597
+SHA256: d316115ba46d98643c64de6a35baaee53a2217cd9ea76cb4c7e804618d40453c
+
+LIMITS AND LIVE TEST PROCEDURE
+Neither complete reported bell route has passed a live-game run of this version.
+Select targets directly from the start bells; no learning run or restart to save
+traces is required. Old trails/config entries do not participate in planning.
+Test the initial bridge/cemetery standing floor, cave entry/two climbs/hook and
+the actual uphill detour before the tomb. Capture route-search/loaded-actions/
+ground-origin/mechanism-state signals if the candidate still fails.
+Native forced-slide calls and the new placed hook extraction need game testing.
+The 69 BP package paths and 76 related asset-name indexes identify available
+resources, not a complete world-placement/collision reconstruction. Unsupported
+legacy holes/obstacles, lion-dancing poles, movable objects and narrative conditions
+are explicitly listed in docs/GAME-TRAVERSAL-AUDIT.md. Unloaded actors/geometry,
+unknown conditions and mismatching queries may still leave gaps. Temporary failed
+edge exclusions can survive briefly after a lock changes. Original 11-world data
+is not regenerated. Local radius/node/execution bounds and the 30-second wall
+limit remain; no full-map success, global-shortest-path or measured FPS claim.

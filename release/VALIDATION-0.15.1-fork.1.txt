@@ -1,0 +1,93 @@
+Version: 0.15.1-fork.1
+Date: 2026-11-12
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.15.1-fork.1.zip
+Bytes: 120301858
+SHA256: 0f42ec31a00311438648705747fa75e7129436b56b6bf2bf23fceb13fd9577fc
+
+Field evidence and reproduction:
+- All 1,334 installed 0.15.0 runtime files matched the delivered archive; the
+  loader identified 0.15.0-fork.1 with 11 atlases. No installation/cache mismatch
+  was found. Game and manager were read-only throughout this work.
+- The captured 0.15.0 logs show transfers hidden by rejected walking previews
+  and a return transfer immediately after reaching the recommended bell.
+- The first reported currency uses world pbz_xigu_wp and goal coordinates
+  [-60311.68,211444.33,-21160.582]. The user confirms 溪谷杀气塔底 as its access
+  bell. Original code selected 血肉花田 from a misleading shorter atlas length.
+- The second item is described as near 驿站前小院. The final tracker snapshot
+  cannot be confidently identified as that exact item. No exact second-item
+  game reproduction or successful 0.15.1 game run is claimed.
+- Original planning suite: 68 cases, 62 pass / six targeted failures. After
+  fixes: 76 cases pass. Two additional known-exclusion regressions were also
+  observed failing before their fix. Evidence is in ignored
+  build/field-20261112-currency-015/{red-regressions,exclusion-red,green-regressions}.txt.
+
+Changes:
+- Publish checked bell alternatives early and retain them through rejected
+  walking previews or planner timeout. Prefer a better complete checked walk
+  when available. Do not accept incomplete departures or the old unchecked
+  item-transfer fallback.
+- Rank checked item access, continuous atlas corridors and proximity-only
+  estimates separately. Validate route endpoints/heights. Within each class,
+  prefer nearby item bells while penalizing large detours. Small atlas-length
+  differences are not proof of better access. Real-atlas currency regression
+  now selects Bell_NLES_016, 溪谷杀气塔底.
+- Inspect loaded arrival walking; exclude measured walls, map locks, closed
+  traversals and routes removed by existing measured-edge exclusions. Do not
+  resurrect an excluded corridor as a proximity-only candidate. Restore
+  temporary diagnostic traversal flags even on cancellation.
+- Add at most two local departure searches per request, one per nearby bell,
+  with checked interaction approaches, 60 m distance, 1,600 nodes and 900 ms
+  execution budget each. Keep floor, slope, capsule, wall and lock rules.
+- Consume arrival before origin/revision checks. Finish the selected item's
+  approach without another automatic transfer. This unsaved selection stage
+  is cleared on a new target or cancellation. Avoid worse transfers when
+  already beside the better item bell.
+
+Commands and results:
+node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs tests/guides.test.cjs tests/bell-network.test.cjs tests/bell-coverage.test.cjs
+PASS: 195 / 195, zero failures/skips. Includes 14 new cases since 0.15.0:
+early transfer display, no return transfer, connected versus unknown bells,
+occupied-bell baseline, actual valley atlas, local departure wall detour,
+new-item transfer after arrival, origin revision on arrival, loaded arrival
+wall and lock, partial departure, wrong-floor endpoint, measured exclusion,
+and unavailable traversal.
+
+py -3.12 -X utf8 tests/run-lua-tests.py
+PASS: real 1.0.9 and 1.0.14 protected modules; target/hover selection, original
+file round trips, Z=2333, cancellation and stale-command checks, unsupported
+contract cleanup, write failures, later wrappers, and all 170 hint checks.
+Deleted user 1.0.9 directory was not restored; fixture exported to build/ only.
+
+py -3.12 -X utf8 native/build-native.py --ue4ss "D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll" --test
+PASS: rebuilt 0.15.1 DLL, ABI size, exact UE4SS runtime SHA gate, mod filtering,
+version-independent host dispatch. No source edits after this native build.
+
+py -3.12 -X utf8 tests/build-patch.py
+PASS: complete archive rebuilt after all packaged document edits; 951 streamed
+modules and original atlas data retained.
+py -3.12 -X utf8 tests/verify-package.py --manager-state "D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json"
+PASS: 1,348 exact file matches; runtime/native/document version agreement;
+all original atlas column/actor hashes and 291 original legacy chunks agree.
+Manager recognizes update: 1,339 / 1,339 existing navigation paths. Zero overlap
+with 110 collector paths; all 110 reference hashes match original 1.0.14.
+The first package check caught five audit headers still showing 0.15.0; headers
+and inherited-evidence notes were corrected and the package rebuilt/rechecked.
+git diff --check
+PASS: no whitespace errors (existing LF/CRLF notices only). No temporary
+[DEBUG-...] instrumentation in the changed runtime modules.
+
+Limits:
+- Automated engine collision/loading calls are simulated; the real atlas is
+  exercised offline. No 0.15.1 game UI/route/FPS verification was performed.
+- Distant bell access without scene confirmation remains an estimate; the
+  arrival item walk remains pending until the player travels there.
+- Full-map authored XYZ coverage remains unfinished. Only the two existing
+  directed reference courses are enabled; neither has a complete 0.15.1 game
+  validation. No new courses or descriptions were authored in this batch.
+- No trail learning, sampling, persistence or runtime network/downloads.
+- Game and manager unchanged; no automatic installation, commit or publication.
+- Prior packages and validation records, collector references and user edits
+  retained. 0.15.0 ZIP still has SHA256
+  ecf6293a68f7f5cdb82c129992f6ffeced674019bb56713442d29486a46dddc7.
+
+Logs: build/validation-0151-{js,lua,native,build,package,diff-check}.txt

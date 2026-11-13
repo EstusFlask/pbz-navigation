@@ -1,0 +1,77 @@
+Quest and Exploration Navigation - Fork 0.11.0-fork.1
+Date: 2026-11-12
+Baseline: delivered 0.10.3-fork.1. Prior packages and validation records retained.
+
+FIELD EVIDENCE (OLD VERSION FAILURE)
+Read-only snapshots: build/field-20261112-1126/loader.log, route-log.txt,
+navigation-only.txt and parsed search-records.json.
+Loaded version: 0.10.3-fork.1. Bell IDs and XYZ targets are correct.
+43 atlas endpoint records, 35 walking rejections, 12 scene walking starts and
+3 scene walking results. Most unfinished searches were replaced while moving.
+Bridge origin once reports no matching floor. Cave ascent preparation/attachment
+succeeds but the complete final grapple is absent; later atlas candidates still
+descend/backtrack. Cemetery candidates remain on lower geometry during ascent.
+Original graph stores XYZ surfaces; it is not a complete game collision/action map.
+
+RED -> GREEN
+node --test --test-name-pattern "movement floor|connected slope" tests/terrain-regression.test.cjs tests/planning.test.cjs
+Before edits: two failures, missing occupied movement floor and uphill cancellation.
+Output: build/field-20261112-1126/red-height.txt.
+Read-only extraction of production JS from the delivered 0.10.3 ZIP:
+PBZ_TEST_SOURCE=build/field-20261112-1126/baseline-0.10.3
+node --test --test-reporter=spec tests/terrain-regression.test.cjs
+Three existing Ground cases pass; two new cases fail (occupied floor and step cap).
+Output: build/field-20261112-1126/red-baseline-world.txt.
+New sources pass the same Ground checks. K2_GetWalkableFloorZ is read, actual
+step height is retained, and the pawn's CurrentFloor can supply occupied support.
+Mocked engine APIs and geometry are used; this is not a recorded game-physics replay.
+
+PASS: 149 JavaScript regressions; zero failures/skips.
+node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs tests/trails.test.cjs
+Output: build/field-20261112-1126/js-tests.txt.
+17 new tests cover occupied floor, reflected limits, slope cancellation, recorded
+3D ramps, two climbs followed by a grapple, one-way drops, separated floors,
+persistence, teleport/gap/menu/world rejection, collision and lock rechecks,
+walking origin bridges, rebasing, main planner integration and sparse-log rejection.
+
+PASS: actual original collector 1.0.9 Lua 5.4 selection/hover/cancel and real file
+Lua -> JS -> Lua round trips. py -3.12 tests/run-lua-tests.py
+Output: build/field-20261112-1126/lua-tests.txt.
+PASS: rebuilt native adapter 0.11.0-fork.1; ABI, runtime/collector hash gates,
+filtering and dispatch tests.
+python native/build-native.py --ue4ss D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll --test
+Output: build/field-20261112-1126/native-tests.txt.
+
+PASS: complete ZIP, 1337 exact source/document matches, synchronized versions,
+ZIP integrity, 951 streamed modules and 291 exact original legacy chunk values.
+python tests/build-patch.py
+python tests/verify-package.py --manager-state D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json
+Outputs: build/field-20261112-1126/package-build.txt and package-verify.txt.
+PASS: manager recognizes update to installed navigation, 1331/1331 existing paths.
+PASS: zero overlap with all 90 installed collector paths.
+PASS: git diff --check; original world/face/chunk and collector source have no diff.
+PASS: manager-state SHA256 unchanged before/after:
+530ec3fd65ea3fdfc042b2629aac4b92a30009f5dc3e925fd38300e11ebc2a7b
+Game/manager were read-only; no automatic installation or remote publication.
+Installed collector 1.0.12 remains outside the adapter's pinned 1.0.9 scope.
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.11.0-fork.1.zip
+Bytes: 119670789
+SHA256: 836d92b7b71acb46d2a7b28741b3f90675ebdfc9b0faf5aa86c6c9e6f6d5debc
+
+LIMITS AND EXPECTED TEST PROCEDURE
+Neither complete reported route has passed a new live-game run. LearnRoutes is
+enabled by default and records actual consecutive checked movement; missing atlas
+links require travelling once with this version before reuse. Return to each
+route's start and reselect the target. Pause or open the map to save, then restart
+and check restore. Record reverse traversal separately; a drop is not a way up.
+Persistence: ProjectPBZ/Saved/PBZQuestRoute-trails-v1.json, not packaged.
+Disable LearnRoutes to stop learning/reuse. Delete its file with the game closed
+to reset. Menus, water, long sampling gaps, teleports and world changes break runs.
+A failed standing/step query can still leave a gap; trail floor gap diagnostics
+identify it rather than bypassing the collision. Character reflected APIs and
+custom movement classification need live confirmation. Recorded actions retain
+the observed direction/trajectory, but unknown dynamic action state can still
+change. Current known map locks apply; inventory ownership is not queried.
+Original datasets are not regenerated. No full-map success, global-shortest-path
+or measured FPS claim. Local execution/node bounds and 30-second wall limit remain.

@@ -6,6 +6,9 @@ const {pickItem,mapIntent,pickTrackerItem,pickBell}=require('./PBZRouteItems'),{
 const {Tracker}=require('./PBZRouteTracker'),{Pointer}=require('./PBZRoutePointer');
 const Passages=require('./PBZRoutePassages'),Obstacles=require('./PBZRouteObstacles'),Drops=require('./PBZRouteDrops');
 const LocalWalk=require('./PBZRouteLocalWalk');
+const Guides=require('./PBZRouteGuides');
+const BellTransfer=require('./PBZRouteBellTransfer');
+const RouteStatus=require('./PBZRouteStatus');
 const Feasibility=require('./PBZRouteFeasibility');
 const Blocked=require('./PBZRouteBlocked'),Repair=require('./PBZRouteRepair'),Goals=require('./PBZRouteGoals');
 const Locks=require('./PBZRouteLocks');
@@ -15,15 +18,16 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='0.10.3-fork.1';
-const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.0.1';
+const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
-let dir='',logPath='',mousePath='',ink,threads,previous=null,lastPoll=0,lastCfg=0,lastBells=0,permitted=[],lastSolve=0,oldWorld='',oldLocks='',lockRows=[],menu=false,serial=0;
+let dir='',logPath='',mousePath='',ink,threads,previous=null,lastPoll=0,lastCfg=0,lastBells=0,lastLocks=0,permitted=[],lastSolve=0,oldWorld='',oldLocks='',lockRows=[],menu=false,serial=0;
 let previousID=null,pending=null,epoch=0,listenerSource=null,listener=null,scout,lastScout=0,retry=0;
 let deviationSince=0,corridor=null;
 let nextClearance=0;
-let stanceEpoch=0,wasGrounded=null,lastFoot=null,lastMode=null,pendingMode=false,poseReady=true,groundedNow=true;
+let statusHud=null,lastStatusPoll=0,lastStatusCulture=0,statusEnglish=false;
+let stanceEpoch=0,wasGrounded=null,lastFoot=null,lastGroundFoot=null,poseReady=true,groundedNow=true;
 const failedEdges=new Map();
 const provenJoins=new Map();
 const confirmations=new WeakMap();let mini=null;
@@ -90,8 +94,30 @@ function bellList(force=false){if(!S.world)return [];if(!force&&Date.now()-lastB
  for(const [v,callback] of [[bm.ActivateBellIDs,s=>ids.push(s)],[bm.DisableTeleportBellIDs,s=>disabled.add(s)]]){const n=v?.Num()||0;for(let i=0;i<n;i++)callback(low(v.Get(i)));}
  permitted=ids.filter(k=>!disabled.has(k)&&!k.startsWith('brokenbell')).map(k=>tables.bells[k]).filter(Boolean);return permitted;}
 function locks(){const ms=T.getWorldSubsystem(S.pawn,UE.MapSubsystem.StaticClass());
- const out=Locks.read(ms?.LockObjectInfos,tables.areas,{UE,alive:W.alive,point:xyz,worldOf});
- const tag=Locks.signature(out);if(tag!==oldLocks){oldLocks=tag;S.lockVersion++;auditor.cache.clear();guardedLeg=null;}
+ lastLocks=Date.now();let backpack;const names=new Map();const item=id=>{
+  if(names.has('item/'+id))return names.get('item/'+id);
+  backpack||=UE.PBZBackPackSubsystem?.GetBackPackSubsytemByContextObject?.(S.pawn);
+  const data=UE.PBZBackPackSubsystem?.GetPropData?.(id),name=data?.ItemName?.Key;
+  const out={};if(name)out.name=String(UE.PBZBlueprintFunctionLibrary.MakeTextByKey(name));
+  if(backpack?.GetItemNumInfo){const owned=P.$ref(0),max=P.$ref(0);backpack.GetItemNumInfo(id,owned,max);out.owned=Number(P.$unref(owned));}
+  names.set('item/'+id,out);return out;
+ };
+ const weapon=id=>{
+  if(names.has('weapon/'+id))return names.get('weapon/'+id);
+  backpack||=UE.PBZBackPackSubsystem?.GetBackPackSubsytemByContextObject?.(S.pawn);
+  const row=backpack?.GetShaqiWeaponTableData?.(id),key=row?.WeaponName?.Key;
+  const detail=key?{name:String(UE.PBZBlueprintFunctionLibrary.MakeTextByKey(key))}:{};
+  names.set('weapon/'+id,detail);return detail;
+ };
+ const tag=value=>{
+  backpack||=UE.PBZBackPackSubsystem?.GetBackPackSubsytemByContextObject?.(S.pawn);
+  if(!backpack?.FindShaChiWeaponByTag)return null;
+  const id=P.$ref(''),snap=P.$ref(false);if(!backpack.FindShaChiWeaponByTag(value,id,snap))return null;
+  const key=String(P.$unref(id));return {id:key,...weapon(key)};
+ };
+ if(S.world)S.world.requirements={item,weapon};
+ const out=Locks.read(ms?.LockObjectInfos,tables.areas,{UE,alive:W.alive,point:xyz,worldOf,item,weapon,tag});
+ const signature=Locks.signature(out);if(signature!==oldLocks){oldLocks=signature;S.lockVersion++;auditor.cache.clear();guardedLeg=null;}
  lockRows=out;return out;}
 function markLocks(trip){R.markLocks(trip,lockRows,S.world?{p:S.world.feet(),world:S.level}:undefined);}
 function rememberCollision(leg,failure){
@@ -168,11 +194,23 @@ function* proofJob(leg,lookout,context){
  Object.assign(leg,physical.leg);
  return null;
 }
-function reset(){planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
+function atArrivalBell(dest){
+ const arrival=S.bellArrival;
+ return !!arrival&&arrival.key===dest.key&&arrival.world===dest.world&&R.dist(arrival.goal,dest.p)<=190;
+}
+function clearRouteStatus(){S.routeStatus='';S.routeWork=null;statusHud?.clear();lastStatusPoll=0;}
+function updateRouteStatus(force=false){
+ const now=Date.now();if(!force&&now-lastStatusPoll<200)return;lastStatusPoll=now;
+ if(now-lastStatusCulture>=1000){lastStatusCulture=now;statusEnglish=/^en/i.test(String(UE.KismetInternationalizationLibrary?.GetCurrentLanguage?.()||'zh'));}
+ const enabled=W.alive(S.pawn)&&S.world&&(S.cfg.MapRoute||S.cfg.MinimapRoute||S.cfg.WorldThread)&&S.arrival.completedTarget!==S.routeWork?.key;
+ S.routeStatus=enabled?RouteStatus.message(planning,atlas,S.routeWork,now,statusEnglish):'';
+ statusHud?.update(gameContext||S.pawn,S.routeStatus,now);
+}
+function reset(){clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
 function setTrip(trip,dest,start,why,requestContext){
  if(trip?.legs.some(l=>l.diagnostic))why+=' [blocked preview]';
  else if(trip?.legs.some(l=>l.partial))why+=' [partial]';else if(trip)why+=' [complete]';
- S.arrival.select(dest);deviationSince=0;corridor=null;
+ S.arrival.select(dest);deviationSince=0;corridor=null;guardRetry=0;
  if(S.targetKey!==dest.key){guardBudget=null;nativeRepairKey='';blockedTrip=null;}auditor.reset();guardedLeg=null;S.threadEnd=null;
  S.trip=trip;S.targetKey=dest.key;S.active=0;S.line=trip?.legs[0].points||[];S.version++;
  const snapshot=requestContext||routeRequest(dest,start);
@@ -180,7 +218,7 @@ function setTrip(trip,dest,start,why,requestContext){
  if(!trip){threads.hide();retry=Math.min(retry+1,4);log('route status',why+' '+dest.key+' from '+[start.x,start.y,start.z].map(Math.round).join(','));return;}
  retry=0;for(const leg of trip.legs)for(const c of leg.checks||[])if((c.kind===10||c.kind===11||c.kind===12)&&!c.verified)Obstacles.obstacle(leg,Obstacles.mark(leg,c,c.kind===11?'folded ladder':c.kind===12?'drop landing pending':'atlas seam',null,c.kind!==11));markLocks(trip);log('route '+S.version,why+' '+dest.key+' legs='+trip.legs.map(l=>l.world+':'+Math.round(l.meters)+'m').join(' + ')+' transfer='+(trip.transfer?trip.transfer.from.name+' -> '+trip.transfer.to.name:'walk')+' actions='+trip.legs.map(l=>(l.moves||[]).map(m=>m.kind).join('>')).filter(Boolean).join('/'));
 }
-function noRoute(){planning.cancel('no target');auditor.reset();guardedLeg=null;S.threadEnd=null;if(S.trip||S.line.length){S.trip=null;S.line=[];S.version++;threads.hide();}previous=null;}
+function noRoute(){clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.cancel('no target');auditor.reset();guardedLeg=null;S.threadEnd=null;if(S.trip||S.line.length){S.trip=null;S.line=[];S.version++;threads.hide();}previous=null;}
 function nativeWalk(start,goal,allowPartial=false){
  if(R.dist(start,goal)>20000)return null;
  const nav=UE.NavigationSystemV1;if(typeof nav?.FindPathToLocationSynchronously!=='function')return null;
@@ -194,7 +232,13 @@ function nativeWalk(start,goal,allowPartial=false){
  if(partial)Obstacles.obstacle(leg,{id:'native-frontier',world:S.level,p:points[points.length-1],unknown:true,icon:'mechanism',label:'前方通路待确认'});return leg;
 }
 function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=0){
+ const bellApproach=atArrivalBell(dest);
+ if(depth===0){
+  const guide=yield* Guides.plan(Locks.constrain(S.world,lockRows,S.level),S.level,dest,S.world.feet(),{graph:graphs.get(S.level),report:context.report});
+  if(guide){const g=graph(S.level);if(g&&Passages.refreshLoadedJob)yield* Passages.refreshLoadedJob(g,S.world,S.pawn,S.world.feet(),dest.p,{report:context.report});Guides.refreshActions(guide.legs[0],g);return guide;}
+ }
  const a=graph(S.level),b=graph(dest.world),start=S.world.feet();if(!a||!b||!R.finite(dest.p))return null;
+ if(depth===0&&S.world.refreshRulesJob)yield* S.world.refreshRulesJob();
  const routeWorld=context.world||=Locks.constrain(S.world,lockRows,S.level);
  const clock=context.clock||Date.now;
  context.start||={...start};context.goal||={...dest.p};context.goalWorld||=dest.world;
@@ -202,6 +246,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  const starts=(yield* Surface.anchorsJob(a,start)),ends=dest.node!==undefined?[{id:dest.node,q:dest.p}]:(yield* Surface.anchorsJob(b,dest.p,true));
  if(depth===0)context.report?.('atlas endpoints',{start,goal:dest.p,starts:starts.map(r=>r.id),ends:ends.map(r=>r.id),
   sharedComponent:starts.some(s=>ends.some(e=>a===b&&a.sameComponent(s.id,e.id)))});
+ if(depth===0&&S.world.snapshot)context.report?.('ground origin',S.world.snapshot(start));
  const targetFloor=dest.item&&dest.world===S.level?S.world.floorAt(dest.p,true):null;yield;
  const approachGoals=(dest.provider==='187'||dest.bell)&&dest.world===S.level?(yield* Goals.approaches(S.world,dest.p,140,{targetKey:dest.key})):[];
  const matchesGoal=leg=>!approachGoals.length?(!targetFloor||Math.abs(leg.points[leg.points.length-1].z-targetFloor.z)<=90):
@@ -222,12 +267,52 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
     p:leg.points[leg.points.length-1],why:'traversal chain continues'},dest.p),start,dest.p);
   },onClosed:(first,action)=>{
    const source={world:S.level,points:[...first.points,...action.path,action.exit,dest.p],walks:[],moves:[],checks:[],gates:[]};
-   const failure={prefix:first.points,p:action.entry,segment:first.points.length-1,locked:true,why:'closed traversal',prefixLeg:first};
+   const block=action.feature.state?.block;
+   const failure={prefix:first.points,p:action.entry,segment:first.points.length-1,locked:!block?.unknown,unknown:!!block?.unknown,block,why:'closed traversal',prefixLeg:first};
    Blocked.offer(context,Blocked.fromFailure(source,failure,dest.p),start,dest.p);
   }});
  };
  yield;
  const getJoin=s=>{if(!legs.has(s.id))legs.set(s.id,Surface.join(routeWorld,start,s));return legs.get(s.id);};
+ if(depth===0&&!walkOnly&&!bellApproach&&dest.item&&R.dist(start,dest.p)>2500){
+  context.bellTransfer=yield* BellTransfer.plan(a,b,start,dest.p,bellList(),{banned:forbidden,
+   approaches:function*(at,bell){return yield* Goals.approaches(routeWorld,at,140,{targetKey:'bell:'+bell.id});},
+   ready:function*(p,goals){
+    if(!routeWorld.floorAt(p))return false;yield;
+    for(const q of goals){
+     const r=R.xy(p,q),dz=q.z-p.z;if(r>90||Math.abs(dz)>68)continue;
+     const join=Surface.join(routeWorld,p,{q,r,dz});yield;if(join)return true;
+    }
+    return false;
+   },native:(p,q)=>nativeWalk(p,q),verify:function*(leg){return (yield* proofJob(leg,false))===null&&!leg.partial;},
+   local:function*(at,goals){return yield* LocalWalk.search(routeWorld,start,at,{clock,goals,maxDistance:6000,maxNodes:1600,maxMs:900});},
+   inspectArrival:function*(route,bell){
+    if((route.moves||[]).some(m=>m.fold||m.block))return {blocked:true};
+    for(let i=1;i<route.points.length;i++){
+     if(Locks.crossing(lockRows,b.name,route.points[i-1],route.points[i]))return {blocked:true};
+     if(i%32===0)yield;
+    }
+    if(a!==b)return null;
+    const goals=yield* Goals.approaches(routeWorld,toPoint(bell.at),140,{targetKey:'bell:'+bell.id});
+    if(!goals.length)return null;
+    let blocked=false;
+    const next=route.points[1]||route.points[0];
+    for(const p of goals.sort((p,q)=>R.dist(p,next)-R.dist(q,next)).slice(0,2)){
+     const candidate={...route,points:[p,...route.points.slice(1)]};
+     const checked=yield* Feasibility.check(routeWorld,candidate,p);
+     if(checked.ok)return {verified:!checked.leg.partial&&!(route.moves||[]).length&&!(route.checks||[]).some(c=>!c.verified)};
+     if(checked.unknown&&!checked.locked)return null;
+     blocked=true;
+    }
+    return {blocked};
+   }});
+  if(context.bellTransfer){
+   context.report?.('bell transfer',{from:context.bellTransfer.transfer.from.id,to:context.bellTransfer.transfer.to.id,
+    estimatedMeters:context.bellTransfer.transfer.estimatedMeters,evidence:context.bellTransfer.transfer.evidence,arrival:'replan after teleport'});
+   context.onDiagnostic?.(context.bellTransfer);
+  }
+ }
+ const choose=route=>BellTransfer.prefer(context.bellTransfer,route);
  const plan=function*(s,e,entry,nearPads=false){
   const restrictions=nearPads?{...forbidden,[a.name]:{has:k=>forbidden[a.name]?.has(k)||
    (a.e[k*6+2]===7&&a.actors[a.e[k*6+5]-1]?.conditional)}}:forbidden;
@@ -254,9 +339,10 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   for(const s of starts)for(const e of ends){
    if(!a.sameComponent(s.id,e.id))continue;
    const route=yield* plan(s,e,[]);
-   if(route){if(!route.legs.some(l=>l.partial))return route;context.partial=route;}
+   if(route){if(!route.legs.some(l=>l.partial))return choose(route);context.partial=route;}
   }
  }
+ if(context.bellTransfer)return context.bellTransfer;
  if(a===b&&!seams&&!drops){
   const linkedBefore=a.liveEdges?.length||0;
   const landing=approachGoals.length?approachGoals.slice().sort((p,q)=>R.dist(start,p)-R.dist(start,q))[0]:targetFloor||(dest.item&&ends.length?ends[0].q:dest.p);
@@ -314,7 +400,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   yield* Drops.installJob(a);if(b!==a)yield* Drops.installJob(b);a.allowDrops=b.allowDrops=true;
   try{const lowered=yield* makePlan(dest,walkOnly,seams,true,context,depth+1);if(lowered)return lowered;}finally{a.allowDrops=b.allowDrops=false;}
  }
- if(!walkOnly){const entry=bellList();for(const s of starts)for(const e of ends){const route=yield* plan(s,e,entry);if(route)return route;}}
+ if(!walkOnly&&!dest.item&&!bellApproach){const entry=bellList();for(const s of starts)for(const e of ends){const route=yield* plan(s,e,entry);if(route)return route;}}
  if(!seams){
   yield* Obstacles.installSeamsJob(a);if(b!==a)yield* Obstacles.installSeamsJob(b);a.allowSeams=b.allowSeams=true;
   try{const repaired=yield* makePlan(dest,walkOnly,true,drops,context,depth+1);if(repaired)return repaired;}finally{a.allowSeams=b.allowSeams=false;a.allowBlockedTraverse=b.allowBlockedTraverse=false;}
@@ -334,22 +420,31 @@ function originChanged(old,current,trip){
  if(!planning.changed(old,current))return false;
  if(!planning.same(old,current)||old.revision!==current.revision||old.originRevision!==current.originRevision)return true;
  const leg=trip?.legs[S.active];
- if(leg&&(leg.physicalVerified||leg.diagnostic&&leg.verifiedEndIndex>0)&&leg.world===S.level){
+ // A short connected slope can be checked without retaining player history.
+ // A vertical landing or an intervening wall cannot pass.
+ const run=R.xy(old.start,current.start),rise=Number(S.world.rise)||45,slope=Number(S.world.slope)||1;
+ if(!leg&&run>20&&run<1200&&Math.abs(old.start.z-current.start.z)<=rise+run*slope){
+  const step=S.world.step(old.start,current.start,true);
+  if(step.p&&R.dist(step.p,current.start)<50)return false;
+ }
+ if(leg&&(leg.guide||leg.physicalVerified||leg.diagnostic&&leg.verifiedEndIndex>0)&&leg.world===S.level){
   const corridor=leg.diagnostic?leg.points.slice(0,leg.verifiedEndIndex+1):leg.points;
   const near=R.nearestOnLine(current.start,corridor);
   if(near.p&&near.d<260&&Math.abs(near.p.z-current.start.z)<75)return false;
  }
  return true;
 }
+function movedForRetry(a,b){return R.xy(a,b)>=600||Math.abs(a.z-b.z)>=75;}
 function solve(dest,reason){
  if(!S.world||!R.finite(dest.p)||!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread)return;
- const start=S.world.feet(),request=routeRequest(dest,start),force=!previous||reason==='blocked approach changed'||reason==='loaded frontier'||reason==='player context changed';
+ if(!atArrivalBell(dest))S.bellArrival=null;
+ const start=S.world.feet(),request=routeRequest(dest,start),force=!previous||reason==='blocked approach changed'||reason==='loaded frontier'||reason==='player context changed'||reason==='destination bell reached';
  S.lookoutHint=Passages.isLookout(S.level,start,dest);
  const context={report:(phase,detail)=>log('route search',phase+' '+JSON.stringify(detail)),onDiagnostic:trip=>{
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(current?.key===dest.key&&S.level===request.level&&R.dist(current.p,dest.p)<190){
    const now=routeRequest(current);if(originChanged(request,now,trip)&&standingAt(now.start)&&poseReady)return;
-   setTrip(trip,dest,start,reason+' blocked; searching detour',request);
+   setTrip(trip,dest,now.start,reason+(trip.transfer?' bell candidate':' blocked; searching detour'),now);
   }
  }};
  const accepted=planning.request(request,clock=>{context.clock=clock;return makePlan(dest,!!dest.bell,false,false,context);},(trip,selected,metrics)=>{
@@ -363,12 +458,16 @@ function solve(dest,reason){
   // A failed route is a result. It stays stopped until selection, region,
   // destination, door/ladder state, or substantial movement actually changes.
   if(!trip&&(metrics.timeout||metrics.paused||metrics.error))trip=Blocked.finish(context);
-  setTrip(trip,dest,start,reason+' async cpu='+metrics.cpu+'ms wall='+metrics.wall+'ms',selected);
+  setTrip(trip,dest,now.start,reason+' async cpu='+metrics.cpu+'ms wall='+metrics.wall+'ms',now);
+  if(trip)S.routeWork=null;
+  updateRouteStatus(true);
   if(!trip&&planning.failed)planning.failed.revision=routeRequest(dest,start).revision;
  },force);
  if(accepted){
+  S.routeWork={...request,started:Date.now()};
   previous={key:dest.key,p:{...dest.p},site:{...start},level:S.level,revision:request.revision,originRevision:request.originRevision};lastSolve=Date.now();
   if(!S.trip||S.targetKey!==dest.key){S.trip=null;S.line=[];S.targetKey=dest.key;S.version++;threads.hide();}
+  updateRouteStatus(true);
  }
 }
 
@@ -376,18 +475,24 @@ function observe(){
  const foot=S.world.feet(),ms=T.getWorldSubsystem(S.pawn,UE.MapSubsystem.StaticClass());
  S.level=W.norm(UE.GameplayStatics.GetCurrentLevelName(S.pawn,true));
  const locID=low(ms.GetMapIDByLocation(W.vec(foot)));S.area=locID&&locID!=='none'?locID:low(ms.GetCurrentMapID());
- if(oldWorld!==S.level){wasGrounded=null;lastFoot=null;lastMode=null;pendingMode=false;stanceEpoch++;}
+ if(oldWorld!==S.level){wasGrounded=null;lastFoot=null;lastGroundFoot=null;S.world.resetRules?.();stanceEpoch++;}
  if(oldWorld!==S.level){planning.clear('region changed');oldWorld=S.level;previous=null;lastBells=0;scout.snapshot=null;for(const k of Object.keys(forbidden))delete forbidden[k];for(const k of Object.keys(passed))delete passed[k];failedEdges.clear();provenJoins.clear();graph(S.level)?.clearLiveEdges();safe('locks',locks);}
  const activeGraph=graph(S.level);
  groundedNow=standingAt(foot);
  poseReady=groundedNow&&(!lastFoot||Math.abs(lastFoot.z-foot.z)<20);
- const movement=S.pawn?.CharacterMovement,mode=String(movement?.MovementMode??'')+'/'+String(movement?.CustomMovementMode??'');
- if(wasGrounded===false&&groundedNow){stanceEpoch++;pendingMode=false;}
- else if(lastMode!==null&&mode!==lastMode)pendingMode=true;
- else if(pendingMode&&poseReady){stanceEpoch++;pendingMode=false;}
- wasGrounded=groundedNow;lastFoot={...foot};lastMode=mode;
+ if(wasGrounded===false&&groundedNow&&lastGroundFoot){
+  const run=R.xy(lastGroundFoot,foot),height=Math.abs(lastGroundFoot.z-foot.z);
+  // A small ordinary hop returns to the same walking context. A landing
+  // across a gap (even at the same height) must release the old origin.
+  if(height>=75||run>=600)stanceEpoch++;
+  else if(run>90){const join=S.world.step(lastGroundFoot,foot,true);if(!join.p||R.dist(join.p,foot)>50)stanceEpoch++;}
+ }
+ if(groundedNow)lastGroundFoot={...foot};
+ wasGrounded=groundedNow;lastFoot={...foot};
  if(activeGraph&&safe('ladder state',()=>Passages.refreshLadders(activeGraph,S.pawn))){previous=null;provenJoins.clear();log('ladder state','ready='+activeGraph.openPassages.size+' revision='+activeGraph.passageRevision);}
- const now=Date.now();for(const [key,t] of failedEdges){if(t>now)continue;const [world,id]=key.split('/');forbidden[world]?.delete(Number(id));failedEdges.delete(key);}
+ if(activeGraph&&safe('mechanism state',()=>Passages.refreshStates?.(activeGraph,S.world,S.pawn))){provenJoins.clear();guardedLeg=null;log('mechanism state','revision='+activeGraph.passageRevision);}
+ const now=Date.now();if(now-lastLocks>=1250)safe('lock refresh',locks);
+ for(const [key,t] of failedEdges){if(t>now)continue;const [world,id]=key.split('/');forbidden[world]?.delete(Number(id));failedEdges.delete(key);}
  const n=narrative();bind(n);const id=questID(n),native=tracked(n);
  if(questGate.observe(id)&&!(pending&&pending.epoch!==epoch)){tracker?.clear('quest selected');S.manual=null;S.scout=null;}
  previousID=id;if(pending&&now-pending.at>2000)pending=null;
@@ -399,6 +504,18 @@ function observe(){
  if(!target||!target.p){S.lookoutHint=false;if(planning.job?.request.key.startsWith('fog:'))return;noRoute();return;}
  S.arrival.select(target);
  if(S.arrival.completedTarget===target.key){noRoute();return;}
+ if(!atArrivalBell(target))S.bellArrival=null;
+ const transfer=S.targetKey===target.key?S.trip?.transfer:null;
+ // Consume the arrival before origin/revision checks can restart the old
+ // transfer. This state belongs only to the selected item and is never saved.
+ if(transfer&&S.active===0&&S.level===transfer.to.world&&R.dist(foot,toPoint(transfer.to.at))<750&&
+  (S.level!==transfer.from.world||R.dist(foot,toPoint(transfer.from.at))>1300)){
+  S.active=1;S.line=S.trip.legs[1].points;S.version++;
+  if(transfer.arrivalPending){
+   S.bellArrival={key:target.key,world:target.world,goal:{...target.p},bell:transfer.to.id};
+   solve(target,'destination bell reached');return;
+  }
+ }
  const currentRequest=routeRequest(target,foot);
  if(planning.pending&&poseReady&&planning.stale(currentRequest)&&originChanged(planning.job.request,currentRequest,S.trip)){
   solve(target,'player context changed');return;
@@ -408,13 +525,12 @@ function observe(){
  }
  if(!menu&&!planning.pending)safe('loaded passage anchors',()=>Passages.updateLoaded(graphs.get(S.level),S.world,S.pawn,nativeWalk));
  if(!previous||previous.key!==target.key||previous.level!==S.level||R.dist(previous.p,target.p)>190){solve(target,'selection');return;}
- if(S.trip){const tr=S.trip.transfer;
-  if(tr&&S.active===0&&S.level===tr.to.world&&R.dist(foot,toPoint(tr.to.at))<750&&(S.level!==tr.from.world||R.dist(foot,toPoint(tr.from.at))>1300)){S.active=1;S.line=S.trip.legs[1].points;S.version++;return;}
+ if(S.trip){
   if(S.arrival.isDone(S))return;
   // Also visit arrival when a route has collapsed to one point or its FX is off.
   const leg=S.trip.legs[S.active];
-  if(leg.diagnostic&&!planning.pending&&poseReady&&now-lastSolve>1500&&R.dist(foot,previous.site)>140){solve(target,'blocked approach changed');return;}
-  if(leg.scenePartial&&poseReady&&R.dist(foot,leg.points[leg.points.length-1])<600&&now-lastSolve>2000&&R.dist(foot,previous.site)>140){solve(target,'loaded frontier');return;}
+  if(leg.diagnostic&&!planning.pending&&poseReady&&now-lastSolve>1500&&movedForRetry(foot,previous.site)){solve(target,'blocked approach changed');return;}
+  if(leg.scenePartial&&!planning.pending&&poseReady&&R.dist(foot,leg.points[leg.points.length-1])<600&&now-lastSolve>2000&&movedForRetry(foot,previous.site)){solve(target,'loaded frontier');return;}
   // A physical arrival remains a gameplay state independently of what gets drawn.
   const end=S.line[S.line.length-1];
   if(end&&S.arrival.check(S,foot,end,now)){
@@ -430,14 +546,15 @@ function observe(){
    if(corridor.clear){deviationSince=0;return;}
   }
   if(!deviationSince)deviationSince=now;
-  if(poseReady&&now-deviationSince>650&&now-lastSolve>1000&&R.dist(foot,previous.site)>140)solve(target,'off route');
+  if(poseReady&&now-deviationSince>650&&now-lastSolve>1000&&movedForRetry(foot,previous.site))solve(target,'off route');
  }else if(!planning.pending&&!planning.blocked(routeRequest(target,foot)))solve(target,'context changed');
 }
 function guardRoute(now){
  const leg=S.trip?.legs[S.active];if(!leg||leg.world!==S.level)return;
- if(guardedLeg===leg&&now<nextClearance&&groundedNow&&!(leg.diagnostic&&!poseReady))return;
+ if(leg.waitingTransfer){S.threadEnd=S.world.feet();return;}
+ if(guardedLeg===leg&&now<nextClearance&&(groundedNow||leg.guide)&&!(leg.diagnostic&&!poseReady))return;
  const feet=S.world.feet();
- if(!groundedNow||leg.diagnostic&&!poseReady){S.threadEnd=feet;return;}
+ if(!leg.guide&&!groundedNow||leg.diagnostic&&!poseReady){S.threadEnd=feet;return;}
  nextClearance=now+34;
  // Never release all of a provider's untested line just because it omitted
  // walking metadata. Missing segments are audited as walking below.
@@ -445,14 +562,20 @@ function guardRoute(now){
   guardRetry=0;const target=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(target?.key===S.targetKey&&!S.arrival.isDone(S)){solve(target,'blocked detour');return;}
  }
+ Guides.refreshActions(leg,graphs.get(leg.world));
+ for(const move of leg.moves||[]){
+  const state=graphs.get(leg.world)?.passageStates?.get(String(move.stateGuid||move.guid||'').toLowerCase());
+  if(state?.ready===false)move.block=state.block;
+  else if(move.block?.source==='live-mechanism')delete move.block;
+ }
  if(guardedLeg!==leg){guardedLeg=leg;auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now);S.threadEnd=auditor.safe;lastGuardVersion='';}
- else if(!auditor.job&&(now-auditor.started>1800||R.dist(feet,auditor.origin)>140))auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now);
+ else if(!auditor.job&&(now-auditor.started>10000||R.xy(feet,auditor.origin)>200||Math.abs(feet.z-auditor.origin.z)>=75))auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now);
  const hadJob=!!auditor.job,result=auditor.pump(Date.now,12,1);
  S.threadEnd=auditor.safe||feet;
  if(hadJob&&result?.mark){
   if(!leg.diagnostic||!result.mark.unknown)Obstacles.obstacle(leg,{...result.mark,transient:true});
   log('blocked '+result.mark.edge,(result.mark.unknown?'pending ':'collision ')+result.mark.reason+' @'+[result.mark.p.x,result.mark.p.y,result.mark.p.z].map(Math.round).join(','));
-  if(!result.mark.unknown){
+  if(!result.mark.unknown&&!leg.guide){
    const g=graph(leg.world),banned=forbidden[leg.world]||=new Set();let added=0;
    if(g)for(const edge of Obstacles.nearbyEdges(g,result.mark,result.normal)){
     if(!banned.has(edge))added++;banned.add(edge);failedEdges.set(leg.world+'/'+edge,now+30000);
@@ -481,19 +604,21 @@ function onSense(){
  if(!this.senseActive||!S.world)return;S.expires=Date.now()+30000;
  if(!S.cfg.FogBellSense||!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread||S.manual||!questGate.paused&&questID(narrative()))return;
  const foot=S.world.feet(),request={key:'fog:'+S.area,world:S.level,level:S.level,p:foot,start:foot,revision:S.lockVersion};
- planning.request(request,()=>scout.beginJob(S,function*(p){const trip=yield* makePlan({p,world:S.level},true);return trip?.legs[0];}),(pin,selected)=>{
+ const accepted=planning.request(request,()=>scout.beginJob(S,function*(p){const trip=yield* makePlan({p,world:S.level},true);return trip?.legs[0];}),(pin,selected)=>{
   if(S.level!==selected.level||S.manual||!questGate.paused&&questID(narrative()))return;
   S.scout=pin;if(pin){S.arrival.restart();setTrip(pin.trip,pin,S.world.feet(),'fog sense');}else noRoute();
  },true);
+ if(accepted){S.routeWork={...request,started:Date.now()};updateRouteStatus(true);}
 }
 
 function tick(){settings();const sampleTime=Date.now();
  if(gameContext&&(sampleTime-lastPlayerCheck>=300||!W.alive(S.pawn))){lastPlayerCheck=sampleTime;const p=UE.GameplayStatics.GetPlayerCharacter(gameContext,0);
   if(W.alive(p)&&p!==S.pawn){unbind();reset();S.pawn=p;S.world=null;oldWorld='';lastPoll=0;log('player','rebound after travel');}}
- if(!W.alive(S.pawn)){planning.cancel('no player');threads.hide();return;}if(!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread){planning.cancel('disabled');threads.hide();return;}
+ if(!W.alive(S.pawn)){planning.cancel('no player');clearRouteStatus();threads.hide();return;}if(!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread){planning.cancel('disabled');clearRouteStatus();threads.hide();return;}
  if(!S.world)S.world=new W.Ground(S.pawn);const now=Date.now();safe('atlas slice',()=>atlas.pump());
  if(now-lastPoll>=105){lastPoll=now;safe('tracking',observe);safe('tracker',()=>{tracker?.poll();if(waitingTracker){const item=waitingTracker;waitingTracker=null;trackerChanged(item,'restore');}});const router=T.getlocalPlayerSubsystem(S.pawn,UE.PBZUIActionRouterBase.StaticClass());menu=!!router&&router.GetActiveInputMode()===UE.ECommonInputMode.Menu;}
  safe('planning slice',()=>planning.pump());
+ safe('route status',()=>updateRouteStatus());
  if(S.trip)safe('route clearance',()=>guardRoute(now));
  if(show()&&!menu&&S.cfg.WorldThread&&S.trip)safe('thread',()=>threads.show(S));else threads.hide();}
 function mapAcceptsPins(h){
@@ -517,7 +642,7 @@ function selectItem(item,device,displayWorld,displayArea,host){
  }
  if(item.provider!=='187')tracker?.clear('route item selected');
  const targetWorld=worldOf(item.area)||displayWorld;
- epoch++;questGate.pause(questID(narrative()));S.scout=null;S.arrival.restart();
+ epoch++;questGate.pause(questID(narrative()));S.scout=null;S.bellArrival=null;S.arrival.restart();
  // The item's world comes from its location. Its icon UV is relative to the
  // visible chart, which can group several named subareas together.
  S.manual={p:item.p,uv:item.uv,world:targetWorld,area:displayArea,item:true,provider:item.provider,auto:!!item.auto,key:'item:'+item.area+'/'+item.id};
@@ -540,7 +665,7 @@ function selectionIntent(h,uv,width,height,pad,type){
 }
 function selectBell(hit,device,area){
  const b=hit.bell;
- tracker?.clear('bell selected');epoch++;questGate.pause(questID(narrative()));S.scout=null;S.arrival.restart();
+ tracker?.clear('bell selected');epoch++;questGate.pause(questID(narrative()));S.scout=null;S.bellArrival=null;S.arrival.restart();
  S.manual={p:{...hit.p},uv:{...hit.uv},world:b.world,area,bell:b.id,item:true,key:'bell:'+b.world+'/'+low(b.id)};
  previous=null;S.version++;solve(S.manual,device+' bell');
  log('selection',JSON.stringify({source:hit.source,bell:b.id,world:b.world,goal:S.manual.p,pixels:hit.distance}));
@@ -569,8 +694,8 @@ function confirmMapItem(h,device='native',repeat=false){
 }
 function clearManual(device){
  // Clear means stop this navigation, not fall back to the still-tracked quest.
- planning.clear('explicit cancel');questGate.pause(questID(narrative()));epoch++;pending=null;
- tracker?.clear('route cleared');S.manual=null;S.scout=null;S.lookoutHint=false;
+ planning.clear('explicit cancel');clearRouteStatus();questGate.pause(questID(narrative()));epoch++;pending=null;
+ tracker?.clear('route cleared');S.manual=null;S.scout=null;S.bellArrival=null;S.lookoutHint=false;
  auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.targetKey='';S.trip=null;S.line=[];previous=null;S.arrival.reset();S.version++;
  threads.hide();ink?.clearAll();mini?.clearAll();log('input',device+' navigation cancelled');
 }
@@ -719,7 +844,7 @@ function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(global
  {key:'FogBellSense',type:'toggle',default:true,label:t('Sense a bell in fog','迷雾中洞照寻铃')},
  {key:'DisplayMode',type:'choice',default:'Always',label:t('Display mode','显示方式'),options:[{value:'Always',label:t('While tracking','追踪时持续显示')},{value:'Sense30',label:t('30 seconds after Sense','洞照后显示30秒')}]}],onChange:()=>settings(true)});}
 exports.install=function(){if(globalThis.__PBZQuestRouteInstalled)return;dir=UE.KismetSystemLibrary.ConvertToAbsolutePath(UE.KismetSystemLibrary.GetProjectContentDirectory()).replace(/[\\/]?$/,'/');
- logPath=dir+'../Saved/PBZQuestRoute-log.txt';mousePath=dir+'../Saved/PBZQuestRoute-middle.txt';ink=new Ink(dir+'Mods/PBZQuestRoute/',log);mini=new MinimapRoute(dir+'Mods/PBZQuestRoute/',log);threads=new Threads(log);
+ logPath=dir+'../Saved/PBZQuestRoute-log.txt';mousePath=dir+'../Saved/PBZQuestRoute-middle.txt';ink=new Ink(dir+'Mods/PBZQuestRoute/',log);mini=new MinimapRoute(dir+'Mods/PBZQuestRoute/',log);threads=new Threads(log);statusHud=new RouteStatus.StatusHud(UE,W,log);
  const player=require('Gameplay/RenewalPlayer').RenewalPlayerinXinInterface.prototype,m=require('UI/Widget/Map').MapInterface.prototype,sense=require('Gameplay/GA_Player_Sense').ga_Player_Sense_MixinInterface.prototype;
  wrap(player,'TsBeginPlay',function(){unbind();reset();S.pawn=this;S.world=null;S.expires=0;oldWorld='';lastPoll=0;log('player','ready '+Date.now());});
  wrap(player,'ReceiveEndPlay',function(){if(S.pawn===this){unbind();reset();S.pawn=null;S.world=null;}});

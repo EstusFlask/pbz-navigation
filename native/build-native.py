@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import urllib.request
 import zipfile
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 COMMIT = '1ceefac8b8c286f0fb3eb62b4aae075ff81df0bd'
@@ -85,7 +86,10 @@ def main():
         test_common=[arg for arg in common if arg!='/DNDEBUG']
         subprocess.run(test_common+['/DRC_UE4SS_API=','/DRC_LMS_API=',str(ROOT/'native/native-tests.cpp'),
             '/Fo:'+str(out/'test.obj'),'/Fe:'+str(test),'/link','bcrypt.lib'],check=True,env=env,cwd=out)
-        subprocess.run([str(test),str(args.ue4ss)],check=True,env=env,cwd=ROOT)
+        sys.path.insert(0, str(ROOT/'tests'))
+        from collector_fixture import original_fixture
+        fixture=original_fixture(ROOT)/'platform/steam/ue4ss/Mods/PbzMapTracker/Scripts/main.lua'
+        subprocess.run([str(test),str(args.ue4ss),str(fixture)],check=True,env=env,cwd=ROOT)
     print(output)
 
 if __name__=='__main__': main()

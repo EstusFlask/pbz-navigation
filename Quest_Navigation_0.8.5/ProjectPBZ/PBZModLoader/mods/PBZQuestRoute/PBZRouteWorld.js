@@ -3,16 +3,35 @@ const UE=require('ue'),P=require('puerts'),R=require('./PBZRouteCore');
 const vec=p=>new UE.Vector(p.x,p.y,p.z),plain=p=>p?{x:Number(p.X),y:Number(p.Y),z:Number(p.Z)}:null;
 function alive(o){try{return !!o&&UE.KismetSystemLibrary.IsValid(o);}catch(_){return false;}}
 const norm=s=>String(s||'').toLowerCase().split('/').pop().split('.').pop().replace(/^uedpie_\d+_/,'');
+const walkable=(w,h)=>!!h&&(typeof h.walkable==='boolean'?h.walkable:h.nz>=w.normal-.025);
+function contact(w,h,ground=true){
+ let component=h.Component;try{if(component&&!component.GetOwner&&component.Get)component=component.Get();}catch(_){component=null;}
+ if(!ground)return {component};
+ const result={};
+ try{const verdict=w.pawn?.CharacterMovement?.IsWalkable?.(h);if(typeof verdict==='boolean')result.walkable=verdict;}catch(_){}
+ try{
+  const override=component?.GetWalkableSlopeOverride?.(),behavior=Number(override?.WalkableSlopeBehavior),angle=Number(override?.WalkableSlopeAngle);
+  if(result.walkable===undefined&&override){
+   let limit=w.normal;
+   if(behavior===3)result.walkable=false;
+   else {if(Number.isFinite(angle)&&angle>=0&&angle<=90){const z=Math.cos(angle*Math.PI/180);if(behavior===1)limit=Math.min(limit,z);if(behavior===2)limit=Math.max(limit,z);}
+    result.walkable=Number(h.ImpactNormal?.Z)>=limit;}
+  }
+  const allowed=component?.CanCharacterStepUpOn;
+  if(allowed!==undefined)result.stepUp=Number(allowed)!==0;
+ }catch(_){}
+ return {...result,component};
+}
 function supportHit(w,a,b){
  const hit=w.hit(a,b);
- if(hit&&(hit.penetrating||hit.nz>=w.normal-.025))return hit;
+ if(hit&&(hit.penetrating||hit.walkable===false||walkable(w,hit)))return hit;
  // A centre ray on a rock's side is not the character's whole floor contact.
  // Sample inside the capsule footprint without weakening its body sweep.
  const d=Math.max(8,Math.min(22,(Number(w.r)||35)*.45)),samples=[];let best=null;
  for(const [x,y] of [[d,0],[-d,0],[0,d],[0,-d]]){
   const q=w.hit({x:a.x+x,y:a.y+y,z:a.z},{x:b.x+x,y:b.y+y,z:b.z});
   const reference=(a.z+b.z)/2;
-  const valid=q&&!q.penetrating&&q.nz>=w.normal-.025;
+  const valid=q&&!q.penetrating&&walkable(w,q);
   samples.push(valid?q:null);
   if(valid&&(!best||Math.abs(q.point.z-reference)<Math.abs(best.point.z-reference)))best=q;
  }
@@ -27,7 +46,12 @@ function supportHit(w,a,b){
  return best?{...best,point:{x:b.x,y:b.y,z:best.point.z}}:hit;
 }
 class Ground{
- constructor(pawn){this.pawn=pawn;this.cap=pawn.CapsuleComponent||pawn.GetCapsuleComponent();const m=pawn.CharacterMovement;this.h=this.cap.GetScaledCapsuleHalfHeight();this.r=this.cap.GetScaledCapsuleRadius();this.rise=Math.max(12,Math.min(65,Number(m?.MaxStepHeight)||45));this.normal=Math.max(.55,Math.min(.91,Number(m?.GetWalkableFloorZ?.())||.70));this.slope=Math.sqrt(1-this.normal*this.normal)/this.normal;
+ constructor(pawn){this.pawn=pawn;this.cap=pawn.CapsuleComponent||pawn.GetCapsuleComponent();const m=pawn.CharacterMovement;this.h=this.cap.GetScaledCapsuleHalfHeight();this.r=this.cap.GetScaledCapsuleRadius();
+  this.rise=Math.max(1,Math.min(200,Number(m?.MaxStepHeight)||45));
+  // K2_ is the reflected callable API. The C++ inline getter is normally not
+  // exposed to Puerts; using only that name silently forced the .70 default.
+  const floorZ=Number(m?.K2_GetWalkableFloorZ?.()??m?.GetWalkableFloorZ?.()??m?.WalkableFloorZ);
+  this.normal=Math.max(.1,Math.min(.999,Number.isFinite(floorZ)&&floorZ>0?floorZ:.70));this.slope=Math.sqrt(1-this.normal*this.normal)/this.normal;
   const prof=String(this.cap.GetCollisionProfileName()||'Pawn');this.profile=/^(none|custom|nocollision)$/i.test(prof)?'Pawn':prof;this.ignored=UE.NewArray(UE.Actor);this.ignored.Add(pawn);this.color=new UE.LinearColor(0,0,0,0);this.calls=0;}
  feet(){
   const r=Number(this.cap.GetScaledCapsuleRadius?.()),h=Number(this.cap.GetScaledCapsuleHalfHeight?.());
@@ -41,10 +65,12 @@ class Ground{
   else yes=k.LineTraceSingleByProfile(this.pawn,vec(a),vec(b),...tail);
   if(!yes)return null;const h=P.$unref(o);if(!h||!h.bBlockingHit)return null;
   const point=plain(h.ImpactPoint),nz=Number(h.ImpactNormal.Z);if(!R.finite(point))return null;
-  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating};
+  const {component,...limits}=contact(this,h,!body);
+  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating,...limits};
+  if(body)try{result.actor=component?.GetOwner?.();}catch(_){}
   if(owners){
    result.owners=[];
-   try{let component=h.Component;if(component&&!component.GetOwner&&component.Get)component=component.Get();
+   try{
     let actor=component?.GetOwner?.();
     for(let i=0;i<4&&alive(actor);i++){result.owners.push(String(actor.GetName()).toLowerCase());const parent=actor.GetAttachParentActor?.()||actor.GetOwner?.();if(actor===parent)break;actor=parent;}
    }catch(_){}
@@ -57,11 +83,51 @@ class Ground{
   const yes=k.SphereTraceSingleByProfile(this.pawn,vec(a),vec(b),7,this.profile,false,this.ignored,UE.EDrawDebugTrace.None,out,true,c,c,0);
   if(!yes)return null;const h=P.$unref(out);return h?.bBlockingHit?{point:plain(h.ImpactPoint)}:null;
  }
+ standingFloor(p){
+  // CharacterMovement uses the pawn's actual collision responses and its
+  // swept floor contact. A profile line query can disagree with that contact.
+  // This evidence belongs only to the occupied footprint, never a nearby deck.
+  try{
+   const m=this.pawn?.CharacterMovement,mode=m?.MovementMode,modes=UE.EMovementMode;
+   const grounded=typeof m?.IsMovingOnGround==='function'?m.IsMovingOnGround():
+    modes&&[modes.MOVE_Walking,modes.MOVE_NavWalking].some(v=>v!==undefined&&v===mode);
+   if(!grounded)return null;
+   const floor=m.CurrentFloor,hit=floor?.HitResult,q=plain(hit?.ImpactPoint),feet=this.feet();
+   if(floor?.bWalkableFloor!==true||!hit?.bBlockingHit||hit.bStartPenetrating||!R.finite(q)||
+    R.xy(p,feet)>2||Math.abs(p.z-feet.z)>65||Math.abs(q.z-feet.z)>65)return null;
+   return {x:p.x,y:p.y,z:q.z};
+  }catch(_){return null;}
+ }
+ snapshot(p){
+  const m=this.pawn?.CharacterMovement;
+  return {feet:p,halfHeight:this.h,radius:this.r,stepHeight:this.rise,normal:this.normal,profile:this.profile,
+   mode:Number(m?.MovementMode),customMode:Number(m?.CustomMovementMode),slopeVolumes:this.slopeRules?.volumes.length||0,movementFloor:this.standingFloor(p),query:this.lastFloorQuery};
+ }
+ *refreshRulesJob(){
+  this.slopeRules||=new (require('./PBZRouteTerrainRules').SlopeRules)(this.pawn);
+  yield* this.slopeRules.refresh();
+ }
+ resetRules(){this.slopeRules=null;this.blockerCache=new WeakMap();}
+ describeBlocker(actor){
+  if(!actor)return null;
+  const cache=this.blockerCache||=new WeakMap(),now=Date.now(),old=cache.get(actor);
+  if(old&&now-old.at<1200)return old.value;
+  let value=null;try{value=require('./PBZRouteMechanisms').describe(actor,{UE,P,pawn:this.pawn,point:plain,...this.requirements});}catch(_){}
+  cache.set(actor,{at:now,value});return value;
+ }
  floorAt(p,deep=false){
-  for(const up of [Math.max(55,this.rise+10),180]){
+  const occupied=this.standingFloor?.(p);if(occupied){this.lastFloorQuery={source:'movement',at:p,floor:occupied};return occupied;}
+  // Start close to the expected feet before probing from above. An elevated
+  // ray can start inside a ceiling or hit another walkable layer first.
+  const attempts=[];let best=null;
+  for(const up of [12,Math.max(55,this.rise+10),180]){
    const h=supportHit(this,{...p,z:p.z+up},{...p,z:p.z-(deep?520:155)});
-   if(h&&!h.penetrating&&h.nz>=this.normal-.025)return h.point;
-  }return null;
+   attempts.push({up,hit:h?{z:h.point.z,nz:h.nz,penetrating:!!h.penetrating}:null});
+   if(h&&!h.penetrating&&walkable(this,h)){
+    if(!best||Math.abs(h.point.z-p.z)<Math.abs(best.z-p.z))best=h.point;
+    if(Math.abs(best.z-p.z)<=12)break;
+   }
+  }this.lastFloorQuery={source:best?'ray':'missing',at:p,...(best?{floor:best}:{}),attempts};return best;
  }
  step(a,b,expected){
   const n=Math.max(1,Math.ceil(R.xy(a,b)/35)),points=[];let previous=a;
@@ -70,12 +136,15 @@ class Ground{
    const hit=supportHit(this,{x:q.x,y:q.y,z:from.z+reach},{x:q.x,y:q.y,z:from.z-reach-8});
    let failure;
    if(!hit)failure={why:'no supporting floor'};
-   else if(hit.penetrating||hit.nz<this.normal-.025)failure={hit:hit.point,why:'steep surface'};
+   else if(hit.penetrating||!walkable(this,hit))failure={hit:hit.point,why:'surface is not walkable'};
    else if(Math.abs(hit.point.z-from.z)>reach+1)failure={why:'different floor'};
    else if(hit.nz>.98&&Math.abs(hit.point.z-from.z)>this.rise+2)failure={hit:hit.point,why:'ledge exceeds step height'};
+   else if(hit.stepUp===false&&hit.nz>.98&&hit.point.z-from.z>3)failure={hit:hit.point,why:'component forbids step up'};
    else {
+    const rule=this.slopeRules?.blocked(from,hit.point);
+    if(rule)return {hit:hit.point,why:'forced slope slide uphill',block:rule};
     const wall=this.hit(from,hit.point,true);
-    if(wall)failure={hit:wall.point,normal:wall.normal,owners:wall.owners,why:'blocked body clearance'};
+    if(wall){const block=this.describeBlocker?.(wall.actor);failure={hit:wall.point,normal:wall.normal,owners:wall.owners,why:'blocked body clearance',block,locked:!!block?.locked};}
     else return {p:hit.point,points:[hit.point]};
    }
    // Several individually legal risers can lie inside one 35 cm sample.

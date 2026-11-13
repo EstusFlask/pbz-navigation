@@ -5,9 +5,10 @@ const UE = require('ue');
 const LiveLinks = require('./PBZLiveLinks');
 const Transitions=require('./PBZRouteTransitions'),Feasible=require('./PBZRouteFeasibility'),Local=require('./PBZRouteLocalWalk');
 const classCatalog = require('./PBZPassageClasses').classes;
+const Mechanisms=require('./PBZRouteMechanisms');
 const ladderStates = new WeakMap();
 function resetLadders(g) {
-  ladderStates.delete(g);g.openPassages.clear();g.passageRevision++;
+  ladderStates.delete(g);g.openPassages.clear();g.passageStates?.clear();g.passageRevision++;
 }
 function refreshLadders(g,pawn,loaded=true) {
   if(!g||!pawn)return false;
@@ -57,7 +58,8 @@ const labels = {
   ascent: ['向上攀跑', 'Run up wall'], mantle: ['翻上平台', 'Climb onto ledge'],
   fall: ['跳下', 'Drop down'], ladder: ['攀梯', 'Use ladder'], drop: ['沿壁滑下', 'Slide down wall'],
   slide: ['沿坡滑下', 'Slide down slope'], zipline: ['滑索', 'Ride zipline'],
-  rappel: ['沿绳下降', 'Rappel'], swing: ['抓绳荡过', 'Swing across']
+  rappel: ['沿绳下降', 'Rappel'], swing: ['抓绳荡过', 'Swing across'],
+  hook:['使用钩索到达落地区','Grapple to the landing area'],crawl:['穿过低洞','Crawl through'],vault:['翻越障碍','Vault over'],jump:['跳跃到对面','Jump across']
 };
 function title(move) {
   const english = /^en/i.test(String(UE.KismetInternationalizationLibrary?.GetCurrentLanguage?.() || 'zh'));
@@ -72,7 +74,7 @@ function support(world,p,below=105) {
   return hit&&!hit.penetrating&&hit.nz>=world.normal-.025?hit.point:null;
 }
 function landing(world,p,kind) {
-  const below=['swing','rappel','zipline','wallrun'].includes(kind)?475:kind==='lift'?100:240;
+  const below=['hook','swing','rappel','zipline','wallrun'].includes(kind)?475:kind==='lift'?100:240;
   const q=support(world,p,below);
   return q&&p.z-q.z<=below&&q.z-p.z<=180?q:null;
 }
@@ -92,10 +94,10 @@ function* sweepJob(world,a,b) {
 }
 function* approachJob(world,pad,anchor,mode) {
   const run=R.xy(pad,anchor);
-  const handleHeight=['swing','rappel','zipline','wallrun'].includes(mode)?475:240;
+  const handleHeight=['hook','swing','rappel','zipline','wallrun'].includes(mode)?475:240;
   // A distant fallback pad must actually lead to the interaction's approach.
   // Sample on the player's side of the wall, not inside an authored wall face.
-  const reach=['wallrun','ascent','mantle','ladder','swing'].includes(mode)?90:35;
+  const reach=['wallrun','ascent','mantle','ladder','swing','hook'].includes(mode)?90:35;
   const near=R.lerp(anchor,pad,Math.min(1,reach/(run||1)));
   const end=support(world,near,handleHeight);
   if(!end||Math.abs(near.z-end.z)>handleHeight||Math.abs(pad.z-end.z)>100+run*.85)return false;
@@ -144,9 +146,25 @@ function* checkedWalkJob(world,a,b,nativeWalk,options={}){
   if(R.dist(end,b)>1){const join=yield* sweepJob(world,end,b);if(!join)return null;return [...points,...join.slice(1)];}
   return points;
 }
+function sceneComponents(actor){
+  const read=actor.K2_GetComponentsByClass||actor.GetComponentsByClass;
+  return read?.call(actor,UE.SceneComponent.StaticClass());
+}
 function placedCurve(actor,kind){
   const worldSpace=UE.ESplineCoordinateSpace.World;
-  function component(name){try{const c=actor[name];return W.alive(c)?c:null;}catch(_){return null;}}
+  let components;
+  function component(name){
+   try{const c=actor[name];if(W.alive(c))return c;}catch(_){}
+   // Inherited native subobjects need not have a Puerts property accessor.
+   // Match the actual component name, never an arbitrary nearby spline.
+   if(components===undefined){components=new Map();try{
+    const list=sceneComponents(actor);
+    for(let i=0;i<Math.min(128,list?.Num()||0);i++){
+     const c=list.Get(i);if(W.alive(c))components.set(String(c.GetName()).replace(/_GEN_VARIABLE(?:_\d+)?$/,''),c);
+    }
+   }catch(_){}}
+   return components.get(name)||null;
+  }
   function location(name){const c=component(name);return c?W.plain(c.K2_GetComponentLocation()):null;}
   function curve(name,midpoint=false){
     const c=component(name);if(!c||typeof c.GetSplineLength!=='function')return [];
@@ -161,11 +179,13 @@ function placedCurve(actor,kind){
    case 'lift':case 'slide':result=curve('Spline');break;
    case 'rappel':case 'zipline':result=curve('RopeSpline');if(!result.length)result=curve('RopeSplineComponent');break;
    case 'wallrun':result=curve('LowSpline');break;
-   case 'ascent':result=[root,...curve('EdgeSpline',true)];break;
-   case 'mantle':result=[root,...curve('FrontEdgeSpline',true),...curve('BackEdgeSpline',true)];break;
+   case 'ascent':result=[location('BoxA')||location('Box')||root,...curve('EdgeSpline',true)];
+    if(result.length<2){const end=location('EndPositionStatic');if(end)result=[location('Box')||root,end];}break;
+   case 'mantle':result=[location('FrontCollision')||root,...curve('FrontEdgeSpline',true),...curve('BackEdgeSpline',true)];break;
    case 'drop':result=[...curve('EdgeSpline',true),...curve('EndEdgeSpline',true)];break;
    case 'ladder':result=[location('BottomCollision'),location('TopCollision')];break;
-   case 'swing':result=[location('BoxA'),location('BoxB')];break;
+   case 'swing':result=[location('ASide')||location('BoxA'),location('BSide')||location('BoxB')];break;
+   case 'hook':result=[location('TriggerSphere')||location('TriggerBox'),location('GrabPoint'),location('LandArea')];break;
    default:return null;
   }
   if(result.length<2||!result.every(R.finite)||R.dist(result[0],result[result.length-1])<36)return null;
@@ -175,15 +195,38 @@ function placedCurve(actor,kind){
 function liveCache(g,world){
   world=world.sourceWorld||world;
   let cache=liveWorlds.get(world);
-  if(!cache){
+  if(!cache||cache.graph!==g){
     const byClass=new Map(classCatalog.map(c=>[c.classPath,{definition:c,items:new Map()}]));
     for(const item of g.actors){
       if(!item.classPath||!byClass.has(item.classPath))continue;
       byClass.get(item.classPath).items.set(item.guid.toLowerCase(),item);
     }
-    cache={classes:[...byClass],index:0,next:0,paths:new Map(),tried:new Map(),known:new Map(g.actors.map(a=>[String(a.guid).toLowerCase(),a]))};liveWorlds.set(world,cache);
+    cache={graph:g,classes:[...byClass],index:0,next:0,paths:new Map(),tried:new Map(),actors:new Map(),nextStates:0,known:new Map(g.actors.map(a=>[String(a.guid).toLowerCase(),a]))};liveWorlds.set(world,cache);
   }
   return cache;
+}
+function readState(g,cache,actor,item,pawn,world){
+ const key=String(item.guid).toLowerCase(),states=g.passageStates||=new Map();
+ if(item.kind==='ladder'&&typeof actor.bFold==='boolean'&&item.fold!==actor.bFold){
+  item.fold=actor.bFold;if(item.fold)g.foldedPassages?.add(key);else g.foldedPassages?.delete(key);
+  g.passageRevision=(g.passageRevision||0)+1;
+ }
+ cache.actors.set(key,{actor,item});
+ const state=Mechanisms.inspect(actor,item,{UE,pawn,point:W.plain,...world.requirements}),old=states.get(key);
+ if((old&&JSON.stringify(old)!==JSON.stringify(state))||(!old&&!state.ready))g.passageRevision=(g.passageRevision||0)+1;
+ states.set(key,state);return state;
+}
+function refreshStates(g,world,pawn,force=false){
+ const cache=liveWorlds.get(world?.sourceWorld||world);if(!g||!cache||cache.graph!==g)return false;
+ const now=Date.now();if(!force&&now<cache.nextStates)return false;cache.nextStates=now+900;
+ const before=g.passageRevision,feet=world.feet();let count=0;
+ for(const {actor,item} of cache.actors.values()){
+  if(!W.alive(actor))continue;
+  const path=cache.paths.get(item.guid)?.path;
+  if(path&&R.dist(feet,path[0])>16000)continue;
+  readState(g,cache,actor,item,pawn,world);if(++count>=64)break;
+ }
+ return before!==g.passageRevision;
 }
 function* refreshLoadedJob(g,world,pawn,start,goal,options={}){
  if(!g||!world||!pawn||!UE.Class||!UE.GameplayStatics?.GetAllActorsOfClass)return;
@@ -191,7 +234,7 @@ function* refreshLoadedJob(g,world,pawn,start,goal,options={}){
  const rank=row=>Math.min(50000,...[...row[1].items.values()].map(a=>{
   const p=a.path?.[0]||a.at;if(!p)return 50000;const q={x:p[0],y:p[1],z:p[2]};return Math.min(R.dist(start,q),R.dist(goal,q));}));
  const classes=cache.classes.slice().sort((a,b)=>rank(a)-rank(b));
- const summary={resident:0,nearby:0,paths:0,kinds:{},missing:[]};
+ const summary={resident:0,nearby:0,paths:0,kinds:{},missing:[]},seen=new Set();
  const P=require('puerts');
  for(const [asset,{definition,items}] of classes){
   let cls=classObjects.get(asset);
@@ -204,22 +247,27 @@ function* refreshLoadedJob(g,world,pawn,start,goal,options={}){
   for(let i=0;i<Math.min(256,actors?.Num()||0);i++){
    const actor=actors.Get(i);if(!W.alive(actor))continue;
    const guid=String(actor.GetName()),key=guid.toLowerCase(),location=W.plain(actor.K2_GetActorLocation());yield;
+   if(seen.has(key))continue;seen.add(key);
    if(!R.finite(location)||Math.min(R.dist(start,location),R.dist(goal,location))>14000)continue;
    summary.nearby++;summary.kinds[definition.kind]=(summary.kinds[definition.kind]||0)+1;
    let item=items.get(key)||cache.known.get(key)||g.observedPassages.get(key);
-   const cached=cache.paths.get(item?.guid||guid);if(cached&&now-cached.at<5000){summary.paths++;continue;}
+   const cached=cache.paths.get(item?.guid||guid);if(cached&&now-cached.at<5000){summary.paths++;if(item)readState(g,cache,actor,item,pawn,world);continue;}
    let path=placedCurve(actor,definition.kind);
    if(!path&&item?.local){const transform=actor.GetTransform?.()||actor.K2_GetActorTransform?.();
     if(transform)path=item.local.map(q=>W.plain(UE.KismetMathLibrary.TransformLocation(transform,new UE.Vector(...q))));}
-   if(!path){if(summary.missing.length<4)summary.missing.push({guid,kind:definition.kind});continue;}
+   if(!path){if(summary.missing.length<4){
+    const components=[];try{const list=sceneComponents(actor);for(let n=0;n<Math.min(24,list?.Num()||0);n++)components.push(String(list.Get(n).GetName()));}catch(_){}
+    summary.missing.push({guid,kind:definition.kind,components});
+   }continue;}
    summary.paths++;
    if(!item){
     let folded=!!definition.fold;
-    if(definition.kind==='ladder')try{folded||=W.alive(actor.HookTimelineComponent)||W.alive(actor.LadderTimelineComponent);}catch(_){}
+    if(definition.kind==='ladder'&&typeof actor.bFold==='boolean')folded=actor.bFold;
     item={...definition,guid,fold:folded,conditional:true,path:path.map(p=>[p.x,p.y,p.z])};
     if(g.observedPassages.size>=240)continue;g.observedPassages.set(key,item);
    }
    cache.paths.set(item.guid,{path,at:now});items.set(key,item);yield;
+   readState(g,cache,actor,item,pawn,world);
    if(item.fold){
     g.foldedPassages?.add(key);
     try{if(typeof actor.bTriggered==='boolean'){
@@ -265,11 +313,13 @@ function updateLoaded(g,world,pawn,nativeWalk) {
     if(!path||!path.every(R.finite))continue;
     if(!item){
      let folded=!!definition.fold;
-     if(definition.kind==='ladder')try{folded||=W.alive(actor.HookTimelineComponent)||W.alive(actor.LadderTimelineComponent);}catch(_){}
+     if(definition.kind==='ladder'&&typeof actor.bFold==='boolean')folded=actor.bFold;
      item={...definition,guid,fold:folded,conditional:true,path:path.map(p=>[p.x,p.y,p.z])};
      if(g.observedPassages.size>=240)continue;g.observedPassages.set(key,item);
     }
+    if(!cache.paths.has(item.guid))g.passageRevision=(g.passageRevision||0)+1;
     cache.paths.set(item.guid,{path,at:now});
+    readState(g,cache,actor,item,pawn,world);
     // Attachment runs in liveRouteJob after standing-pad and action checks;
     // a timer discovery must not install an unchecked movement arc.
   }
@@ -289,12 +339,12 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
   let work=0;for(const feature of [...g.actors,...g.observedPassages.values()]) {if((++work&7)===0)yield;
     if(!feature.path)continue;
     const live=liveWorlds.get(world.sourceWorld||world)?.paths.get(feature.guid);
-    if(feature.conditional&&feature.local&&!live)continue;
+    if((feature.conditional&&feature.local||feature.kind==='hook')&&(!live||Date.now()-live.at>=30000))continue;
     const path=live&&Date.now()-live.at<30000?live.path:feature.path.map(v=>({x:v[0],y:v[1],z:v[2]}));
     if(path.length<2||!path.every(R.finite))continue;
     const forward=R.dist(start,path[0])+R.dist(goal,path[path.length-1]);
     const backward=feature.both?R.dist(start,path[path.length-1])+R.dist(goal,path[0]):Infinity;
-    const score=Math.min(forward,backward);if(score<26000)candidates.push({...feature,runtimePath:path,score});
+    const score=Math.min(forward,backward);if(score<26000)candidates.push({...feature,state:g.passageStates?.get(String(feature.guid).toLowerCase()),runtimePath:path,score});
   }
   options.report?.('action candidates',{count:candidates.length,start,goal});
   return yield* Transitions.route({name:g.name,world,start,goal,goals:options.goals,clock,deadline:options.deadline,maxConnectors:options.maxConnectors,
@@ -303,7 +353,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
     const linked=yield* LiveLinks.attachCheckedJob(g,action,(a,b)=>checkedWalkJob(world,a,b,nativeWalk),{clock,deadline:settings.deadline});
     if(linked)options.report?.('action attached',{guid:action.feature.guid,kind:action.feature.kind,entry:action.entry,exit:action.exit});
    },
-   features:candidates.sort((a,b)=>a.score-b.score),canTraverse:f=>g.canTraverse(f),onClosed:options.onClosed,report:options.report,
+   features:candidates.sort((a,b)=>a.score-b.score),canTraverse:f=>f.state?.ready!==false&&g.canTraverse(f),onClosed:options.onClosed,report:options.report,
    landing:function*(feature,p,side){
     const direct=landing(world,p,feature.kind);yield;if(direct&&!world.hit?.(direct,direct,true))return direct;
     for(const row of feature[side]||[]){const raw=row[1],q=world.floorAt({x:raw[0],y:raw[1],z:raw[2]},true);yield;
@@ -331,6 +381,7 @@ exports.liveRoute=liveRoute;
 exports.updateLoaded=updateLoaded;
 exports.refreshLoadedJob=refreshLoadedJob;
 exports.refreshLadders=refreshLadders;
+exports.refreshStates=refreshStates;
 exports.resetLadders=resetLadders;
 
 exports.checkJob=checkJob;exports.liveRouteJob=liveRouteJob;

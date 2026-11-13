@@ -1,0 +1,42 @@
+Version: 1.0.1
+Date: 2026-11-12
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.0.1.zip
+Bytes: 120306218
+SHA256: 5e11127e04ad86465db0fa0de08692926978cb4e8a7cde91591f69193f67a191
+
+Release scope:
+- User-requested 1.0.1 designation for the current 0.15.2-fork.1 route-status build.
+- JS entries, native DLL, bilingual instructions, release metadata and audit headers agree.
+- Package paths unchanged from 0.15.2. Changed only the 2 JS version identifiers,
+  rebuilt native DLL and 9 package documents. Route/status logic and data unchanged.
+- dist contains only the current complete ZIP. All 14 old ZIPs and 2 prototypes
+  moved to build/release-archive/pre-1.0.1-20261112/ with exact size/SHA256 checks.
+  Persistent migration record: release/DIST-ARCHIVE-20261112.json.
+- release/VERSION-LOCK.json locks current/minimum to 1.0.1 and records version history.
+  The build and verifier reject mismatched metadata, a lower floor/history version
+  and a non-current archive name. Temp-fixture checks exercised all four failures
+  without changing the real metadata. Log: build/validation-101-release-lock.txt.
+
+Verification:
+PASS: 202/202 JavaScript regressions, no failures/skips.
+  build/validation-101-js.txt
+PASS: real Map Tracker 1.0.9/1.0.14 Lua modules, target/hover/file/cancel round trips,
+  height preservation, contract guards, cleanup and 170 Chinese hints.
+  build/validation-101-lua.txt
+PASS: native adapter rebuilt with 1.0.1; ABI, UE4SS hash gate, mod filtering,
+  version-independent host dispatch.
+  build/validation-101-native.txt
+PASS: complete ZIP built with current 951-module streamed atlas.
+  build/validation-101-build.txt
+PASS: 1,349 exact package matches, original atlas/actor hashes and 291 legacy
+  chunk strings unchanged; runtime/native/docs all 1.0.1. Mod manager identifies
+  update (1,339/1,339 paths), no overlap with 110 tested collector paths.
+  build/validation-101-package.txt
+
+Limitations:
+No new in-game validation. Physics/reflected HUD calls remain mocked. First-route
+latency was not improved. Full-map authored 3D routes remain incomplete; only the
+two existing directed reference courses are enabled and are not fully game-verified.
+No trail learning, sampling, persistence or runtime downloads.
+Game/manager stayed read-only. Existing user changes and removed collector sources
+were preserved. No Git commit was created.

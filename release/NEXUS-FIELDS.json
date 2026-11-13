@@ -1,5 +1,5 @@
 {
-  "status": "unpublished-awaiting-original-author-permission",
+  "status": "published-update-in-progress",
   "draftId": 994,
   "draftEditUrl": "https://www.nexusmods.com/games/phantombladezero/mods/994/edit/general",
   "draftSavedSections": [
@@ -7,20 +7,20 @@
     "Media",
     "Requirements - PBZModLoader 1.0.0 only; optional companions documented in description"
   ],
-  "draftFileUploaded": false,
+  "draftFileUploaded": true,
   "name": "Quest and Exploration Navigation - Fork",
-  "version": "0.10.3-fork.1",
+  "version": "1.0.1",
   "upstreamVersion": "0.8.5-beta",
   "localPatchBase": "0.8.5-local-fix5",
   "authorField": "azqwq333 - original - kurosakana - fork",
   "category": "User Interface",
   "language": "Any",
-  "shortDescription": "Follow routes to quests, map pins and collectibles. Fork of azqwq333's mod with route checks, world-thread fixes and Map Tracker Plus (UE4SS) 1.0.9 target sync. / 任务、地图标记与收集品导航。基于 azqwq333 原版，加入路线校验、引导线修复和 1.0.9 收集目标联动。",
+  "shortDescription": "Quest, map pin and collectible navigation with checked bell transfers, Map Tracker 1.0.14 sync and supplementary Chinese acquisition hints. / 任务、地图标记及物品导航，修复新版收集联动，增加铃铛中转及中文获取提示。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
-  "archive": "dist/Quest_and_Exploration_Navigation_Fork_0.10.3-fork.1.zip",
-  "fileDisplayName": "Quest and Exploration Navigation - Fork - Full PBZModLoader Package",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.0.1.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.0.1",
   "fileCategory": "Main Files",
-  "fileDescription": "0.10.3-fork.1 complete package: retain measured wall exclusions across cancelled repairs and identify the actual failed portal; clip known-blocked atlas tails. Keep checked multi-climb frontiers when the final grapple is unavailable and prevent a farther pending backtrack from replacing them. Attach validated movement pads during planning, retain local search when the distant goal is unloaded, refine trapped broad-grid starts and log discovery/search outcomes. Retains the raised blue strand. Both reported routes still require complete in-game verification.",
+  "fileDescription": "Complete PBZModLoader package. Route-loading status, checked bell transfers, Map Tracker 1.0.9/1.0.14 sync and 170 Chinese hints. Experimental; full-map 3D routes unfinished. 完整包；含加载提示、铃铛中转及收集联动，全图三维路网未完成。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -46,18 +46,20 @@
     {
       "modId": 187,
       "name": "Map Tracker Plus - Minimap and Collectibles (UE4SS)",
-      "version": "1.0.9",
+      "version": "1.0.9 / 1.0.14",
       "required": false,
-      "note": "Optional collectible target/cancellation sync. Original files only; legacy minimap overlay, icon size and accessory hints are not ported."
+      "note": "Real Lua target/hover round trips and 170 Chinese hints tested on both versions. Future releases are checked by API contract and item identity; incompatible features disable safely. Legacy minimap/icon/accessory integration remains unported."
     },
     {
       "modId": 5,
       "name": "UE4SS for Phantom Blade Zero",
       "version": "1.0.3",
       "required": false,
-      "note": "Required with optional collector sync: v3.0.1-1195-g1ceefac8 Shipping, exact runtime/collector entry hashes checked."
+      "note": "Required for optional collector sync and hints: v3.0.1-1195-g1ceefac8 Shipping; exact UE4SS runtime hash retained, collector entry text is not version-pinned."
     }
   ],
   "permissionEvidence": null,
-  "published": false
+  "published": true,
+  "lastVerifiedNexusVersion": "1",
+  "modUrl": "https://www.nexusmods.com/phantombladezero/mods/994"
 }

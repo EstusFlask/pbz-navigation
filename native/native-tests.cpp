@@ -20,7 +20,7 @@ void Lua::execute_file(std::wstring_view path) const { executed=path; }
 }
 int main(int argc, char** argv) {
     static_assert(sizeof(RC::CppUserModBase)==192, "UE4SS 1195 base layout changed");
-    assert(argc==2);
+    assert(argc==3);
     assert(sha256(argv[1])=="e1fb9a7e1d868afef6a091c2012e711c3ec47f05d100ba37f9631a4f75f31df2");
     test_root=module_file().parent_path()/"native-fixture"/"Mods"/"PBZQuestRouteCompat";
     std::filesystem::create_directories(test_root/"Scripts");
@@ -37,15 +37,15 @@ int main(int argc, char** argv) {
     assert(executed.empty());
     const auto tracker=test_root.parent_path()/"PbzMapTracker"/"Scripts"/"main.lua";
     std::filesystem::create_directories(tracker.parent_path());
-    { std::ofstream bad(tracker); bad << "changed collector"; }
-    callback(&mod,{L"PbzMapTracker",13},lua,lua,lua,nullptr);
-    assert(executed.empty());
-    std::filesystem::copy_file("Map_Collectible_Tracker_1.0.9/platform/steam/ue4ss/Mods/PbzMapTracker/Scripts/main.lua",tracker,
-        std::filesystem::copy_options::overwrite_existing);
+    { std::ofstream bad(tracker); bad << "-- future collector entry; API compatibility is checked in Lua"; }
     const auto host=test_root/"Scripts"/"PBZTrackerHost.lua";
+    callback(&mod,{L"PbzMapTracker",13},lua,lua,lua,nullptr);
+    assert(executed==host.native());
+    std::filesystem::copy_file(argv[2],tracker,
+        std::filesystem::copy_options::overwrite_existing);
     std::filesystem::copy_file("Quest_Navigation_0.8.5/platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZTrackerHost.lua",host,
         std::filesystem::copy_options::overwrite_existing);
     callback(&mod,{L"PbzMapTracker",13},lua,lua,lua,nullptr);
     assert(executed==host.native());
-    std::cout << "PASS: native ABI size, runtime SHA gate, mod filtering, collector SHA gate, host dispatch\n";
+    std::cout << "PASS: native ABI size, runtime SHA gate, mod filtering, version-independent host dispatch\n";
 }

@@ -7,7 +7,7 @@ function fixture(conditional=false){
  const W={alive:o=>!!o,plain:p=>({x:p.X,y:p.Y,z:p.Z})};
  const module={exports:{}},mocks={ue:{ESplineCoordinateSpace:{World:0}},puerts:{$ref:value=>({value}),$unref:ref=>ref.value},'./PBZRouteWorld':W};
  const load=id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id));
- vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRoutePassages.js','utf8')+'\n})',{Date,console})(load,module,module.exports);
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRoutePassages.js','utf8')+'\nexports.placedCurve=placedCurve;\n})',{Date,console})(load,module,module.exports);
  const floor=p=>p.x>=-100&&p.x<=500?0:p.x>=650&&p.x<=900?600:p.x>=1100&&p.x<=1500?1200:null;
  const world={normal:.7,rise:45,slope:1,r:35,floorAt:p=>{const z=floor(p);return z===null?null:{...p,z};},
   step:(a,b)=>{const z=floor(b);return z!==null&&Math.abs(z-a.z)<80?{p:{...b,z}}:{why:'gap'};},
@@ -19,6 +19,42 @@ function fixture(conditional=false){
  return {api:module.exports,g,world,native,UE:mocks.ue,start:{x:0,y:0,z:0},goal:{x:1400,y:0,z:1200}};
 }
 function run(job){let row,n=0;do{row=job.next();assert.ok(++n<100000);}while(!row.done);return row.value;}
+
+test('resident ascent reads its lower BoxA and native spline components instead of the actor origin',()=>{
+ const h=fixture(),vec=(X,Y,Z)=>({X,Y,Z});
+ h.UE.SceneComponent={StaticClass:()=> 'scene'};
+ const box={GetName:()=> 'BoxA',K2_GetComponentLocation:()=>vec(0,0,100)};
+ const edge={GetName:()=> 'EdgeSpline',GetSplineLength:()=>100,GetLocationAtDistanceAlongSpline:()=>vec(120,0,700)};
+ const actor={K2_GetActorLocation:()=>vec(120,0,700),K2_GetComponentsByClass:()=>({Num:()=>2,Get:i=>i?edge:box})};
+ const points=h.api.placedCurve(actor,'ascent');
+ assert.ok(points,'inherited native component access lost the climb entirely');
+ assert.equal(points[0].z,100);assert.equal(points.at(-1).z,700);
+});
+
+test('gap grapples use their authored trigger, grab point and landing area',()=>{
+ const h=fixture(),at=(X,Y,Z)=>({K2_GetComponentLocation:()=>({X,Y,Z})});
+ const actor={K2_GetActorLocation:()=>({X:0,Y:0,Z:0}),TriggerSphere:at(0,0,0),GrabPoint:at(150,500,500),LandArea:at(400,900,700)};
+ const points=h.api.placedCurve(actor,'hook');
+ assert.ok(points,'BP_GapBlocker was omitted from traversal extraction');
+ assert.equal(points[0].x,0);assert.equal(points.at(-1).z,700);
+});
+
+test('a resident grapple with an unmet game requirement cannot become a usable route',()=>{
+ const h=fixture(),at=(X,Z)=>({K2_GetComponentLocation:()=>({X,Y:0,Z})});
+ h.world.feet=()=>h.start;
+ Object.assign(h.g.actors[0],{kind:'hook',guid:'gap-hook'});
+ const actor={GetName:()=> 'gap-hook',K2_GetActorLocation:()=>({X:500,Y:0,Z:0}),
+  TriggerSphere:at(500,0),GrabPoint:at(575,500),LandArea:at(650,600),
+  GetNeedShaChiWeaponID:()=> 'Weapon_Hook',GetInteractRequirementMeet:()=>2};
+ h.UE.EInteractRequirementState={NoRequirement:0,RequirementMeet:1,RequirementNotMeet:2};
+ h.UE.Class={Find:p=>p.includes('BP_GapBlocker.')?p:null};
+ h.UE.GameplayStatics={GetAllActorsOfClass:(pawn,cls,out)=>{out.value={Num:()=>1,Get:()=>actor};}};
+ run(h.api.refreshLoadedJob(h.g,h.world,{},h.start,h.goal));
+ assert.equal(run(h.api.liveRouteJob(h.g,h.world,h.start,h.goal,h.native)),null,'a missing grapple weapon was ignored');
+ actor.GetInteractRequirementMeet=()=>1;
+ h.api.refreshStates(h.g,h.world,{},true);
+ assert.ok(run(h.api.liveRouteJob(h.g,h.world,h.start,h.goal,h.native)),'satisfying the real requirement did not release the action');
+});
 
 test('prepared actions immediately join the atlas even when the final hook is not loaded',()=>{
  const h=fixture(false),columns={p:[0,0,0,500,0,0,650,0,600,900,0,600,1100,0,1200,1400,0,1200],v:[],

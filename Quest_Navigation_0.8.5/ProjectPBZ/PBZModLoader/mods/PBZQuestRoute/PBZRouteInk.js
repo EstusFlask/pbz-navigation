@@ -47,7 +47,7 @@ class Ink{
   const active=S.trip?.legs[S.active],feet=S.world.feet(),close=active?.world===displayWorld?R.nearestOnLine(feet,active.points):null;
   const trim=close?.p&&close.d<235?close:null;
   const focus=String(host.SlotWidgetGroup?.GetSelectedSlotID?.()||"").toLowerCase();
-  const sig=[overview,focus,S.version,S.active,S.contextEpoch,S.arrival.completedTarget,flag?.key,enabled,S.lockVersion,host.CurrentDisplayMapID,host.CurrentLayer,w,h,trim?.i,trim?Math.round(trim.t*6):0].join('/');
+  const sig=[overview,focus,S.version,S.active,S.contextEpoch,S.arrival.completedTarget,flag?.key,S.routeStatus,enabled,S.lockVersion,host.CurrentDisplayMapID,host.CurrentLayer,w,h,trim?.i,trim?Math.round(trim.t*6):0].join('/');
   if(s.sig===sig||w<=0||h<=0)return;
   const uvKey=[S.version,overview,display,host.CurrentLayer].join('/');
   if(s.uvKey!==uvKey){s.uvKey=uvKey;s.legUV=new WeakMap();}
@@ -90,6 +90,7 @@ class Ink{
    const skip=leg===active&&trim?trace.offsets[trim.i]+(trace.offsets[trim.i+1]-trace.offsets[trim.i])*trim.t:0;
    const cuts=Obstacles.intervals(leg);
    for(const rows of trace.runs)for(const part of Obstacles.portions(rows,skip,cuts))for(const run of Charts.visible(part.points))paintRun(run.map(px),part.style);
+   if(leg.guide){const at=leg.points[trim?.i||0],u=project(at);if(UV.valid(u)){const p=px(u);label('固定路书参考 · '+leg.guide.name,p.x+12,p.y+17,light);}}
    const used=new Set();
    for(const move of leg.moves||[]){
     const title=Passages.title(move);if(!title||used.has(move.guid)||!allowed(move.p))continue;
@@ -112,7 +113,7 @@ class Ink{
     if(!W.alive(widget))return null;const q=UE.WidgetLayoutLibrary.SlotAsCanvasSlot(widget)?.GetPosition();return q?{x:Number(q.X),y:Number(q.Y)}:null;};
    const ua=overview?null:bellUV(from),ub=overview?null:bellUV(to);
    const a=overview?regionPoint(from):ua&&px(ua),b=overview?regionPoint(to):ub&&px(ub);
-   if(a&&b){dotted(a,b);label('传送 · '+from.name,a.x+12,a.y+15,light);label('抵达 · '+to.name,b.x+12,b.y+15,light);}
+   if(a&&b){dotted(a,b);label('传送 · '+from.name,a.x+12,a.y+15,light);label('抵达 · '+to.name+(transfer.arrivalPending?' · 到达后计算物品末段':''),b.x+12,b.y+15,light);}
    else if(!overview&&(a||b)){const p=a||b,dir=p.x>w-190?-1:1,end={x:p.x+58*dir,y:p.y-20};
     dotted(p,end);label(a?'传往 '+to.name:'来自 '+from.name,Math.max(3,end.x+(dir>0?3:-125)),end.y-7,light);}
   }
@@ -123,7 +124,8 @@ class Ink{
   }
   if(flag&&flag.uv){const p=px(flag.uv),scale=flag.item ? .63 : 1;
    img('pinned',p.x+17.5*scale+(flag.item?8:0),p.y-26*scale-(flag.item?7:0),60*scale,60*scale,0,chalk,4);
-   if(!S.trip)label('暂未找到连通道路',p.x+24,p.y+18,C(.95,.76,.57,1));}
+   if(S.routeStatus)label(S.routeStatus,p.x+24,p.y+18,C(.3,.7,1,1));
+   else if(!S.trip)label('暂未找到连通道路',p.x+24,p.y+18,C(.95,.76,.57,1));}
   for(let i=ni;i<s.images.length;i++)s.images[i].wid.SetVisibility(hidden);for(let i=nt;i<s.labels.length;i++)s.labels[i].wid.SetVisibility(hidden);
   s.sig=sig;
   const summary=[S.version,overview,display,legs.length,breaks,!!transfer].join('/');

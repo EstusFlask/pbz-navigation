@@ -67,10 +67,11 @@ class Graph{
   this.g=new Float64Array(this.n);this.seen=new Uint32Array(this.n);this.closed=new Uint32Array(this.n);this.parent=new Int32Array(this.n);this.gen=0;
   this.reachMemo=new Map();this.liveStrongLinks=new Map();this.liveEdges=[];this.liveAdj=new Map();this.liveKeys=new Set();this.liveStrong=new Map();this.liveWeak=new Map();this.observedPassages=new Map();
   this.foldedPassages=new Set(this.actors.filter(a=>a.fold).map(a=>a.guid.toLowerCase()));
-  this.openPassages=new Set();this.passageRevision=0;
+  this.openPassages=new Set();this.passageStates=new Map();this.passageRevision=0;
  }
  canTraverse(feature){
   const key=String(feature?.guid||'').toLowerCase();
+  if(this.passageStates.get(key)?.ready===false)return false;
   if(!feature?.fold&&!this.foldedPassages.has(key))return true;
   return this.openPassages.has(key);
  }
@@ -86,7 +87,7 @@ class Graph{
   const strong=this.liveStrong.get(this.strong[from])||new Set();strong.add(this.strong[to]);this.liveStrong.set(this.strong[from],strong);
   return true;
  }
- clearLiveEdges(){this.dropCursor=0;this.seamCursor=0;this.liveStrongLinks.clear();this.reachMemo.clear();this.dropsInstalled=false;this.seamsInstalled=false;this.liveEdges=[];this.liveAdj.clear();this.liveKeys.clear();this.liveStrong.clear();this.liveWeak.clear();this.observedPassages.clear();}
+ clearLiveEdges(){this.dropCursor=0;this.seamCursor=0;this.liveStrongLinks.clear();this.reachMemo.clear();this.dropsInstalled=false;this.seamsInstalled=false;this.liveEdges=[];this.liveAdj.clear();this.liveKeys.clear();this.liveStrong.clear();this.liveWeak.clear();this.observedPassages.clear();this.passageStates.clear();}
  pt(i){return point(this.p,i);}
  reachable(nodes){const queue=[],result=new Set();const visit=c=>{if(!result.has(c)){result.add(c);queue.push(c);}};
   for(const i of nodes)if(i>=0)visit(this.strong[i]);for(let j=0;j<queue.length;j++){for(const c of this.nextStrong.get(queue[j])||[])visit(c);for(const c of this.liveStrong.get(queue[j])||[])visit(c);}return result;}
@@ -181,6 +182,8 @@ class Graph{
   const lastFace=this.faces?require('./PBZRouteSurface').surface(this,endNode,goal):this.pt(endNode);
   yield* flush(lastFace);
   if(xy(pp[pp.length-1],goal)<240)walk({x:goal.x,y:goal.y,z:pp[pp.length-1].z});
+  for(const move of moves){const state=this.passageStates.get(String(move.guid||'').toLowerCase());if(state?.ready===false)move.block=state.block;}
+  for(const check of checks)if(check.kind===11){const move=moves.find(m=>m.edge===check.edge);if(move?.block){check.block=move.block;check.unknown=!!move.block.unknown;}}
   return {world:this.name,points:pp,checks,gates,moves,walks,meters:extent(pp)/100};
  }
 }

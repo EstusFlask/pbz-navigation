@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Navigation_MultiRoute_Prototype.html",
+    "bytes": 45368,
+    "sha256": "2912c164fed799fc5c038bf5dce8e093a571211fd730652baa14ba4bc7c1cdbf",
+    "originalPath": "dist/Navigation_MultiRoute_Prototype.html",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Navigation_MultiRoute_Prototype.html"
+  },
+  {
+    "name": "Navigation_MultiRoute_Prototype.jpg",
+    "bytes": 100289,
+    "sha256": "d9880441c6df3d1133897c082a54cb0af7d2d240af18584e2c378d77e09d6a77",
+    "originalPath": "dist/Navigation_MultiRoute_Prototype.jpg",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Navigation_MultiRoute_Prototype.jpg"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.10.0-fork.1.zip",
+    "bytes": 119646882,
+    "sha256": "25aa6e99a3b464ab9421e5ec6caf43bb82d5f4b9f077750ce76cea73976ed9d4",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.10.0-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.10.0-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.10.1-fork.1.zip",
+    "bytes": 119650037,
+    "sha256": "db13835b55b6b0efc9744d4922746166a46e8719baf596e7544cf626ef99a159",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.10.1-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.10.1-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.10.2-fork.1.zip",
+    "bytes": 119655557,
+    "sha256": "6cb680dc999659ed2f2630cee303cb502cfada3eee1d094d1792d1a7c7591a80",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.10.2-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.10.2-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.10.3-fork.1.zip",
+    "bytes": 119661469,
+    "sha256": "8d4a3ccc6fa795ba53f9c093bcffdd4778afe11c8efce2491ec862eb1f3fc156",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.10.3-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.10.3-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.11.0-fork.1.zip",
+    "bytes": 119670789,
+    "sha256": "836d92b7b71acb46d2a7b28741b3f90675ebdfc9b0faf5aa86c6c9e6f6d5debc",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.11.0-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.11.0-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.12.0-fork.1.zip",
+    "bytes": 119680597,
+    "sha256": "d316115ba46d98643c64de6a35baaee53a2217cd9ea76cb4c7e804618d40453c",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.12.0-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.12.0-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.13.0-fork.1.zip",
+    "bytes": 119710657,
+    "sha256": "b834134a8580ec6e50a2a1225fcf17a38adf7de48e53d73ef4236dce1e27496e",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.13.0-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.13.0-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.14.0-fork.1.zip",
+    "bytes": 119720132,
+    "sha256": "d12d3464e61a7a0b7dbc750821a47c1f8937a13c0bc49c88bad26bd4ca96733f",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.14.0-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.14.0-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.15.0-fork.1.zip",
+    "bytes": 120297950,
+    "sha256": "ecf6293a68f7f5cdb82c129992f6ffeced674019bb56713442d29486a46dddc7",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.15.0-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.15.0-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.15.1-fork.1.zip",
+    "bytes": 120301858,
+    "sha256": "0f42ec31a00311438648705747fa75e7129436b56b6bf2bf23fceb13fd9577fc",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.15.1-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.15.1-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.15.2-fork.1.zip",
+    "bytes": 120305972,
+    "sha256": "09f8fc5294d1888fee32f27bfc1582fdc8b21dfc8972801384f0ba1aac2d27d6",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.15.2-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.15.2-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.8.7-fork.1.zip",
+    "bytes": 120508448,
+    "sha256": "e804f77b7b42bafe6153539ad1da2d674e0e5086e737acbe707ab3e66b917736",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.8.7-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.8.7-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.8.8-fork.1.zip",
+    "bytes": 120193863,
+    "sha256": "856c83250ddf9212ebea1b0bf1e54c17b04706cb0c47d2bbe59132bf016e6c6c",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.8.8-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.8.8-fork.1.zip"
+  },
+  {
+    "name": "Quest_and_Exploration_Navigation_Fork_0.9.0-fork.1.zip",
+    "bytes": 120513440,
+    "sha256": "adc97fbc3eb041933fa557fe8200a4cf2b8f886f049aad2f3c51e5880a0abca4",
+    "originalPath": "dist/Quest_and_Exploration_Navigation_Fork_0.9.0-fork.1.zip",
+    "archivedPath": "build/release-archive/pre-1.0.1-20261112/Quest_and_Exploration_Navigation_Fork_0.9.0-fork.1.zip"
+  }
+]

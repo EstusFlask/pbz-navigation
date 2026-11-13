@@ -1,0 +1,59 @@
+Version: 0.14.0-fork.1
+Date: 2026-11-12
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.14.0-fork.1.zip
+Bytes: 119720132
+SHA256: d12d3464e61a7a0b7dbc750821a47c1f8937a13c0bc49c88bad26bd4ca96733f
+
+Scope: FULL-MAP MANUAL 3D ROUTING IS UNFINISHED.
+Enabled authored reference courses: 2 directed courses, unchanged from 0.13.0.
+New runtime behavior: directed course composition, checked same-floor item/pin spurs <=760 cm,
+known lock/action interval exclusions and explicit action-index preservation.
+Existing cave/tomb courses remain unverified by a full run in this game version.
+No measured FPS or full-map/global-shortest-path claim.
+No game or manager writes. No tracker files included or modified.
+No runtime trail recording, persistence, learning or downloads.
+
+Authoring audit:
+8 public maps, 18 roadbook flows, 171 game table entries, 171 public bell markers.
+4,324 ordered game-table bell pairs; 140 source-linked topology worksheet rows.
+Counts: {"authored-reference": 2, "missing-authored-connection": 2029, "special-entry-unresolved": 108, "worksheet-only": 899, "world-transfer-unresolved": 1286}
+Worksheet entries are NOT enabled world-space courses or proof of reachability.
+Unresolved public identities: lake bank (1), illusionist ruins (7).
+Grouped game map anchors: 12 partitions / 7,365 points; 8 UV calibration reports.
+Projection anchors are not walking ground or route geometry.
+
+Commands and results:
+node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs tests/guides.test.cjs tests/bell-network.test.cjs tests/bell-coverage.test.cjs
+PASS 174 / 174, no skips. Includes real guide data through the main planner and item spur.
+Engine APIs, world physics and loading are simulated.
+Red-capable lock regressions: known locked shortest course and item beyond a lock failed
+before interval exclusion; both passed after it. An open detour and lock-before-item cases pass.
+
+py -3.12 tests/run-lua-tests.py
+PASS original 1.0.9 target/hover API and Lua/JS file round trips, preserving Z.
+Original deleted collector folder stays deleted. Test fixture read from Git into build/ only.
+
+python -X utf8 native/build-native.py --ue4ss "D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll" --test
+PASS compile, ABI, runtime SHA gate, collector SHA gate and host dispatch.
+Initial fixture failure was Git archive checkout-EOL conversion; fixed by byte-exact export.
+Native compatibility gates were not relaxed.
+
+python -X utf8 tools/build-bell-coverage.py
+PASS complete ordered-pair accounting; all worksheet rows disabled; special/duplicate
+bell names cannot overwrite ordinary bell IDs.
+python -X utf8 tools/calibrate-roadbook.py
+PASS eight projection-only calibration reports; skip insufficient/collinear groups.
+
+python -X utf8 tests/build-patch.py
+PASS full package; original streamed atlas cache retained (951 modules).
+python -X utf8 tests/verify-package.py --manager-state "D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json"
+PASS 1,344 exact archive file matches, original atlas column/chunk hashes,
+version agreement, no collector-owned paths, recognized navigation update.
+Zero package overlap with 110 installed collector paths.
+Installed Map Collectible Tracker 1.0.14 is NOT certified for the pinned 1.0.9 target bridge.
+
+Logs: build/validation-014-{js,lua,native,build,package}.txt
+Coverage report: docs/BELL-NETWORK-COVERAGE.md
+All pairs: authoring/bell-network-coverage.json
+Manual worksheet: authoring/roadbook-bell-links.tsv
+Previous archives and validation records preserved. No commits or publication performed.

@@ -91,8 +91,12 @@ class Threads{
   const m=B.match(r,feet,this.hint);if(!m||m.d>950){this.hide();return;}
   if(m.d>32){
    if(!this.branch||this.branchVer!==S.version||R.dist(feet,this.branch)>40||this.branchAt!==m.i){
+    const leg=S.trip?.legs[S.active];
+    if(leg?.guide)this.branchOK=!!require('./PBZRouteGuides').attachment(leg,w,feet,m);
+    else{
     const n=Math.ceil(m.d/62);let p=feet;this.branchOK=true;
     for(let j=1;j<=n;j++){const h=w.step(p,R.lerp(feet,m.p,j/n),true);if(!h.p){this.branchOK=false;break;}p=h.p;}
+    }
     this.branch=feet;this.branchVer=S.version;this.branchAt=m.i;
    }
    if(!this.branchOK){this.hide();return;}
@@ -100,7 +104,7 @@ class Threads{
   const limit=S.threadEnd?B.match(r,S.threadEnd,m.i)?.arc:0;
   if(limit===undefined||limit<=m.arc+8){this.hide();return;}
   let drawEnd=Math.min(r.length,limit);
-  this.hint=m.i;this.maintainFloor(w,m,now);
+  this.hint=m.i;if(!S.trip?.legs[S.active]?.guide)this.maintainFloor(w,m,now);
   const dt=this.motion?Math.min(.1,Math.max(.001,(now-this.motion.now)/1000)):.03;
   for(const j of this.adjusting){const delta=this.floorGoal[j]-r.offset[j];r.offset[j]+=delta*(1-Math.exp(-dt/.18));
    if(Math.abs(delta)<.6){r.offset[j]=this.floorGoal[j];this.adjusting.delete(j);}

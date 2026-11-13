@@ -1,3 +1,97 @@
+# 1.0.1 — route loading feedback and consolidated public release
+
+- Release the current route-feedback build under the user-requested 1.0.1 version. Align the JS entry points, native adapter, package metadata, bilingual instructions and audit headers.
+- Include persistent blue calculation/loading status with elapsed seconds; retain checked bell transfers, Map Tracker 1.0.9/1.0.14 compatibility, 170 Chinese hints and the existing two directed reference courses.
+- Keep only the current package in dist. Preserve previous ZIPs and prototypes outside dist with SHA256 records. Add VERSION-LOCK.json and build/package checks against accidental version rollback.
+
+Validation: see VALIDATION-1.0.1.txt. Route planning behavior is unchanged from 0.15.2-fork.1; full-map authored XYZ coverage, complete live-game routes and the new HUD appearance remain unverified.
+
+中文：按用户要求发布为 1.0.1，统一各处版本，包含路线加载提示与既有修补。dist 仅保留当前包，旧包和原型另行归档并记录哈希；增加版本锁以阻止误回退。全图手工三维路线仍未完成，本次未新增游戏实测结论。
+
+# 0.15.2-fork.1 — route calculation and atlas loading feedback
+
+- Verify the 1,334 installed 0.15.1 runtime files match its delivered archive. Its field logs show first useful output after roughly 10–14 seconds, with no script crash; short target selections were cancelled before that output. This update adds waiting feedback, without changing search order, execution budgets or route speed.
+- Show persistent blue “Calculating route…” text above gameplay, with elapsed wall-clock seconds. Show “Loading map routes…” while a relevant atlas is streamed, including the gap between a completed empty request and the next automatic request.
+- Repeat status beside the selected map marker, invalidating cached labels as the seconds change. Do not show “no connected road” while calculation or atlas preparation is pending. Existing checked routes and transfer candidates retain their guidance while a search continues.
+- Clear the status on completion, cancellation, target removal, player/world reset or disabled navigation. Restart the timer when selecting a new target. Reuse the viewport/label instead of creating widgets every frame; throttle reads to five times per second and back off if a stock widget cannot be created. Status reads do not queue or pump route searches.
+
+Validation: three new main-planner/frame-state regressions first failed on missing feedback, then passed; four more cover viewport reuse/recovery, relevant atlas/elapsed messages and actual map-label redraw. All 202 JavaScript regressions pass. Real Map Tracker 1.0.9/1.0.14 Lua modules and the native adapter are revalidated with the full ZIP. HUD/engine APIs are mocked; the new in-game appearance, first-route latency and full valley courses have not been validated on 0.15.2. Full-map authored XYZ coverage remains unfinished.
+
+中文：新增持续显示的蓝色计算/路网加载提示与等待秒数，修复计算中提前显示无路线；完成、取消或重置后收起。0.15.1 安装匹配，现场等待确实较慢，本版未做提速。
+
+# 0.15.1-fork.1 — stable item bell recommendations and checked departure detours
+
+- Confirm all 1,334 installed runtime files match the 0.15.0 archive and its loader version. Field logs reproduce rejected walking previews hiding available transfers and immediate return-transfer recommendations after arrival. These are 0.15.0 failures, not evidence of a successful 0.15.1 game run.
+- Publish a checked bell departure as soon as it is available; failed walking previews and planner timeouts retain it. Complete walking routes can still replace it when preferable. Reject partial departures and disable the unchecked legacy item-transfer fallback.
+- Rank physically checked item access above continuous atlas corridors, and those above proximity-only estimates. Require matching route endpoints and floors. Within an evidence class, prefer nearby item bells, penalizing large detours instead of trusting small atlas-length differences. The reported currency coordinate now selects 溪谷杀气塔底 in the real-atlas regression. This remains an estimate until scene checks pass.
+- Exclude known arrival walls, map locks and unavailable traversals. A corridor eliminated by a measured edge exclusion or a closed traversal cannot return as a proximity-only candidate. Never draw an unstreamed arrival walk as certified.
+- Add at most two bounded local departure searches per request, using the bell's checked interaction approaches: at most 60 m, 1,600 nodes and 900 ms execution budget each. Retain the existing floor, slope, capsule, wall and lock rules and stationary bell access check.
+- Consume teleport arrival before origin/revision changes restart planning. Finish the selected item's approach without another automatic transfer; clear this unsaved selection stage on a new target or cancellation. Standing at a better item bell must not recommend a worse bell just because self-transfer is excluded.
+
+Validation: 195 JavaScript regressions, including 14 new cases; real Map Tracker 1.0.9/1.0.14 Lua integration; rebuilt native adapter and full ZIP checks. Engine physics/loading remain simulated. The exact second currency near 驿站前小院 is not identified by the last snapshot; both user scenarios still need game testing. No full-map authored-route, FPS or global reachability claim. Game and manager remain read-only.
+
+中文：修复铃铛提示被短受阻预览覆盖、传送后反复返回、到达更好铃铛后推荐更差铃铛的问题；增加经检查的局部绕行与末段候选筛选。溪谷杀气塔底回归使用真实路网，尚待游戏复测。
+
+# 0.15.0-fork.1 — Map Tracker API compatibility, item bell transfers and acquisition hints
+
+- Confirm the installed collector's 110 files match repository 1.0.14. Reproduce the old native collector-entry SHA rejection, then remove that version lock while retaining the exact UE4SS 1195 ABI/runtime SHA gate. Validate target/selection service contracts in the collector VM; unsupported contracts restore original interfaces and preserve collector results.
+- Exercise real 1.0.9 and 1.0.14 protected Lua modules through hover/middle-click, target changes, Z-preserving file round trips, stale-command rejection and cancellation. Guard write failures, duplicate installation, shutdown and later wrappers.
+- Compare activated bell transfers before expensive item searches and before returning a longer same-map atlas path. Physically check departure approaches beside the bell collider, including stationary transfers, so nearby walls or closed doors cannot be bypassed by proximity. Keep unloaded arrival walking pending and replan the original item after teleport. A transfer never completes the item by itself. Existing same-level movement/retry limits remain.
+- Audit every catalogue point (1,616), native detail row (530) and public marker across eight maps (1,435). Add 170 independently worded Chinese location/operation/use hints, including the tiger-cannon requirement for pigeon feed. Preserve existing detailed descriptions and other languages; require matching ID, contents, location and original generic hint on later updates. Ambiguous/no-source entries stay listed in the audit. No collector files, full source prose, API dumps or downloaded images are distributed.
+- Keep player-trail learning and downloads disabled. Full-map authored 3D routes remain unfinished; the two existing reference courses and the valley fixes still require live-game verification.
+
+Validation: 181 JavaScript regressions; real 1.0.9/1.0.14 Lua compose/presentation and bridge tests; native ABI/runtime gate and future-entry dispatch; complete ZIP/ownership/hash checks. Game physics/loading are simulated; no measured FPS or full reachability claim. Game and manager remain unchanged.
+
+中文：修复 1.0.14 物品目标失联与入口版本锁，增加铃铛中转及传送后末段规划，补写 170 个目录点的具体中文提示；同名歧义与无来源项保留全量审计，不凭二维标记伪造路线。
+
+# 0.14.0-fork.1 — directed bell-course composition and coverage audit
+
+- Add a static directed bell-course network, with explicit bell identities and course-end continuity checks. Combine authored courses by traveled 3D distance; preserve action direction and indices when joining midway.
+- Let items and map pins leave the existing spine through checked same-floor walking spurs up to 7.6 m. Reject walls and other floors; farther items retain automatic planning. Do not treat every nearby item as a bell endpoint.
+- Exclude currently known locked intervals and unavailable resident actions when selecting complete combinations, allowing an open alternative and an item exit before a lock. Dynamic route auditing remains enabled.
+- Audit all eight public maps, 171 game bell table entries and 4,324 ordered pairs. Record 140 source-linked manual topology worksheet entries and unresolved identities. These are NOT enabled XYZ routes; full-map hand-authored routing is unfinished. Only the existing two directed reference courses remain enabled and still need full in-game runs.
+- Decode grouped map projection anchors (12 partitions / 7,365 points) and calibrate eight public maps for offline authoring. Projection triangles are not walking surfaces, and scene-copy heights must not be normalized away. No downloaded prose/images or extracted game resources enter the package.
+- Keep runtime trail recording, persistence and downloads disabled. Preserve removed collector fixtures by retrieving the original test reference into build/ from Git; do not restore or modify user collector folders. Collector compatibility remains pinned to original 1.0.9.
+
+Validation: 174 JavaScript regressions, original 1.0.9 Lua bridge round trips and native ABI/SHA-gate tests pass. Engine physics are simulated; full in-game courses are unverified.
+
+中文：新增有向铃铛路线串联、经检查的物品短支线、锁路替代选择；完成全图逐对缺口核对。全图三维路线尚未编制完成，不把 140 条二维/拓扑工作条目冒充可走路线。
+
+# 0.13.0-fork.1 — fixed 3D reference courses and reflected component discovery
+
+- Verify the installed 0.12.0 runtime matches its delivered ZIP: 1333 exact file hashes, no missing/changed/extra JS and a matching loader startup. Game and manager remain read-only.
+- Fix inherited traversal discovery using K2_GetComponentsByClass, the API actually used by game scripts; retain the older name as a compatibility fallback. The K2-only regression fails before the fix and passes after it.
+- Download the public GamerSky roadbook and two map datasets for offline investigation. Their flat coordinates fail world-space calibration, so use route order as reference and author fixed world XYZ courses from existing continuous field evidence. No guide text/images/API dumps are redistributed.
+- Add two directed reference courses for the known failures: Great Corridor Bridge -> lower cave -> two climbs -> grapple -> Xiaozhang; Mass Grave -> river -> actual uphill detour -> Mo Jizi cenotaph. Preserve measured bends/heights, checked same-floor joins and direction. Do not fabricate reverse actions or routes to nearby unrelated items.
+- Choose these corrections before the known failing automatic candidates; other targets retain automatic planning. Distinguish guide reference lines from physical certification, keep map reference labels/dashes and the raised blue world strand, and preserve current body/ribbon collision, locks and resident mechanism conditions. Guide walls do not trigger repeated replans into the same guide.
+- Keep the last ~3 m of the cave course incomplete until a local checked bell approach is available. No runtime learning, trail reads/writes or network requests. MANUAL-ROUTES.md documents provenance, calibration, coverage and limitations.
+- 161 JavaScript regressions pass, including main-planner and guard integration. Engine APIs/physics are simulated; neither full course has passed a 0.13.0 live-game run. Collector sync remains pinned to original 1.0.9; the installed 1.0.12 is not certified. Preserve original atlas/collector files, earlier ZIPs and validation history.
+
+中文：安装正确，修复真实组件接口缺陷。新增两条固定三维参考路线，保留洞内动作和真实上坡绕行，支持同层接入并继续检查当前阻挡；无需学习。两条全程仍待本版游戏验证。
+
+# 0.12.0-fork.1 — game-data traversal rules and fewer redundant retries
+
+- Withdraw 0.11.0 player-route memory, sampling, persistence and LearnRoutes settings. Old trail files are neither read nor written.
+- Fix a completed route retaining a prior candidate retry. Diagnostic/frontier/off-route movement retries require 6 m horizontally or 75 cm vertically and no active search. Ordinary hops preserve the origin; same-height jumps over unwalkable gaps still invalidate it. Reduce stationary full-route audits to a 10-second interval while retaining movement and state triggers.
+- Read CharacterMovement IsWalkable, component slope overrides and step-up restrictions. Add resident SpecialMoveVolume_SlopeSlide region/downhill queries using signatures checked against installed native metadata; reject forced-slide uphill walking.
+- Expand discovery from 17 to 29 class entries, deduplicate blueprint/native actor scans and read inherited scene components. Correct ascent/mantle/swing endpoints; add one-way GapBlocker hook trigger/grab/landing extraction guarded by actual interaction requirements.
+- Poll nearby discovered mechanism state: actual folding ladders, moving/broken lifts and native interaction requirements affect graph traversal and route audits. Fix discovery-cache reuse across graphs and clear states on reset.
+- Read NeedItems as a TMap, resolve required/owned item counts and names, and inspect typed weapon/tag locks. Refresh map locks with the map closed. Read supported collided door/blocker conditions without triggering any interaction.
+- Add GAME-TRAVERSAL-AUDIT.md with source evidence, 69 BP package paths, 76 related asset-name indexes and explicit unsupported cases. Preserve original atlas, collector files and previous releases.
+- 150 JavaScript regressions pass, including observed red→green retry, inherited-component and conditional-hook flows. Game APIs/physics are simulated; native slope calls and both complete reported routes still require live-game verification. No measured FPS claim and no learning run prerequisite.
+
+中文：撤回记忆方案，减少无效重算；从游戏资源和反射接入坡面、滑坡、攀爬/钩索组件、门锁物品与机关条件。完整支持范围见资源审计；两条路线尚未在本版游戏验证。
+
+# 0.11.0-fork.1 — character floor limits and persistent directed 3D trails
+
+- Read K2_GetWalkableFloorZ and actual step height; use CharacterMovement's walkable occupied floor only at the pawn footprint. Probe near the expected feet and choose the closest support instead of the topmost layer.
+- Preserve unfinished planning during measured continuous uphill walking. Rebase results along that trace; actual landings, custom movement and world/lock changes still invalidate old origins. Increase the generator cap to192 within a2ms frame slice; retain slow-step and30-second wall limits.
+- Add LearnRoutes, enabled by default, and a separate directed3D movement graph. Consecutive checked walking retains heights/corners; observed airborne/custom movement records directed jumps, drops and climb/grapple arcs. Never infer reverse actions. Reject teleports, menus, water, stale gaps, world changes and wrong-floor joins.
+- Save navigation-owned trails while stationary or in menus to ProjectPBZ/Saved/PBZQuestRoute-trails-v1.json. Validate persistence before replacing live data. Current floor/collision and key locks still constrain recorded routes. Missing original links require travelling once with this release before reuse; no path is fabricated from sparse old logs.
+- Add ground/trail diagnostics.149 JavaScript regressions pass, including main-planner learned climb/grapple integration. Delivered0.10.3 fails both new Ground cases. Physics/movement are simulated; neither complete bell route has passed a new live-game run. Preserve original atlas, collector and prior archives.
+
+中文：修正固定坡度/跨步门槛与站立地面丢失，连续可走上坡保留搜索；增加保存实际三维通路的LearnRoutes。缺失的山洞钩索、坡道和跳落需实际走过后学习，保留方向限制并复查门锁/碰撞。两条全程仍需游戏验证。
+
 # 0.10.3-fork.1 — persistent wall exclusions and checked action frontiers
 
 - Remember measured collision edges before yielding into repairs, so movement cancellation cannot discard them. Preserve individual portal edge IDs through corridor smoothing instead of attributing every failure to the final edge.

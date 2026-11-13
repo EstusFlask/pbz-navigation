@@ -1,0 +1,82 @@
+Version: 0.15.2-fork.1
+Date: 2026-11-12
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.15.2-fork.1.zip
+Bytes: 120305972
+SHA256: 09f8fc5294d1888fee32f27bfc1582fdc8b21dfc8972801384f0ba1aac2d27d6
+
+Field evidence:
+- Read-only comparison confirms all 1,334 installed 0.15.1 runtime files match
+  its ZIP, with no missing or changed files. The loader identifies 0.15.1.
+- Saved snapshots: build/field-20261112-no-routes-0151/{loader.log,route-log.txt,tracker.json}.
+  Tracker sync receives targets. No navigation script crash was found.
+- The loader reports first bell output after 11,314 ms wall time / 939 ms CPU;
+  another request finishes after 14,225 ms wall time / 1,056 ms CPU with a
+  complete 67 m walking route. Several short selections are cancelled first.
+- The user subsequently confirms slow computation and asks for loading text.
+  This batch adds feedback; it does not claim to improve first-route latency.
+
+Reproduction and change:
+- Command: node --test --test-reporter=spec --test-name-pattern="pending framed|cancel and world reset|streamed atlas preparation" tests/planning.test.cjs
+  Before the change, all three targeted assertions failed on empty loading
+  status. The actual solve/makePlan/Planner.pump chain is exercised across
+  simulated frames, rather than only synchronously draining a generator.
+- The three cases pass after adding status derived from the current job and
+  relevant atlas preparation. They cover initial waiting, elapsed wall time,
+  job settlement, cancellation, a new target, world reset and atlas failure.
+- Four additional tests cover viewport reuse/recovery and creation backoff,
+  relevant atlas/English/elapsed messages, and actual Ink map-label redraw.
+- A blue persistent viewport label and a map-target label show calculation
+  or atlas preparation and elapsed seconds. Job completion hides the viewport;
+  cancellation and reset remove it. The map does not show its no-route label
+  while work is pending. Existing checked guidance is retained.
+- Rendering status neither queues nor pumps a route job. The periodic state
+  poll is limited to once per 200 ms; text/widgets are reused. Search order,
+  budgets, collision/floor/lock checks and replanning thresholds are unchanged.
+
+Commands and results:
+node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs tests/guides.test.cjs tests/bell-network.test.cjs tests/bell-coverage.test.cjs tests/route-status.test.cjs
+PASS: 202 / 202; no failures or skips. Seven new cases since 0.15.1.
+Log: build/js-0152-tests.txt.
+
+py -3.12 -X utf8 tests/run-lua-tests.py
+PASS: real 1.0.9/1.0.14 protected Lua modules, target/hover/file round trips,
+Z=2333 preservation, cancellation, unsupported contract cleanup, later wrappers,
+disk failures and all 170 supplementary item hints.
+Log: build/validation-0152-lua.txt.
+
+py -3.12 -X utf8 native/build-native.py --ue4ss "D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll" --test
+PASS: rebuilt native adapter for 0.15.2; ABI size, runtime SHA gate, mod filtering
+and version-independent host dispatch. No native source edit after build.
+Log: build/validation-0152-native.txt.
+
+py -3.12 -X utf8 tests/build-patch.py
+PASS: full ZIP with 951 streamed modules. Log: build/validation-0152-build.txt.
+py -3.12 -X utf8 tests/verify-package.py --manager-state "D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json"
+PASS: 1,349 exact archive matches; runtime/native/docs versions agree. All
+original data/actor hashes and 291 legacy chunk strings remain unchanged.
+Manager recognizes update: 1,339 / 1,339 installed navigation paths overlap;
+zero overlap with all 110 collector paths. The collector's source hashes match
+the tested original 1.0.14. Log: build/validation-0152-package.txt.
+
+Archive-to-archive comparison against 0.15.1:
+- Added PBZRouteStatus.js. Changed PBZQuestRoute.js and PBZRouteInk.js for status,
+  PBZRouteEntry.js and native DLL for version, and current packaged documents.
+- No removed archive paths. No changes to other runtime modules or route data.
+
+git diff --check
+PASS: no whitespace errors; existing LF/CRLF notices only.
+Log: build/validation-0152-diff-check.txt.
+
+Limits and preservation:
+- Engine physics, reflected widget calls and the new HUD are simulated in tests.
+  The new viewport appearance has not been observed in game. No in-game 0.15.2
+  route, response-time or FPS validation is claimed.
+- The observed slow first result remains. No search-order or budget adjustment
+  is included. Unloaded regions and unknown interactions can still leave gaps.
+- Full-map manual XYZ courses remain unfinished; only the two existing directed
+  reference courses are enabled. Neither is fully game-validated on this build.
+- No trail learning, sampling, persistence or runtime downloads were introduced.
+- Game and manager remained read-only. No installation, commit or publication.
+  Existing user changes, deleted 1.0.9 directory, old packages and validation
+  records were preserved. Previous 0.15.1 ZIP SHA256 remains
+  0f42ec31a00311438648705747fa75e7129436b56b6bf2bf23fceb13fd9577fc.

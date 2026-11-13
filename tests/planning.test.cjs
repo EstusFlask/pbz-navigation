@@ -3,6 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const path=require('node:path'),fs=require('node:fs'),vm=require('node:vm');
 const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 function planner(world,options={}){
+    const level=options.level||'test';
     const p={...(options.start||{x:0,y:0,z:0})},goal={x:100,y:0,z:600};
     const partial={IsValid:()=>true,IsPartial:()=>options.complete?false:true,PathPoints:{Num:()=>2,Get:i=>i?p:goal}};
     // The engine's incomplete path stops directly below the upstairs item.
@@ -13,29 +14,160 @@ function planner(world,options={}){
     };
     const UE={ESlateVisibility:{HitTestInvisible:0,Collapsed:1},ESplineCoordinateSpace:{World:0},
         NavigationSystemV1:{FindPathToLocationSynchronously:()=>partial},BellManager:{StaticClass:()=> 'bell'},MapSubsystem:{StaticClass:()=> 'map'},
-        GameplayStatics:{GetCurrentLevelName:()=> 'test'},PBZBlueprintFunctionLibrary:{GetPBZNarrativeComp:()=>null}};
+        GameplayStatics:{GetCurrentLevelName:()=> level},PBZBlueprintFunctionLibrary:{GetPBZNarrativeComp:()=>null}};
     const W={finite:q=>q&&Number.isFinite(q.z),alive:o=>!!o,vec:q=>q,norm:s=>String(s),
         plain:q=>({x:q.X,y:q.Y,z:q.Z})};
     const empty=function*(){return null;};
     const map=options.map||{GetMapIDByLocation:()=> 'test',GetCurrentMapID:()=> 'test',LockObjectInfos:{GetRef:()=>null}};
     Object.assign(UE,options.UE);
     const mocks={ue:UE,puerts:{},'Library/TsHelper':{default:{getWorldSubsystem:(p,t)=>t==='map'?map:{}}},'Library/MapAreaGroups':{},
-        './PBZRouteTables':{data:{worlds:['test'],bells:{},areas:options.areas||{}}},
-        './PBZRouteWorld':W,'./PBZRoutePassages':options.passages||{refreshLadders(){},isLookout:()=>false,liveRouteJob:empty},
+        './PBZRouteTables':{data:{worlds:[level],bells:Object.fromEntries((options.bells||[]).map(b=>[b.id,b])),areas:options.areas||{}}},
+        './PBZRouteWorld':W,'./PBZRoutePassages':options.passages||{refreshLadders(){},resetLadders(){},isLookout:()=>false,liveRouteJob:empty},
         './PBZRouteDrops':{installJob:empty},'./PBZRouteObstacles':{...require(root+'/PBZRouteObstacles'),installSeamsJob:empty},
         './PBZRouteSurface':{...require(root+'/PBZRouteSurface'),anchorsJob:function*(g,q,goal){return [{id:goal?1:0,q:{...q},r:0,dz:0}];}},
         './PBZPrivateRibbon':{},'./PBZRouteInk':{},'./PBZRouteItems':{},'./PBZRouteMinimap':{},'./PBZRouteScout':{}};
     if(options.localWalk)mocks['./PBZRouteLocalWalk']=options.localWalk;
+    if(options.bells){const array=xs=>({Num:()=>xs.length,Get:i=>xs[i]});const bellService={ActivateBellIDs:array(options.bells.map(b=>b.id)),DisableTeleportBellIDs:array([])};
+        mocks['Library/TsHelper'].default.getWorldSubsystem=(p,t)=>t==='map'?map:bellService;}
     if(options.surface)mocks['./PBZRouteSurface']=options.surface;
     const module={exports:{}};
     const local=id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id));
-    const source=fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+'\nexports.test={S,graphs,makePlan,nativeWalk,observe,planning,routeRequest,guardRoute,auditor,locks,arm(dest){scout={snapshot:null};oldWorld="test";threads={hide(){}};S.manual=dest;const r=routeRequest(dest);previous={key:dest.key,p:dest.p,site:{...r.start},level:S.level,revision:r.revision,originRevision:r.originRevision};}};';
-    vm.runInNewContext('(function(require,module,exports){'+source+'\n})',{console:options.quiet?{log(){}}:console,Date})(local,module,module.exports);
+    const source=fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+'\nexports.test={S,graphs,makePlan,nativeWalk,observe,planning,routeRequest,guardRoute,auditor,locks,setTrip,solve,noRoute,reset,clearManual,pollStatus(){if(typeof updateRouteStatus==="function")updateRouteStatus(true);},atlas,queueGuardRetry(at){guardRetry=at;},arm(dest){scout={snapshot:null};oldWorld=S.level;threads={hide(){},clear(){}};S.manual=dest;const r=routeRequest(dest);previous={key:dest.key,p:dest.p,site:{...r.start},level:S.level,revision:r.revision,originRevision:r.originRevision};}};';
+    vm.runInNewContext('(function(require,module,exports){'+source+'\n})',{console:options.quiet?{log(){}}:console,
+        Date:options.now?class extends Date{static now(){return options.now();}}:Date})(local,module,module.exports);
     const api=module.exports.test,g=options.graph||{name:'test',sameComponent:()=>false,actors:[],observedPassages:new Map(),routeJob:function*(){return null;}};
-    api.graphs.set('test',g);Object.assign(api.S,{level:'test',pawn:{},world:{...world,feet:()=>({...p})}});
-    return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:'test'}};
+    api.graphs.set(level,g);Object.assign(api.S,{level,pawn:{},world:{...world,feet:()=>({...p})}});
+    return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:level}};
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
+
+test('a pending framed route shows loading before its first candidate and clears on completion',()=>{
+ let now=10000;
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,now:()=>now});
+ h.api.arm(h.dest);h.api.planning.clock=()=>now;
+ h.api.graphs.get('test').routeJob=function*(){for(let i=0;i<5000;i++)yield;return null;};
+ h.api.solve(h.dest,'selection');h.api.pollStatus();
+ assert.match(h.api.S.routeStatus||'',/正在计算路线/,'the selected target looks idle while the first route is pending');
+ for(let frame=0;frame<5;frame++){now+=250;h.api.planning.pump();h.api.pollStatus();}
+ assert.ok(h.api.planning.pending);assert.equal(h.api.S.trip,null);
+ assert.match(h.api.S.routeStatus,/1\s*秒/,'the waiting message does not show elapsed time');
+ for(let frame=0;frame<1000&&h.api.planning.pending;frame++){now+=20;h.api.planning.pump();h.api.pollStatus();}
+ assert.equal(h.api.planning.pending,false);assert.equal(h.api.S.routeStatus,'','loading survived the completed/failed search');
+});
+
+test('cancel and world reset remove loading immediately and changing target restarts its timer',()=>{
+ let now=10000;const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,now:()=>now});
+ h.api.arm(h.dest);h.api.planning.clock=()=>now;h.api.solve(h.dest,'selection');
+ now+=8000;h.api.pollStatus();assert.match(h.api.S.routeStatus||'',/8\s*秒/);
+ const next={...h.dest,key:'next-item',p:{...h.goal,x:3000}};h.api.S.manual=next;h.api.solve(next,'selection');h.api.pollStatus();
+ assert.match(h.api.S.routeStatus,/正在计算路线/);assert.doesNotMatch(h.api.S.routeStatus,/8\s*秒/);
+ h.api.clearManual('test');assert.equal(h.api.S.routeStatus,'');assert.equal(h.api.planning.pending,false);
+ h.api.arm(next);h.api.solve(next,'selection');h.api.reset();assert.equal(h.api.S.routeStatus,'');
+});
+
+test('streamed atlas preparation shows loading between planner jobs and settles on failure',()=>{
+ let now=10000;const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,now:()=>now});
+ h.api.arm(h.dest);h.api.graphs.clear();h.api.planning.clock=()=>now;
+ h.api.solve(h.dest,'selection');h.api.planning.pump();h.api.pollStatus();
+ assert.equal(h.api.planning.pending,false);assert.ok(h.api.atlas.pending.has('test'));
+ assert.match(h.api.S.routeStatus||'',/正在加载地图路网/,'atlas streaming is mistaken for a failed route');
+ h.api.atlas.pending.clear();h.api.atlas.failed.set('test',{next:now+60000,message:'missing atlas'});h.api.pollStatus();
+ assert.equal(h.api.S.routeStatus,'');
+});
+
+test('the bridge bell can immediately use the fixed cave course despite missing navmesh floor',()=>{
+ const course=require(root+'/PBZRouteGuideData').data.courses[0],start=Object.fromEntries(['x','y','z'].map((k,i)=>[k,course.points[0][i]]));
+ let queries=0;const h=planner({floorAt:()=>null,step:()=>({why:'query floor missing'}),hit:()=>null},
+  {quiet:true,level:course.world,start,graph:{name:course.world,routeJob:function*(){queries++;return null;},sameComponent:()=>false,actors:[],observedPassages:new Map()}});
+ Object.assign(h.goal,Object.fromEntries(['x','y','z'].map((k,i)=>[k,course.target[i]])));h.dest.bell=course.targetBell;
+ const trip=run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0}));
+ assert.equal(trip?.legs[0].guide?.id,course.id,'known broken bell route still enters the failed ground search');
+ assert.equal(queries,0);assert.notEqual(trip.legs[0].physicalVerified,true);
+ assert.deepEqual(Array.from(trip.legs[0].moves.slice(-3),m=>m.kind),['ascent','ascent','hook']);
+ assert.ok(trip.legs[0].points.some(p=>p.z< -3500),'the fixed route skipped the lower cave');
+ assert.equal(trip.legs[0].endpointPending,true,'unmeasured last three metres were silently joined to the bell');
+});
+
+test('the main planner reaches a cave-side item through the bell spine and a checked last spur',()=>{
+ const course=require(root+'/PBZRouteGuideData').data.courses[0],point=a=>({x:a[0],y:a[1],z:a[2]});
+ const start=point(course.points[0]),last=point(course.points.at(-1));let probes=0,atlas=0;
+ const h=planner({floorAt:()=>null,hit:()=>null,step:(a,b)=>{probes++;return {p:b};}},
+  {quiet:true,level:course.world,start,graph:{name:course.world,actors:[],observedPassages:new Map(),sameComponent:()=>false,
+   routeJob:function*(){atlas++;return null;}}});
+ Object.assign(h.goal,{...last,y:last.y+100});
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(trip?.legs[0].guide,'the item bypassed the authored bell spine');
+ assert.equal(trip.legs[0].guide.egress,'item');assert.equal(atlas,0);assert.ok(probes>0);
+ assert.deepEqual(Array.from(trip.legs[0].moves.slice(-3),m=>m.kind),['ascent','ascent','hook']);
+ assert.ok(require(root+'/PBZRouteCore').dist(trip.legs[0].points.at(-1),h.goal)<1);
+ assert.equal(trip.legs[0].partial,false);assert.notEqual(trip.legs[0].physicalVerified,true);
+});
+
+test('the tomb fixed course keeps the uphill detour and guard does not run the rejected floor audit',()=>{
+ const course=require(root+'/PBZRouteGuideData').data.courses[1],start=Object.fromEntries(['x','y','z'].map((k,i)=>[k,course.points[0][i]]));
+ const h=planner({floorAt:()=>null,step:()=>({why:'query floor missing'}),hit:()=>null},{quiet:true,level:course.world,start});
+ Object.assign(h.goal,Object.fromEntries(['x','y','z'].map((k,i)=>[k,course.target[i]])));h.dest.bell=course.targetBell;h.api.arm(h.dest);
+ const trip=run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0}));
+ assert.ok(trip?.legs[0].guide,'no initial tomb route was supplied');
+ assert.ok(trip.legs[0].points.some(p=>p.x>6500&&p.x<8500&&p.y<66500&&p.z>6800),'the route cut underneath the real uphill detour');
+ h.api.setTrip(trip,h.dest,start,'guide');
+ for(let i=0;i<40;i++){h.api.guardRoute(Date.now()+100+i*40);h.api.auditor.pump(()=>0,1000,1000);}
+ assert.ok(h.api.S.threadEnd&&require(root+'/PBZRouteCore').dist(h.api.S.threadEnd,start)>200,'missing floor still hides the fixed route');
+ assert.equal(h.api.S.trip.legs[0].obstacles?.length||0,0);
+});
+
+test('a finished checked route cancels a detour retry queued by the previous blocked candidate',()=>{
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true});
+ Object.assign(h.goal,{x:1100,y:0,z:0});h.api.arm(h.dest);
+ h.api.queueGuardRetry(Date.now()-10);
+ const leg={world:'test',provider:'scene',physicalVerified:true,points:[{...h.pose},{...h.goal}],checks:[],gates:[],moves:[],walks:[],meters:11};
+ h.api.setTrip({legs:[leg],transfer:null},h.dest,h.pose,'finished');
+ h.api.guardRoute(Date.now());
+ assert.equal(h.api.planning.stats.requests,0,'the previous candidate immediately restarted the newly completed route');
+});
+
+test('small same-level movement preserves a pending frontier instead of recalculating it',()=>{
+ let now=10000;const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,now:()=>now});
+ Object.assign(h.goal,{x:4000,y:0,z:0});h.api.arm(h.dest);
+ const leg={world:'test',diagnostic:true,partial:true,physicalVerified:true,verifiedEndIndex:1,
+  points:[{...h.pose},{x:900,y:0,z:0}],checks:[],gates:[],moves:[],walks:[],meters:9};
+ h.api.setTrip({legs:[leg],transfer:null},h.dest,{...h.pose},'pending');h.api.observe();
+ h.pose.x=160;now+=4000;h.api.observe();
+ assert.equal(h.api.planning.stats.requests,0,'160 cm of same-floor movement restarted the frontier search');
+});
+
+test('an ordinary hop on connected ground retains the unfinished search',()=>{
+ const h=planner({floorAt:p=>p.z===0?p:null,step:(a,b)=>({p:b})},{quiet:true});h.api.arm(h.dest);
+ let closed=0;h.api.planning.request(h.api.routeRequest(h.dest),function*(){try{while(true)yield;}finally{closed++;}},()=>{});
+ h.api.planning.pump();h.api.observe();h.pose.z=120;h.api.observe();h.pose.x=120;h.pose.z=0;h.api.observe();h.api.observe();
+ assert.equal(closed,0,'an ordinary hop cancelled the ongoing route search');
+ h.api.planning.clear('test cleanup');
+});
+
+test('a same-height landing beyond an unwalkable gap invalidates the old origin',()=>{
+ const h=planner({floorAt:p=>p.z===0?p:null,step:()=>({why:'gap'})},{quiet:true});h.api.arm(h.dest);
+ let closed=0;h.api.planning.request(h.api.routeRequest(h.dest),function*(){try{while(true)yield;}finally{closed++;}},()=>{});
+ h.api.planning.pump();h.api.observe();h.pose.z=120;h.api.observe();h.pose.x=250;h.pose.z=0;h.api.observe();h.api.observe();
+ assert.equal(closed,1,'crossing a gap at the same height retained an unreachable origin');
+ h.api.planning.clear('test cleanup');
+});
+
+test('walking up a connected slope does not repeatedly cancel an unfinished search',()=>{
+ const slope=p=>({...p,z:p.x*.6});
+ const h=planner({floorAt:slope,step:(a,b)=>({p:slope(b)})},{quiet:true});
+ h.goal.x=3000;h.goal.z=1800;h.api.arm(h.dest);
+ let finished=false,closed=0;
+ h.api.planning.request(h.api.routeRequest(h.dest),function*(){
+  try{for(let i=0;i<240;i++)yield;finished=true;return null;}finally{closed++;}
+ },()=>{});
+ for(let i=1;i<=6;i++){
+  h.pose.x=i*140;h.pose.z=h.pose.x*.6;
+  h.api.observe();
+ }
+ assert.equal(h.api.planning.stats.requests,1,'75 cm of ordinary uphill walking restarted the planner');
+ run(h.api.planning.job.iterator);
+ assert.equal(finished,true);assert.equal(closed,1);
+});
 
 test('a wall at the first portal rejects that portal rather than the final edge of the corridor',()=>{
  const R=require(root+'/PBZRouteCore'),F=require(root+'/PBZRouteFeasibility');
@@ -630,4 +762,218 @@ test('a checked scene prefix can replace a zero-progress atlas preview',()=>{
   {prefix:points,segment:1,unknown:true},goal);
  B.offer(context,scene,start,goal);
  assert.ok(context.best.legs[0].points[context.best.legs[0].verifiedEndIndex].y>=700,'provider rank hid a physically checked route in favour of an untested atlas');
+});
+
+function bellHarness(direct=false,localWalk={search:function*(){return null;}},extraBells=[]){
+ const bells=[{id:'start-bell',world:'test',area:'xigu',name:'起点铃铛',at:[200,0,0]},
+  {id:'item-bell',world:'test',area:'xigu',name:'物品附近铃铛',at:[18000,0,500]},...extraBells];
+ const g={name:'test',bells:new Map(),actors:[],observedPassages:new Map(),sameComponent:()=>true,h:()=>0,
+  node:p=>p.x<1000?0:1,routeJob:function*(a,b){
+   if(b.x>1000&&!direct)return null;
+   const ps=direct&&a.x<1000&&b.x>19000?[a,{x:0,y:14000,z:0},{x:b.x,y:14000,z:b.z},b]:[a,b];
+   return {world:'test',points:ps,checks:[],gates:[],moves:[],walks:ps.slice(1).map((b,i)=>({a:ps[i],b,from:i,to:i+1,edge:-1})),meters:require(root+'/PBZRouteCore').extent(ps)/100};
+  }};
+ const h=planner({floorAt:p=>p.x<1000?p:null,step:(a,b)=>b.x<1000?{p:b}:{why:'remote scene unloaded'}},
+  {quiet:true,bells,graph:g,localWalk});
+ Object.assign(h.goal,{x:20000,y:0,z:500});h.dest.provider='187';h.bells=bells;return h;
+}
+test('an unloaded valley item still gets a checked route to a transfer bell',()=>{
+ const h=bellHarness();const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.to.id,'item-bell','an unrouteable item hid its usable bell transfer');
+ assert.equal(trip.transfer.from.id,'start-bell');assert.equal(trip.legs[0].partial,false);
+ assert.equal(trip.legs[1].arrivalPending,true);assert.equal(trip.legs[1].points.length,1);
+ assert.equal(h.dest.p.x,20000,'the bell replaced the selected item coordinates');
+});
+test('a long same-map atlas corridor does not bypass the shorter bell transfer',()=>{
+ const h=bellHarness(true);h.api.S.world.floorAt=p=>p;h.api.S.world.step=(a,b)=>({p:b});
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.to.id,'item-bell','the complete direct corridor returned before comparing bells');
+});
+test('teleporting to the destination bell restarts planning for the original item',()=>{
+ const h=bellHarness();h.api.arm(h.dest);const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(trip?.transfer);h.api.setTrip(trip,h.dest,{...h.pose},'bell');h.api.observe();
+ h.pose.x=18000;h.pose.z=500;h.api.S.world.floorAt=p=>p;h.api.observe();h.api.observe();
+ assert.equal(h.api.planning.job?.request.key,h.dest.key);
+ assert.equal(h.api.planning.job?.request.p.x,20000);h.api.planning.clear('test cleanup');
+});
+
+test('the transfer departure stops beside the bell instead of sweeping through its collider',()=>{
+ const h=bellHarness();
+ h.api.S.world.hit=(a,b,body)=>body&&Math.abs(b.x-200)<80&&Math.abs(b.y)<80?{point:b}:null;
+ h.api.S.world.step=(a,b)=>Math.abs(b.x-200)<80&&Math.abs(b.y)<80?{hit:b,why:'bell collider'}:{p:b};
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.to.id,'item-bell');
+ const end=trip.legs[0].points.at(-1);assert.ok(Math.hypot(end.x-200,end.y)<=185);
+ assert.ok(Math.abs(end.x-200)>=80||Math.abs(end.y)>=80);
+});
+
+test('standing near the bell approach endpoint does not mean the bell or item was reached',()=>{
+ const h=bellHarness();h.api.arm(h.dest);const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(trip?.transfer);h.api.setTrip(trip,h.dest,{...h.pose},'transfer');
+ const end=trip.legs[0].points.at(-1);
+ h.api.S.arrival.check(h.api.S,h.pose,end,1000);
+ assert.equal(h.api.S.arrival.check(h.api.S,h.pose,end,1150),false,'the approach radius was added to bell interaction range');
+ assert.notEqual(h.api.S.arrival.completedTarget,h.dest.key);
+});
+
+test('a nearby activated bell behind a wall is not treated as an occupied transfer point',()=>{
+ const h=bellHarness();h.pose.x=100;
+ h.api.S.world.hit=(a,b)=>a.x<150&&b.x>=150?{point:{x:150,y:b.y,z:b.z},owners:['closed_door']}:null;
+ h.api.S.world.step=(a,b)=>a.x<150&&b.x>=150?{hit:{x:150,y:0,z:0},why:'closed door'}:{p:b};
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(!!trip?.transfer,false,'proximity to the bell bypassed a closed door');
+});
+
+test('standing beside an accessible bell collider preserves the stationary transfer leg',()=>{
+ const h=bellHarness();h.pose.x=100;
+ h.api.S.world.hit=(a,b,body)=>body&&Math.abs(b.x-200)<80&&Math.abs(b.y)<80?{point:b}:null;
+ h.api.S.world.step=(a,b)=>Math.abs(b.x-200)<80&&Math.abs(b.y)<80?{hit:b,why:'bell collider'}:{p:b};
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.from.id,'start-bell');
+ assert.equal(trip.legs[0].waitingTransfer,true);
+ assert.equal(trip.legs[0].meters,0);
+ assert.ok(trip.legs[0].points.every(p=>p.x===100&&p.y===0&&p.z===0));
+});
+
+test('a checked bell alternative is shown before rejected walking previews',()=>{
+ const h=bellHarness(true),seen=[];
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0,onDiagnostic:t=>seen.push(t)}));
+ assert.ok(trip?.transfer);
+ assert.ok(seen.length>0,'the available bell was hidden until walking repair finished');
+ assert.ok(seen.every(t=>t.transfer),'a rejected walking preview displaced the checked departure to a bell');
+});
+
+test('an arrival at the suggested bell finishes the item approach instead of offering a return transfer',()=>{
+ const h=bellHarness();Object.assign(h.goal,{x:24000,y:0,z:500});h.api.arm(h.dest);
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.to.id,'item-bell');h.api.setTrip(trip,h.dest,{...h.pose},'bell');h.api.observe();
+ h.pose.x=18000;h.pose.z=500;h.api.S.world.floorAt=p=>p;h.api.S.world.step=(a,b)=>({p:b});
+ h.api.observe();h.api.observe();h.api.planning.clear('inspect arrival plan');
+ const arrival=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(!!arrival?.transfer,false,'the item approach sent the player back to another bell');
+ assert.equal(h.dest.p.x,24000);
+});
+
+test('an unconnected near bell cannot outrank a bell with a continuous item corridor',()=>{
+ const B=require(root+'/PBZRouteBellTransfer'),p=x=>({x,y:0,z:0});
+ const bells=[{id:'from',world:'test',at:[0,0,0]},
+  {id:'wrong-floor',world:'test',at:[9900,0,600]},
+  {id:'connected',world:'test',at:[8000,0,0]}];
+ const graph={name:'test',routeJob:function*(a,b){
+  if(a.z===600)return null;
+  const points=[a,b];return {world:'test',points,meters:a.x===8000?200:0,partial:false,walks:[],moves:[],checks:[],gates:[]};
+ }};
+ const trip=run(B.plan(graph,graph,p(0),p(10000),bells,{
+  approaches:function*(at){return [at];},ready:function*(){return true;},verify:function*(){return true;}
+ }));
+ assert.equal(trip?.transfer?.to.id,'connected','a straight-line fallback beat a real corridor from another bell');
+});
+
+test('already occupying the best item bell does not select a worse transfer just because self-transfer is excluded',()=>{
+ const B=require(root+'/PBZRouteBellTransfer'),start={x:0,y:0,z:0},goal={x:4000,y:0,z:0};
+ const bells=[{id:'best',world:'test',at:[0,0,0]},{id:'worse',world:'test',at:[12000,0,0]}];
+ const graph={name:'test',routeJob:function*(a,b){return {world:'test',points:[a,b],meters:a.x===0?40:250,partial:false,walks:[],moves:[],checks:[],gates:[]};}};
+ const trip=run(B.plan(graph,graph,start,goal,bells,{
+  approaches:function*(at){return [at];},ready:function*(){return true;},verify:function*(){return true;}
+ }));
+ assert.equal(!!trip?.transfer,false,'standing at the best bell generated a detour through a worse bell');
+});
+
+test('the reported valley currency prefers the connected tower base over the misleading shorter flower-field atlas',()=>{
+ const R=require(root+'/PBZRouteCore'),B=require(root+'/PBZRouteBellTransfer'),tables=require(root+'/PBZRouteTables').data;
+ const world='pbz_xigu_wp',g=new R.Graph(require(root+'/PBZRouteWorlds/'+world).data,require(root+'/PBZRouteFaces/'+world).faces);
+ const bells=Object.values(tables.bells).filter(b=>b.world===world),from=bells.find(b=>b.id==='Bell_NLES_006');
+ const start={x:from.at[0],y:from.at[1],z:from.at[2]},goal={x:-60311.68,y:211444.33,z:-21160.582};
+ const trip=run(B.plan(g,g,start,goal,bells,{
+  approaches:function*(at){return [at];},ready:function*(){return true;},verify:function*(){return true;}
+ }));
+ assert.equal(trip?.transfer?.to.id,'Bell_NLES_016','the known bad 177 m flower-field corridor beat the nearer tower-base access');
+});
+
+test('a departure can locally go around a wall instead of requiring the player to touch the bell',()=>{
+ const h=bellHarness(false,require(root+'/PBZRouteLocalWalk'));h.bells[0].at=[700,0,0];
+ const wall=(a,b)=>{if((a.x<300&&b.x>=300)||(a.x>=300&&b.x<300)){
+  const t=(300-a.x)/(b.x-a.x);if(Math.abs(a.y+(b.y-a.y)*t)<200)return {x:300,y:a.y+(b.y-a.y)*t,z:0};
+ }};
+ h.api.S.world.hit=(a,b)=>{const point=wall(a,b);return point?{point,owners:['wall']}:null;};
+ h.api.S.world.step=(a,b)=>{const hit=wall(a,b);return hit?{hit,why:'blocked body clearance'}:b.x<1000?{p:b}:{why:'remote scene unloaded'};};
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.from.id,'start-bell','only the stationary branch could provide a transfer');
+ assert.ok(trip.legs[0].points.some(p=>Math.abs(p.y)>=200),'the departure still crosses the wall');
+});
+
+test('a newly selected item can use a transfer after the previous item reached its destination bell',()=>{
+ const h=bellHarness();Object.assign(h.goal,{x:24000,y:0,z:500});h.api.arm(h.dest);
+ const trip=run(h.api.makePlan(h.dest));h.api.setTrip(trip,h.dest,{...h.pose},'bell');
+ h.pose.x=18000;h.pose.z=500;h.api.S.world.floorAt=p=>p;h.api.S.world.step=(a,b)=>({p:b});h.api.observe();
+ assert.equal(h.api.S.bellArrival?.bell,'item-bell');h.api.planning.clear('next selection');
+ const next={...h.dest,key:'another-currency',p:{x:0,y:0,z:0}};
+ const result=run(h.api.makePlan(next));
+ assert.equal(result?.transfer?.to.id,'start-bell','the previous item suppressed transfers for the next selection');
+ assert.equal(result.transfer.from.id,'item-bell');
+});
+
+test('an origin revision on teleport cannot bypass the selected item arrival stage',()=>{
+ const h=bellHarness();Object.assign(h.goal,{x:24000,y:0,z:500});h.api.arm(h.dest);
+ h.api.setTrip(run(h.api.makePlan(h.dest)),h.dest,{...h.pose},'bell');h.api.observe();
+ h.pose.x=18000;h.pose.z=500;h.api.S.world.h=95;h.api.S.world.floorAt=p=>p;
+ h.api.observe();
+ assert.equal(h.api.S.bellArrival?.key,h.dest.key);
+ assert.equal(h.api.S.active,1);h.api.planning.clear('test cleanup');
+});
+
+for(const locked of [false,true])test('a loaded arrival '+(locked?'lock':'wall')+' excludes the misleading closest bell',()=>{
+ const h=bellHarness(false,undefined,[{id:'accessible-bell',world:'test',name:'绕行铃铛',at:[17000,3000,500]}]);
+ const g=h.api.graphs.get('test'),original=g.routeJob;
+ g.routeJob=function*(a,b){
+  if(a.x===17000){const points=[a,{x:20000,y:3000,z:500},b];return {world:'test',points,meters:60,checks:[],moves:[],gates:[],
+   walks:points.slice(1).map((b,i)=>({a:points[i],b,from:i,to:i+1,edge:-1}))};}
+  if(a.x>1000)return {world:'test',points:[a,b],meters:require(root+'/PBZRouteCore').dist(a,b)/100,checks:[],moves:[],gates:[],walks:[{from:0,to:1,edge:-1}]};
+  return yield* original(a,b);
+ };
+ h.api.S.world.floorAt=p=>p;
+ h.api.S.world.step=(a,b)=>a.x<18500&&b.x>=18500&&Math.abs(b.y)<1000?
+  locked?{why:'locked passage',locked:true,block:{locked:true}}:{hit:b,why:'wall'}:{p:b};
+ const trip=run(h.api.makePlan(h.dest));
+ assert.equal(trip?.transfer?.to.id,'accessible-bell');
+ assert.equal(trip.transfer.evidence,'checked');
+ assert.equal(trip.legs[1].arrivalPending,true,'the remote physical probe must not draw an item walk before teleport');
+});
+
+test('a partial departure cannot present its frontier as a reachable transfer bell',()=>{
+ const B=require(root+'/PBZRouteBellTransfer'),p=x=>({x,y:0,z:0});
+ const graph={name:'test',routeJob:function*(a,b){return {world:'test',points:[a,b],meters:Math.abs(a.x-b.x)/100,checks:[],walks:[],moves:[],gates:[]};}};
+ const bells=[{id:'start',world:'test',at:[1000,0,0]},{id:'target',world:'test',at:[10000,0,0]}];
+ const trip=run(B.plan(graph,graph,p(0),p(12000),bells,{
+  approaches:function*(at){return [at];},verify:function*(leg){leg.points=[leg.points[0],p(100)];leg.partial=true;return true;}
+ }));
+ assert.equal(trip,null);
+});
+
+test('a wrong-floor atlas endpoint stays below a continuous arrival corridor',()=>{
+ const B=require(root+'/PBZRouteBellTransfer'),p=x=>({x,y:0,z:0});
+ const bells=[{id:'from',world:'test',at:[0,0,0]},{id:'wrong-floor',world:'test',at:[9900,0,600]},
+  {id:'connected',world:'test',at:[8000,0,0]}];
+ const graph={name:'test',routeJob:function*(a,b){const end=a.z===600?{...b,z:600}:b;
+  return {world:'test',points:[a,end],meters:Math.hypot(a.x-end.x,a.z-end.z)/100,walks:[],checks:[],moves:[],gates:[]};}};
+ const trip=run(B.plan(graph,graph,p(0),p(10000),bells,{
+  approaches:function*(at){return [at];},ready:function*(){return true;},verify:function*(){return true;}
+ }));
+ assert.equal(trip?.transfer?.to.id,'connected');
+});
+
+for(const closedAction of [false,true])test((closedAction?'a closed traversal':'a banned measured wall')+' cannot turn into a proximity-only bell recommendation',()=>{
+ const B=require(root+'/PBZRouteBellTransfer'),p=x=>({x,y:0,z:0});
+ const bells=[{id:'from',world:'test',at:[0,0,0]},{id:'blocked',world:'test',at:[9900,0,0]},
+  {id:'unknown',world:'test',at:[8000,0,0]}];
+ const graph={name:'test',foldedPassages:new Set(closedAction?['ladder']:[]),routeJob:function*(a,b,options){
+  if(a.x===8000||a.x===0&&b.x===10000)return null;
+  if(a.x===9900&&(closedAction?!this.allowBlockedTraverse:options.banned.has(42)))return null;
+  return {world:'test',points:[a,b],meters:Math.abs(a.x-b.x)/100,walks:[],checks:[],moves:[],gates:[]};
+ }};
+ const trip=run(B.plan(graph,graph,p(0),p(10000),bells,{
+  banned:{test:new Set(closedAction?[]:[42])},approaches:function*(at){return [at];},ready:function*(){return true;},verify:function*(){return true;}
+ }));
+ assert.notEqual(trip?.transfer?.to.id,'blocked','a known exclusion became a straight-distance candidate after routeJob returned null');
+ assert.equal(graph.allowBlockedTraverse,undefined,'diagnostic traversal flags leaked out of bell selection');
 });

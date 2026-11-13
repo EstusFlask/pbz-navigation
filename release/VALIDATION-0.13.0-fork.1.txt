@@ -1,0 +1,94 @@
+Quest and Exploration Navigation - Fork 0.13.0-fork.1
+Date: 2026-11-12
+Baseline: delivered 0.12.0-fork.1. Preserve all earlier ZIPs/validation records.
+
+INSTALLATION AUDIT (READ ONLY)
+Compare installed runtime files with the 0.12.0 ZIP: 1333 exact SHA256 matches,
+missing=[], changed=[], extraScripts=[]. One navigation JS directory and one
+navigation adapter directory. Manager enables the installed 0.12.0 navigation.
+loader.log confirms loaded 0.12.0-fork.1 built-in atlases=11.
+Evidence: build/field-20261112-012-install/install-audit.json, final-audit.json,
+loader.log, route-log.txt, red-reflected-components.txt, green-reflected-components.txt.
+No evidence of mixed installation; do not blame this failure on an old release.
+Old trail files are not read by the runtime. No game/manager writes or installation.
+
+REAL DEFECT AND RED -> GREEN SIGNALS
+Game scripts call reflected K2_GetComponentsByClass; navigation called the
+unexposed GetComponentsByClass. Resident actors were found with no components.
+The inherited-ascent fixture exposing only K2_ fails before the change with
+"inherited native component access lost the climb entirely" and passes after it.
+Command: node --test --test-reporter=spec --test-name-pattern "resident ascent reads" tests/passages.test.cjs
+
+Before fixed-guide integration, the two main-planner tests fail with
+"known broken bell route still enters the failed ground search" and
+"no initial tomb route was supplied". Both pass after integration.
+Command: node --test --test-reporter=spec --test-name-pattern "fixed cave course|tomb fixed course" tests/planning.test.cjs
+These replay actual author data through the planner/guard, with simulated engine
+APIs and missing-floor queries. They do not certify successful live-game travel.
+
+RESOURCE AND FIXED-COURSE EVIDENCE
+Public GamerSky roadbook 53: 18 flow groups. Map 253: 175 landmarks; map 255:159.
+Downloaded to ignored build/gamersky only. Route folds/styles are not evidence of
+traversability. Flat map coordinates fail world-XY affine calibration: RMS about
+155.4 m (22 bell pairs) and 39.4 m (17 pairs). No fabricated world Z or global
+map-to-world conversion is used. Public source URLs and caveats: MANUAL-ROUTES.md.
+Existing continuous field trace used only as offline authoring input. Fixed data
+records its SHA256. No runtime input from that trace, no new player sampling,
+serialization, learning settings, network requests or automatic reverse edges.
+Bridge -> Xiaozhang: 873 fixed 3D points, ~306 m, directed drops/two climbs/hook.
+Cemetery -> cenotaph:1090 points, ~378 m, actual river/uphill detour preserved.
+Five reviewed adjacent gaps <=45 cm; rendered segments subdivided to <=55 cm.
+Cave course ends ~303 cm from the bell until a checked short terminal approach
+is available; otherwise remains partial. Tomb course ends ~101 cm from the bell.
+Guide provider is a labeled/dashed reference, never physicalVerified. Same-floor
+joins, body/ribbon collision, map locks and discovered interaction requirements
+remain active. Fixed-route obstructions do not repeatedly replan into that guide.
+
+PASS: 161 JavaScript regressions; no failures/skips.
+node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs tests/guides.test.cjs
+Output: build/test-0.13.0-js.txt.
+Includes initial missing floor, real cave/uphill geometry, planner/guard integration,
+mid-route joining, wrong floors/directions/items, blocked joins, current wall/key
+locks, resident hook state, raw vs smoothed action indices and terminal approaches.
+
+PASS: original collector 1.0.9 Lua target/hover/cancel, real file round trips.
+py -3.12 tests/run-lua-tests.py
+Output: build/test-0.13.0-lua.txt.
+PASS: native adapter rebuilt at 0.13.0; ABI, runtime/collector SHA gates, mod filter,
+host dispatch tests.
+python native/build-native.py --ue4ss D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll --test
+Output: build/test-0.13.0-native.txt.
+
+PASS: complete ZIP, 1342 exact source/document matches, ZIP integrity and version
+sync across both JS entries, native binary and documentation. Original atlas data
+unchanged:951 streamed modules,291 exact legacy chunk values and metadata hashes.
+python tests/build-patch.py
+python tests/verify-package.py --manager-state D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json
+Outputs: build/test-0.13.0-package-build.txt and test-0.13.0-package-verify.txt.
+PASS: manager recognizes update with1333/1333 existing navigation paths.
+PASS: zero overlap with all90 installed collector paths; collector/reference and
+original world/face/chunk sources have no diff. git diff --check passes.
+PASS: no guide source dumps, whole roadbook, images, trail files/runtime trail
+module, authoring tools, game extracts or keys in ZIP.
+Manager-state SHA256 unchanged across final build/verification:
+411289fcb97704f6a564c2bb11999e5d3e1b661aaf3930c5348708b5776f0101
+
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.13.0-fork.1.zip
+Bytes:119710657
+SHA256:b834134a8580ec6e50a2a1225fcf17a38adf7de48e53d73ef4236dce1e27496e
+
+LIVE LIMITS AND TEST PROCEDURE
+Neither full route has passed a live-game run of 0.13.0-fork.1. Old continuous
+trace evidence and simulated collision/regression results are distinct from new
+live success. Reference point/animation offsets, streamed or changed geometry,
+unknown mechanisms and collision-query disagreement may still interrupt display.
+Only the two specified directions/target bells are covered; no all-pairs/all-map
+coverage, reverse climbs, global shortest path or measured FPS claim.
+Install the full ZIP as an update after exiting the game; game was not modified
+by this task. Select each destination directly from its original bell. No learning
+run or deletion of old trails is required. Look for fixed guide and corresponding
+id in diagnostics. Check bridge house/cave entry/two climbs/hook, uphill detour and
+both bell endpoints. New reference joins and current wall/lock restrictions may
+still legitimately clip guidance; capture blocked guide clearance/join/lock state.
+Collector sync remains pinned to1.0.9; installed1.0.12 is outside certified scope.
+No publication or external messages were sent.

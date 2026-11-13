@@ -1,0 +1,76 @@
+Version: 0.15.0-fork.1
+Date: 2026-11-12
+Archive: dist/Quest_and_Exploration_Navigation_Fork_0.15.0-fork.1.zip
+Bytes: 120297950
+SHA256: ecf6293a68f7f5cdb82c129992f6ffeced674019bb56713442d29486a46dddc7
+
+Scope and limits:
+- Confirmed the installed Map Tracker 1.0.14 files match the repository reference.
+  Old bridge status explicitly rejected any collector other than pinned 1.0.9.
+- Remove the collector entry hash/version lock. Retain the exact UE4SS 1195
+  Shipping ABI/runtime hash gate; verify target/selection module and service
+  contracts in the collector VM. Restore original interfaces on incompatibility.
+- Item navigation compares activated, teleport-enabled bells. Departure
+  approaches receive real floor/capsule/lock checks; even stationary transfer
+  legs require a checked join to a visible approach. Nearby walls cannot be
+  bypassed just because the bell is close. Unloaded arrival walks remain pending;
+  manually teleporting restarts planning for the original selected item.
+- Runtime hint extension adds 170 reviewed Chinese hints without editing the
+  collector's files. Require matching saveId, contents, location and original
+  generic hint; preserve other languages and later author descriptions.
+- Full-map authored 3D routes remain UNFINISHED. Only the two existing directed
+  reference courses are enabled. No new full courses were authored in this batch.
+- Engine calls, physics and loading are simulated in automated navigation tests.
+  No full valley run or game UI verification on this version; no measured FPS,
+  full-map reachability or global-shortest-path claim. Existing floor, slope,
+  capsule, wall and lock checks were not relaxed.
+- No trail learning, sampling, persistence, runtime networking or downloads.
+  Game and manager remain read-only. No automatic installation or publication.
+
+Description audit:
+8 public GamerSky maps; all 1,435 markers checked, 1,163 nonempty descriptions.
+Map Tracker: all 1,616 catalogue points and 530 native detail rows accounted for.
+Catalogue: 32 existing-specific, 170 supplemented, 1,391 unmatched,
+10 ambiguous, 9 source-no-detail, 4 source-empty. Counts total 1,616.
+Native detail rows lack stable item identities and were not position-only matched.
+Pigeon feed: source landmark 914439, original generic hint reproduced, reviewed
+Chinese hint displayed by the real compose/presentation flow in both fixtures.
+Full prose, API downloads, images and extracted game data stay in ignored build/.
+Audit: docs/ITEM-DESCRIPTION-AUDIT.md; authoring/item-description-audit.json.
+
+Commands and results:
+node --test --test-reporter=spec tests/atlas.test.cjs tests/context.test.cjs tests/navigation.test.cjs tests/planning.test.cjs tests/passages.test.cjs tests/tracker.test.cjs tests/terrain-regression.test.cjs tests/connectivity.test.cjs tests/locks.test.cjs tests/map-target.test.cjs tests/guides.test.cjs tests/bell-network.test.cjs tests/bell-coverage.test.cjs
+PASS: 181 / 181, zero failures/skips. Includes actual main-planner transfer
+selection, unloaded valley item, longer complete atlas route, original item
+replanning after teleport, collider approaches, bell range and the nearby
+closed-door regression. Closed-door case failed before access checks; it now
+passes, alongside an accessible stationary-transfer regression.
+
+py -3.12 -X utf8 tests/run-lua-tests.py
+PASS: real protected 1.0.9 and 1.0.14 target/selection/compose/presentation modules;
+manual/automatic changes, hover/middle-click, Z=2333 through Lua/JS files,
+cancellation, stale-command rejection, failed writes, unsupported contracts,
+factory multi-returns, cleanup, later wrappers and all 170 hints.
+Deleted 1.0.9 reference directory was not restored; test files exported from Git
+into ignored build/test-references/ only.
+
+py -3.12 -X utf8 tools/audit-tracker-descriptions.py
+PASS: complete input accounting, reviewed identity/location matches and generated
+runtime hint data. Printed totals agree with the description audit above.
+
+py -3.12 -X utf8 native/build-native.py --ue4ss "D:/software/Steam/steamapps/common/PBZ/platform/steam/ue4ss/UE4SS.dll" --test
+PASS: native rebuild, ABI size, runtime hash gate, mod filtering and
+version-independent host dispatch. Native sources unchanged after this build.
+
+py -3.12 -X utf8 tests/build-patch.py
+PASS: full ZIP rebuilt; original atlas cache retained, 951 streamed modules.
+py -3.12 -X utf8 tests/verify-package.py --manager-state "D:/software/pbz-mod-manager/Data/games/phantom-blade-zero/mods.json"
+PASS: 1,348 exact archive file matches, version agreement, original atlas hashes,
+291 original legacy chunks, recognized navigation update (1,336/1,336 paths).
+Zero package overlap with all 110 collector paths; all 110 collector reference
+hashes match the tested 1.0.14 source. No collector-owned files packaged.
+git diff --check
+PASS: no whitespace errors (existing LF/CRLF notices only).
+
+Logs: build/validation-015-{js,lua,hints,native,build,package,diff-check}.txt
+Previous packages, validation records and user changes preserved. No commits.

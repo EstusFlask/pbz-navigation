@@ -28,7 +28,10 @@ function* check(world,leg,origin,radius=12000){
   const a=raw[i],b=raw[i+1],edge=(leg.walks||[]).find(c=>c.from<=i&&c.to>=i+1)?.edge??-1;
   const action=(leg.moves||[]).find(m=>m.from!==undefined&&m.to!==undefined&&m.from<=i&&m.to>=i+1);
   if(action&&!(leg.walks||[]).some(w=>w.from<=i&&w.to>=i+1)){
-   if(action.fold)return {ok:false,edge:action.edge??-1,why:'closed authored traversal',p:previous,a,b,locked:true,
+   const lock=world.blockAt?.(a,b);
+   if(lock)return {ok:false,edge:action.edge??-1,why:'locked passage',p:lock.p,a,b,locked:true,block:lock,
+    segment:i,prefix:points.slice(),prefixLeg:finish(false).leg};
+   if(action.fold||action.block)return {ok:false,edge:action.edge??-1,why:'closed authored traversal',p:previous,a,b,locked:!action.block?.unknown,unknown:!!action.block?.unknown,block:action.block,
     segment:i,prefix:points.slice(),prefixLeg:finish(false).leg};
    if(R.dist(origin,raw[action.to])>radius)return frontier(i);
    previous={...b};points.push(previous);indices[i+1]=points.length-1;afterAction=action;yield;continue;

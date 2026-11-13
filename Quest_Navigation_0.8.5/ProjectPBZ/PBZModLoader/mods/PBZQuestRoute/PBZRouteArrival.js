@@ -16,6 +16,9 @@ class Arrival{
   const leg=S.trip.legs[S.active];
   if(leg.partial){this.status='route incomplete';return false;}
   if(S.level&&leg.world!==S.level)return false;
+  const bell=S.active===0&&S.trip.transfer?.from;
+  if(bell){const p={x:bell.at[0],y:bell.at[1],z:bell.at[2]};
+   if(R.xy(feet,p)>185||Math.abs(feet.z-p.z)>230){this.probe=null;this.status='outside bell interaction range';return false;}}
   if(this.goal?.item&&S.active===S.trip.legs.length-1&&
       (R.xy(feet,this.goal.p)>185||Math.abs(feet.z-this.goal.p.z)>230)){
    this.probe=null;this.status='outside collectible interaction range';return false;

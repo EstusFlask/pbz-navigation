@@ -48,7 +48,7 @@ function regressesFromActions(current,candidate,goal){
  return R.dist(b,goal)>R.dist(a,goal)+200;
 }
 function offer(context,leg,start,goal){
- if(!leg)return;
+ if(!leg||context.bellTransfer)return;
  const rank=l=>l.provider==='atlas'?2:l.provider==='native'||l.provider==='direct'?0:1;
  const priority=rank(leg),previous=context.best?.legs[0];
  if(regressesFromActions(previous,leg,goal))return;
@@ -62,6 +62,7 @@ function offer(context,leg,start,goal){
  context.onDiagnostic?.(context.best);
 }
 function finish(context){
+ if(context.bellTransfer)return context.bellTransfer;
  for(const leg of context.best?.legs||[])for(const b of leg.obstacles||[])if(!b.unknown&&!b.locked)b.label='此处受阻，暂未找到绕行路线';
  return context.best||null;
 }
