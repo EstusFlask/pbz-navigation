@@ -20,15 +20,17 @@ function planner(world,options={}){
     const empty=function*(){return null;};
     const map=options.map||{GetMapIDByLocation:()=> 'test',GetCurrentMapID:()=> 'test',LockObjectInfos:{GetRef:()=>null}};
     Object.assign(UE,options.UE);
-    const mocks={ue:UE,puerts:{},'Library/TsHelper':{default:{getWorldSubsystem:(p,t)=>t==='map'?map:{}}},'Library/MapAreaGroups':{},
+    if(options.ship)UE.ShipNavigationSystem={StaticClass:()=> 'ship'};
+    const mocks={ue:UE,puerts:{},'Library/TsHelper':{default:{getWorldSubsystem:(p,t)=>t==='map'?map:t==='ship'?options.ship:{}}},'Library/MapAreaGroups':{},
         './PBZRouteTables':{data:{worlds:[level],bells:Object.fromEntries((options.bells||[]).map(b=>[b.id.toLowerCase(),b])),areas:options.areas||{}}},
         './PBZRouteWorld':W,'./PBZRoutePassages':options.passages||{refreshLadders(){},resetLadders(){},isLookout:()=>false,liveRouteJob:empty},
         './PBZRouteDrops':{installJob:empty},'./PBZRouteObstacles':{...require(root+'/PBZRouteObstacles'),installSeamsJob:empty},
         './PBZRouteSurface':{...require(root+'/PBZRouteSurface'),anchorsJob:function*(g,q,goal){return [{id:goal?1:0,q:{...q},r:0,dz:0}];}},
         './PBZPrivateRibbon':{},'./PBZRouteInk':{},'./PBZRouteItems':{},'./PBZRouteMinimap':{},'./PBZRouteScout':{}};
     if(options.localWalk)mocks['./PBZRouteLocalWalk']=options.localWalk;
+    if(options.roadbook)mocks['./PBZRouteRoadbook']=options.roadbook;
     if(options.bells){const array=xs=>({Num:()=>xs.length,Get:i=>xs[i]});const bellService={ActivateBellIDs:array(options.activeBellIDs||options.bells.map(b=>b.id)),DisableTeleportBellIDs:array([])};
-        mocks['Library/TsHelper'].default.getWorldSubsystem=(p,t)=>t==='map'?map:bellService;}
+        mocks['Library/TsHelper'].default.getWorldSubsystem=(p,t)=>t==='map'?map:t==='ship'?options.ship:bellService;}
     if(options.surface)mocks['./PBZRouteSurface']=options.surface;
     const module={exports:{}};
     const local=id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id));
@@ -40,6 +42,31 @@ function planner(world,options={}){
     return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:level}};
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
+
+test('sailing retains the selected target and resumes planning after disembarking',()=>{
+ let aboard=true;
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,ship:{IsInNavigation:()=>aboard}});
+ h.api.arm(h.dest);h.api.observe();assert.equal(h.api.S.manual,h.dest);assert.equal(h.api.S.travelPhase?.kind,'boat');
+ assert.equal(h.api.planning.pending,false);assert.equal(h.api.S.line.length,0);assert.match(h.api.S.routeStatus,/乘船中/);
+ aboard=false;h.api.observe();assert.equal(h.api.S.travelPhase,null);assert.equal(h.api.S.manual,h.dest);
+ assert.ok(h.api.planning.pending,'leaving the boat did not restart the original destination');
+});
+
+for(const ready of [false,true])test('an inactive bell roadbook '+(ready?'checks its loaded action and ground':'keeps an unknown action pending'),()=>{
+ const RB=require(root+'/PBZRouteRoadbook'),p=(x,z=0)=>({x,y:0,z});
+ const courses=[{id:'overland',name:'overland',world:'test',sourceBell:'from',targetBell:'locked',target:p(2000,600),
+  points:[p(0),p(500),p(700,600),p(2000,600)],actions:[{kind:'ascent',guid:'wall',start:1,end:2,requiresLive:true}]}];
+ const floor=q=>q.x<=500?{...q,z:0}:q.x>=700?{...q,z:600}:null;
+ const world={normal:.7,hit:()=>null,floorAt:floor,step:(a,b)=>{const q=floor(b);return q&&Math.abs(q.z-a.z)<50?{p:q}:{why:'wall jump required'};}};
+ const passages={refreshLadders(){},isLookout:()=>false,liveRouteJob:function*(){return null;},refreshLoadedJob:function*(){},
+  checkJob:function*(){return true;},referenceState:()=>ready?{ready:true,path:[p(500),p(700,600)]}:{ready:false,block:{unknown:true,label:'pending'}}};
+ const h=planner(world,{quiet:true,passages,roadbook:{...RB,plan:function*(...args){return yield* RB.plan(...args.slice(0,4),{...args[4],courses});}},
+  bells:[{id:'locked',world:'test',at:[2000,0,600]}],activeBellIDs:[],localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,p(2000,600));h.dest.bell='locked';
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ if(ready){assert.equal(trip?.legs[0].roadbook?.id,'overland');assert.equal(trip.legs[0].guide,undefined);assert.equal(trip.legs[0].physicalVerified,true);}
+ else assert.ok(!trip||trip.legs.some(l=>l.partial||l.diagnostic),'unread action became a complete route');
+});
 
 test('a pending framed route shows loading before its first candidate and clears on completion',()=>{
  let now=10000;
@@ -111,7 +138,8 @@ test('the tomb fixed course keeps the uphill detour and guard does not run the r
  assert.ok(trip?.legs[0].guide,'no initial tomb route was supplied');
  assert.ok(trip.legs[0].points.some(p=>p.x>6500&&p.x<8500&&p.y<66500&&p.z>6800),'the route cut underneath the real uphill detour');
  h.api.setTrip(trip,h.dest,start,'guide');
- for(let i=0;i<40;i++){h.api.guardRoute(Date.now()+100+i*40);h.api.auditor.pump(()=>0,1000,1000);}
+ const clockStart=Date.now()+100;
+ for(let i=0;i<40;i++){const now=clockStart+i*40;h.api.guardRoute(now);h.api.auditor.pump(()=>now,1000,1000);}
  assert.ok(h.api.S.threadEnd&&require(root+'/PBZRouteCore').dist(h.api.S.threadEnd,start)>200,'missing floor still hides the fixed route');
  assert.equal(h.api.S.trip.legs[0].obstacles?.length||0,0);
 });

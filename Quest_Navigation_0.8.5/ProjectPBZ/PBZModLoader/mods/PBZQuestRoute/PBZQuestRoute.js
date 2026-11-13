@@ -7,6 +7,8 @@ const {Tracker}=require('./PBZRouteTracker'),{Pointer}=require('./PBZRoutePointe
 const Passages=require('./PBZRoutePassages'),Obstacles=require('./PBZRouteObstacles'),Drops=require('./PBZRouteDrops');
 const LocalWalk=require('./PBZRouteLocalWalk');
 const Guides=require('./PBZRouteGuides');
+const Roadbook=require('./PBZRouteRoadbook');
+const TravelMode=require('./PBZRouteTravelMode');
 const BellTransfer=require('./PBZRouteBellTransfer');
 const RouteStatus=require('./PBZRouteStatus');
 const Feasibility=require('./PBZRouteFeasibility');
@@ -18,7 +20,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.0.2';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.1.0';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
@@ -134,6 +136,7 @@ function* proofJob(leg,lookout,context){
  // 85 m / 12-check streaming budget does not certify one of these gaps.
  const replacements=[];
  for(const c of weak){yield;
+  if(leg.roadbook&&R.dist(foot,c.a)>12000)continue;
   const key=leg.world+'/'+c.edge, cached=provenJoins.get(key),now=Date.now();
   let value=cached&&cached.until>now?cached.value:null;
   if(!value){value=yield* Passages.checkJob(w,c);if(!value)return reject(c,null,true);
@@ -203,10 +206,10 @@ function updateRouteStatus(force=false){
  const now=Date.now();if(!force&&now-lastStatusPoll<200)return;lastStatusPoll=now;
  if(now-lastStatusCulture>=1000){lastStatusCulture=now;statusEnglish=/^en/i.test(String(UE.KismetInternationalizationLibrary?.GetCurrentLanguage?.()||'zh'));}
  const enabled=W.alive(S.pawn)&&S.world&&(S.cfg.MapRoute||S.cfg.MinimapRoute||S.cfg.WorldThread)&&S.arrival.completedTarget!==S.routeWork?.key;
- S.routeStatus=enabled?RouteStatus.message(planning,atlas,S.routeWork,now,statusEnglish):'';
+ S.routeStatus=enabled?(TravelMode.message(S.travelPhase,statusEnglish)||RouteStatus.message(planning,atlas,S.routeWork,now,statusEnglish)):'';
  statusHud?.update(gameContext||S.pawn,S.routeStatus,now);
 }
-function reset(){clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
+function reset(){S.travelPhase=null;clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
 function setTrip(trip,dest,start,why,requestContext){
  if(trip?.legs.some(l=>l.diagnostic))why+=' [blocked preview]';
  else if(trip?.legs.some(l=>l.partial))why+=' [partial]';else if(trip)why+=' [complete]';
@@ -218,7 +221,7 @@ function setTrip(trip,dest,start,why,requestContext){
  if(!trip){threads.hide();retry=Math.min(retry+1,4);log('route status',why+' '+dest.key+' from '+[start.x,start.y,start.z].map(Math.round).join(','));return;}
  retry=0;for(const leg of trip.legs)for(const c of leg.checks||[])if((c.kind===10||c.kind===11||c.kind===12)&&!c.verified)Obstacles.obstacle(leg,Obstacles.mark(leg,c,c.kind===11?'folded ladder':c.kind===12?'drop landing pending':'atlas seam',null,c.kind!==11));markLocks(trip);log('route '+S.version,why+' '+dest.key+' legs='+trip.legs.map(l=>l.world+':'+Math.round(l.meters)+'m').join(' + ')+' transfer='+(trip.transfer?trip.transfer.from.name+' -> '+trip.transfer.to.name:'walk')+' actions='+trip.legs.map(l=>(l.moves||[]).map(m=>m.kind).join('>')).filter(Boolean).join('/'));
 }
-function noRoute(){clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.cancel('no target');auditor.reset();guardedLeg=null;S.threadEnd=null;if(S.trip||S.line.length){S.trip=null;S.line=[];S.version++;threads.hide();}previous=null;}
+function noRoute(){S.travelPhase=null;clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.cancel('no target');auditor.reset();guardedLeg=null;S.threadEnd=null;if(S.trip||S.line.length){S.trip=null;S.line=[];S.version++;threads.hide();}previous=null;}
 function nativeWalk(start,goal,allowPartial=false){
  if(R.dist(start,goal)>20000)return null;
  const nav=UE.NavigationSystemV1;if(typeof nav?.FindPathToLocationSynchronously!=='function')return null;
@@ -275,6 +278,16 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  };
  yield;
  const getJoin=s=>{if(!legs.has(s.id))legs.set(s.id,Surface.join(routeWorld,start,s));return legs.get(s.id);};
+ if(depth===0&&!context.roadbookTried&&inactiveBell&&a===b){
+  context.roadbookTried=true;
+  if(Passages.refreshLoadedJob)yield* Passages.refreshLoadedJob(a,S.world,S.pawn,start,dest.p,{report:context.report});
+  const reference=yield* Roadbook.plan(routeWorld,S.level,dest,start,{graph:a,report:context.report});
+  if(reference){
+   const leg=reference.legs[0];
+   Roadbook.prepare(leg,a,S.world,Passages);
+   if((yield* proofJob(leg,false,{...context,repairs:2}))===null)return reference;
+  }
+ }
  if(depth===0&&!walkOnly&&!bellApproach&&!inactiveBell&&dest.item&&R.dist(start,dest.p)>2500){
   context.bellTransfer=yield* BellTransfer.plan(a,b,start,dest.p,bellList(),{banned:forbidden,
    approaches:function*(at,bell){return yield* Goals.approaches(routeWorld,at,140,{targetKey:'bell:'+bell.id});},
@@ -505,6 +518,15 @@ function observe(){
  if(!target||!target.p){S.lookoutHint=false;if(planning.job?.request.key.startsWith('fog:'))return;noRoute();return;}
  S.arrival.select(target);
  if(S.arrival.completedTarget===target.key){noRoute();return;}
+ const travel=TravelMode.read(S.pawn,UE,T);
+ if(travel){
+  if(!S.travelPhase||S.travelPhase.key!==target.key||S.travelPhase.kind!==travel.kind){
+   planning.clear('vehicle movement');auditor.reset();guardedLeg=null;S.trip=null;S.line=[];S.threadEnd=null;S.version++;threads?.hide();
+  }
+  S.travelPhase={...travel,key:target.key};S.routeWork={key:target.key,level:S.level,world:target.world,started:now};
+  updateRouteStatus(true);return;
+ }
+ if(S.travelPhase){S.travelPhase=null;previous=null;solve(target,'vehicle movement ended');return;}
  if(!atArrivalBell(target))S.bellArrival=null;
  const transfer=S.targetKey===target.key?S.trip?.transfer:null;
  // Consume the arrival before origin/revision checks can restart the old

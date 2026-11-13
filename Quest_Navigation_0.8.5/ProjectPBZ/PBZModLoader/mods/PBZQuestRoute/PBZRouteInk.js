@@ -91,6 +91,7 @@ class Ink{
    const cuts=Obstacles.intervals(leg);
    for(const rows of trace.runs)for(const part of Obstacles.portions(rows,skip,cuts))for(const run of Charts.visible(part.points))paintRun(run.map(px),part.style);
    if(leg.guide){const at=leg.points[trim?.i||0],u=project(at);if(UV.valid(u)){const p=px(u);label('固定路书参考 · '+leg.guide.name,p.x+12,p.y+17,light);}}
+   if(leg.roadbook){const at=leg.points[trim?.i||0],u=project(at);if(UV.valid(u)){const p=px(u);label('路书路线 · '+leg.roadbook.name,p.x+12,p.y+17,light);}}
    const used=new Set();
    for(const move of leg.moves||[]){
     const title=Passages.title(move);if(!title||used.has(move.guid)||!allowed(move.p))continue;

@@ -32,6 +32,7 @@ stream_state=json.loads((streamed/'manifest.json').read_text(encoding='utf-8'))
 documents={'INSTALL-README.md':root/'docs/USER-GUIDE.md','CHANGELOG.md':root/'release/CHANGELOG.md',
     'BELL-ROUTE-AUDIT.md':root/'docs/BELL-ROUTE-AUDIT.md',
     'GAME-TRAVERSAL-AUDIT.md':root/'docs/GAME-TRAVERSAL-AUDIT.md',
+    'MOVEMENT-COVERAGE.md':root/'docs/MOVEMENT-COVERAGE.md',
     'MANUAL-ROUTES.md':root/'docs/MANUAL-ROUTES.md',
     'BELL-NETWORK-COVERAGE.md':root/'docs/BELL-NETWORK-COVERAGE.md',
     'ITEM-DESCRIPTION-AUDIT.md':root/'docs/ITEM-DESCRIPTION-AUDIT.md'}

@@ -174,3 +174,23 @@ exports.classes = [
   "classPath": "/Script/AdvancedSpecialMove.SpecialMoveVolume_RopeSliding"
  }
 ];
+// Exact classes present in the local game's package/script index. The resolver
+// still requires real endpoints; discovery is not a claim of traversability.
+exports.classes.push(
+ {kind:'wallrun',both:true,fold:false,classPath:'/Game/RenewalContent/Actors/SpecialMove/BP_ASM_SideRunning.BP_ASM_SideRunning_C'},
+ {kind:'wallrun',both:true,fold:false,classPath:'/AdvancedSpecialMove/BP/Actor/SpecialMoveVolume/BP_ASM_SideRunning_Base.BP_ASM_SideRunning_Base_C'},
+ {kind:'walljump',both:false,fold:false,classPath:'/AdvancedSpecialMove/BP/Actor/SpecialMoveVolume/BP_ASM_UpRunPole_Base.BP_ASM_UpRunPole_Base_C'},
+ {kind:'walljump',both:false,fold:false,classPath:'/Game/RenewalContent/Actors/SpecialMove/BP_ASM_UpRunExecution.BP_ASM_UpRunExecution_C'},
+ {kind:'vault',both:false,fold:false,classPath:'/Game/RenewalContent/Actors/SpecialMove/BP_ASM_CrossObstacle.BP_ASM_CrossObstacle_C'},
+ {kind:'vault',both:false,fold:false,classPath:'/AdvancedSpecialMove/BP/Actor/SpecialMoveVolume/BP_ASM_CrossObstacle_Base.BP_ASM_CrossObstacle_Base_C'},
+ {kind:'crawl',both:false,fold:false,classPath:'/Game/RenewalContent/Actors/SpecialMove/BP_ASM_ThroughHoleFree.BP_ASM_ThroughHoleFree_C'},
+ {kind:'crawl',both:false,fold:false,classPath:'/AdvancedSpecialMove/BP/Actor/SpecialMoveVolume/BP_ASM_ThroughHoleFree_Base.BP_ASM_ThroughHoleFree_Base_C'},
+ {kind:'pole',both:false,fold:false,requiresCondition:true,classPath:'/Game/RenewalContent/Actors/SpecialMove/Volume/BP_LionDancing_Link.BP_LionDancing_Link_C'},
+ {kind:'boarding',both:false,fold:false,requiresCondition:true,classPath:'/Game/PBZContent/Boat/BP_Wharf.BP_Wharf_C'},
+ {kind:'boarding',both:false,fold:false,requiresCondition:true,classPath:'/Script/ProjectPBZ.Wharf'},
+ {kind:'boat',both:false,fold:false,entryOnly:true,classPath:'/Game/PBZContent/Boat/BP_Boat.BP_Boat_C'},
+ {kind:'portal',both:false,fold:false,entryOnly:true,classPath:'/Game/PBZContent/Blueprint/Item/BP_Teleport.BP_Teleport_C'},
+ {kind:'portal',both:false,fold:false,entryOnly:true,classPath:'/Game/PBZContent/Blueprint/Item/BP_TeleportTrigger.BP_TeleportTrigger_C'},
+ {kind:'ride',both:false,fold:false,entryOnly:true,classPath:'/HuaShira/Animation/Seqs/ActorForSeqs/BP_Seq_HorseCart_Horse01.BP_Seq_HorseCart_Horse01_C'},
+ {kind:'ride',both:false,fold:false,entryOnly:true,classPath:'/HuaShira/Animation/Seqs/ActorForSeqs/BP_Seq_HorseCart_Horse02.BP_Seq_HorseCart_Horse02_C'}
+);

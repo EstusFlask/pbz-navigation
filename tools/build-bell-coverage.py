@@ -91,11 +91,24 @@ def generate():
                           fromName=start, toName=end, **{'from': a['id'] if a else None},
                           to=b['id'] if b else None, hints=hints.split(';'),
                           status='needs-3d-authoring', runtimeEnabled=False))
+    generated_path = ROOT / 'authoring/roadbook-course-audit.json'
+    generated = json.loads(generated_path.read_text(encoding='utf-8'))['links'] if generated_path.exists() else []
+    compiled = {r['id']: r for r in generated}
+    for link in links:
+        row = compiled.get(link['id'])
+        if row:
+            link.update(status=row['status'], runtimeEnabled=row['runtimeEnabled'])
+            if row.get('course'):
+                link['course'] = row['course']
     enabled = {}
     for c in courses:
         a, b = next(x for x in bells if x['id'] == c['sourceBell']), next(x for x in bells if x['id'] == c['targetBell'])
         assert a['world'] == b['world'] == c['world']
         enabled.setdefault(a['id'], []).append(dict(id=c['id'], to=b['id']))
+    candidates = {key: list(value) for key, value in enabled.items()}
+    for link in generated:
+        if link['status'] == 'requires-scene-check':
+            candidates.setdefault(link['from'], []).append(dict(id=link['course'], to=link['to']))
     worksheet = {}
     for link in links:
         if link['from'] and link['to']:
@@ -110,9 +123,10 @@ def generate():
                     continue
                 active = path_to(enabled, a['id'], b['id'])
                 pending = path_to(worksheet, a['id'], b['id'])
-                status = 'authored-reference' if active else 'special-entry-unresolved' if a['specialEntry'] or b['specialEntry'] else 'world-transfer-unresolved' if a['world'] != b['world'] else 'worksheet-only' if pending else 'missing-authored-connection'
+                candidate = path_to(candidates, a['id'], b['id']) if not active else None
+                status = 'authored-reference' if active else 'special-entry-unresolved' if a['specialEntry'] or b['specialEntry'] else 'world-transfer-unresolved' if a['world'] != b['world'] else 'roadbook-candidate' if candidate else 'worksheet-only' if pending else 'missing-authored-connection'
                 rows.append(dict(mapId=m['id'], **{'from': a['id']}, to=b['id'], status=status,
-                                 courses=active or [], worksheet=pending or []))
+                                 courses=active or [], candidateCourses=candidate or [], worksheet=pending or []))
         m['pairCounts'] = dict(sorted(Counter(x['status'] for x in rows).items()))
         pairs.extend(rows)
     data = dict(schema=1, version=module('PBZRouteGuideData.js')['version'],
@@ -124,7 +138,7 @@ def generate():
     release = json.loads((ROOT / 'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))['version']
     out = [f'# 铃铛路网覆盖核验 · {release}', '',
            '**全图手工三维路线尚未完成。** 本报告逐对列出缺口，不能作为全图路线已可用的证明。', '',
-           '已启用的两条固定有向三维参考路线仍待游戏全程实测。工作表只整理路书中的行进意图、动作提示和来源，未绑定三维曲线、方向返程和机关状态，不进入游戏寻路。', '',
+           '保留两条固定参考路线，另编制86条由原图地面/游戏机关坐标生成的有向三维候选。候选进入寻路前必须检查当前场景的地面、碰撞和机关；尚有52条工作表连接缺失三维几何、身份或场景转移。全图连续可走路线尚未完成。', '',
            '来源：游民路书 53（18 个流程）及 8 张公开地图，2026-11-12 获取；游戏铃铛表。只保留点位事实、自编连接工作表和来源 ID，不分发攻略正文、图像或游戏解包资源。', '',
            '| 地图 | 游戏表项 | 游民标记 | 未绑定标记 | 有序铃铛对 | 启用三维参考 |',
            '| --- | ---: | ---: | ---: | ---: | ---: |']
@@ -133,12 +147,12 @@ def generate():
     out += ['', '统计包含特殊铃铛／龙柱表项，不能把游戏表项数等同普通可传送铃铛数。工作表的可串联关系也不等于游戏可达。完整有序对状态见仓库 `authoring/bell-network-coverage.json`。', '',
             '## 运行时范围', '',
             '- 只拼接明确同名游戏铃铛 ID 的有向三维课程；不按距离猜连接，不反转攀爬、下落或单向机关。',
-            '- 当前仅大廊桥→小张藏身处、乱葬岗→墨玑子衣冠冢两条已编制参考；其余地图没有启用的手工三维课程。',
+            '- 两条已编制轨迹参考优先保留。新86条候选用于未激活铃铛的陆路规划，接受普通地面检查，不享受固定轨迹的免重投影规则。未知机关只显示待确认前段，不能宣称完整可走。',
             '- 物品／地图标记可以从现有三维课程的同层行走段接出。末段上限 760 厘米，必须通过当前碰撞、地面和锁检查；更远目标仍交原规划器。',
             '- 已知锁门／不可用动作不参与完整铃铛组合；运行中的障碍审计继续生效。',
             '- 无新增轨迹采样、持久化或游戏内下载。静态拓扑缓存与当前搜索的接入检查分开；没有游戏帧率实测。', '',
             '## 仍缺的资料', '',
-            '每条启用课程都需要连续世界 XYZ、明确动作入口出口、单向与返程证据、场景转移、门锁／升降梯条件。游民折线为二维，`walk` 和线条虚实不证明游戏步行能力。', '',
+            '52条未编制连接及原因见 `authoring/roadbook-course-audit.json`。其中49条缺连续几何，1条缺铃铛身份，1条跨world入口未绑定，1条缺端点。每条完整课程都需要连续XYZ、动作端点、方向和条件；二维路书折线不能补出缺失高度。', '',
             '游戏 GlobalMapAnchorData 提供 12 分区、7,365 投影锚点，可用于对齐地图。它们不是地面或导航网格；不能将插值高度当路面。百万级高度有对应场景副本，不能统一归零。', '',
             '梅谷湖需要船行连接和隐藏场景；庞镇／后街／戏梦山庄需要跨 world 入口；七个同名幻术师遗迹和陆家村湖畔需补游戏身份。未加载区域的扫线无命中不能证明无墙。', '',
             '## 按图核对表', '']

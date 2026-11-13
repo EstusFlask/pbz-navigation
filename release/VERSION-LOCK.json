@@ -1,6 +1,6 @@
 {
-  "currentVersion": "1.0.2",
-  "minimumVersion": "1.0.2",
+  "currentVersion": "1.1.0",
+  "minimumVersion": "1.1.0",
   "history": [
     "0.8.7-fork.1",
     "0.8.8-fork.1",
@@ -17,7 +17,8 @@
     "0.15.1-fork.1",
     "0.15.2-fork.1",
     "1.0.1",
-    "1.0.2"
+    "1.0.2",
+    "1.1.0"
   ],
   "policy": "tests/build-patch.py refuses a release below minimumVersion or different from currentVersion; update this file deliberately for every new release."
 }

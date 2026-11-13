@@ -1,3 +1,13 @@
+# 1.1.0 — experimental traversal expansion and roadbook candidates
+
+- Add legacy wall-running, pole wall-jump/execution, cross-obstacle ledge and lion-dance link adapters. Preserve directed action boundaries; ladder descent gets its own instruction. Prepare a representative of each movement kind before repeated volumes, with a 96-feature cap and the existing time deadlines.
+- Parse 487 unique placed movement instances from eight cooked worlds, including 75 grapples. Keep source package hashes, strict native component schemas, transforms and spline facts in authoring tools. Runtime use requires the current loaded instance; current native curves take precedence. Static fallback also checks the actor root against its source position.
+- Compile 86 directional 3D roadbook candidates from original navigation and placed movement geometry; retain the two existing trace references. For inactive bell targets, validate the candidate through ordinary support/capsule/requirement checks. Candidate actions must match current resident endpoints/state; short falls retain takeoff/descent/landing checks. Do not give generated candidates the measured guides' floor-audit exemption.
+- Read real wharf boarding targets and the boat-wharf availability query. Sailing and recognized attached cinematic rides retain the selected target, stop ground-route searches and replan after disembarking/ending. Do not invoke boarding, riding, teleport or movement commands.
+- Account for all 140 worksheet links: 86 candidates, two measured references, 49 geometry gaps, one identity gap, one cross-world transition gap and one missing endpoint. Full-map manual geometry, complete water navigation, general scripted riding and dedicated story-chase routes remain unfinished. See MOVEMENT-COVERAGE.md and VALIDATION-1.1.0.txt; no fresh in-game validation.
+
+中文：扩展蹬墙/走壁/翻越/立柱/登船识别，接入487个关卡实例与86条需实景检查的路书三维候选；乘船/已识别剧情骑乘保留目标并在结束后续算。**全图仍缺52条连接，专用剧情追逐及完整水上航线未完成。**
+
 # 1.0.2 — inactive bells, checked traversal connectors and nearby item walks
 
 - Bell markers share the item target flag. Prevent inactive or currently non-teleportable bell targets from entering item-transfer planning; retain the existing two directed reference courses and ordinary walking/action fallbacks. Activated targets retain their existing transfer behavior.

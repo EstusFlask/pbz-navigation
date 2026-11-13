@@ -1,0 +1,88 @@
+Version: 1.1.0 (experimental)
+Date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.1.0.zip
+Bytes: 120560574
+SHA256: a55d4b416e384dfc5f81f19ff9d1511f6520048a1c3af3378e4b0c97037c68d8
+
+Delivered scope:
+- Legacy wall-run, authored pole wall-jump/execution, cross-obstacle vault,
+  linked lion-dance poles and real wharf boarding adapters. Existing ascent,
+  mantle, ladder, grapple, swing, slide, rappel, zipline and checked short-fall
+  behavior retained. Ladder descending prompt; player performs all inputs.
+- Current interaction/weapon/folding/vehicle conditions remain required.
+  Missing through-hole exits, ambient boats, story rides/chases and scene
+  teleports cannot manufacture static physical movement chords.
+- Kind representatives before repeated volumes, at most 96 preparation
+  candidates under the original deadlines. Condition refresh rotates beyond
+  the first 64 actors, scanning at most 256 entries / reading at most 64 states.
+- 487 unique placed movement instances across eight worlds, including 75 hooks.
+  Read-only cooked package extraction, native component schema, attachment
+  transforms and spline parsing. Every instance requires a current loaded actor;
+  runtime curves take precedence, static fallback also checks source root pose.
+- Placed instances stay visible to existing measured-guide condition binding.
+  Reverse references require a genuinely bidirectional source; unknown/stale
+  resident state cannot certify an action.
+- 86 3D roadbook candidates, two existing measured trace references, 140 total
+  worksheet links. Derived candidates keep ordinary floor/capsule checks,
+  current action endpoint/state checks and mandatory short-drop inspections.
+  They do not inherit the measured-guide floor-audit exemption.
+- Sailing/known attached cinematic rides retain the selected target, suspend
+  ground route planning, show status and replan after disembarking/ending.
+  No boat/ride/teleport/interaction/player movement command is invoked.
+
+Verification:
+PASS: 239/239 JavaScript regressions, no failures/skips.
+  build/validation-110-js.txt
+PASS: original 1.0.9 and current 1.0.14 real Lua target/hover/file/cancel contract
+  and 170-hint integration checks.
+  build/validation-110-lua.txt
+PASS: rebuilt 1.1.0 native adapter, ABI/runtime SHA gate, mod filtering and
+  version-independent host dispatch.
+  build/validation-110-native.txt
+PASS: full package built from current 951 streamed-atlas modules.
+  build/validation-110-build.txt
+PASS: 1,372 exact package file matches; 291 legacy chunk strings and original
+  atlas/actor byte hashes unchanged; runtime/native/docs agree on 1.1.0;
+  no collector-owned paths.
+  build/validation-110-package.txt
+PASS: source fact SHA matches all baked per-world catalogs and roadbook audit.
+  tests/roadbook.test.cjs; build/roadbook-11/provenance-regression.txt
+PASS: git diff --check.
+  build/validation-110-diff-check.txt
+
+Feedback loops:
+- Traversal extraction regressions first failed for old directional wall-run,
+  vault vectors, wall-jump/pole endpoints and wharf boarding.
+  build/roadbook-11/traversal-red.txt, traversal-green.txt
+- Pristine old passage module fails the >64-actor condition refresh regression;
+  new round-robin refresh passes.
+  build/roadbook-11/condition-rotation-red.txt, condition-rotation.txt
+- New integration cases cover retained sailing target / resumed planning,
+  inactive-bell roadbook with loaded vs unknown action, ordinary floor rejection,
+  mandatory drop checks, current guide hook-condition binding, and valid reverse.
+- Fix a pre-existing tomb test's mixed zero/wall clocks: use one increasing
+  timestamp for guard and audit pumps. Full suite then passes deterministically.
+
+Sources and preservation:
+- authoring/placed-passage-facts.json and placed-passage-audit.json retain package
+  hashes; native-component-schema.json retains executable hash/schema facts.
+- Game packages, encryption material and public roadbook prose/images stay in
+  ignored build directories; only derived coordinate facts/code enter the mod.
+- Strict parser processed 413 action paths plus 75 hooks; one degenerate path
+  is excluded, producing 487 unique usable records. Scene data and engine
+  physics remain separate evidence. Spline-mode audit found no used constant
+  outgoing segment among these 413 paths.
+- Preserve 1.0.2 at build/release-archive/pre-1.1.0-20261113 with identical SHA.
+  Append to release/DIST-ARCHIVE-20261113.json. dist contains only 1.1.0.
+
+Not completed / limitations:
+- Full-map manual routes are NOT finished. 52/140 worksheet links unresolved:
+  49 geometry, one identity, one cross-world transition, one endpoint.
+  authoring/roadbook-course-audit.json and docs/MOVEMENT-COVERAGE.md list them.
+- Complete sailing/water routes, general scripted riding and dedicated story
+  chase routes are NOT implemented. Only the stated adapters/phase handling
+  are included; no claim that every animation/quest variation is supported.
+- No new live-game route/HUD/FPS validation. Physics/reflected API regression
+  calls use simulated interfaces; real package parsing is not a game-play test.
+- Game/manager installation remained read-only; no Nexus upload or Git commit.
+  No player-trail recording, runtime persistence or runtime downloads added.

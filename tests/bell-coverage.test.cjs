@@ -23,7 +23,9 @@ test('only existing 3D courses count as enabled coverage, with explicit directed
   assert.equal(at,pair.to);
  }
  assert.equal(data.pairs.filter(p=>p.courses.length).length,2,'do not silently promote 2D worksheet links');
- assert.ok(data.worksheetLinks.every(p=>p.runtimeEnabled===false&&p.status==='needs-3d-authoring'));
+ const generated=require('../authoring/roadbook-course-audit.json');
+ for(const link of data.worksheetLinks){const row=generated.links.find(r=>r.id===link.id);assert.ok(row);
+  assert.equal(link.runtimeEnabled,row.runtimeEnabled);assert.equal(link.status,row.status);}
 });
 
 test('duplicate or missing public landmark identities remain explicit rather than matching the nearest bell',()=>{

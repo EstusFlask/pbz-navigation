@@ -44,6 +44,7 @@ with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
     archive.write(root/'release/CHANGELOG.md', 'CHANGELOG.md')
     archive.write(root/'docs/BELL-ROUTE-AUDIT.md', 'BELL-ROUTE-AUDIT.md')
     archive.write(root/'docs/GAME-TRAVERSAL-AUDIT.md', 'GAME-TRAVERSAL-AUDIT.md')
+    archive.write(root/'docs/MOVEMENT-COVERAGE.md', 'MOVEMENT-COVERAGE.md')
     archive.write(root/'docs/MANUAL-ROUTES.md', 'MANUAL-ROUTES.md')
     archive.write(root/'docs/BELL-NETWORK-COVERAGE.md', 'BELL-NETWORK-COVERAGE.md')
     archive.write(root/'docs/ITEM-DESCRIPTION-AUDIT.md', 'ITEM-DESCRIPTION-AUDIT.md')

@@ -6,6 +6,7 @@ const LiveLinks = require('./PBZLiveLinks');
 const Transitions=require('./PBZRouteTransitions'),Feasible=require('./PBZRouteFeasibility'),Local=require('./PBZRouteLocalWalk');
 const classCatalog = require('./PBZPassageClasses').classes;
 const Mechanisms=require('./PBZRouteMechanisms');
+const TraversalGeometry=require('./PBZRouteTraversalGeometry');
 const ladderStates = new WeakMap();
 function resetLadders(g) {
   ladderStates.delete(g);g.openPassages.clear();g.passageStates?.clear();g.passageRevision++;
@@ -59,13 +60,17 @@ const labels = {
   fall: ['跳下', 'Drop down'], ladder: ['攀梯', 'Use ladder'], drop: ['沿壁滑下', 'Slide down wall'],
   slide: ['沿坡滑下', 'Slide down slope'], zipline: ['滑索', 'Ride zipline'],
   rappel: ['沿绳下降', 'Rappel'], swing: ['抓绳荡过', 'Swing across'],
-  hook:['使用钩索到达落地区','Grapple to the landing area'],crawl:['穿过低洞','Crawl through'],vault:['翻越障碍','Vault over'],jump:['跳跃到对面','Jump across']
+  hook:['使用钩索到达落地区','Grapple to the landing area'],crawl:['穿过低洞','Crawl through'],vault:['翻越障碍','Vault over'],jump:['跳跃到对面','Jump across'],
+  walljump:['蹬墙跳至下一处落点','Wall-jump to the next landing'],pole:['沿立柱连接跳跃','Jump along the linked poles'],
+  boarding:['到登船点后乘船','Board at the wharf'],boat:['按航线行船','Sail to the destination'],ride:['按剧情完成骑乘','Continue the scripted ride'],
+  chase:['按剧情完成追逐','Continue the scripted chase'],portal:['触发场景通道','Use the scene passage']
 };
 function title(move) {
   const english = /^en/i.test(String(UE.KismetInternationalizationLibrary?.GetCurrentLanguage?.() || 'zh'));
   if(move.fold) return english ? 'Folding ladder · lower first' : '折梯 · 需先放下';
   if(move.scripted) return english ? 'Transport · requires activation' : '升降装置 · 需触发';
   const key=({2:'ladder',3:'ascent',6:'drop'})[move.kind]||move.kind;
+  if(key==='ladder'&&move.p&&move.end&&move.end.z<move.p.z-80)return english?'Descend the ladder':'沿梯下降';
   return labels[key]?.[english ? 1 : 0] || '';
 }
 function support(world,p,below=105) {
@@ -74,7 +79,7 @@ function support(world,p,below=105) {
   return hit&&!hit.penetrating&&hit.nz>=world.normal-.025?hit.point:null;
 }
 function landing(world,p,kind) {
-  const below=['hook','swing','rappel','zipline','wallrun'].includes(kind)?475:kind==='lift'?100:240;
+  const below=['hook','swing','rappel','zipline','wallrun','pole','walljump','boarding'].includes(kind)?475:kind==='lift'?100:240;
   const q=support(world,p,below);
   return q&&p.z-q.z<=below&&q.z-p.z<=180?q:null;
 }
@@ -94,10 +99,10 @@ function* sweepJob(world,a,b) {
 }
 function* approachJob(world,pad,anchor,mode) {
   const run=R.xy(pad,anchor);
-  const handleHeight=['hook','swing','rappel','zipline','wallrun'].includes(mode)?475:240;
+  const handleHeight=['hook','swing','rappel','zipline','wallrun','pole','walljump','boarding'].includes(mode)?475:240;
   // A distant fallback pad must actually lead to the interaction's approach.
   // Sample on the player's side of the wall, not inside an authored wall face.
-  const reach=['wallrun','ascent','mantle','ladder','swing','hook'].includes(mode)?90:35;
+  const reach=['wallrun','ascent','mantle','ladder','swing','hook','vault','walljump','pole','boarding'].includes(mode)?90:35;
   const near=R.lerp(anchor,pad,Math.min(1,reach/(run||1)));
   const end=support(world,near,handleHeight);
   if(!end||Math.abs(near.z-end.z)>handleHeight||Math.abs(pad.z-end.z)>100+run*.85)return false;
@@ -186,7 +191,7 @@ function placedCurve(actor,kind){
    }catch(_){}}
    return components.get(name)||null;
   }
-  function location(name){const c=component(name);return c?W.plain(c.K2_GetComponentLocation()):null;}
+  function location(name){const c=component(name);return typeof c?.K2_GetComponentLocation==='function'?W.plain(c.K2_GetComponentLocation()):null;}
   function curve(name,midpoint=false){
     const c=component(name);if(!c||typeof c.GetSplineLength!=='function')return [];
     const length=c.GetSplineLength();if(!Number.isFinite(length)||length<1||length>180000)return [];
@@ -199,7 +204,7 @@ function placedCurve(actor,kind){
   switch(kind){
    case 'lift':case 'slide':result=curve('Spline');break;
    case 'rappel':case 'zipline':result=curve('RopeSpline');if(!result.length)result=curve('RopeSplineComponent');break;
-   case 'wallrun':result=curve('LowSpline');break;
+   case 'wallrun':result=curve('LowSpline');if(result.length<2)result=TraversalGeometry.extract(actor,kind,{location,curve,point:W.plain});break;
    case 'ascent':result=[location('BoxA')||location('Box')||root,...curve('EdgeSpline',true)];
     if(result.length<2){const end=location('EndPositionStatic');if(end)result=[location('Box')||root,end];}break;
    case 'mantle':result=[location('FrontCollision')||root,...curve('FrontEdgeSpline',true),...curve('BackEdgeSpline',true)];break;
@@ -207,9 +212,9 @@ function placedCurve(actor,kind){
    case 'ladder':result=[location('BottomCollision'),location('TopCollision')];break;
    case 'swing':result=[location('ASide')||location('BoxA'),location('BSide')||location('BoxB')];break;
    case 'hook':result=[location('TriggerSphere')||location('TriggerBox'),location('GrabPoint'),location('LandArea')];break;
-   default:return null;
+   default:result=TraversalGeometry.extract(actor,kind,{location,curve,point:W.plain});
   }
-  if(result.length<2||!result.every(R.finite)||R.dist(result[0],result[result.length-1])<36)return null;
+  if(!result||result.length<2||!result.every(R.finite)||R.dist(result[0],result[result.length-1])<36)return null;
   if(['rappel','zipline','drop','slide'].includes(kind)&&result[0].z<result[result.length-1].z)result.reverse();
   if(kind==='rappel')try{
    const transform=actor.GetRappellingLandTargetWorldTransform?.(),end=W.plain(transform?.Translation);
@@ -222,11 +227,13 @@ function liveCache(g,world){
   let cache=liveWorlds.get(world);
   if(!cache||cache.graph!==g){
     const byClass=new Map(classCatalog.map(c=>[c.classPath,{definition:c,items:new Map()}]));
-    for(const item of g.actors){
+    const known=new Map(g.actors.map(a=>[String(a.guid).toLowerCase(),a]));
+    for(const item of require('./PBZRoutePlacedPassages').forWorld(g.name))known.set(String(item.guid).toLowerCase(),{...item,path:item.path.map(p=>p.slice())});
+    for(const item of known.values()){
       if(!item.classPath||!byClass.has(item.classPath))continue;
       byClass.get(item.classPath).items.set(item.guid.toLowerCase(),item);
     }
-    cache={graph:g,classes:[...byClass],index:0,next:0,paths:new Map(),tried:new Map(),actors:new Map(),nextStates:0,known:new Map(g.actors.map(a=>[String(a.guid).toLowerCase(),a]))};liveWorlds.set(world,cache);
+    cache={graph:g,classes:[...byClass],index:0,next:0,paths:new Map(),tried:new Map(),actors:new Map(),nextStates:0,known};liveWorlds.set(world,cache);
   }
   return cache;
 }
@@ -241,11 +248,18 @@ function readState(g,cache,actor,item,pawn,world){
  if((old&&JSON.stringify(old)!==JSON.stringify(state))||(!old&&!state.ready))g.passageRevision=(g.passageRevision||0)+1;
  states.set(key,state);return state;
 }
+function retainPlacedObservation(g,item,path){
+ if(item.source!=='game-placement')return;
+ const key=String(item.guid).toLowerCase();
+ if(g.observedPassages.has(key)||g.observedPassages.size<240)
+  g.observedPassages.set(key,{...item,path:path.map(p=>[p.x,p.y,p.z])});
+}
 function refreshStates(g,world,pawn,force=false){
  const cache=liveWorlds.get(world?.sourceWorld||world);if(!g||!cache||cache.graph!==g)return false;
  const now=Date.now();if(!force&&now<cache.nextStates)return false;cache.nextStates=now+900;
- const before=g.passageRevision,feet=world.feet();let count=0;
- for(const {actor,item} of cache.actors.values()){
+ const before=g.passageRevision,feet=world.feet(),rows=[...cache.actors.values()];let count=0;
+ for(let i=0;i<Math.min(256,rows.length);i++){
+  const index=(cache.stateCursor||0)%rows.length,{actor,item}=rows[index];cache.stateCursor=(index+1)%rows.length;
   if(!W.alive(actor))continue;
   const path=cache.paths.get(item.guid)?.path;
   if(path&&R.dist(feet,path[0])>16000)continue;
@@ -278,11 +292,13 @@ function* refreshLoadedJob(g,world,pawn,start,goal,options={}){
    let item=items.get(key)||cache.known.get(key)||g.observedPassages.get(key);
    const cached=cache.paths.get(item?.guid||guid);if(cached&&now-cached.at<5000){summary.paths++;if(item)readState(g,cache,actor,item,pawn,world);continue;}
    let path=placedCurve(actor,definition.kind);
+   if(!path&&item?.source==='game-placement'&&item.origin&&R.dist(location,{x:item.origin[0],y:item.origin[1],z:item.origin[2]})<25)
+    path=item.path.map(q=>({x:q[0],y:q[1],z:q[2]}));
    if(!path&&item?.local){const transform=actor.GetTransform?.()||actor.K2_GetActorTransform?.();
     if(transform)path=item.local.map(q=>W.plain(UE.KismetMathLibrary.TransformLocation(transform,new UE.Vector(...q))));}
    if(!path){if(summary.missing.length<4){
     const components=[];try{const list=sceneComponents(actor);for(let n=0;n<Math.min(24,list?.Num()||0);n++)components.push(String(list.Get(n).GetName()));}catch(_){}
-    summary.missing.push({guid,kind:definition.kind,components});
+    summary.missing.push({guid,kind:definition.kind,components,reason:definition.entryOnly?'scripted entry; no static movement corridor':'no confirmed entry and exit'});
    }continue;}
    summary.paths++;
    if(!item){
@@ -292,7 +308,7 @@ function* refreshLoadedJob(g,world,pawn,start,goal,options={}){
     if(g.observedPassages.size>=240)continue;g.observedPassages.set(key,item);
    }
    cache.paths.set(item.guid,{path,at:now});items.set(key,item);yield;
-   readState(g,cache,actor,item,pawn,world);
+   readState(g,cache,actor,item,pawn,world);retainPlacedObservation(g,item,path);
    if(item.fold){
     g.foldedPassages?.add(key);
     try{if(typeof actor.bTriggered==='boolean'){
@@ -344,7 +360,7 @@ function updateLoaded(g,world,pawn,nativeWalk) {
     }
     if(!cache.paths.has(item.guid))g.passageRevision=(g.passageRevision||0)+1;
     cache.paths.set(item.guid,{path,at:now});
-    readState(g,cache,actor,item,pawn,world);
+    readState(g,cache,actor,item,pawn,world);retainPlacedObservation(g,item,path);
     // Attachment runs in liveRouteJob after standing-pad and action checks;
     // a timer discovery must not install an unchecked movement arc.
   }
@@ -360,11 +376,12 @@ function liveRoute(...args){const task=liveRouteJob(...args);let row;do{row=task
 function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
   if(R.dist(start,goal)>19000)return null;
   const clock=options.clock||Date.now;
-  const candidates=[];
-  let work=0;for(const feature of [...g.actors,...g.observedPassages.values()]) {if((++work&7)===0)yield;
+  const candidates=[],cache=liveWorlds.get(world.sourceWorld||world);
+  const features=new Map([...g.actors,...(cache?.known.values()||[]),...g.observedPassages.values()].map(f=>[String(f.guid).toLowerCase(),f]));
+  let work=0;for(const feature of features.values()) {if((++work&7)===0)yield;
     if(!feature.path)continue;
     const live=liveWorlds.get(world.sourceWorld||world)?.paths.get(feature.guid);
-    if((feature.conditional&&feature.local||feature.kind==='hook')&&(!live||Date.now()-live.at>=30000))continue;
+    if((feature.requiresLoaded||feature.conditional&&feature.local||feature.kind==='hook')&&(!live||Date.now()-live.at>=30000))continue;
     const path=live&&Date.now()-live.at<30000?live.path:feature.path.map(v=>({x:v[0],y:v[1],z:v[2]}));
     if(path.length<2||!path.every(R.finite))continue;
     const forward=R.dist(start,path[0])+R.dist(goal,path[path.length-1]);
@@ -408,5 +425,21 @@ exports.refreshLoadedJob=refreshLoadedJob;
 exports.refreshLadders=refreshLadders;
 exports.refreshStates=refreshStates;
 exports.resetLadders=resetLadders;
+
+// A baked route cannot promote a raw placement into an open interaction.
+// Read the same resident cache/state used by ordinary action-chain planning.
+exports.referenceState=function(g,world,move){
+ const key=String(move.guid||'').toLowerCase(),state=g.passageStates?.get(key);
+ if(state?.ready===false)return state;
+ const cache=liveWorlds.get(world.sourceWorld||world),live=cache?.graph===g&&cache.paths.get(move.guid);
+ if(!live||Date.now()-live.at>=30000||state?.ready!==true)return {ready:false,block:{unknown:true,icon:'mechanism',label:'路书动作 · 等待读取当前机关',source:'roadbook-action'}};
+ let path=live.path;
+ const feature=cache.known.get(key)||g.observedPassages?.get(key);
+ if(feature?.both&&R.dist(move.p,path.at(-1))+R.dist(move.end,path[0])<R.dist(move.p,path[0])+R.dist(move.end,path.at(-1)))path=path.slice().reverse();
+ const match=(raw,p)=>!raw||R.dist({x:raw[0],y:raw[1],z:raw[2]},p)<=200;
+ if(!match(move.referenceFirst,path[0])||!match(move.referenceLast,path.at(-1)))
+  return {ready:false,block:{unknown:true,icon:'mechanism',label:'路书动作入口或落点已改变 · 需重新确认',source:'roadbook-action'}};
+ return {...state,path};
+};
 
 exports.checkJob=checkJob;exports.liveRouteJob=liveRouteJob;

@@ -1,15 +1,16 @@
 [size=5][b]Quest and Exploration Navigation - Fork[/b][/size]
-[b]Version 1.0.2 | Experimental[/b]
+[b]Version 1.1.0 | Experimental[/b]
 Routes to quests, map pins and collectibles on the regional map, with a raised blue guiding thread in the game world.
 
 Based on [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333's Quest and Exploration Navigation 0.8.5-beta[/url] and the local-fix5 patches. azqwq333 created the original navigation system, all 11 world graphs, walking-surface datasets and original bundled assets. kurosakana maintains this fork independently; this fork does not imply endorsement by the original author.
 
-[size=4][b]What's included in 1.0.2[/b][/size]
+[size=4][b]What's included in 1.1.0[/b][/size]
 [list]
-[*][b]1.0.2 routing fixes:[/b] inactive bells keep overland routes. Compare loaded walking before committing to an item transfer; connect traversal actions through checked ground corridors, use down-slide top triggers and native rappel landings. These changes still need live-game testing.[/*]
+[*][b]Experimental traversal expansion:[/b] 487 placed interaction instances and 86 directional roadbook candidates, validated against current scene physics and conditions. Sailing/recognized cinematic rides retain the target and replan afterwards. 52 of 140 links, full sailing routes and dedicated chase routes remain unresolved. See MOVEMENT-COVERAGE.md.[/*]
+[*][b]1.1.0 routing fixes:[/b] inactive bells keep overland routes. Compare loaded walking before committing to an item transfer; connect traversal actions through checked ground corridors, use down-slide top triggers and native rappel landings. These changes still need live-game testing.[/*]
 [*][b]Loading feedback:[/b] blue “Calculating route…” / “Loading map routes…” text with elapsed seconds, above gameplay and beside the selected map target. It clears on completion, cancellation or reset. The map no longer reports no route while calculation is pending. First routes can still take around 10–14 seconds; this update adds feedback rather than a speed improvement.[/*]
 [*][b]Bell transfers:[/b] compare activated bells for item navigation, check the departure approach and retain a checked recommendation during failed walking searches. After you teleport manually, navigation continues toward the original item. Known walls, locks and unavailable actions exclude candidates; unloaded destination walking stays pending.[/*]
-[*][b]Map Tracker compatibility:[/b] real 1.0.9 and 1.0.24 target/hover/cancellation integration tested. The navigation-owned adapter checks supported service interfaces instead of pinning the collector entry-file hash. Unsupported interfaces disable safely; future versions still require compatible APIs.[/*]
+[*][b]Map Tracker compatibility:[/b] real 1.0.9 and 1.1.04 target/hover/cancellation integration tested. The navigation-owned adapter checks supported service interfaces instead of pinning the collector entry-file hash. Unsupported interfaces disable safely; future versions still require compatible APIs.[/*]
 [*][b]Chinese acquisition hints:[/b] 170 supplementary hints following an audit of all eight public GamerSky maps, including pigeon feed's tiger-cannon requirement. Existing detailed descriptions and other languages are preserved. Tracker files are not replaced.[/*]
 [*][b]Route checks:[/b] floor support, character clearance, slope/step rules, door item/weapon requirements and recognized traversal conditions. Bounded local detours and checked partial guidance remain available. Ladders, climbs, grapples, slides and lifts must be operated by the player.[/*]
 [*][b]Two fixed directed reference courses:[/b] Great Corridor Bridge → cave climbs/grapple → Xiaozhang; Mass Grave → actual uphill detour → Mo Jizi cenotaph. Checked same-floor joins and short item spurs are supported.[/*]
@@ -19,13 +20,13 @@ Based on [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333's Que
 [b]Limits and validation[/b]
 Full-map authored 3D routes are [b]not complete[/b]. Only the two directed reference courses above are enabled; the 140 roadbook worksheet links are not playable routes. Unloaded regions, missing original graph connections and unsupported mechanisms can still cause gaps or wrong candidates. A failed bounded search does not prove a place is unreachable.
 
-JavaScript regressions, real Map Tracker 1.0.9/1.0.24 Lua tests and rebuilt native-adapter/package checks pass. Physics and HUD calls use simulated interfaces. The new HUD appearance, complete reference courses and valley item scenarios have not passed a fresh live-game validation. No full-map reachability, global-shortest-path, latency or FPS claim. Package audit documents explain the remaining gaps.
+JavaScript regressions, real Map Tracker 1.0.9/1.1.04 Lua tests and rebuilt native-adapter/package checks pass. Physics and HUD calls use simulated interfaces. The new HUD appearance, complete reference courses and valley item scenarios have not passed a fresh live-game validation. No full-map reachability, global-shortest-path, latency or FPS claim. Package audit documents explain the remaining gaps.
 
 [size=4][b]Requirements[/b][/size]
 [list]
 [*][b]Required:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/113]PBZModLoader 1.0.0 (#113)[/url].[/*]
 [*][b]Optional settings menu:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/149]Mods Menu 0.7.2 (#149)[/url].[/*]
-[*][b]Optional collectible navigation/hints:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/187]Map Tracker Plus - Minimap and Collectibles (UE4SS) 1.0.9 / 1.0.24 (#187)[/url], plus [url=https://www.nexusmods.com/phantombladezero/mods/5]UE4SS for Phantom Blade Zero 1.0.3 (#5)[/url].[/*]
+[*][b]Optional collectible navigation/hints:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/187]Map Tracker Plus - Minimap and Collectibles (UE4SS) 1.0.9 / 1.1.04 (#187)[/url], plus [url=https://www.nexusmods.com/phantombladezero/mods/5]UE4SS for Phantom Blade Zero 1.0.3 (#5)[/url].[/*]
 [/list]
 Collectible sync requires [b]v3.0.1-1195-g1ceefac8 Shipping[/b]; the exact UE4SS runtime ABI/hash check remains. The collector's downloaded folder is named Map Collectible Tracker. Its minimap, icons and tracking remain collector-owned. Legacy JS 0.6.7 minimap routes, enlarged icons and automatic accessory hints have not been ported to the UE4SS collector; those navigation settings have no effect there. Keep only one collector generation.
 
@@ -53,15 +54,15 @@ PBZQuestRouteCompat belongs to navigation. Do not replace PbzMapTracker files. T
 [b]Uninstall:[/b] close the game and remove navigation through the manager. For manual removal, remove ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/, ProjectPBZ/Content/Mods/PBZQuestRoute/ and platform/steam/ue4ss/Mods/PBZQuestRouteCompat/. Keep your configuration, collector and shared runtimes.
 
 [size=5][b]中文说明[/b][/size]
-[b]任务与探索导航 - Fork，1.0.2（实验版）[/b]
-1.0.2：未激活铃铛走陆路；修复近处物品跳过实景步行检查；动作间补接经检查的地面路网，修正下滑入口与沿绳落地。游戏内效果待复测。
+[b]任务与探索导航 - Fork，1.1.0（实验版）[/b]
+1.1.0：未激活铃铛走陆路；修复近处物品跳过实景步行检查；动作间补接经检查的地面路网，修正下滑入口与沿绳落地。游戏内效果待复测。
 地图显示任务、标记和收集品路线，关闭地图后沿离地约 105 厘米的蓝线前进。本分支基于 azqwq333 原版 0.8.5-beta 与 local-fix5，由 kurosakana 独立维护。原导航、11 个世界路网、行走表面数据及原包资产归 azqwq333，不表示原作者背书。
 
 [b]本版内容[/b]
 [list]
 [*]增加持续显示的蓝色“正在计算路线…”／“正在加载地图路网…”和等待秒数；地图目标旁同步提示，计算中不再提前报无路线。完成、取消、重置后收起。首次计算仍可能等待约 10～14 秒，本版补反馈，未做提速。[/*]
 [*]物品导航比较已激活铃铛，检查出发接近段，保留已检查的中转方案。手动传送后继续原物品末段，避免反复推荐返回；已知墙、门锁及不可用机关排除，远端未加载则保留待计算。[/*]
-[*]修复 Map Tracker 1.0.24 联动，以服务接口检查替代收集入口文件哈希锁；真实 1.0.9／1.0.24 目标、悬停中键、保留高度及取消同步通过本地测试。未来版本仍须满足接口契约，不兼容则停用对应功能。[/*]
+[*]修复 Map Tracker 1.1.04 联动，以服务接口检查替代收集入口文件哈希锁；真实 1.0.9／1.1.04 目标、悬停中键、保留高度及取消同步通过本地测试。未来版本仍须满足接口契约，不兼容则停用对应功能。[/*]
 [*]对照游民八张公开地图补充 170 项中文获取提示，包括鸽饲料的虎炮要求。保留收集 Mod 原有详细说明和其他语言，不替换收集文件。[/*]
 [*]保留地面、角色空间、坡度、门锁物品／武器及已识别机关条件检查，尝试有界局部绕行。攀爬、钩索、梯子、滑索和升降梯由玩家操作。[/*]
 [*]两条有向三维参考课程：大廊桥→山洞两次攀爬／钩索→小张藏身处；乱葬岗→实际绕坡→墨玑子衣冠冢。支持经检查的同层接入和短物品支线。不采样、保存或加载玩家通路，运行时不联网。[/*]
@@ -72,7 +73,7 @@ PBZQuestRouteCompat belongs to navigation. Do not replace PbzMapTracker files. T
 JS 回归、两版真实 Lua 联动、原生组件与完整包检查通过；物理与 HUD 接口为模拟。本版新提示外观、两条全程及悲泣溪谷物品仍待新版本游戏验证，不承诺全图可达、全局最短或具体性能。详见随包审计说明。
 
 [b]依赖与安装[/b]
-必需 PBZModLoader #113，1.0.0；可选 Mods Menu #149，0.7.2。需要收集联动／补充说明时，另装 Map Tracker Plus #187，1.0.9／1.0.24，以及 UE4SS #5，1.0.3（[b]v3.0.1-1195-g1ceefac8 Shipping[/b]）。运行时 ABI／哈希检查保留；新版收集接口仍须兼容。旧 JS 收集联动的小地图路线、放大图标、自动饰品提示未迁移，相关导航设置对 UE4SS 收集版不生效。
+必需 PBZModLoader #113，1.0.0；可选 Mods Menu #149，0.7.2。需要收集联动／补充说明时，另装 Map Tracker Plus #187，1.0.9／1.1.04，以及 UE4SS #5，1.0.3（[b]v3.0.1-1195-g1ceefac8 Shipping[/b]）。运行时 ABI／哈希检查保留；新版收集接口仍须兼容。旧 JS 收集联动的小地图路线、放大图标、自动饰品提示未迁移，相关导航设置对 UE4SS 收集版不生效。
 [list=1]
 [*]退出游戏，备份 ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt。[/*]
 [*]停用原版／旧导航，将旧脚本目录移到游戏外，保留配置。手动安装时，将 ZIP 的 ProjectPBZ 与 platform 合并到 Steam“管理→浏览本地文件”打开的游戏根目录。[/*]

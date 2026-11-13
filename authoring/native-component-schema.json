@@ -1,0 +1,652 @@
+{
+  "schema": 1,
+  "gameExecutableSHA256": "4415933ce33476f14c837abb61a1b60af8b78cd81783896501913a7aac69e423",
+  "primitive": [
+    {
+      "name": "MinDrawDistance",
+      "kind": 10
+    },
+    {
+      "name": "LDMaxDrawDistance",
+      "kind": 10
+    },
+    {
+      "name": "CachedMaxDrawDistance",
+      "kind": 10
+    },
+    {
+      "name": "DepthPriorityGroup",
+      "kind": 0
+    },
+    {
+      "name": "ViewOwnerDepthPriorityGroup",
+      "kind": 0
+    },
+    {
+      "name": "IndirectLightingCacheQuality",
+      "kind": 0
+    },
+    {
+      "name": "LightmapType",
+      "kind": 30
+    },
+    {
+      "name": "HLODBatchingPolicy",
+      "kind": 30
+    },
+    {
+      "name": "ShadowCacheInvalidationBehavior",
+      "kind": 30
+    },
+    {
+      "name": "bEnableAutoLODGeneration",
+      "kind": 12
+    },
+    {
+      "name": "bIsActorTextureStreamingBuiltData",
+      "kind": 12
+    },
+    {
+      "name": "bIsValidTextureStreamingBuiltData",
+      "kind": 12
+    },
+    {
+      "name": "bNeverDistanceCull",
+      "kind": 12
+    },
+    {
+      "name": "bAlwaysCreatePhysicsState",
+      "kind": 12
+    },
+    {
+      "name": "bGenerateOverlapEvents",
+      "kind": 12
+    },
+    {
+      "name": "bMultiBodyOverlap",
+      "kind": 12
+    },
+    {
+      "name": "bTraceComplexOnMove",
+      "kind": 12
+    },
+    {
+      "name": "bReturnMaterialOnMove",
+      "kind": 12
+    },
+    {
+      "name": "bUseViewOwnerDepthPriorityGroup",
+      "kind": 12
+    },
+    {
+      "name": "bAllowCullDistanceVolume",
+      "kind": 12
+    },
+    {
+      "name": "bVisibleInReflectionCaptures",
+      "kind": 12
+    },
+    {
+      "name": "bVisibleInRealTimeSkyCaptures",
+      "kind": 12
+    },
+    {
+      "name": "bVisibleInRayTracing",
+      "kind": 25
+    },
+    {
+      "name": "bOutputRTDepthMaskInDepthPass",
+      "kind": 12
+    },
+    {
+      "name": "bRenderInMainPass",
+      "kind": 12
+    },
+    {
+      "name": "bRenderInDepthPass",
+      "kind": 12
+    },
+    {
+      "name": "bReceivesDecals",
+      "kind": 12
+    },
+    {
+      "name": "bHoldout",
+      "kind": 12
+    },
+    {
+      "name": "bOwnerNoSee",
+      "kind": 12
+    },
+    {
+      "name": "bOnlyOwnerSee",
+      "kind": 12
+    },
+    {
+      "name": "bTreatAsBackgroundForOcclusion",
+      "kind": 12
+    },
+    {
+      "name": "bDisableOcclusionCull",
+      "kind": 12
+    },
+    {
+      "name": "bUseAsOccluder",
+      "kind": 12
+    },
+    {
+      "name": "bSelectable",
+      "kind": 12
+    },
+    {
+      "name": "bWantsEditorEffects",
+      "kind": 12
+    },
+    {
+      "name": "bForceMipStreaming",
+      "kind": 12
+    },
+    {
+      "name": "bHasPerInstanceHitProxies",
+      "kind": 12
+    },
+    {
+      "name": "CastShadow",
+      "kind": 12
+    },
+    {
+      "name": "ShadowDetailMode",
+      "kind": 30
+    },
+    {
+      "name": "bEmissiveLightSource",
+      "kind": 12
+    },
+    {
+      "name": "bAffectDynamicIndirectLighting",
+      "kind": 12
+    },
+    {
+      "name": "bAffectIndirectLightingWhileHidden",
+      "kind": 12
+    },
+    {
+      "name": "bAffectDistanceFieldLighting",
+      "kind": 12
+    },
+    {
+      "name": "bCastDynamicShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastStaticShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastVolumetricTranslucentShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastContactShadow",
+      "kind": 12
+    },
+    {
+      "name": "bSelfShadowOnly",
+      "kind": 12
+    },
+    {
+      "name": "bCastFarShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastInsetShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastCinematicShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastHiddenShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastShadowAsTwoSided",
+      "kind": 12
+    },
+    {
+      "name": "bLightAsIfStatic",
+      "kind": 12
+    },
+    {
+      "name": "bLightAttachmentsAsGroup",
+      "kind": 12
+    },
+    {
+      "name": "bExcludeFromLightAttachmentGroup",
+      "kind": 12
+    },
+    {
+      "name": "bReceiveMobileCSMShadows",
+      "kind": 12
+    },
+    {
+      "name": "bSingleSampleShadowFromStationaryLights",
+      "kind": 12
+    },
+    {
+      "name": "bIgnoreRadialImpulse",
+      "kind": 12
+    },
+    {
+      "name": "bIgnoreRadialForce",
+      "kind": 12
+    },
+    {
+      "name": "bApplyImpulseOnDamage",
+      "kind": 12
+    },
+    {
+      "name": "bReplicatePhysicsToAutonomousProxy",
+      "kind": 12
+    },
+    {
+      "name": "bFillCollisionUnderneathForNavmesh",
+      "kind": 12
+    },
+    {
+      "name": "bRasterizeAsFilledConvexVolume",
+      "kind": 12
+    },
+    {
+      "name": "AlwaysLoadOnClient",
+      "kind": 12
+    },
+    {
+      "name": "AlwaysLoadOnServer",
+      "kind": 12
+    },
+    {
+      "name": "bUseEditorCompositing",
+      "kind": 12
+    },
+    {
+      "name": "bIsBeingMovedByEditor",
+      "kind": 12
+    },
+    {
+      "name": "bRenderCustomDepth",
+      "kind": 12
+    },
+    {
+      "name": "bVisibleInSceneCaptureOnly",
+      "kind": 12
+    },
+    {
+      "name": "bHiddenInSceneCapture",
+      "kind": 12
+    },
+    {
+      "name": "bRayTracingFarField",
+      "kind": 12
+    },
+    {
+      "name": "bLumenHeightfield",
+      "kind": 12
+    },
+    {
+      "name": "FirstPersonPrimitiveType",
+      "kind": 30
+    },
+    {
+      "name": "bEvaluateRayTracingWaterCaustics",
+      "kind": 12
+    },
+    {
+      "name": "bHasNoStreamableTextures",
+      "kind": 12
+    },
+    {
+      "name": "bStaticWhenNotMoveable",
+      "kind": 12
+    },
+    {
+      "name": "bHasCustomNavigableGeometry",
+      "kind": 0
+    },
+    {
+      "name": "CanCharacterStepUpOn",
+      "kind": 0
+    },
+    {
+      "name": "LightingChannels",
+      "kind": 25
+    },
+    {
+      "name": "RayTracingGroupCullingPriority",
+      "kind": 30
+    },
+    {
+      "name": "CustomDepthStencilWriteMask",
+      "kind": 30
+    },
+    {
+      "name": "ExcludeFromHLODLevels",
+      "kind": 0
+    },
+    {
+      "name": "RayTracingGroupId",
+      "kind": 3
+    },
+    {
+      "name": "VisibilityId",
+      "kind": 3
+    },
+    {
+      "name": "CustomDepthStencilValue",
+      "kind": 3
+    },
+    {
+      "name": "CustomPrimitiveData",
+      "kind": 25
+    },
+    {
+      "name": "CustomPrimitiveDataInternal",
+      "kind": 25
+    },
+    {
+      "name": "TranslucencySortPriority",
+      "kind": 3
+    },
+    {
+      "name": "TranslucencySortDistanceOffset",
+      "kind": 10
+    },
+    {
+      "name": "RuntimeVirtualTextures",
+      "kind": 22
+    },
+    {
+      "name": "VirtualTextureLodBias",
+      "kind": 1
+    },
+    {
+      "name": "VirtualTextureCullMips",
+      "kind": 1
+    },
+    {
+      "name": "VirtualTextureMinCoverage",
+      "kind": 1
+    },
+    {
+      "name": "VirtualTextureRenderPassType",
+      "kind": 30
+    },
+    {
+      "name": "BoundsScale",
+      "kind": 10
+    },
+    {
+      "name": "MoveIgnoreActors",
+      "kind": 22
+    },
+    {
+      "name": "MoveIgnoreComponents",
+      "kind": 22
+    },
+    {
+      "name": "BodyInstance",
+      "kind": 25
+    },
+    {
+      "name": "OnComponentHit",
+      "kind": 28
+    },
+    {
+      "name": "OnComponentBeginOverlap",
+      "kind": 28
+    },
+    {
+      "name": "OnComponentEndOverlap",
+      "kind": 28
+    },
+    {
+      "name": "OnComponentWake",
+      "kind": 28
+    },
+    {
+      "name": "OnComponentSleep",
+      "kind": 28
+    },
+    {
+      "name": "OnComponentPhysicsStateChanged",
+      "kind": 28
+    },
+    {
+      "name": "OnBeginCursorOver",
+      "kind": 28
+    },
+    {
+      "name": "OnEndCursorOver",
+      "kind": 28
+    },
+    {
+      "name": "OnClicked",
+      "kind": 28
+    },
+    {
+      "name": "OnReleased",
+      "kind": 28
+    },
+    {
+      "name": "OnInputTouchBegin",
+      "kind": 28
+    },
+    {
+      "name": "OnInputTouchEnd",
+      "kind": 28
+    },
+    {
+      "name": "OnInputTouchEnter",
+      "kind": 28
+    },
+    {
+      "name": "OnInputTouchLeave",
+      "kind": 28
+    },
+    {
+      "name": "LODParentPrimitive",
+      "kind": 82
+    }
+  ],
+  "body": [
+    {
+      "name": "PositionSolverIterationCount",
+      "kind": 0
+    },
+    {
+      "name": "VelocitySolverIterationCount",
+      "kind": 0
+    },
+    {
+      "name": "ProjectionSolverIterationCount",
+      "kind": 0
+    },
+    {
+      "name": "ObjectType",
+      "kind": 0
+    },
+    {
+      "name": "CollisionEnabled",
+      "kind": 0
+    },
+    {
+      "name": "SleepFamily",
+      "kind": 30
+    },
+    {
+      "name": "DOFMode",
+      "kind": 0
+    },
+    {
+      "name": "bUseCCD",
+      "kind": 12
+    },
+    {
+      "name": "bUseMACD",
+      "kind": 12
+    },
+    {
+      "name": "bAllowPartialIslandSleep",
+      "kind": 12
+    },
+    {
+      "name": "bIgnoreAnalyticCollisions",
+      "kind": 12
+    },
+    {
+      "name": "bNotifyRigidBodyCollision",
+      "kind": 12
+    },
+    {
+      "name": "bSmoothEdgeCollisions",
+      "kind": 12
+    },
+    {
+      "name": "bLockTranslation",
+      "kind": 12
+    },
+    {
+      "name": "bLockRotation",
+      "kind": 12
+    },
+    {
+      "name": "bLockXTranslation",
+      "kind": 12
+    },
+    {
+      "name": "bLockYTranslation",
+      "kind": 12
+    },
+    {
+      "name": "bLockZTranslation",
+      "kind": 12
+    },
+    {
+      "name": "bLockXRotation",
+      "kind": 12
+    },
+    {
+      "name": "bLockYRotation",
+      "kind": 12
+    },
+    {
+      "name": "bLockZRotation",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideMaxAngularVelocity",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideMaxDepenetrationVelocity",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideWalkableSlopeOnInstance",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideIterationCounts",
+      "kind": 12
+    },
+    {
+      "name": "bInterpolateWhenSubStepping",
+      "kind": 12
+    },
+    {
+      "name": "bInertiaConditioning",
+      "kind": 12
+    },
+    {
+      "name": "bOneWayInteraction",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideSolverAsyncDeltaTime",
+      "kind": 12
+    },
+    {
+      "name": "SolverAsyncDeltaTime",
+      "kind": 10
+    },
+    {
+      "name": "CollisionProfileName",
+      "kind": 20
+    },
+    {
+      "name": "CollisionResponses",
+      "kind": 25
+    },
+    {
+      "name": "MaxDepenetrationVelocity",
+      "kind": 10
+    },
+    {
+      "name": "MassInKgOverride",
+      "kind": 10
+    },
+    {
+      "name": "LinearDamping",
+      "kind": 10
+    },
+    {
+      "name": "AngularDamping",
+      "kind": 10
+    },
+    {
+      "name": "CustomDOFPlaneNormal",
+      "kind": 25
+    },
+    {
+      "name": "COMNudge",
+      "kind": 25
+    },
+    {
+      "name": "MassScale",
+      "kind": 10
+    },
+    {
+      "name": "GravityGroupIndex",
+      "kind": 0
+    },
+    {
+      "name": "InertiaTensorScale",
+      "kind": 25
+    },
+    {
+      "name": "WalkableSlopeOverride",
+      "kind": 25
+    },
+    {
+      "name": "PhysMaterialOverride",
+      "kind": 82
+    },
+    {
+      "name": "MaxAngularVelocity",
+      "kind": 10
+    },
+    {
+      "name": "CustomSleepThresholdMultiplier",
+      "kind": 10
+    },
+    {
+      "name": "StabilizationThresholdMultiplier",
+      "kind": 10
+    },
+    {
+      "name": "PhysicsBlendWeight",
+      "kind": 10
+    }
+  ]
+}

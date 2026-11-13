@@ -30,7 +30,12 @@ function* route(options){
  const goals=options.goals?.length?options.goals:[goal],actions=[],closed=[];
  const pads=new Map(),rejected=[];
  const pad=function*(feature,p,side){const key=feature.guid+'/'+side;if(!pads.has(key))pads.set(key,yield* landing(feature,p,side));return pads.get(key);};
- for(const feature of features.slice(0,24)){
+ // Crowded ladder/wall volumes must not permanently hide a different move
+ // family. Prepare the nearest representative of each kind before duplicates;
+ // keep the same time deadline and a finite discovery cap.
+ const candidates=features.slice(0,96),kinds=new Set(),representatives=[],remaining=[];
+ for(const feature of candidates){if(kinds.has(feature.kind))remaining.push(feature);else{kinds.add(feature.kind);representatives.push(feature);}}
+ for(const feature of [...representatives,...remaining]){
   for(const reverse of feature.both?[false,true]:[false]){
    const path=reverse?feature.runtimePath.slice().reverse():feature.runtimePath;
    const entry=yield* pad(feature,path[0],reverse?'right':'left');

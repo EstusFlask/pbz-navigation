@@ -13,6 +13,21 @@ function inspect(actor,feature,options={}){
   if(actor.bIsBroken===true||actor.LiftBroken===true)return stop('升降装置已损坏');
   if(actor.GearIsDoing===true||actor.Lift?.IsPlaying?.())return stop('升降装置运动中 · 等待停靠');
  }
+ if(kind==='boarding')try{
+  const boat=actor.BPGetBoat?.(),available=boat?.CanInteractWithWharf?.(actor);
+  if(available===true)return {ready:true};
+  if(available===false)return stop('船只或码头当前不可登船');
+ }catch(_){}
+ if(kind==='pole'){
+  if(actor.LinkedPoleA?.AllowJumpOut===false)return stop('起点立柱当前不允许跳出');
+  if(actor.LinkedPoleA?.bBroken===true||actor.LinkedPoleB?.bBroken===true)return stop('立柱连接已损坏');
+ }
+ let interactionReady=false;
+ if(['walljump','vault','pole'].includes(kind))try{
+  const valid=actor.IsValidInteract?.(pawn);
+  if(valid===false)return stop('动作入口或目标当前不可交互 · 靠近后确认',true);
+  interactionReady=valid===true;
+ }catch(_){}
  let requiredWeapon='';
  try{requiredWeapon=String(actor.GetNeedShaChiWeaponID?.()||'');if(/^none$/i.test(requiredWeapon))requiredWeapon='';}catch(_){}
  const states=UE.EInteractRequirementState;
@@ -23,9 +38,12 @@ function inspect(actor,feature,options={}){
    if([states.NoRequirement,states.RequirementMeet].some(v=>v!==undefined&&value===v))return {ready:true};
   }
  }catch(_){}
+ if(interactionReady&&!requiredWeapon)return {ready:true};
  // This newly discovered hook was absent from the original authored graph.
  // Its geometry alone cannot certify weapon, flow or activation conditions.
  if(kind==='hook')return stop('钩索交互条件待确认'+(requiredWeapon?' · '+(options.weapon?.(requiredWeapon)?.name||requiredWeapon):''),true);
+ if(feature.requiresCondition||['walljump','vault','pole','boarding','boat','ride','chase','portal'].includes(kind))
+  return stop(({walljump:'蹬墙跳',vault:'翻越',pole:'立柱跳跃',boarding:'登船',boat:'行船',ride:'剧情骑乘',chase:'剧情追逐',portal:'场景转移'})[kind]+'条件待确认',true);
  return {ready:true};
 }
 function describe(actor,options={}){

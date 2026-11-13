@@ -1,0 +1,2658 @@
+{
+  "schema": 1,
+  "sourceRoadbook": {
+    "roadbookId": 53,
+    "roadbookSHA256": "6113a1ba763a38e37968db0de99ac5956052b9e1fa1a6bdf63d750c3248f169c",
+    "flowCount": 18,
+    "retrieved": "2026-11-12"
+  },
+  "factsSHA256": "bf66fbb2385e48368a2d3c0a1144ee9948f94cbdf8a6d8afa9017b272d2f47bf",
+  "worksheetSHA256": "effb4cef87ded65bbeec8f29c80133069a9820f3726915a854f7682a4314a7c4",
+  "links": [
+    {
+      "id": "worksheet-001",
+      "mapId": 251,
+      "sourceNode": 2109016377,
+      "sourceFlow": 25879012,
+      "fromName": "开端之地",
+      "toName": "圣母像裂缝",
+      "from": "Bell_NLES_001",
+      "to": "Bell_NLES_014",
+      "hints": [
+        "ladder-down"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-001",
+      "world": "pbz_xigu_wp",
+      "points": 78,
+      "meters": 146.32050015339436,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-002",
+      "mapId": 251,
+      "sourceNode": 424533281,
+      "sourceFlow": 25879012,
+      "fromName": "圣母像裂缝",
+      "toName": "初见玉儿处",
+      "from": "Bell_NLES_014",
+      "to": "Bell_NLES_022",
+      "hints": [
+        "chain",
+        "ladder-up"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-002",
+      "world": "pbz_xigu_wp",
+      "points": 148,
+      "meters": 288.19504303964226,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-003",
+      "mapId": 251,
+      "sourceNode": 1356557465,
+      "sourceFlow": 25879012,
+      "fromName": "初见玉儿处",
+      "toName": "红丝线障壁",
+      "from": "Bell_NLES_022",
+      "to": "Bell_NLES_013",
+      "hints": [
+        "bridge"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-003",
+      "world": "pbz_xigu_wp",
+      "points": 55,
+      "meters": 110.11508184774728,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-004",
+      "mapId": 251,
+      "sourceNode": 1356557465,
+      "sourceFlow": 25879012,
+      "fromName": "红丝线障壁",
+      "toName": "残偶谷底",
+      "from": "Bell_NLES_013",
+      "to": "Bell_NLES_015",
+      "hints": [
+        "red-thread-weapon",
+        "river"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-004",
+      "world": "pbz_xigu_wp",
+      "points": 108,
+      "meters": 277.0227184457879,
+      "actions": 4
+    },
+    {
+      "id": "worksheet-005",
+      "mapId": 251,
+      "sourceNode": 2044118718,
+      "sourceFlow": 25879012,
+      "fromName": "残偶谷底",
+      "toName": "锈刃凉亭",
+      "from": "Bell_NLES_015",
+      "to": "Bell_NLES_002",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-005",
+      "world": "pbz_xigu_wp",
+      "points": 137,
+      "meters": 270.84418896808927,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-006",
+      "mapId": 251,
+      "sourceNode": 1313466255,
+      "sourceFlow": 25879012,
+      "fromName": "锈刃凉亭",
+      "toName": "驿站前小院",
+      "from": "Bell_NLES_002",
+      "to": "Bell_NLES_020",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-006",
+      "world": "pbz_xigu_wp",
+      "points": 170,
+      "meters": 385.468545157482,
+      "actions": 3
+    },
+    {
+      "id": "worksheet-007",
+      "mapId": 251,
+      "sourceNode": 1924767485,
+      "sourceFlow": 25879012,
+      "fromName": "驿站前小院",
+      "toName": "驿站",
+      "from": "Bell_NLES_020",
+      "to": "Bell_NLES_003",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-007",
+      "world": "pbz_xigu_wp",
+      "points": 114,
+      "meters": 198.93123155727574,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-008",
+      "mapId": 251,
+      "sourceNode": 812589706,
+      "sourceFlow": 25879012,
+      "fromName": "驿站",
+      "toName": "斧老大斩落处",
+      "from": "Bell_NLES_003",
+      "to": "Bell_NLES_023",
+      "hints": [
+        "prison-key",
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-008",
+      "world": "pbz_xigu_wp",
+      "points": 74,
+      "meters": 151.4091469983971,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-009",
+      "mapId": 251,
+      "sourceNode": 67550403,
+      "sourceFlow": 321313034,
+      "fromName": "斧老大斩落处",
+      "toName": "斧老大关押处",
+      "from": "Bell_NLES_023",
+      "to": "Bell_NLES_011",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-009",
+      "world": "pbz_xigu_wp",
+      "points": 70,
+      "meters": 147.95570667270914,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-010",
+      "mapId": 251,
+      "sourceNode": 2047285571,
+      "sourceFlow": 321313034,
+      "fromName": "斧老大关押处",
+      "toName": "溪谷平原入口",
+      "from": "Bell_NLES_011",
+      "to": "Bell_NLES_004",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-010",
+      "world": "pbz_xigu_wp",
+      "points": 113,
+      "meters": 249.7674322069292,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-011",
+      "mapId": 251,
+      "sourceNode": 2047285571,
+      "sourceFlow": 321313034,
+      "fromName": "溪谷平原入口",
+      "toName": "恶弓手营地",
+      "from": "Bell_NLES_004",
+      "to": "Bell_NLES_019",
+      "hints": [
+        "uphill"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-011",
+      "world": "pbz_xigu_wp",
+      "points": 125,
+      "meters": 278.6614378670312,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-012",
+      "mapId": 251,
+      "sourceNode": 1128258161,
+      "sourceFlow": 321313034,
+      "fromName": "恶弓手营地",
+      "toName": "溪谷杀气塔一层",
+      "from": "Bell_NLES_019",
+      "to": "Bell_NLES_005",
+      "hints": [
+        "bridge"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-013",
+      "mapId": 251,
+      "sourceNode": 1128258161,
+      "sourceFlow": 321313034,
+      "fromName": "溪谷杀气塔一层",
+      "toName": "血肉花田",
+      "from": "Bell_NLES_005",
+      "to": "Bell_NLES_017",
+      "hints": [
+        "drop",
+        "boss"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-014",
+      "mapId": 251,
+      "sourceNode": 546289050,
+      "sourceFlow": 321313034,
+      "fromName": "溪谷杀气塔一层",
+      "toName": "溪谷杀气塔顶",
+      "from": "Bell_NLES_005",
+      "to": "Bell_NLES_012",
+      "hints": [
+        "tower-ascent"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-015",
+      "mapId": 251,
+      "sourceNode": 546289050,
+      "sourceFlow": 321313034,
+      "fromName": "溪谷杀气塔顶",
+      "toName": "瀑布吊桥",
+      "from": "Bell_NLES_012",
+      "to": "Bell_NLES_018",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-016",
+      "mapId": 251,
+      "sourceNode": 1549011188,
+      "sourceFlow": 321313034,
+      "fromName": "瀑布吊桥",
+      "toName": "大瀑布",
+      "from": "Bell_NLES_018",
+      "to": "Bell_NLES_007",
+      "hints": [
+        "bridge",
+        "boss"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-017",
+      "mapId": 251,
+      "sourceNode": 1658113978,
+      "sourceFlow": 321313034,
+      "fromName": "大瀑布",
+      "toName": "远眺龙柱处",
+      "from": "Bell_NLES_007",
+      "to": "Bell_NLES_006",
+      "hints": [
+        "hook-required"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-018",
+      "mapId": 251,
+      "sourceNode": 271990091,
+      "sourceFlow": 321313034,
+      "fromName": "远眺龙柱处",
+      "toName": "瀑布吊桥",
+      "from": "Bell_NLES_006",
+      "to": "Bell_NLES_018",
+      "hints": [
+        "hook-shortcut"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-019",
+      "mapId": 251,
+      "sourceNode": 543957936,
+      "sourceFlow": 321313034,
+      "fromName": "远眺龙柱处",
+      "toName": "悲泣溪谷龙柱",
+      "from": "Bell_NLES_006",
+      "to": "Bell_NLES_009",
+      "hints": [
+        "axe",
+        "tunnel"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-019",
+      "world": "pbz_xigu_wp",
+      "points": 187,
+      "meters": 395.75443412057604,
+      "actions": 3
+    },
+    {
+      "id": "worksheet-020",
+      "mapId": 251,
+      "sourceNode": 2133804717,
+      "sourceFlow": 321313034,
+      "fromName": "瀑布吊桥",
+      "toName": "溪谷杀气塔底",
+      "from": "Bell_NLES_018",
+      "to": "Bell_NLES_016",
+      "hints": [
+        "return-to-tower"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-021",
+      "mapId": 251,
+      "sourceNode": 2133804717,
+      "sourceFlow": 321313034,
+      "fromName": "溪谷杀气塔底",
+      "toName": "红房子",
+      "from": "Bell_NLES_016",
+      "to": "Bell_NLES_021",
+      "hints": [
+        "four-snake-houses-later"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-022",
+      "mapId": 251,
+      "sourceNode": 1285305273,
+      "sourceFlow": 1070983091,
+      "fromName": "红房子",
+      "toName": "清道夫豢养处",
+      "from": "Bell_NLES_021",
+      "to": "Bell_QingDaoFu",
+      "hints": [
+        "sealed-door",
+        "drop",
+        "boss"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_xigu_wp"
+    },
+    {
+      "id": "worksheet-059",
+      "mapId": 253,
+      "sourceNode": 640985228,
+      "sourceFlow": 485431368,
+      "fromName": "人偶试验场",
+      "toName": "湖畔",
+      "from": "Bell_SXC_02_03",
+      "to": null,
+      "hints": [
+        "elevator",
+        "one-use-return",
+        "unmatched-bell"
+      ],
+      "status": "identity-unresolved",
+      "runtimeEnabled": false
+    },
+    {
+      "id": "worksheet-023",
+      "mapId": 252,
+      "sourceNode": 1388067753,
+      "sourceFlow": 1083371138,
+      "fromName": "血色森林",
+      "toName": "荒废官道",
+      "from": "Bell_LZSJ_001",
+      "to": "Bell_LZSJ_002",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-023",
+      "world": "pbz_fujizhilin_wp",
+      "points": 184,
+      "meters": 354.24085952553435,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-024",
+      "mapId": 252,
+      "sourceNode": 1931297883,
+      "sourceFlow": 1083371138,
+      "fromName": "荒废官道",
+      "toName": "远眺庞镇之桥",
+      "from": "Bell_LZSJ_002",
+      "to": "Bell_LZSJ_003",
+      "hints": [
+        "boss",
+        "bridge"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_fujizhilin_wp"
+    },
+    {
+      "id": "worksheet-025",
+      "mapId": 252,
+      "sourceNode": 1224255493,
+      "sourceFlow": 1083371138,
+      "fromName": "远眺庞镇之桥",
+      "toName": "挂笼小道",
+      "from": "Bell_LZSJ_003",
+      "to": "Bell_LZSJ_013",
+      "hints": [
+        "cave"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_fujizhilin_wp"
+    },
+    {
+      "id": "worksheet-026",
+      "mapId": 252,
+      "sourceNode": 1069731741,
+      "sourceFlow": 1083371138,
+      "fromName": "挂笼小道",
+      "toName": "亡命徒陷阱",
+      "from": "Bell_LZSJ_013",
+      "to": "Bell_LZSJ_004",
+      "hints": [
+        "cave"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-026",
+      "world": "pbz_fujizhilin_wp",
+      "points": 171,
+      "meters": 372.6256949828977,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-027",
+      "mapId": 252,
+      "sourceNode": 445072706,
+      "sourceFlow": 1083371138,
+      "fromName": "亡命徒陷阱",
+      "toName": "飞贼营地",
+      "from": "Bell_LZSJ_004",
+      "to": "Bell_LZSJ_005",
+      "hints": [
+        "trap",
+        "boss",
+        "bridge"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-027",
+      "world": "pbz_fujizhilin_wp",
+      "points": 78,
+      "meters": 202.55331309757784,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-028",
+      "mapId": 252,
+      "sourceNode": 1132006062,
+      "sourceFlow": 141626437,
+      "fromName": "飞贼营地",
+      "toName": "赤蛇屋",
+      "from": "Bell_LZSJ_005",
+      "to": "Bell_LZSJ_016",
+      "hints": [
+        "tunnel-detour",
+        "key"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-028",
+      "world": "pbz_fujizhilin_wp",
+      "points": 75,
+      "meters": 145.7161980750551,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-029",
+      "mapId": 252,
+      "sourceNode": 2015482616,
+      "sourceFlow": 141626437,
+      "fromName": "赤蛇屋",
+      "toName": "人偶思乡之崖",
+      "from": "Bell_LZSJ_016",
+      "to": "Bell_LZSJ_006",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-029",
+      "world": "pbz_fujizhilin_wp",
+      "points": 108,
+      "meters": 242.48586792141398,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-030",
+      "mapId": 252,
+      "sourceNode": 1809335602,
+      "sourceFlow": 141626437,
+      "fromName": "人偶思乡之崖",
+      "toName": "悬崖山舍",
+      "from": "Bell_LZSJ_006",
+      "to": "Bell_LZSJ_020",
+      "hints": [
+        "house-rear"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_fujizhilin_wp"
+    },
+    {
+      "id": "worksheet-031",
+      "mapId": 252,
+      "sourceNode": 1573197852,
+      "sourceFlow": 141626437,
+      "fromName": "悬崖山舍",
+      "toName": "镜林入口",
+      "from": "Bell_LZSJ_020",
+      "to": "Bell_LZSJ_007",
+      "hints": [
+        "chase",
+        "boss"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_fujizhilin_wp"
+    },
+    {
+      "id": "worksheet-032",
+      "mapId": 252,
+      "sourceNode": 1335216725,
+      "sourceFlow": 141626437,
+      "fromName": "镜林入口",
+      "toName": "镜林龙柱",
+      "from": "Bell_LZSJ_007",
+      "to": "Bell_FJZL_GP_002",
+      "hints": [
+        "tunnel"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-032",
+      "world": "pbz_fujizhilin_wp",
+      "points": 128,
+      "meters": 237.10262805043374,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-033",
+      "mapId": 252,
+      "sourceNode": 2014395025,
+      "sourceFlow": 141626437,
+      "fromName": "镜林龙柱",
+      "toName": "遗冢地",
+      "from": "Bell_FJZL_GP_002",
+      "to": "Bell_LZSJ_021",
+      "hints": [
+        "hook",
+        "poison"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-033",
+      "world": "pbz_fujizhilin_wp",
+      "points": 107,
+      "meters": 179.88030866708053,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-034",
+      "mapId": 252,
+      "sourceNode": 2014395025,
+      "sourceFlow": 141626437,
+      "fromName": "遗冢地",
+      "toName": "迷雾消散处",
+      "from": "Bell_LZSJ_021",
+      "to": "Bell_LZSJ_008",
+      "hints": [
+        "story-fog"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-034",
+      "world": "pbz_fujizhilin_wp",
+      "points": 147,
+      "meters": 301.14749846520135,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-035",
+      "mapId": 252,
+      "sourceNode": 820861475,
+      "sourceFlow": 141626437,
+      "fromName": "迷雾消散处",
+      "toName": "镜林深处",
+      "from": "Bell_LZSJ_008",
+      "to": "Bell_LZSJ_009",
+      "hints": [
+        "river"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-035",
+      "world": "pbz_fujizhilin_wp",
+      "points": 264,
+      "meters": 485.66754444126127,
+      "actions": 4
+    },
+    {
+      "id": "worksheet-036",
+      "mapId": 252,
+      "sourceNode": 820861475,
+      "sourceFlow": 141626437,
+      "fromName": "镜林深处",
+      "toName": "丝线缠绕的巨树",
+      "from": "Bell_LZSJ_009",
+      "to": "Bell_LZSJ_010",
+      "hints": [
+        "mirror-puzzle"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-036",
+      "world": "pbz_fujizhilin_wp",
+      "points": 85,
+      "meters": 176.88303297311165,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-037",
+      "mapId": 252,
+      "sourceNode": 1164019575,
+      "sourceFlow": 1689718511,
+      "fromName": "血色森林杀气塔大门",
+      "toName": "血色森林杀气塔六层",
+      "from": "Bell_LZSJ_017",
+      "to": "Bell_LZSJ_019",
+      "hints": [
+        "tower-ascent"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_fujizhilin_wp"
+    },
+    {
+      "id": "worksheet-038",
+      "mapId": 252,
+      "sourceNode": 1164019575,
+      "sourceFlow": 1689718511,
+      "fromName": "血色森林杀气塔六层",
+      "toName": "血色森林杀气塔底",
+      "from": "Bell_LZSJ_019",
+      "to": "Bell_LZSJ_018",
+      "hints": [
+        "tower-descent"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_fujizhilin_wp"
+    },
+    {
+      "id": "worksheet-039",
+      "mapId": 253,
+      "sourceNode": 114863233,
+      "sourceFlow": 917752940,
+      "fromName": "梦醒之地",
+      "toName": "岔路口",
+      "from": "Bell_LZSJ_012",
+      "to": "Bell_LZSJ_011",
+      "hints": [
+        "downhill"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-040",
+      "mapId": 253,
+      "sourceNode": 114863233,
+      "sourceFlow": 917752940,
+      "fromName": "岔路口",
+      "toName": "正道大营外门",
+      "from": "Bell_LZSJ_011",
+      "to": "Bell_YXZR_018",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-041",
+      "mapId": 253,
+      "sourceNode": 1384547968,
+      "sourceFlow": 917752940,
+      "fromName": "岔路口",
+      "toName": "老根头藏身处",
+      "from": "Bell_LZSJ_011",
+      "to": "Bell_SXC_01_08",
+      "hints": [
+        "ladder-up"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-042",
+      "mapId": 253,
+      "sourceNode": 1950410692,
+      "sourceFlow": 765190486,
+      "fromName": "老根头藏身处",
+      "toName": "兰公子藏身处",
+      "from": "Bell_SXC_01_08",
+      "to": "Bell_SXC_01_07",
+      "hints": [
+        "shield-required"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-042",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 59,
+      "meters": 112.12529802669458,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-043",
+      "mapId": 253,
+      "sourceNode": 1564946176,
+      "sourceFlow": 765190486,
+      "fromName": "兰公子藏身处",
+      "toName": "三人偶水井",
+      "from": "Bell_SXC_01_07",
+      "to": "Bell_SXC_01_01",
+      "hints": [
+        "bridge"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-043",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 135,
+      "meters": 268.16524697588096,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-044",
+      "mapId": 253,
+      "sourceNode": 49592059,
+      "sourceFlow": 765190486,
+      "fromName": "三人偶水井",
+      "toName": "幽蓝萤火之庙",
+      "from": "Bell_SXC_01_01",
+      "to": "Bell_SXC_01_14",
+      "hints": [
+        "branch-east"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-044",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 49,
+      "meters": 125.9855134667404,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-045",
+      "mapId": 253,
+      "sourceNode": 125449830,
+      "sourceFlow": 765190486,
+      "fromName": "三人偶水井",
+      "toName": "大廊桥",
+      "from": "Bell_SXC_01_01",
+      "to": "Bell_SXC_01_11",
+      "hints": [
+        "house",
+        "branch-west"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-045",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 72,
+      "meters": 136.31725846250924,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-046",
+      "mapId": 253,
+      "sourceNode": 1959129542,
+      "sourceFlow": 765190486,
+      "fromName": "大廊桥",
+      "toName": "陆家村小张藏身处",
+      "from": "Bell_SXC_01_11",
+      "to": "Bell_LJC_XiaoZhang_002",
+      "hints": [
+        "river",
+        "cave",
+        "climb",
+        "climb",
+        "hook"
+      ],
+      "status": "measured-reference",
+      "runtimeEnabled": true,
+      "course": "ljc-bridge-cave-xiaozhang",
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-047",
+      "mapId": 253,
+      "sourceNode": 882509440,
+      "sourceFlow": 765190486,
+      "fromName": "陆家村小张藏身处",
+      "toName": "黑蛇屋",
+      "from": "Bell_LJC_XiaoZhang_002",
+      "to": "Bell_SXC_01_02",
+      "hints": [
+        "red-thread-weapon"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-047",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 114,
+      "meters": 235.8502100648224,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-048",
+      "mapId": 253,
+      "sourceNode": 75909411,
+      "sourceFlow": 765190486,
+      "fromName": "大廊桥",
+      "toName": "雕像场前",
+      "from": "Bell_SXC_01_11",
+      "to": "Bell_SXC_02_04",
+      "hints": [
+        "bridge",
+        "stairs"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-048",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 91,
+      "meters": 218.15585945718271,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-049",
+      "mapId": 253,
+      "sourceNode": 75909411,
+      "sourceFlow": 765190486,
+      "fromName": "雕像场前",
+      "toName": "圣母雕像场",
+      "from": "Bell_SXC_02_04",
+      "to": "Bell_SXC_01_06",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-049",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 26,
+      "meters": 50.126671226099624,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-050",
+      "mapId": 253,
+      "sourceNode": 605088343,
+      "sourceFlow": 765190486,
+      "fromName": "圣母雕像场",
+      "toName": "飞贼藏宝地窖",
+      "from": "Bell_SXC_01_06",
+      "to": "Bell_SXC_01_12",
+      "hints": [
+        "house",
+        "ladder"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-050",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 52,
+      "meters": 95.92596532711386,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-051",
+      "mapId": 253,
+      "sourceNode": 605088343,
+      "sourceFlow": 765190486,
+      "fromName": "飞贼藏宝地窖",
+      "toName": "飞贼密道入口",
+      "from": "Bell_SXC_01_12",
+      "to": "Bell_SXC_02_01",
+      "hints": [
+        "stairs-down"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-051",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 69,
+      "meters": 153.3302013532866,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-052",
+      "mapId": 253,
+      "sourceNode": 676533622,
+      "sourceFlow": 765190486,
+      "fromName": "飞贼密道入口",
+      "toName": "梯田",
+      "from": "Bell_SXC_02_01",
+      "to": "Bell_SXC_01_10",
+      "hints": [
+        "river",
+        "uphill"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-052",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 121,
+      "meters": 239.32382976420394,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-053",
+      "mapId": 253,
+      "sourceNode": 1626030259,
+      "sourceFlow": 765190486,
+      "fromName": "梯田",
+      "toName": "机关巨怪残骸",
+      "from": "Bell_SXC_01_10",
+      "to": "Bell_SXC_01_09",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-053",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 93,
+      "meters": 220.79083634147665,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-054",
+      "mapId": 253,
+      "sourceNode": 1268156301,
+      "sourceFlow": 765190486,
+      "fromName": "机关巨怪残骸",
+      "toName": "幸存者小院",
+      "from": "Bell_SXC_01_09",
+      "to": "Bell_SXC_01_13",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-054",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 226,
+      "meters": 467.1307066725518,
+      "actions": 5
+    },
+    {
+      "id": "worksheet-055",
+      "mapId": 253,
+      "sourceNode": 970920842,
+      "sourceFlow": 485431368,
+      "fromName": "幸存者小院",
+      "toName": "残偶弃置坑口",
+      "from": "Bell_SXC_01_13",
+      "to": "Bell_SXC_01_03",
+      "hints": [
+        "story-fog",
+        "slide"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-056",
+      "mapId": 253,
+      "sourceNode": 970920842,
+      "sourceFlow": 485431368,
+      "fromName": "残偶弃置坑口",
+      "toName": "残偶弃置坑底",
+      "from": "Bell_SXC_01_03",
+      "to": "Bell_SXC_01_04",
+      "hints": [
+        "drop",
+        "boss",
+        "scene-copy"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-057",
+      "mapId": 253,
+      "sourceNode": 873516404,
+      "sourceFlow": 485431368,
+      "fromName": "三人偶水井",
+      "toName": "水井之下",
+      "from": "Bell_SXC_01_01",
+      "to": "Bell_SXC_01_17",
+      "hints": [
+        "drop"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-057",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 552,
+      "meters": 1037.5159100324217,
+      "actions": 6
+    },
+    {
+      "id": "worksheet-058",
+      "mapId": 253,
+      "sourceNode": 770066711,
+      "sourceFlow": 485431368,
+      "fromName": "水井之下",
+      "toName": "人偶试验场",
+      "from": "Bell_SXC_01_17",
+      "to": "Bell_SXC_02_03",
+      "hints": [
+        "river",
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-058",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 69,
+      "meters": 181.61132045874407,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-060",
+      "mapId": 253,
+      "sourceNode": 313891922,
+      "sourceFlow": 485431368,
+      "fromName": "人偶试验场",
+      "toName": "通向庞镇的密道",
+      "from": "Bell_SXC_02_03",
+      "to": "Bell_SXC_02_02",
+      "hints": [
+        "eye-puzzle",
+        "elevator"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-102",
+      "mapId": 255,
+      "sourceNode": 846784200,
+      "sourceFlow": 440656437,
+      "fromName": "夕阳小径",
+      "toName": "栈道入口",
+      "from": "Bell_YXZR_001",
+      "to": "Bell_YXZR_002",
+      "hints": [
+        "uphill"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-102",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 127,
+      "meters": 286.6094978996813,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-103",
+      "mapId": 255,
+      "sourceNode": 2052214751,
+      "sourceFlow": 440656437,
+      "fromName": "栈道入口",
+      "toName": "栈道眺望台",
+      "from": "Bell_YXZR_002",
+      "to": "Bell_YXZR_013",
+      "hints": [
+        "cave",
+        "chain",
+        "elevator"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-103",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 138,
+      "meters": 358.69016938896624,
+      "actions": 5
+    },
+    {
+      "id": "worksheet-104",
+      "mapId": 255,
+      "sourceNode": 653088599,
+      "sourceFlow": 440656437,
+      "fromName": "栈道眺望台",
+      "toName": "乱葬岗",
+      "from": "Bell_YXZR_013",
+      "to": "Bell_YXZR_003",
+      "hints": [
+        "drop",
+        "key",
+        "tunnel"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-104",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 49,
+      "meters": 118.59240352579063,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-105",
+      "mapId": 255,
+      "sourceNode": 653088599,
+      "sourceFlow": 440656437,
+      "fromName": "乱葬岗",
+      "toName": "墨玑子衣冠冢",
+      "from": "Bell_YXZR_003",
+      "to": "Bell_YXZR_004",
+      "hints": [
+        "river",
+        "uphill-detour"
+      ],
+      "status": "measured-reference",
+      "runtimeEnabled": true,
+      "course": "zddy-cemetery-uphill-tomb",
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-106",
+      "mapId": 255,
+      "sourceNode": 1902654928,
+      "sourceFlow": 440656437,
+      "fromName": "墨玑子衣冠冢",
+      "toName": "箭塔之下",
+      "from": "Bell_YXZR_004",
+      "to": "Bell_YXZR_016",
+      "hints": [
+        "drop",
+        "wooden-building"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-106",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 66,
+      "meters": 122.37098589498115,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-107",
+      "mapId": 255,
+      "sourceNode": 1902654928,
+      "sourceFlow": 440656437,
+      "fromName": "箭塔之下",
+      "toName": "战场遗迹",
+      "from": "Bell_YXZR_016",
+      "to": "Bell_YXZR_015",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-107",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 48,
+      "meters": 88.87636042543221,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-108",
+      "mapId": 255,
+      "sourceNode": 1902654928,
+      "sourceFlow": 440656437,
+      "fromName": "战场遗迹",
+      "toName": "大营正门",
+      "from": "Bell_YXZR_015",
+      "to": "Bell_YXZR_005",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-108",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 67,
+      "meters": 134.22121923290422,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-109",
+      "mapId": 255,
+      "sourceNode": 298841906,
+      "sourceFlow": 440656437,
+      "fromName": "大营正门",
+      "toName": "鸽舍",
+      "from": "Bell_YXZR_005",
+      "to": "Bell_YXZR_011",
+      "hints": [
+        "ground-gate",
+        "tunnel"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-109",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 51,
+      "meters": 108.04144540239973,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-110",
+      "mapId": 255,
+      "sourceNode": 543875007,
+      "sourceFlow": 440656437,
+      "fromName": "鸽舍",
+      "toName": "三高塔",
+      "from": "Bell_YXZR_011",
+      "to": "Bell_YXZR_012",
+      "hints": [
+        "locked-shortcut",
+        "stairs",
+        "bridge"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-110",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 68,
+      "meters": 144.17847658836766,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-111",
+      "mapId": 255,
+      "sourceNode": 197820216,
+      "sourceFlow": 440656437,
+      "fromName": "三高塔",
+      "toName": "高塔后方出口",
+      "from": "Bell_YXZR_012",
+      "to": "Bell_YXZR_006",
+      "hints": [
+        "drop",
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-111",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 39,
+      "meters": 76.87157518594579,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-112",
+      "mapId": 255,
+      "sourceNode": 2022016057,
+      "sourceFlow": 440656437,
+      "fromName": "高塔后方出口",
+      "toName": "大营瀑布后方",
+      "from": "Bell_YXZR_006",
+      "to": "Bell_YXZR_007",
+      "hints": [
+        "roof"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-112",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 126,
+      "meters": 251.2258473437124,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-113",
+      "mapId": 255,
+      "sourceNode": 12553100,
+      "sourceFlow": 440656437,
+      "fromName": "大营瀑布后方",
+      "toName": "通往校场的路",
+      "from": "Bell_YXZR_007",
+      "to": "Bell_YXZR_008",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-114",
+      "mapId": 255,
+      "sourceNode": 1533442474,
+      "sourceFlow": 440656437,
+      "fromName": "通往校场的路",
+      "toName": "白山派的覆灭之路",
+      "from": "Bell_YXZR_008",
+      "to": "Bell_YXZR_019",
+      "hints": [
+        "drop",
+        "stairs",
+        "door"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-115",
+      "mapId": 255,
+      "sourceNode": 1533442474,
+      "sourceFlow": 440656437,
+      "fromName": "白山派的覆灭之路",
+      "toName": "幽禁之地",
+      "from": "Bell_YXZR_019",
+      "to": "Bell_YXZR_010",
+      "hints": [
+        "cave"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-115",
+      "world": "pbz_zhengdaodaying_wp",
+      "points": 99,
+      "meters": 209.08552441260977,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-116",
+      "mapId": 255,
+      "sourceNode": 529550978,
+      "sourceFlow": 440656437,
+      "fromName": "通往校场的路",
+      "toName": "校场",
+      "from": "Bell_YXZR_008",
+      "to": "Bell_YXZR_009",
+      "hints": [
+        "training-key",
+        "stairs",
+        "door"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-117",
+      "mapId": 255,
+      "sourceNode": 529550978,
+      "sourceFlow": 440656437,
+      "fromName": "校场",
+      "toName": "校场深处",
+      "from": "Bell_YXZR_009",
+      "to": "Bell_YXZR_017",
+      "hints": [
+        "boss",
+        "downhill"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_zhengdaodaying_wp"
+    },
+    {
+      "id": "worksheet-061",
+      "mapId": 254,
+      "sourceNode": 685748799,
+      "sourceFlow": 800215775,
+      "fromName": "秘密卸货处",
+      "toName": "废弃酒窖",
+      "from": "Bell_SZ_026",
+      "to": "Bell_SZ_001",
+      "hints": [
+        "tunnel"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-061",
+      "world": "pbz_pangzhen_wp",
+      "points": 66,
+      "meters": 176.23105072671981,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-062",
+      "mapId": 254,
+      "sourceNode": 2073573358,
+      "sourceFlow": 800215775,
+      "fromName": "废弃酒窖",
+      "toName": "南门廊桥",
+      "from": "Bell_SZ_001",
+      "to": "Bell_SZ_002",
+      "hints": [
+        "stairs"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_pangzhen_wp"
+    },
+    {
+      "id": "worksheet-063",
+      "mapId": 254,
+      "sourceNode": 754031325,
+      "sourceFlow": 800215775,
+      "fromName": "南门廊桥",
+      "toName": "景炀轩",
+      "from": "Bell_SZ_002",
+      "to": "Bell_SZ_019",
+      "hints": [
+        "street"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-063",
+      "world": "pbz_pangzhen_wp",
+      "points": 96,
+      "meters": 211.337907656522,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-064",
+      "mapId": 254,
+      "sourceNode": 754031325,
+      "sourceFlow": 800215775,
+      "fromName": "景炀轩",
+      "toName": "市集",
+      "from": "Bell_SZ_019",
+      "to": "Bell_SZ_003",
+      "hints": [
+        "stairs"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-064",
+      "world": "pbz_pangzhen_wp",
+      "points": 50,
+      "meters": 111.51093018036416,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-065",
+      "mapId": 254,
+      "sourceNode": 1285021920,
+      "sourceFlow": 800215775,
+      "fromName": "市集",
+      "toName": "黄家宅邸前路口",
+      "from": "Bell_SZ_003",
+      "to": "Bell_SZ_016",
+      "hints": [
+        "stairs"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-065",
+      "world": "pbz_pangzhen_wp",
+      "points": 70,
+      "meters": 126.6773746701732,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-066",
+      "mapId": 254,
+      "sourceNode": 730678421,
+      "sourceFlow": 800215775,
+      "fromName": "黄家宅邸前路口",
+      "toName": "八卦阁前路口",
+      "from": "Bell_SZ_016",
+      "to": "Bell_SZ_017",
+      "hints": [
+        "stairs"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-066",
+      "world": "pbz_pangzhen_wp",
+      "points": 51,
+      "meters": 98.40826513532706,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-067",
+      "mapId": 254,
+      "sourceNode": 1690969122,
+      "sourceFlow": 800215775,
+      "fromName": "八卦阁前路口",
+      "toName": "幻鬼酒馆",
+      "from": "Bell_SZ_017",
+      "to": "Bell_SZ_004",
+      "hints": [
+        "street"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-067",
+      "world": "pbz_pangzhen_wp",
+      "points": 139,
+      "meters": 238.52576542603637,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-068",
+      "mapId": 254,
+      "sourceNode": 222154969,
+      "sourceFlow": 1534282076,
+      "fromName": "幻鬼酒馆",
+      "toName": "镇南水塘",
+      "from": "Bell_SZ_004",
+      "to": "Bell_SZ_015",
+      "hints": [
+        "street"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-068",
+      "world": "pbz_pangzhen_wp",
+      "points": 167,
+      "meters": 408.078236787122,
+      "actions": 8
+    },
+    {
+      "id": "worksheet-069",
+      "mapId": 254,
+      "sourceNode": 222154969,
+      "sourceFlow": 1534282076,
+      "fromName": "镇南水塘",
+      "toName": "后街牌坊",
+      "from": "Bell_SZ_015",
+      "to": "Bell_SZ_005",
+      "hints": [
+        "bridge",
+        "world-transfer"
+      ],
+      "status": "scene-transition-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_pangzhen_wp",
+      "toWorld": "pbz_houjie_wp"
+    },
+    {
+      "id": "worksheet-081",
+      "mapId": 254,
+      "sourceNode": 2009366263,
+      "sourceFlow": 1534282076,
+      "fromName": "正道临时居所",
+      "toName": "码头货栈",
+      "from": "Bell_SZ_018",
+      "to": "Bell_SZ_032",
+      "hints": [
+        "roof",
+        "chain",
+        "drop"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-081",
+      "world": "pbz_pangzhen_wp",
+      "points": 51,
+      "meters": 112.26683556061579,
+      "actions": 3
+    },
+    {
+      "id": "worksheet-082",
+      "mapId": 254,
+      "sourceNode": 2009366263,
+      "sourceFlow": 1534282076,
+      "fromName": "码头货栈",
+      "toName": "庞镇船坞",
+      "from": "Bell_SZ_032",
+      "to": "Bell_SZ_013",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-082",
+      "world": "pbz_pangzhen_wp",
+      "points": 52,
+      "meters": 109.71859134549909,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-083",
+      "mapId": 254,
+      "sourceNode": 1093645966,
+      "sourceFlow": 1534282076,
+      "fromName": "庞镇船坞",
+      "toName": "戏梦山庄正门",
+      "from": "Bell_SZ_013",
+      "to": "Bell_XM_015",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_pangzhen_wp"
+    },
+    {
+      "id": "worksheet-118",
+      "mapId": 256,
+      "sourceNode": 1064079044,
+      "sourceFlow": 1188644482,
+      "fromName": "庞镇杀气塔上部一层",
+      "toName": "庞镇杀气塔炉内",
+      "from": "Bell_SZ_020",
+      "to": "Bell_SZ_030",
+      "hints": [
+        "explosive-enemy",
+        "elevator"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_pangzhen_wp"
+    },
+    {
+      "id": "worksheet-119",
+      "mapId": 256,
+      "sourceNode": 1064079044,
+      "sourceFlow": 1188644482,
+      "fromName": "庞镇杀气塔上部一层",
+      "toName": "庞镇杀气塔顶",
+      "from": "Bell_SZ_020",
+      "to": "Bell_SZ_029",
+      "hints": [
+        "hook",
+        "tower-ascent"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_pangzhen_wp"
+    },
+    {
+      "id": "worksheet-120",
+      "mapId": 256,
+      "sourceNode": 562865990,
+      "sourceFlow": 1188644482,
+      "fromName": "庞镇杀气塔底部船坞",
+      "toName": "庞镇杀气塔下部通道",
+      "from": "Bell_SZ_022",
+      "to": "Bell_SZ_027",
+      "hints": [
+        "tower-interior"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-120",
+      "world": "pbz_pangzhen_wp",
+      "points": 99,
+      "meters": 242.91079080785678,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-121",
+      "mapId": 256,
+      "sourceNode": 562865990,
+      "sourceFlow": 1188644482,
+      "fromName": "庞镇杀气塔下部通道",
+      "toName": "庞镇杀气塔下部外侧",
+      "from": "Bell_SZ_027",
+      "to": "Bell_SZ_028",
+      "hints": [
+        "tower-interior"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-121",
+      "world": "pbz_pangzhen_wp",
+      "points": 97,
+      "meters": 173.13697012417558,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-122",
+      "mapId": 256,
+      "sourceNode": 55919411,
+      "sourceFlow": 1188644482,
+      "fromName": "湖中龙柱船坞",
+      "toName": "龙柱",
+      "from": "Bell_MGH_DP_004",
+      "to": "Bell_DP_005",
+      "hints": [
+        "island"
+      ],
+      "status": "anchor-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_pangzhen_wp"
+    },
+    {
+      "id": "worksheet-123",
+      "mapId": 256,
+      "sourceNode": 285752126,
+      "sourceFlow": 1188644482,
+      "fromName": "白蛇屋船坞",
+      "toName": "白蛇屋",
+      "from": "Bell_MGH_013",
+      "to": "Bell_MGH_011",
+      "hints": [
+        "stairs"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-123",
+      "world": "pbz_pangzhen_wp",
+      "points": 44,
+      "meters": 114.41152694945147,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-124",
+      "mapId": 256,
+      "sourceNode": 1000522917,
+      "sourceFlow": 1188644482,
+      "fromName": "梅谷村西岛船坞",
+      "toName": "梅谷村小张藏身处",
+      "from": "Bell_MGH_014",
+      "to": "Bell_MGXL_XiaoZhang_004",
+      "hints": [
+        "island"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-124",
+      "world": "pbz_pangzhen_wp",
+      "points": 92,
+      "meters": 150.27937948698292,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-125",
+      "mapId": 256,
+      "sourceNode": 2141098372,
+      "sourceFlow": 1188644482,
+      "fromName": "冰湖船坞",
+      "toName": "护法四像镜",
+      "from": "Bell_LYZ_010",
+      "to": "Bell_LYZ_011",
+      "hints": [
+        "story-boat"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-125",
+      "world": "pbz_pangzhen_wp",
+      "points": 79,
+      "meters": 149.70700993621213,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-126",
+      "mapId": 256,
+      "sourceNode": 1375980081,
+      "sourceFlow": 1070983091,
+      "fromName": "禁忌之径",
+      "toName": "白影陨落之处",
+      "from": "Bell_LYZ_013",
+      "to": "Bell_LYZ_014",
+      "hints": [
+        "mask-required"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_pangzhen_wp"
+    },
+    {
+      "id": "worksheet-070",
+      "mapId": 254,
+      "sourceNode": 1198094949,
+      "sourceFlow": 1534282076,
+      "fromName": "后街牌坊",
+      "toName": "庞镇小张藏身处",
+      "from": "Bell_SZ_005",
+      "to": "Bell_PZ_XiaoZhang_003",
+      "hints": [
+        "house"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-070",
+      "world": "pbz_houjie_wp",
+      "points": 78,
+      "meters": 193.6180146799496,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-071",
+      "mapId": 254,
+      "sourceNode": 1198094949,
+      "sourceFlow": 1534282076,
+      "fromName": "庞镇小张藏身处",
+      "toName": "后街乘凉处",
+      "from": "Bell_PZ_XiaoZhang_003",
+      "to": "Bell_SZ_006",
+      "hints": [
+        "stairs"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-071",
+      "world": "pbz_houjie_wp",
+      "points": 62,
+      "meters": 130.08599237516563,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-072",
+      "mapId": 254,
+      "sourceNode": 575990976,
+      "sourceFlow": 1534282076,
+      "fromName": "后街乘凉处",
+      "toName": "窄巷民居二楼",
+      "from": "Bell_SZ_006",
+      "to": "Bell_SZ_031",
+      "hints": [
+        "stairs",
+        "house-floor"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_houjie_wp"
+    },
+    {
+      "id": "worksheet-073",
+      "mapId": 254,
+      "sourceNode": 189656478,
+      "sourceFlow": 1534282076,
+      "fromName": "窄巷民居二楼",
+      "toName": "戏声缥缈的水塘",
+      "from": "Bell_SZ_031",
+      "to": "Bell_SZ_007",
+      "hints": [
+        "drop",
+        "zipline"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_houjie_wp"
+    },
+    {
+      "id": "worksheet-074",
+      "mapId": 254,
+      "sourceNode": 1261329515,
+      "sourceFlow": 1534282076,
+      "fromName": "戏声缥缈的水塘",
+      "toName": "三船殉难井底",
+      "from": "Bell_SZ_007",
+      "to": "Bell_SZ_009",
+      "hints": [
+        "boss",
+        "well",
+        "ladder"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-074",
+      "world": "pbz_houjie_wp",
+      "points": 85,
+      "meters": 205.52503335501527,
+      "actions": 5
+    },
+    {
+      "id": "worksheet-075",
+      "mapId": 254,
+      "sourceNode": 1119436333,
+      "sourceFlow": 1534282076,
+      "fromName": "三船殉难井底",
+      "toName": "青蛇屋",
+      "from": "Bell_SZ_009",
+      "to": "Bell_SZ_010",
+      "hints": [
+        "bridge",
+        "locked-doors"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_houjie_wp"
+    },
+    {
+      "id": "worksheet-076",
+      "mapId": 254,
+      "sourceNode": 898111666,
+      "sourceFlow": 1534282076,
+      "fromName": "青蛇屋",
+      "toName": "舞狮馆大门",
+      "from": "Bell_SZ_010",
+      "to": "Bell_SZ_011",
+      "hints": [
+        "branch-north"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-076",
+      "world": "pbz_houjie_wp",
+      "points": 86,
+      "meters": 243.06430534927048,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-077",
+      "mapId": 254,
+      "sourceNode": 606728335,
+      "sourceFlow": 1534282076,
+      "fromName": "舞狮馆大门",
+      "toName": "祠堂广场",
+      "from": "Bell_SZ_011",
+      "to": "Bell_SZ_023",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-077",
+      "world": "pbz_houjie_wp",
+      "points": 71,
+      "meters": 206.15429004921273,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-078",
+      "mapId": 254,
+      "sourceNode": 625770329,
+      "sourceFlow": 1534282076,
+      "fromName": "祠堂广场",
+      "toName": "玉儿家",
+      "from": "Bell_SZ_023",
+      "to": "Bell_SZ_012",
+      "hints": [
+        "house"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-078",
+      "world": "pbz_houjie_wp",
+      "points": 47,
+      "meters": 130.60294733293424,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-079",
+      "mapId": 254,
+      "sourceNode": 1621158513,
+      "sourceFlow": 1534282076,
+      "fromName": "玉儿家",
+      "toName": "舞狮馆深处",
+      "from": "Bell_SZ_012",
+      "to": "Bell_SZ_025",
+      "hints": [
+        "uphill"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-079",
+      "world": "pbz_houjie_wp",
+      "points": 219,
+      "meters": 549.0231307041179,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-080",
+      "mapId": 254,
+      "sourceNode": 1621158513,
+      "sourceFlow": 1534282076,
+      "fromName": "舞狮馆深处",
+      "toName": "尊主封印地",
+      "from": "Bell_SZ_025",
+      "to": "Bell_SZ_021",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-080",
+      "world": "pbz_houjie_wp",
+      "points": 22,
+      "meters": 51.43139458603203,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-084",
+      "mapId": 254,
+      "sourceNode": 1853356679,
+      "sourceFlow": 1534282076,
+      "fromName": "戏声缥缈的水塘",
+      "toName": "后山凉亭",
+      "from": "Bell_SZ_007",
+      "to": "Bell_SZ_014",
+      "hints": [
+        "flame-lion-weapon"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_houjie_wp"
+    },
+    {
+      "id": "worksheet-085",
+      "mapId": 254,
+      "sourceNode": 1853356679,
+      "sourceFlow": 1534282076,
+      "fromName": "后山凉亭",
+      "toName": "贫民窟",
+      "from": "Bell_SZ_014",
+      "to": "Bell_SZ_008",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_houjie_wp"
+    },
+    {
+      "id": "worksheet-086",
+      "mapId": 254,
+      "sourceNode": 1853356679,
+      "sourceFlow": 1534282076,
+      "fromName": "贫民窟",
+      "toName": "老根头家",
+      "from": "Bell_SZ_008",
+      "to": "Bell_SZ_024",
+      "hints": [
+        "ladder",
+        "cellar"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-086",
+      "world": "pbz_houjie_wp",
+      "points": 83,
+      "meters": 185.5850895808635,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-087",
+      "mapId": 254,
+      "sourceNode": 1161374899,
+      "sourceFlow": 1534282076,
+      "fromName": "老根头家",
+      "toName": "青蛇屋",
+      "from": "Bell_SZ_024",
+      "to": "Bell_SZ_010",
+      "hints": [
+        "door-shortcut"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-087",
+      "world": "pbz_houjie_wp",
+      "points": 181,
+      "meters": 469.2061528664377,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-088",
+      "mapId": 254,
+      "sourceNode": 1732923679,
+      "sourceFlow": 1877372150,
+      "fromName": "山庄后门",
+      "toName": "傩面祭台",
+      "from": "Bell_XM_001",
+      "to": "Bell_XM_019",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-088",
+      "world": "pbz_ximeng_wp",
+      "points": 84,
+      "meters": 212.67488021812147,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-089",
+      "mapId": 254,
+      "sourceNode": 1732923679,
+      "sourceFlow": 1877372150,
+      "fromName": "傩面祭台",
+      "toName": "吹火楼下",
+      "from": "Bell_XM_019",
+      "to": "Bell_XM_016",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_ximeng_wp"
+    },
+    {
+      "id": "worksheet-090",
+      "mapId": 254,
+      "sourceNode": 1732923679,
+      "sourceFlow": 1877372150,
+      "fromName": "吹火楼下",
+      "toName": "后山",
+      "from": "Bell_XM_016",
+      "to": "Bell_XM_010",
+      "hints": [
+        "uphill"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-090",
+      "world": "pbz_ximeng_wp",
+      "points": 27,
+      "meters": 94.45950176163863,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-091",
+      "mapId": 254,
+      "sourceNode": 757407885,
+      "sourceFlow": 1877372150,
+      "fromName": "后山",
+      "toName": "竹影道",
+      "from": "Bell_XM_010",
+      "to": "Bell_XM_017",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-091",
+      "world": "pbz_ximeng_wp",
+      "points": 87,
+      "meters": 259.35603203257017,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-092",
+      "mapId": 254,
+      "sourceNode": 757407885,
+      "sourceFlow": 1877372150,
+      "fromName": "竹影道",
+      "toName": "戏梦山庄小张藏身处",
+      "from": "Bell_XM_017",
+      "to": "Bell_XM_XiaoZhang_005",
+      "hints": [
+        "branch"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_ximeng_wp"
+    },
+    {
+      "id": "worksheet-093",
+      "mapId": 254,
+      "sourceNode": 1632321550,
+      "sourceFlow": 1877372150,
+      "fromName": "竹影道",
+      "toName": "戏园",
+      "from": "Bell_XM_017",
+      "to": "Bell_XM_011",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_ximeng_wp"
+    },
+    {
+      "id": "worksheet-094",
+      "mapId": 254,
+      "sourceNode": 1632321550,
+      "sourceFlow": 1877372150,
+      "fromName": "戏园",
+      "toName": "演武场",
+      "from": "Bell_XM_011",
+      "to": "Bell_XM_012",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-094",
+      "world": "pbz_ximeng_wp",
+      "points": 164,
+      "meters": 421.47802318686206,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-095",
+      "mapId": 254,
+      "sourceNode": 1592340268,
+      "sourceFlow": 1877372150,
+      "fromName": "戏园",
+      "toName": "灵堂",
+      "from": "Bell_XM_011",
+      "to": "Bell_XM_003",
+      "hints": [
+        "story-gate"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-095",
+      "world": "pbz_ximeng_wp",
+      "points": 154,
+      "meters": 368.26670868782566,
+      "actions": 2
+    },
+    {
+      "id": "worksheet-096",
+      "mapId": 254,
+      "sourceNode": 1592340268,
+      "sourceFlow": 1877372150,
+      "fromName": "灵堂",
+      "toName": "连廊",
+      "from": "Bell_XM_003",
+      "to": "Bell_XM_013",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-096",
+      "world": "pbz_ximeng_wp",
+      "points": 53,
+      "meters": 155.97486959912237,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-097",
+      "mapId": 254,
+      "sourceNode": 471758303,
+      "sourceFlow": 1877372150,
+      "fromName": "连廊",
+      "toName": "戏梦山庄龙柱",
+      "from": "Bell_XM_013",
+      "to": "Bell_XM_DP_005",
+      "hints": [
+        "branch"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_ximeng_wp"
+    },
+    {
+      "id": "worksheet-098",
+      "mapId": 254,
+      "sourceNode": 1917807062,
+      "sourceFlow": 1877372150,
+      "fromName": "连廊",
+      "toName": "柳风亭",
+      "from": "Bell_XM_013",
+      "to": "Bell_XM_018",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-098",
+      "world": "pbz_ximeng_wp",
+      "points": 72,
+      "meters": 204.37529208944107,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-099",
+      "mapId": 254,
+      "sourceNode": 1917807062,
+      "sourceFlow": 1877372150,
+      "fromName": "柳风亭",
+      "toName": "冷荼书房",
+      "from": "Bell_XM_018",
+      "to": "Bell_XM_004",
+      "hints": [
+        "walk"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-099",
+      "world": "pbz_ximeng_wp",
+      "points": 135,
+      "meters": 336.8069856403816,
+      "actions": 1
+    },
+    {
+      "id": "worksheet-100",
+      "mapId": 254,
+      "sourceNode": 1917807062,
+      "sourceFlow": 1877372150,
+      "fromName": "冷荼书房",
+      "toName": "圣躯府邸",
+      "from": "Bell_XM_004",
+      "to": "Bell_XM_006",
+      "hints": [
+        "story-gate"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-100",
+      "world": "pbz_ximeng_wp",
+      "points": 90,
+      "meters": 170.02520387169622,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-101",
+      "mapId": 254,
+      "sourceNode": 1591830789,
+      "sourceFlow": 1877372150,
+      "fromName": "圣躯府邸",
+      "toName": "圣躯心池",
+      "from": "Bell_XM_006",
+      "to": "Bell_XM_007",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-101",
+      "world": "pbz_ximeng_wp",
+      "points": 33,
+      "meters": 87.93623210790645,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-127",
+      "mapId": 257,
+      "sourceNode": 2057973852,
+      "sourceFlow": 1314059996,
+      "fromName": "祭拜圣母之路",
+      "toName": "铁杀营地",
+      "from": "Bell_DDSD_001",
+      "to": "Bell_DDSD_002",
+      "hints": [
+        "uphill",
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-127",
+      "world": "pbz_dengdingshandao_wp",
+      "points": 117,
+      "meters": 215.2573193199814,
+      "actions": 0
+    },
+    {
+      "id": "worksheet-128",
+      "mapId": 257,
+      "sourceNode": 1462536615,
+      "sourceFlow": 1314059996,
+      "fromName": "铁杀营地",
+      "toName": "囚笼洞口",
+      "from": "Bell_DDSD_002",
+      "to": "Bell_DDSD_003",
+      "hints": [
+        "stairs"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_dengdingshandao_wp"
+    },
+    {
+      "id": "worksheet-129",
+      "mapId": 257,
+      "sourceNode": 1370341743,
+      "sourceFlow": 1314059996,
+      "fromName": "囚笼洞口",
+      "toName": "囚笼道",
+      "from": "Bell_DDSD_003",
+      "to": "Bell_DDSD_004",
+      "hints": [
+        "cave",
+        "drop",
+        "drop"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_dengdingshandao_wp"
+    },
+    {
+      "id": "worksheet-130",
+      "mapId": 257,
+      "sourceNode": 1370341743,
+      "sourceFlow": 1314059996,
+      "fromName": "囚笼道",
+      "toName": "横刀平台",
+      "from": "Bell_DDSD_004",
+      "to": "Bell_DDSD_005",
+      "hints": [
+        "drop",
+        "boss"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_dengdingshandao_wp"
+    },
+    {
+      "id": "worksheet-131",
+      "mapId": 257,
+      "sourceNode": 1143944363,
+      "sourceFlow": 1314059996,
+      "fromName": "横刀平台",
+      "toName": "宗祠外山门",
+      "from": "Bell_DDSD_005",
+      "to": "Bell_DDSD_006",
+      "hints": [
+        "stairs"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_dengdingshandao_wp"
+    },
+    {
+      "id": "worksheet-132",
+      "mapId": 257,
+      "sourceNode": 1091003721,
+      "sourceFlow": 1314059996,
+      "fromName": "宗祠外山门",
+      "toName": "圣母娘娘宗祠",
+      "from": "Bell_DDSD_006",
+      "to": "Bell_DDSD_007",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_dengdingshandao_wp"
+    },
+    {
+      "id": "worksheet-133",
+      "mapId": 257,
+      "sourceNode": 1268724945,
+      "sourceFlow": 1314059996,
+      "fromName": "圣母娘娘宗祠",
+      "toName": "人偶囚室",
+      "from": "Bell_DDSD_007",
+      "to": "Bell_DDSD_008",
+      "hints": [
+        "story-portal"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_dengdingshandao_wp"
+    },
+    {
+      "id": "worksheet-134",
+      "mapId": 258,
+      "sourceNode": 2006588338,
+      "sourceFlow": 748324193,
+      "fromName": "山神庙",
+      "toName": "银白之路",
+      "from": "Bell_LYZ_008",
+      "to": "Bell_DH_001",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_duanhun_wp"
+    },
+    {
+      "id": "worksheet-135",
+      "mapId": 258,
+      "sourceNode": 2006588338,
+      "sourceFlow": 748324193,
+      "fromName": "银白之路",
+      "toName": "最后的正道营地",
+      "from": "Bell_DH_001",
+      "to": "Bell_DH_002",
+      "hints": [
+        "walk"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_duanhun_wp"
+    },
+    {
+      "id": "worksheet-136",
+      "mapId": 258,
+      "sourceNode": 1758638444,
+      "sourceFlow": 748324193,
+      "fromName": "最后的正道营地",
+      "toName": "寒崖冰窟",
+      "from": "Bell_DH_002",
+      "to": "Bell_DH_006",
+      "hints": [
+        "cave"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-136",
+      "world": "pbz_duanhun_wp",
+      "points": 227,
+      "meters": 509.35061063822855,
+      "actions": 4
+    },
+    {
+      "id": "worksheet-137",
+      "mapId": 258,
+      "sourceNode": 1758638444,
+      "sourceFlow": 748324193,
+      "fromName": "寒崖冰窟",
+      "toName": "巨物盘踞处",
+      "from": "Bell_DH_006",
+      "to": "Bell_DH_003",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-137",
+      "world": "pbz_duanhun_wp",
+      "points": 95,
+      "meters": 249.5289375919925,
+      "actions": 4
+    },
+    {
+      "id": "worksheet-138",
+      "mapId": 258,
+      "sourceNode": 869069101,
+      "sourceFlow": 748324193,
+      "fromName": "巨物盘踞处",
+      "toName": "最后的挽回之地",
+      "from": "Bell_DH_003",
+      "to": "Bell_DH_010",
+      "hints": [
+        "story-gate"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-138",
+      "world": "pbz_duanhun_wp",
+      "points": 128,
+      "meters": 404.6743632967544,
+      "actions": 4
+    },
+    {
+      "id": "worksheet-139",
+      "mapId": 258,
+      "sourceNode": 209375461,
+      "sourceFlow": 748324193,
+      "fromName": "最后的挽回之地",
+      "toName": "断魂崖",
+      "from": "Bell_DH_010",
+      "to": "Bell_DH_004",
+      "hints": [
+        "ending-condition"
+      ],
+      "status": "geometry-unresolved",
+      "runtimeEnabled": false,
+      "world": "pbz_duanhun_wp"
+    },
+    {
+      "id": "worksheet-140",
+      "mapId": 258,
+      "sourceNode": 209375461,
+      "sourceFlow": 748324193,
+      "fromName": "断魂崖",
+      "toName": "大梦倾颓处",
+      "from": "Bell_DH_004",
+      "to": "Bell_DH_007",
+      "hints": [
+        "boss"
+      ],
+      "status": "requires-scene-check",
+      "runtimeEnabled": true,
+      "course": "roadbook-worksheet-140",
+      "world": "pbz_duanhun_wp",
+      "points": 20,
+      "meters": 103.26272061525653,
+      "actions": 0
+    }
+  ]
+}

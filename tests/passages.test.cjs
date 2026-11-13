@@ -20,6 +20,33 @@ function fixture(conditional=false){
 }
 function run(job){let row,n=0;do{row=job.next();assert.ok(++n<100000);}while(!row.done);return row.value;}
 
+test('resident condition refresh rotates beyond the first sixty-four movement actors',()=>{
+ const h=fixture(),v=X=>({X,Y:0,Z:0});h.g.actors=[];h.world.feet=()=>h.start;
+ let lastReady=true;const actors=Array.from({length:70},(_,i)=>({GetName:()=> 'wall-'+i,K2_GetActorLocation:()=>v(300),
+  LowSpline:{GetSplineLength:()=>200,GetLocationAtDistanceAlongSpline:d=>v(300+d)},
+  GetInteractRequirementMeet:()=>i===69&&!lastReady?2:1}));
+ h.UE.EInteractRequirementState={NoRequirement:0,RequirementMeet:1,RequirementNotMeet:2};
+ h.UE.Class={Find:name=>name.includes('SideRunning')?name:null};
+ h.UE.GameplayStatics={GetAllActorsOfClass:(pawn,cls,out)=>{out.value={Num:()=>actors.length,Get:i=>actors[i]};}};
+ run(h.api.refreshLoadedJob(h.g,h.world,{},h.start,h.goal));assert.equal(h.g.passageStates.get('wall-69').ready,true);
+ lastReady=false;h.api.refreshStates(h.g,h.world,{},true);h.api.refreshStates(h.g,h.world,{},true);
+ assert.equal(h.g.passageStates.get('wall-69').ready,false,'late movement types never refreshed their requirements');
+});
+test('loaded placed hooks still bind their current requirements to the existing fixed guide',()=>{
+ const h=fixture(),facts=require('../authoring/placed-passage-facts.json').rows;
+ const f=facts.find(f=>f.kind==='hook'&&f.world==='pbz_zhengdaodaying_wp'&&f.origin),p=v=>({x:v[0],y:v[1],z:v[2]}),at=v=>({K2_GetComponentLocation:()=>({X:v[0],Y:v[1],Z:v[2]})});
+ h.g.name=f.world;h.g.actors=[];h.start=p(f.path[0]);h.goal=p(f.path.at(-1));h.world.feet=()=>h.start;
+ const a={GetName:()=>f.guid,K2_GetActorLocation:()=>({X:f.origin[0],Y:f.origin[1],Z:f.origin[2]}),
+  TriggerSphere:at(f.path[0]),GrabPoint:at(f.path[1]),LandArea:at(f.path.at(-1)),GetInteractRequirementMeet:()=>2};
+ h.UE.EInteractRequirementState={RequirementMeet:1,RequirementNotMeet:2};h.UE.Class={Find:name=>name===f.classPath?name:null};
+ h.UE.GameplayStatics={GetAllActorsOfClass:(pawn,cls,out)=>{out.value={Num:()=>1,Get:()=>a};}};
+ run(h.api.refreshLoadedJob(h.g,h.world,{},h.start,h.goal));
+ const leg={guide:true,points:f.path.map(p),moves:[{kind:'hook',guid:'guide:existing-hook',from:0,to:f.path.length-1,p:h.start,end:h.goal}]};
+ require(root+'/PBZRouteGuides').refreshActions(leg,h.g);
+ assert.ok(leg.moves[0].block,'pre-indexing the placed hook hid it from existing guide requirement binding');
+ assert.equal(leg.moves[0].block.unknown,false);
+});
+
 test('resident ascent reads its lower BoxA and native spline components instead of the actor origin',()=>{
  const h=fixture(),vec=(X,Y,Z)=>({X,Y,Z});
  h.UE.SceneComponent={StaticClass:()=> 'scene'};
