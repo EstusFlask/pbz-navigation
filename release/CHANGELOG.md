@@ -1,3 +1,14 @@
+# 1.1.1 — tracker bell identity and checked obstruction detours
+
+- Recognize the native tracker's explicit `pbz:bell:<id>` selection when its 3D position matches the game bell table. Preserve its original key and coordinates. Unopened tracker bells now enter overland/roadbook planning; activated tracker bells retain the previous walking/transfer comparison through the real selection/solve path.
+- Restore the bounded repair budget for blocked generated roadbook candidates. Previously their context was initialized with both repairs already spent. Allow the same verified action connectors used by atlas repairs; measured fixed guides remain unchanged.
+- A lock flag no longer suppresses all local repair. Search an open side passage using the same constrained ground/capsule/lock checks; never alter the lock, cross a closed wall or invent an action through it. Retain the existing search limits and honor even a zero/exhausted deadline.
+- Add `local detour search`, `local detour result` and `local detour validation` diagnostics so attempted connectors, failed searches, blocked rejoins and pending prefixes are distinguishable.
+
+Validation: 247 JavaScript regressions, including eight new selection/repair/safety cases. The tavern fixture uses the actual tracker key and logged target/obstruction coordinates with simulated side-passage physics. Installation audit confirms all 1,362 1.1.0 runtime files match the delivered package. See VALIDATION-1.1.1.txt. The full market-to-tavern route has not been retested in game; existing coverage limits remain.
+
+中文：修复收集Mod铃铛丢失身份、路书遇阻被跳过局部修复，以及上锁标记直接禁止尝试侧路的问题。保持实际锁/碰撞约束，开放侧路可搜索，无侧路不放行；新增绕行与接回验证日志。实际市集→幻鬼酒馆仍待新版游戏复测。
+
 # 1.1.0 — experimental traversal expansion and roadbook candidates
 
 - Add legacy wall-running, pole wall-jump/execution, cross-obstacle ledge and lion-dance link adapters. Preserve directed action boundaries; ladder descent gets its own instruction. Prepare a representative of each movement kind before repeated volumes, with a 96-feature cap and the existing time deadlines.

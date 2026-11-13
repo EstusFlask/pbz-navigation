@@ -1,4 +1,4 @@
-# 移动与路书覆盖 · 1.1.0 实验版
+# 移动与路书覆盖 · 1.1.1 实验版
 
 本版扩展动作识别及三维候选，并非全图路书已完成。140条工作表连接中，86条已编制三维候选，2条沿用原有轨迹参考，52条仍缺资料。候选只在地面、身体碰撞、方向与当前机关检查通过后作为可用路线；未加载/未知条件保留待确认前段。
 
@@ -94,4 +94,4 @@
 
 审核后的事实输入为authoring/placed-passage-facts.json和native-component-schema.json；再运行tools/build-placed-passages.py、node --expose-gc tools/build-roadbook-courses.cjs、tools/build-bell-coverage.py。每个来源包保留SHA256，原始资产不分发。
 
-239项JavaScript回归通过。验证区分：真实关卡字节/坐标解析、模拟引擎回归、真实Lua/原生桥接、完整包核验。**本版没有新的游戏内全程通过记录。** 不能把本地测试通过等同所有移动、所有剧情或全图路线已走通。细节见release/VALIDATION-1.1.0.txt。
+247项JavaScript回归通过。验证区分：真实关卡字节/坐标解析、模拟引擎回归、真实Lua/原生桥接、完整包核验。**本版没有新的游戏内全程通过记录。** 不能把本地测试通过等同所有移动、所有剧情或全图路线已走通。细节见release/VALIDATION-1.1.0.txt。

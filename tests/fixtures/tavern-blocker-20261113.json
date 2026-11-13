@@ -1,0 +1,19 @@
+{
+  "source": "PBZModLoader loader.log, 2026-11-13 02:57:01-02:58:30 America/Tijuana; loaded 1.1.0",
+  "world": "pbz_pangzhen_wp",
+  "area": "pangzhen",
+  "trackerKey": "pbz:bell:bell_sz_004",
+  "bellId": "Bell_SZ_004",
+  "target": {"x": -191052, "y": 122786, "z": -4010},
+  "targetPrecision": "The item-selection log rounds the target coordinates to centimetres.",
+  "marketBellId": "Bell_SZ_003",
+  "unexpectedTransferFrom": "Bell_SZ_017",
+  "reportedTransferMeters": 410.54915444617876,
+  "blockedStep": {
+    "a": {"x": -191066.66484451294, "y": 120190.47504425049, "z": -4071.3548942513626},
+    "b": {"x": -191085.7124633789, "y": 120304.76075744629, "z": -4071.3548942513626},
+    "hit": {"x": -191035.7434601954, "y": 120269.19948628754, "z": -3983.8925099581325},
+    "why": "blocked body clearance"
+  },
+  "physics": "Tests replay the real selection/coordinates with a simulated finite blocker and open side passage, not reconstructed live collision."
+}

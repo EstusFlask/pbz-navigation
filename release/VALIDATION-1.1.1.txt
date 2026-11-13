@@ -1,0 +1,71 @@
+Version: 1.1.1 (experimental patch)
+Date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.1.1.zip
+Bytes: 120563239
+SHA256: 708986f53c7a52a81af925a22cd3998be05290ea60b5ce79d2dfec646e4880e4
+
+Field evidence:
+- Loader reports 1.1.0. Read-only installation audit matches all 1,362 runtime
+  files to its delivered archive, with no missing/changed/extra scripts.
+  build/field-20261113-tavern/installation.json
+- Native tracker selection for the tavern is pbz:bell:bell_sz_004, approximately
+  (-191052,122786,-4010). It was treated as an ordinary item, with a reported
+  410.55 m Bagua-crossroads -> Market transfer. The log also contains collision
+  rejects, action-chain and scene searches; it is not evidence of zero searches.
+- Repeated body-clearance obstruction near (-191035.743,120269.199,-3983.893).
+  Fixture: tests/fixtures/tavern-blocker-20261113.json. Target/step coordinates
+  are real; the test's finite blocker/open side passage uses simulated physics.
+
+Root causes / changes:
+- Native tracker bell keys lost their bell identity at selectItem. Resolve an
+  explicit pbz:bell:<id> only when its 3D position matches the game table; keep
+  original tracker key/coordinates. Unopened bells enter overland/roadbook
+  planning. Activated tracker bells retain their original transfer comparison
+  through actual selection -> solve, without changing native map-bell behavior.
+- Roadbook proof passed a context with repairs:2, disabling both local attempts
+  in advance. Use the shared bounded repair context and verified action
+  connectors. Leave the measured fixed-guide behavior unchanged.
+- Repair returned immediately on failure.locked, preventing an open side
+  passage from even being tried. Keep constrained floor/capsule/lock checks but
+  allow a bounded search around the lock. Do not mutate locks or traverse a
+  closed wall; refuse unsupported/blocked connectors and action interiors.
+- Honor an explicit zero/exhausted deadline and avoid starting a new local
+  search after the deadline. Existing node/time limits remain unchanged.
+- Add local detour search/result/validation diagnostics distinguishing connector
+  attempts, failed searches, blocked rejoins and pending physical prefixes.
+
+Red -> green loops:
+- Three minimized regressions failed before fixes: native tracker bell identity,
+  blocked long roadbook candidate skipping repair, known closed-gate side path.
+  build/tavern-red.txt -> build/tavern-green.txt
+- Activated tracker bell solve regression exposed changed behavior after identity
+  normalization; restoring the earlier tracker planning mode makes it pass.
+  build/tavern-active-red.txt -> build/tavern-planning.txt
+- Real tavern identity/coordinates replay finds the simulated side passage;
+  an endless closed wall and zero deadline remain rejected. Identity guards
+  reject unrelated items, mismatched floors and unknown bell keys.
+
+Verification:
+PASS: 247/247 JavaScript regressions, no failures/skips.
+  build/validation-111-js.txt
+PASS: real collector 1.0.9/1.0.14 Lua target/hover/file/cancel and hint tests.
+  build/validation-111-lua.txt
+PASS: rebuilt 1.1.1 native adapter, ABI/runtime hash gate and host dispatch.
+  build/validation-111-native.txt
+PASS: complete package built with current 951 streamed-atlas modules.
+  build/validation-111-build.txt
+PASS: 1,373 exact archive matches, no collector paths, original atlas/actor
+  hashes and 291 legacy chunk strings unchanged, versions all 1.1.1.
+  build/validation-111-package.txt
+PASS: git diff --check.
+  build/validation-111-diff-check.txt
+
+Preservation / limitations:
+- Archive 1.1.0 under build/release-archive/pre-1.1.1-20261113 with unchanged
+  SHA256 a55d4b416e384dfc5f81f19ff9d1511f6520048a1c3af3378e4b0c97037c68d8.
+  Append release/DIST-ARCHIVE-20261113.json; dist contains only 1.1.1.
+- No new live-game market-to-tavern traversal validation. Simulated physics
+  cannot prove the entire game route is open or that every obstacle has a
+  bypass. Preserve the existing 52/140 missing-link and story/water limitations.
+- Game/manager files stayed read-only. No installation, Nexus upload, player
+  trail persistence or Git commit. Collector files and bridge protocol retained.

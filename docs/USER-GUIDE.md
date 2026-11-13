@@ -1,10 +1,12 @@
 # Quest and Exploration Navigation - Fork
 
-任务与探索导航分支，版本 **1.1.0**。基于 **azqwq333** 的 [Quest and Exploration Navigation 0.8.5-beta](https://www.nexusmods.com/phantombladezero/mods/472) 及本地 `0.8.5-local-fix5`。Fork 整理：kurosakana。原导航系统、11 个世界路网、行走表面数据及原包资产归原作者。本分支代码与说明使用 AI 辅助生成。
+任务与探索导航分支，版本 **1.1.1**。基于 **azqwq333** 的 [Quest and Exploration Navigation 0.8.5-beta](https://www.nexusmods.com/phantombladezero/mods/472) 及本地 `0.8.5-local-fix5`。Fork 整理：kurosakana。原导航系统、11 个世界路网、行走表面数据及原包资产归原作者。本分支代码与说明使用 AI 辅助生成。
 
 **发布页为 Nexus #994。** 本分支保留原作者署名与随包资产归属，不表示 azqwq333 背书。
 
 ## 本版改动
+
+- 1.1.1：识别收集Mod的原生铃铛标记，保留桥接取消用的原ID/坐标；未解锁铃铛进入陆路/路书分支，已激活铃铛保留原行走/中转比较。修复路书候选一开始就耗尽修复预算的问题，遇到实际阻挡允许局部绕行，也可尝试已验证的动作连接。闭锁处仍保持锁定，但可检查开放侧路；无侧路不放行。新增local detour search/result/validation日志，区分未开始、没有找到、接回后仍受阻与预算用尽。
 
 - 1.1.0实验版：扩展旧式横向走壁、蹬墙跳、翻越障碍、立柱连接及码头登船。连续蹬墙/动作组合保留方向、锁和落脚检查；梯子上下行共用同一真实连接，不代替玩家操作速降。
 - 从八图关卡组件解析487个机关实例，并按路书方向编制86条三维候选，用于未激活铃铛陆路规划。它们必须接受当前场景的地面/身体碰撞/机关条件检查，没有固定轨迹的免重投影待遇。原两条轨迹参考保留。
@@ -78,7 +80,7 @@
 
 ## 安装与更新
 
-完整包：`dist/Quest_and_Exploration_Navigation_Fork_1.1.0.zip`。不包含加载器、UE4SS 本体或收集 Mod。
+完整包：`dist/Quest_and_Exploration_Navigation_Fork_1.1.1.zip`。不包含加载器、UE4SS 本体或收集 Mod。
 
 1. 退出游戏，备份 `ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt`。
 2. 安装 PBZModLoader 1.0.0。需要收集联动或补充描述时，另行安装上表对应 UE4SS 与原版 Map Tracker Plus。
@@ -107,7 +109,7 @@
 
 ## 验证范围
 
-239项本地JavaScript回归通过，包含旧式走壁、蹬跳/翻越/立柱/登船、候选类型拥挤、加载状态、合法返程、路书普通地面检查、短跳落约束、乘船保留目标与下船续算；两版真实Lua联动与原生组件另行验证。当前版本完整验证见release/VALIDATION-1.1.0.txt。本版没有新的游戏全程通过记录；86条候选与487个实例不等于全图已可走。未完成的52条连接、完整水上航线及剧情追逐详见[MOVEMENT-COVERAGE.md](MOVEMENT-COVERAGE.md)。
+247项本地JavaScript回归通过，包含旧式走壁、蹬跳/翻越/立柱/登船、候选类型拥挤、加载状态、合法返程、路书普通地面检查、短跳落约束、乘船保留目标与下船续算；两版真实Lua联动与原生组件另行验证。当前版本完整验证见release/VALIDATION-1.1.1.txt。本版没有新的游戏全程通过记录；86条候选与487个实例不等于全图已可走。未完成的52条连接、完整水上航线及剧情追逐详见[MOVEMENT-COVERAGE.md](MOVEMENT-COVERAGE.md)。
 
 本版不再采样、保存或加载玩家通路；旧 LearnRoutes 配置会被忽略，旧 trails 文件不参与规划。门锁/交互为只读查询，不会自动解锁、触发装置或移动角色。资源审计区分了已接入规则与仅发现存在的类型，包括旧穿洞/跨障、舞狮立柱、部分移动物与叙事机关的未完成支持。
 

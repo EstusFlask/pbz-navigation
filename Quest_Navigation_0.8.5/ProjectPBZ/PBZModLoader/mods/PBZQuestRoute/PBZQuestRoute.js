@@ -10,6 +10,7 @@ const Guides=require('./PBZRouteGuides');
 const Roadbook=require('./PBZRouteRoadbook');
 const TravelMode=require('./PBZRouteTravelMode');
 const BellTransfer=require('./PBZRouteBellTransfer');
+const BellIdentity=require('./PBZRouteBellIdentity');
 const RouteStatus=require('./PBZRouteStatus');
 const Feasibility=require('./PBZRouteFeasibility');
 const Blocked=require('./PBZRouteBlocked'),Repair=require('./PBZRouteRepair'),Goals=require('./PBZRouteGoals');
@@ -20,7 +21,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.1.0';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.1.1';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
@@ -184,7 +185,7 @@ function* proofJob(leg,lookout,context){
    context.repairs=(context.repairs||0)+1;
    const clock=context.clock||Date.now;context.repairDeadline??=clock()+3500;
    const fixed=yield* Repair.repair(w,candidate,physical,foot,{clock,deadline:context.repairDeadline,
-    traverse:leg.provider==='atlas'?context.repairTraversal:undefined});if(!fixed)break;
+    traverse:['atlas','roadbook'].includes(leg.provider)?context.repairTraversal:undefined,report:context.report});if(!fixed)break;
    candidate=fixed.candidate;physical=fixed.verdict;
    if(!physical.ok){rememberCollision(candidate,physical);Blocked.offer(context,Blocked.fromFailure(candidate,physical,previewGoal),context.start,previewGoal);}
    else Object.assign(leg,candidate);
@@ -285,7 +286,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   if(reference){
    const leg=reference.legs[0];
    Roadbook.prepare(leg,a,S.world,Passages);
-   if((yield* proofJob(leg,false,{...context,repairs:2}))===null)return reference;
+   if((yield* proofJob(leg,false,context))===null)return reference;
   }
  }
  if(depth===0&&!walkOnly&&!bellApproach&&!inactiveBell&&dest.item&&R.dist(start,dest.p)>2500){
@@ -461,7 +462,7 @@ function solve(dest,reason){
    setTrip(trip,dest,now.start,reason+(trip.transfer?' bell candidate':' blocked; searching detour'),now);
   }
  }};
- const accepted=planning.request(request,clock=>{context.clock=clock;return makePlan(dest,!!dest.bell,false,false,context);},(trip,selected,metrics)=>{
+ const accepted=planning.request(request,clock=>{context.clock=clock;return makePlan(dest,!!dest.bell&&dest.provider!=='187',false,false,context);},(trip,selected,metrics)=>{
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(!current||current.key!==selected.key||S.level!==selected.level||R.dist(current.p,selected.p)>190)return;
   const now=routeRequest(current);
@@ -664,11 +665,12 @@ function selectItem(item,device,displayWorld,displayArea,host){
   safe('tracker selection',()=>tracker.choose(host,item));
  }
  if(item.provider!=='187')tracker?.clear('route item selected');
- const targetWorld=worldOf(item.area)||displayWorld;
+ const bell=BellIdentity.fromItem(item,tables.bells),targetWorld=bell?.world||worldOf(item.area)||displayWorld;
  epoch++;questGate.pause(questID(narrative()));S.scout=null;S.bellArrival=null;S.arrival.restart();
  // The item's world comes from its location. Its icon UV is relative to the
  // visible chart, which can group several named subareas together.
- S.manual={p:item.p,uv:item.uv,world:targetWorld,area:displayArea,item:true,provider:item.provider,auto:!!item.auto,key:'item:'+item.area+'/'+item.id};
+ S.manual={p:item.p,uv:item.uv,world:targetWorld,area:displayArea,item:true,provider:item.provider,auto:!!item.auto,key:'item:'+item.area+'/'+item.id,
+  ...(bell?{bell:bell.id}:{})};
  previous=null;safe('item route',()=>solve(S.manual,device+' item'));
  log('item',device+' '+item.id+' @ '+[item.p.x,item.p.y,item.p.z].map(Math.round).join(','));
 }

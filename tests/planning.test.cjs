@@ -34,7 +34,7 @@ function planner(world,options={}){
     if(options.surface)mocks['./PBZRouteSurface']=options.surface;
     const module={exports:{}};
     const local=id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id));
-    const source=fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+'\nexports.test={S,graphs,makePlan,nativeWalk,observe,planning,routeRequest,guardRoute,auditor,locks,setTrip,solve,noRoute,reset,clearManual,pollStatus(){if(typeof updateRouteStatus==="function")updateRouteStatus(true);},atlas,queueGuardRetry(at){guardRetry=at;},arm(dest){scout={snapshot:null};oldWorld=S.level;threads={hide(){},clear(){}};S.manual=dest;const r=routeRequest(dest);previous={key:dest.key,p:dest.p,site:{...r.start},level:S.level,revision:r.revision,originRevision:r.originRevision};}};';
+    const source=fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+'\nexports.test={S,graphs,makePlan,nativeWalk,observe,planning,routeRequest,guardRoute,auditor,locks,setTrip,solve,noRoute,reset,clearManual,trackerChanged,selectItem,pollStatus(){if(typeof updateRouteStatus==="function")updateRouteStatus(true);},atlas,queueGuardRetry(at){guardRetry=at;},arm(dest){scout={snapshot:null};oldWorld=S.level;threads={hide(){},clear(){}};S.manual=dest;const r=routeRequest(dest);previous={key:dest.key,p:dest.p,site:{...r.start},level:S.level,revision:r.revision,originRevision:r.originRevision};}};';
     vm.runInNewContext('(function(require,module,exports){'+source+'\n})',{console:options.quiet?{log(){}}:console,
         Date:options.now?class extends Date{static now(){return options.now();}}:Date})(local,module,module.exports);
     const api=module.exports.test,g=options.graph||{name:'test',sameComponent:()=>false,actors:[],observedPassages:new Map(),routeJob:function*(){return null;}};
@@ -42,6 +42,99 @@ function planner(world,options={}){
     return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:level}};
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
+
+test('tracker native bell selection retains its bell identity instead of using item teleport planning',()=>{
+ const goal={x:6400,y:0,z:0},bell={id:'Bell_SZ_004',world:'test',area:'pangzhen',name:'幻鬼酒馆',at:[6400,0,0]};
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,bells:[bell],activeBellIDs:[],areas:{pangzhen:{world:'test'}}});
+ h.api.arm(h.dest);h.api.trackerChanged({id:'pbz:bell:bell_sz_004',p:goal,area:'pangzhen',provider:'187'},'selected');
+ assert.equal(h.api.S.manual.bell,bell.id,'the tracker bell was passed to the planner as an ordinary item');
+ assert.equal(h.api.S.manual.key,'item:pangzhen/pbz:bell:bell_sz_004','bridge selection identity must remain stable');
+});
+
+test('a blocked long roadbook corridor tries a checked local bypass before abandoning the candidate',()=>{
+ const p=(x,y=0)=>({x,y,z:0}),goal=p(30000),world={normal:.7,rise:45,slope:1,r:35,floorAt:p=>p,hit:()=>null,
+  step:(a,b)=>((a.x<500&&b.x>=500)||(a.x>=500&&b.x<500))&&Math.abs(b.y)<230?{hit:p(500,b.y),why:'blocked body clearance'}:{p:b}};
+ const leg=()=>({world:'test',provider:'roadbook',roadbook:{id:'market-tavern',courses:['market-tavern']},points:[p(0),p(1000),goal],
+  moves:[],gates:[],checks:[],walks:[],meters:300});
+ const h=planner(world,{quiet:true,UE:{NavigationSystemV1:{}},roadbook:{plan:function*(){return {legs:[leg()],transfer:null};},prepare(){}},
+  localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,goal);h.dest.bell='unopened-tavern';
+ const trip=run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0}));
+ assert.ok(trip?.legs[0].repaired,'a measured roadbook obstruction never entered local repair');
+ assert.ok(trip.legs[0].points.some(p=>Math.abs(p.y)>=230),'the repair did not go around the obstruction');
+});
+
+test('a known closed gate can be bypassed through a checked side passage',()=>{
+ const R=require(root+'/PBZRouteCore'),Repair=require(root+'/PBZRouteRepair'),p=(x,y=0)=>({x,y,z:0});
+ const blocked=(a,b)=>((a.x<500&&b.x>=500)||(a.x>=500&&b.x<500))&&Math.abs(b.y)<230;
+ const world={normal:.7,rise:45,slope:1,r:35,floorAt:p=>p,hit:()=>null,
+  step:(a,b)=>blocked(a,b)?{hit:p(500,b.y),why:'locked passage',locked:true}:{p:b}};
+ const source={world:'test',points:[p(0),p(400),p(1000)],walks:[],moves:[],checks:[],gates:[],meters:10};
+ const failure={segment:1,fraction:0,prefix:[p(0),p(400)],p:p(500),edge:-1,locked:true};
+ const fixed=run(Repair.repair(world,source,failure,p(0),{clock:()=>0}));
+ assert.ok(fixed?.verdict.ok,'the lock flag prevented even trying an open side passage');
+ assert.ok(fixed.candidate.points.some(p=>Math.abs(p.y)>=230));
+ assert.ok(fixed.candidate.points.slice(1).every((b,i)=>!blocked(fixed.candidate.points[i],b)));
+});
+test('the reported tavern tracker target finds a local side passage at the logged obstruction',t=>{
+ const field=require('./fixtures/tavern-blocker-20261113.json'),tables=require(root+'/PBZRouteTables').data;
+ const floorZ=field.blockedStep.a.z,wall=field.blockedStep.hit;
+ const blocked=(a,b)=>{
+  if(!((a.y<wall.y&&b.y>=wall.y)||(a.y>=wall.y&&b.y<wall.y)))return false;
+  const t=(wall.y-a.y)/(b.y-a.y);return Math.abs(a.x+(b.x-a.x)*t-wall.x)<230;
+ };
+ const floor=p=>({...p,z:floorZ}),world={normal:.7,rise:45,slope:1,r:35,floorAt:floor,hit:()=>null,
+  step:(a,b)=>blocked(a,b)?{hit:wall,why:'closed gate',locked:true}:{p:floor(b)}};
+ const h=planner(world,{quiet:true,level:field.world,start:field.blockedStep.a,complete:true,
+  bells:[tables.bells.bell_sz_003,tables.bells.bell_sz_004,tables.bells.bell_sz_017],activeBellIDs:['Bell_SZ_003','Bell_SZ_017'],
+  areas:{pangzhen:{world:field.world}},roadbook:{plan:function*(){return null;}},localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,field.target);h.api.arm(h.dest);
+ h.api.trackerChanged({id:field.trackerKey,p:{...field.target},area:field.area,provider:'187'},'selected');
+ const reports=[],trip=run(h.api.makePlan(h.api.S.manual,true,false,false,{clock:()=>0,report:(phase,data)=>reports.push({phase,...data})}));
+ assert.equal(h.api.S.manual.bell,field.bellId);assert.equal(!!trip?.transfer,false);
+ if(!trip?.legs[0].repaired||trip.legs[0].partial)t.diagnostic(JSON.stringify({leg:trip?.legs[0]&&{provider:trip.legs[0].provider,repaired:trip.legs[0].repaired,partial:trip.legs[0].partial,last:trip.legs[0].points.at(-1)},reports}));
+ assert.ok(trip?.legs[0].repaired&&!trip.legs[0].partial,'the field target never replaced its blocked corridor with the local side passage');
+ assert.ok(trip.legs[0].points.slice(1).every((b,i)=>!blocked(trip.legs[0].points[i],b)));
+ assert.ok(reports.some(r=>r.phase==='local detour search'));
+ assert.ok(reports.some(r=>r.phase==='local detour result'&&r.found));
+});
+test('local repair never crosses a closed wall with no side passage or grants an unlock',()=>{
+ const Repair=require(root+'/PBZRouteRepair'),p=(x,y=0)=>({x,y,z:0});
+ const world={normal:.7,rise:45,slope:1,r:35,floorAt:p=>p,hit:()=>null,
+  step:(a,b)=>a.x<500&&b.x>=500?{hit:p(500,b.y),locked:true,why:'closed wall'}:{p:b}};
+ const source={world:'test',points:[p(0),p(400),p(1000)],moves:[],walks:[],checks:[],gates:[]};
+ const failure={segment:1,prefix:[p(0),p(400)],locked:true};
+ const result=run(Repair.repair(world,source,failure,p(0),{clock:()=>0}));
+ assert.ok(!result||!result.verdict.ok,'a closed wall became an accepted connector');
+ assert.equal(failure.locked,true);
+});
+test('an exhausted repair deadline does not start a local search',()=>{
+ const Repair=require(root+'/PBZRouteRepair');let probes=0;const p=x=>({x,y:0,z:0});
+ const world={floorAt:p=>{probes++;return p;},step:(a,b)=>{probes++;return {p:b};}};
+ const source={points:[p(0),p(400),p(1000)],moves:[]},failure={segment:1,prefix:[p(0),p(400)],locked:true};
+ assert.equal(run(Repair.repair(world,source,failure,p(0),{clock:()=>0,deadline:0})),null);assert.equal(probes,0);
+});
+test('bell identity resolution requires an explicit tracker bell key and matching 3D position',()=>{
+ const B=require(root+'/PBZRouteBellIdentity'),tables=require(root+'/PBZRouteTables').data,f=require('./fixtures/tavern-blocker-20261113.json');
+ const item={id:f.trackerKey,provider:'187',p:f.target};assert.equal(B.fromItem(item,tables.bells)?.id,f.bellId);
+ assert.equal(B.fromItem({...item,id:'ordinary-item',name:'幻鬼酒馆'},tables.bells),null);
+ assert.equal(B.fromItem({...item,p:{...f.target,z:f.target.z+1000}},tables.bells),null);
+ assert.equal(B.fromItem({...item,id:'pbz:bell:unknown'},tables.bells),null);
+});
+test('an activated tracker bell retains the previous item-transfer comparison through solve',()=>{
+ const bells=[{id:'Bell_From',world:'test',area:'pangzhen',at:[200,0,0]},
+  {id:'Bell_Target',world:'test',area:'pangzhen',at:[18000,0,500]}];
+ const graph={name:'test',bells:new Map(),actors:[],observedPassages:new Map(),sameComponent:()=>true,h:()=>0,node:p=>p.x<1000?0:1,
+  routeJob:function*(a,b){return b.x<1000?{world:'test',points:[a,b],meters:Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z)/100,walks:[],moves:[],checks:[],gates:[]}:null;}};
+ const h=planner({floorAt:p=>p.x<1000?p:null,step:(a,b)=>b.x<1000?{p:b}:{why:'unloaded'}},
+  {quiet:true,bells,graph,areas:{pangzhen:{world:'test'}},localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,{x:18000,y:0,z:500});h.api.arm(h.dest);
+ let now=1000;h.api.planning.clock=()=>now;
+ h.api.trackerChanged({id:'pbz:bell:bell_target',p:{...h.goal},area:'pangzhen',provider:'187'},'selected');
+ for(let n=0;n<500&&h.api.planning.pending;n++){now+=20;h.api.planning.pump();}
+ assert.equal(h.api.S.manual.bell,'Bell_Target');
+ assert.equal(h.api.S.trip?.transfer?.to.id,'Bell_Target','recognizing a bell changed the already-activated transfer behavior');
+});
 
 test('sailing retains the selected target and resumes planning after disembarking',()=>{
  let aboard=true;

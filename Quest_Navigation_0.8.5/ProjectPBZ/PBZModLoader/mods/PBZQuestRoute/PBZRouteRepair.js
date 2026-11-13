@@ -11,9 +11,9 @@ function anchor(raw,failure,distance){
 // Repair only the measured neighbourhood, rather than searching an entire
 // 90+ metre route again because of one small rock.
 function* repair(world,source,failure,origin,options={}){
- if(failure.segment===undefined||!failure.prefix?.length||failure.locked)return null;
+ if(failure.segment===undefined||!failure.prefix?.length)return null;
  if((source.moves||[]).some(m=>m.from<=failure.segment&&m.to>failure.segment))return null;
- const clock=options.clock||Date.now,deadline=options.deadline||clock()+3500;
+ const clock=options.clock||Date.now,deadline=options.deadline??clock()+3500;
  const prefix=failure.prefix;let from=prefix.length-1,back=0;
  while(from>0&&back<180){back+=R.dist(prefix[from],prefix[from-1]);from--;}
  const meta=failure.prefixLeg||{};
@@ -24,10 +24,15 @@ function* repair(world,source,failure,origin,options={}){
   if((source.moves||[]).some(m=>m.from<join.tailIndex&&m.to>=join.tailIndex))continue;
   const p=world.floorAt(join.p,true);yield;
   if(!p||Math.abs(p.z-join.p.z)>200||world.hit?.(p,p,true))continue;
-  let detour=null;
+  options.report?.('local detour search',{world:source.world,provider:source.provider||'candidate',locked:!!failure.locked,
+   from:prefix[from],to:p,rejoinDistance:distance,budgetMs:Math.max(0,Math.round(deadline-clock()))});
+  let detour=null,localResult;
   if(options.traverse&&Math.abs(prefix[from].z-p.z)>120)detour=yield* options.traverse(prefix[from],p,{deadline});
-  if(!detour)detour=yield* Local.search(world,prefix[from],p,{maxNodes:700,maxMs:Math.min(1200,deadline-clock()),clock});
+  if(!detour&&clock()<deadline)detour=yield* Local.search(world,prefix[from],p,{maxNodes:700,maxMs:Math.max(1,Math.min(1200,deadline-clock())),clock,
+   report:(phase,result)=>{if(phase==='scene walking result')localResult=result;}});
   if(!detour&&options.traverse&&clock()<deadline)detour=yield* options.traverse(prefix[from],p,{deadline});
+  options.report?.('local detour result',{world:source.world,found:!!detour,reason:detour?'checked connector':localResult?.reason||(clock()>=deadline?'time budget':'no checked connector'),
+   expanded:localResult?.expanded||0,probes:localResult?.probes||0,actions:detour?.moves?.map(m=>m.kind)||[]});
   if(!detour)continue;
   const points=prefix.slice(0,from+1),moves=(meta.moves||[]).filter(m=>m.to<=from).map(m=>({...m})),walks=[],indices=new Map();
   const append=q=>{if(R.dist(points[points.length-1],q)>.1)points.push({...q});return points.length-1;};
@@ -44,6 +49,7 @@ function* repair(world,source,failure,origin,options={}){
    ...(source.checks||[]).filter(c=>indices.has(c.from)&&indices.has(c.to)).map(c=>({...c,from:indices.get(c.from),to:indices.get(c.to)}))];
   const candidate={...source,points,moves,checks,obstacles:[],partial:false,scenePartial:false,repaired:true,walks,meters:R.extent(points)/100};
   const verdict=yield* Feasible.check(world,candidate,origin);
+  options.report?.('local detour validation',{world:source.world,ok:verdict.ok,partial:!!verdict.leg?.partial,reason:verdict.why||'checked',edge:verdict.edge});
   return {candidate,verdict};
  }
  return null;
