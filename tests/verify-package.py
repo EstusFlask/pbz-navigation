@@ -10,7 +10,7 @@ import zipfile
 from collector_fixture import original_fixture
 
 root=Path(__file__).resolve().parents[1]
-nav=root/'Quest_Navigation_0.8.5'
+nav=root/'Quest_Navigation'
 parser=argparse.ArgumentParser()
 parser.add_argument('--manager-state',type=Path)
 args=parser.parse_args()
@@ -60,12 +60,15 @@ with zipfile.ZipFile(archive) as z:
     expected.update(scripts+'PBZRouteStreaming/'+name for name in stream_state['files'])
     assert names==expected|set(documents), 'incomplete navigation package'
     assert not any('/mods/pbzmaptracker/' in n.lower() for n in names), 'collector file included'
+    assert not any('/mods/pbzmodconfig/' in n.lower() for n in names), 'shared settings framework file included'
     assert z.testzip() is None
     version=release['version']
     for name in ['PBZRouteEntry.js','PBZQuestRoute.js']:
         assert ("'"+version+"'") in z.read(scripts+name).decode('utf-8'), 'runtime version mismatch'
     adapter='platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll'
     assert version.encode('utf-16le') in z.read(adapter), 'native adapter version mismatch'
+    assert ("modVersion='"+version+"'") in z.read('platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZRouteConfig.lua').decode('utf-8'), 'settings provider version mismatch'
+    assert not any(n.endswith('PBZQuestRoute-settings.json') for n in names), 'player color settings included in update'
     for name in ['README-en.txt','README-zh.txt',*documents]:
         assert version in z.read(name).decode('utf-8'), 'documentation version mismatch'
     for name in names:

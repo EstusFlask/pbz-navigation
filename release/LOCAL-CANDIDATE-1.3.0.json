@@ -1,0 +1,52 @@
+{
+  "version": "1.3.0",
+  "status": "local candidate; not installed or uploaded",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.3.0.zip",
+  "bytes": 120560630,
+  "sha256": "48b0f48711a4c30880f0298c01a03d4ad7336f78090354086f46197a4528eebf",
+  "files": 1382,
+  "addedPaths": [
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteColor.js",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/PbzModConfig-SDK.txt",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZRouteConfig.lua",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PbzConfigCore.lua",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PbzModConfigClient.lua"
+  ],
+  "removedPaths": [],
+  "changedPathsFrom1_2_10": [
+    "BELL-NETWORK-COVERAGE.md",
+    "BELL-ROUTE-AUDIT.md",
+    "CHANGELOG.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "INSTALL-README.md",
+    "ITEM-DESCRIPTION-AUDIT.md",
+    "MANUAL-ROUTES.md",
+    "MOVEMENT-COVERAGE.md",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZPrivateRibbon.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteFiber.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/main.lua",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll"
+  ],
+  "javascriptPassed": 297,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "realModConfigHost": "1.0.4; remote host and locale modules, engine/UI simulated",
+  "nativeChecks": "passed",
+  "packageVerification": "1382 exact files; 951 streamed modules and 291 legacy chunk paths/values retained",
+  "features": [
+    "Standalone PbzModConfig navigation provider",
+    "Red, blue (default), custom color picker",
+    "Saved settings and live near/far strand color refresh"
+  ],
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false
+}

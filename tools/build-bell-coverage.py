@@ -13,7 +13,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / 'build/gamersky'
-JS = ROOT / 'Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute'
+JS = ROOT / 'Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute'
 MAPS = {
     251: ('悲泣溪谷', ['xigu']), 252: ('血色森林', ['fujizhilin']),
     253: ('陆家村', ['lujiacun']), 254: ('庞镇／后街／戏梦山庄', ['pangzhen', 'houjie', 'ximeng']),

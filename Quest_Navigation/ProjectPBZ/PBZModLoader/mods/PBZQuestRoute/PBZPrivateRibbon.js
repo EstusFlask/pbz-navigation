@@ -1,6 +1,7 @@
 'use strict';
 const UE=require('ue'),R=require('./PBZRouteCore'),W=require('./PBZRouteWorld'),B=require('./PBZRibbonMath'),Fiber=require('./PBZRouteFiber'),{Arrival}=require('./PBZRouteArrival');
 const {RibbonGuard}=require('./PBZRibbonGuard');
+const Color=require('./PBZRouteColor');
 const zero=()=>new UE.Rotator(0,0,0);
 const tr=p=>UE.KismetMathLibrary.MakeTransform(W.vec(p),zero(),new UE.Vector(1,1,1));
 class Threads{
@@ -35,7 +36,7 @@ class Threads{
   }catch(e){a.K2_DestroyActor();if(!template){this.template=true;this.log('private spline holder',String(e)+'; use owned spline template');return this.make(i,pawn,at);}throw e;}
  }
  shape(r,ps,before,after){if(ps.length<2)return;
-  r.span=R.extent(ps);Fiber.draw(r,r.head,this.log,ps);this.vis(r,true);
+  r.span=R.extent(ps);Fiber.draw(r,r.head,this.log,ps,this.color);this.vis(r,true);
  }
  maintainFloor(w,m,now){
   if(now<this.nextFloor)return;this.nextFloor=now+125;
@@ -54,6 +55,7 @@ class Threads{
   for(let s=begin;s<=Math.min(r.length,m.arc+1450);s+=125)sample(s);
  }
  section(i,S,f,a,b,shapeKey,checkedSlice){
+  if(shapeKey!==null)shapeKey=this.color.key+'|'+shapeKey;
   const present=this.pool[i];if(present?.on&&shapeKey!==null&&present.tag===shapeKey)return;
   const slice=checkedSlice||(!f&&this.guarded?this.guard.section(i-1,a,b):B.section(this.route,f,a,b));if(!slice){this.vis(present,false);return;}
   const row=this.make(i,S.pawn,slice.ps[0]);this.shape(row,slice.ps,slice.before,slice.after);row.tag=shapeKey;
@@ -62,7 +64,7 @@ class Threads{
   if(S.line.length<2){this.hide();return;}
   const now=Date.now(),w=S.world;
   if(this.lastDraw!==null&&this.lastDraw!==undefined&&this.version===S.version&&now-this.lastDraw<34)return;
-  this.lastDraw=now;const feet=w.feet();
+  this.lastDraw=now;this.color=Color.resolve(S.cfg);const feet=w.feet();
   if(this.version!==S.version){
    const newKey=(S.trip?.legs[S.active]?.world||'')+'/'+(S.targetKey||'')+'/'+S.active;
    const same=this.routeKey===newKey,old=this.route;
@@ -139,10 +141,11 @@ class Threads{
    const row=this.pool[k+1];if(k<first||k>=tiles||front>=drawEnd-.3){this.vis(row,false);continue;}
    const a=Math.max(front,k*1100),b=Math.min((k+1)*1100,drawEnd);
    const shapeKey=S.version+'/'+(this.tileVersion[k]||0)+'/'+a.toFixed(2)+'/'+b.toFixed(2);
-   if(k!==first&&(!row?.on||row.tag!==shapeKey)&&built++>=3){this.vis(row,false);continue;}
+   if(k!==first&&(!row?.on||row.tag!==this.color.key+'|'+shapeKey)&&built++>=3){this.vis(row,false);continue;}
    this.section(k+1,S,null,a,b,shapeKey);
   }
-  if(this.ann!==this.version){this.ann=this.version;this.log('thread','blue mesh; height='+Math.round(anchor.z-feet.z)+'cm path='+Math.round(r.length/100)+'m');}
+  const ann=this.version+'/'+this.color.key;
+  if(this.ann!==ann){this.ann=ann;this.log('thread',this.color.key+' mesh; height='+Math.round(anchor.z-feet.z)+'cm path='+Math.round(r.length/100)+'m');}
  }
 }
 exports.Threads=Threads;

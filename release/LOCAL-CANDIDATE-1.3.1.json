@@ -1,0 +1,49 @@
+{
+  "version": "1.3.1",
+  "status": "published; not installed to game",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.3.1.zip",
+  "bytes": 120561924,
+  "sha256": "5487fd41b5fe7149f50bbad279916008f342a1e3ec40a2d9316d4181253fb54d",
+  "files": 1383,
+  "addedPaths": [
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZModConfigHost.lua"
+  ],
+  "removedPaths": [],
+  "changedPathsFrom1_3_0": [
+    "BELL-NETWORK-COVERAGE.md",
+    "BELL-ROUTE-AUDIT.md",
+    "CHANGELOG.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "INSTALL-README.md",
+    "ITEM-DESCRIPTION-AUDIT.md",
+    "MANUAL-ROUTES.md",
+    "MOVEMENT-COVERAGE.md",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZRouteConfig.lua",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll"
+  ],
+  "javascriptPassed": 297,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "realModConfigHost": "1.0.4; real Editors/NativeRows with simulated widget hierarchy; early and late attachment pass",
+  "rootCause": "Runtime collapses entry.row but custom-color swatch is a sibling in entry.outer",
+  "fix": "Navigation-only container visibility on create and update; preserve disposal/world guards and other providers",
+  "nativeChecks": "passed, including exact PbzModConfig host dispatch",
+  "packageVerification": "1383 exact files;951 streamed modules and291 legacy chunk values retained",
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": true,
+  "nexusFileId": 4025,
+  "nexusUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
+  "downloadAvailable": null,
+  "scanStatus": "not_monitored",
+  "lastObservedScanStatus": "pending",
+  "scanMonitoring": false
+}

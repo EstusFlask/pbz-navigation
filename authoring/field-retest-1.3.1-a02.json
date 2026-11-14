@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "build": "1.3.1",
+  "case": "A-02",
+  "world": "pbz_xigu_wp",
+  "fromBell": "Bell_NLES_012",
+  "toBell": "Bell_NLES_018",
+  "result": "failed: missing rooftop continuation, then user-reported through-roof or inappropriate-drop guidance",
+  "userReports": [
+    "两次上墙是对的，上去之后屋顶的路线没显示，加载了很久之后显示了错误路线",
+    "A-02：塔顶 → 瀑布吊桥",
+    "穿过屋顶或从不该跳的地方下去"
+  ],
+  "correctControl": "User confirmed both initial wall climbs were correct; retain them as a regression control. This does not accept the rooftop continuation or the full route.",
+  "installedAudit": {
+    "status": "passed",
+    "matchedRuntimeFiles": 1373,
+    "missing": 0,
+    "changed": 0,
+    "evidence": "build/field-1.3.1-a02-logs/installation.json"
+  },
+  "recordingScope": "Frozen loader/navigation/UE4SS logs and tracker snapshot. No new continuous XYZ or Y-marker session was started. No game files or save were modified.",
+  "observations": {
+    "loadedBuild": "Loader confirms 1.3.1; xigu atlas preload completed before A-02 selection",
+    "selectionsLocal": ["15:17:48.310", "15:22:05.207"],
+    "secondRunDoubleClimbPreviewLocal": "15:22:07.077",
+    "rooftopQuery": {
+      "localTime": "15:22:14.704",
+      "start": {"x": -63648.621859337996, "y": 217536.0226661611, "z": -10228.706842082634},
+      "nativeStatus": "partial",
+      "nativePointCount": 2,
+      "nativeLast": {"x": -63580.95177459717, "y": 217409.52173614502, "z": -10230.610402231934}
+    },
+    "firstFallPreviewAfterRooftopQuery": {
+      "localTime": "15:22:34.099",
+      "wallMs": 19395,
+      "status": "blocked preview, not complete",
+      "actions": "fall",
+      "reportedMeters": 31,
+      "attributionLimit": "This is the first logged fall preview after the rooftop query; the exact rendered points and the user's first visible error were not captured."
+    },
+    "laterTimeouts": [
+      {"localTime": "15:23:13.640", "wallMs": 30003, "cpuMs": 2236},
+      {"localTime": "15:23:43.792", "wallMs": 30021, "cpuMs": 2474}
+    ],
+    "laterTimeoutStart": {"x": -61845.771421455276, "y": 217693.9288557006, "z": -10824.766773659323},
+    "timeoutScope": "These later searches start farther along the rooftop than the 15:22:14 query; they are not a stopwatch measurement of the initial rooftop wait.",
+    "completeA02RouteLogged": false
+  },
+  "unresolved": [
+    "Exact rendered wrong-route points and short-drop takeoff/descent/landing queries are absent from this capture.",
+    "Aggregate support/clearance rejection counts cannot reconstruct game collision or prove which rooftop connection should pass.",
+    "No deterministic replay of the user's through-roof/inappropriate-drop symptom has been established; no root cause or runtime fix is claimed."
+  ],
+  "nextCheckpoint": "Second wall-climb rooftop landing only, target Bell_NLES_018. Start a fresh short session before reselecting; capture missing continuation and exact wrong rendered segment, with a safe manual route comparison if needed. Preserve the two correct climbs; do not advance to A-03 or rerun the full long route for this issue.",
+  "evidence": [
+    "build/field-1.3.1-a02-logs/sources.json",
+    "build/field-1.3.1-a02-logs/events.json",
+    "build/field-1.3.1-a02-logs/loader.log",
+    "build/field-1.3.1-a02-logs/navigation.log",
+    "build/field-1.3.1-a02-logs/installation.json"
+  ],
+  "runtimeCodeChanged": false,
+  "livePassed": false
+}

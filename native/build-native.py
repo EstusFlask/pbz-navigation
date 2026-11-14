@@ -77,7 +77,7 @@ def main():
     subprocess.run([str(tools/'lib.exe'),'/nologo','/machine:x64','/def:'+str(definition),'/out:'+str(library)],check=True,env=env)
     common=[str(tools/'cl.exe'),'/nologo','/std:c++20','/EHsc','/MD','/O2','/W4','/wd4100','/utf-8','/DNDEBUG','/D_ITERATOR_DEBUG_LEVEL=0',
         *['/I'+str(p) for p in includes]]
-    output=ROOT/'Quest_Navigation_0.8.5/platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll'
+    output=ROOT/'Quest_Navigation/platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll'
     output.parent.mkdir(parents=True,exist_ok=True)
     subprocess.run(common+['/LD',str(ROOT/'native/QuestRouteCompat.cpp'),'/Fo:'+str(out/'adapter.obj'),
         '/Fe:'+str(output),'/link',str(library),'bcrypt.lib','/IMPLIB:'+str(out/'adapter.lib'),'/DYNAMICBASE','/NXCOMPAT'],check=True,env=env,cwd=out)

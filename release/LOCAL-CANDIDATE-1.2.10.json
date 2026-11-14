@@ -1,0 +1,70 @@
+{
+  "version": "1.2.10",
+  "status": "published experimental; download available; original bell live acceptance still pending",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.10.zip",
+  "bytes": 120544958,
+  "sha256": "a7926b013b287f81e735f8d69f43efbf4024e40ae14303cd5321bd137eda7184",
+  "files": 1377,
+  "addedPaths": [],
+  "removedPaths": [],
+  "changedPathsFrom1.2.9": [
+    "BELL-NETWORK-COVERAGE.md",
+    "BELL-ROUTE-AUDIT.md",
+    "CHANGELOG.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "INSTALL-README.md",
+    "ITEM-DESCRIPTION-AUDIT.md",
+    "MANUAL-ROUTES.md",
+    "MOVEMENT-COVERAGE.md",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteHintWalk.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteTransitions.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll"
+  ],
+  "javascriptPassed": 292,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "nativeChecks": "passed",
+  "packageVerification": "1377 exact files;951 original streams and291 legacy chunk paths/hashes retained",
+  "fieldEvidence": "authoring/field-retest-1.2.9.json",
+  "redFeedback": [
+    "build/chain-submit-1210-pristine-red.txt",
+    "build/chain-delivery-1210-red.txt"
+  ],
+  "fixes": [
+    "Plan and validate whole action-chain proposals; return the first completely checked chain",
+    "Deliver complete assisted chain after main physical audit/goal check before optional shortening",
+    "Reject partial walking connectors as complete action chains",
+    "Bounded scalar collision diagnostics on first8 rejected hint edges"
+  ],
+  "policy": "Timely checked feasible guidance; global shortest route not guaranteed. Existing complete-native local comparisons retained.",
+  "budgetsChanged": false,
+  "fixedCoursesAdded": 0,
+  "authorPointsAdded": 0,
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": true,
+  "nextCase": "Same first-floor bell, stationary summit selection once; record first visible safe/full guidance and wall latency. Original-pose query last run was interrupted by movement.",
+  "nexusFileId": 4023,
+  "documentationOnlyRepack": {
+    "previousArchive": "build/release-archive/pre-nexus-1.2.10-20261114/Quest_and_Exploration_Navigation_Fork_1.2.10.zip",
+    "previousSHA256": "34feb5c01e7ff2c911419d04f2f0d508a836fc7f29d25e6a42e91584fe02ae81",
+    "changedDocuments": [
+      "README-en.txt",
+      "README-zh.txt",
+      "INSTALL-README.md",
+      "CHANGELOG.md"
+    ],
+    "allOtherArchiveFilesUnchanged": true,
+    "validation": "build/nexus-1210-package.txt"
+  },
+  "nexusUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
+  "downloadAvailable": true
+}

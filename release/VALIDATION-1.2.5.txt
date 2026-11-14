@@ -1,0 +1,49 @@
+Version: 1.2.5 (local fix candidate; A-01 live verification pending)
+Validation date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.5.zip
+
+Field facts
+- Installed 1.2.4 startup and captured diagnostic logs confirm native partial
+  state. Endpoint roughly 41m below verified summit, within 1m in XY.
+- Correct ascent entry walk: 2402ms CPU / 27683ms wall, failed. Whole request
+  then reaches 30s. Simple collision hit has mutual blocking responses.
+- Logs frozen in build/field-1.2.4-a01-logs; no new continuous motion session
+  or Y listener was started by this turn. User already reselected and reran.
+
+Failing-before / passing-after feedback loop
+  node --test tests/planning.test.cjs tests/walk-hints.test.cjs
+- Actual native point-list replay publishes lower-floor guidance before fix;
+  after fix it remains search-only, verified target XYZ unchanged.
+- A narrow oblique walking model is missed by the ordinary grid but recovered
+  through physically checked author-point neighbours. Closed gate, wrong
+  layer and foreign world cannot be bypassed by hints.
+- Existing nearby scene-walk-before-transfer regression exposed a same-level
+  partial completion regression; retaining bounded, fully checked same-level
+  continuation fixes it. It is included in the full passing suite.
+- Red: build/walk-recovery-125-red.txt; green/full: build/validation-125-js.txt.
+
+Author data
+- 546 grounded walking positions from the prior tower run. Every new edge
+  still goes through ordinary live stepping, not an author-trace exemption.
+- SHA/provenance/filter details: authoring/walk-hints-audit.json. Expected
+  fingerprint matches canonical LF; physical source-file SHA also retained.
+- Point-cloud candidates only; no static action/door/return edge certification.
+
+Checks
+- All tests/*.test.cjs: 277 passed, 0 failed.
+- Real tracker 1.0.9/1.0.14 Lua service and file round trips: PASS
+  (build/validation-125-lua.txt).
+- Native 1.2.5 ABI/runtime SHA/filter/dispatch: PASS
+  (build/validation-125-native.txt).
+- Package: 1376 exact files; original 951 streamed modules, 291 legacy
+  chunk paths and column hashes retained. Only two new hint-module/data paths;
+  no previous ownership paths removed and no collector-owned paths.
+- Package: 120,584,731 bytes; SHA256:
+  154191be0c0b28a06df02de32f1166dad69814c31e2f7c39920431241a44c650
+- Previous complete 1.2.4 archived with SHA; dist contains only 1.2.5.
+
+Limits
+- No fresh 1.2.5 field pass or FPS claim. Narrow model is not game collision.
+- Same safety and budgets; no fixed-course/full-map completion claim, runtime
+  recording, game installation writes, manager edit or Nexus upload.
+- Next field card is a short doorway-to-wall direction/connection check.

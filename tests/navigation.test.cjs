@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const root = path.resolve(__dirname, '../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root = path.resolve(__dirname, '../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 function load(name, mocks) {
     const filename = path.join(root, name + '.js'), module = {exports: {}};
     const local = id => Object.hasOwn(mocks, id) ? mocks[id] : require(path.resolve(root, id));
@@ -72,6 +72,33 @@ test('moving fiber uploads reuse unchanged vertex colors while positions continu
     assert.deepEqual(plain(uploads[1][1].values),plain(expected.v));assert.deepEqual(plain(uploads[1][2].values),plain(expected.normal));
     assert.equal(uploads[0][8],uploads[1][7]);assert.deepEqual(plain(uploads[1][7].values.map(c=>c.rgba)),plain(expected.col));
     now+=40;draw(row,true,()=>{},[...moved,{x:1000,y:0,z:18}]);assert.ok(colors>first,'a topology change did not rebuild colors');
+});
+
+test('changing rope color refreshes equal-topology vertex colors and the owned material tint',()=>{
+    const Color=require(path.join(root,'PBZRouteColor'));let now=1000;
+    const uploads=[],tints=[];
+    const {draw}=load('PBZRouteFiber',{Date:{now:()=>now},ue:{NewArray:()=>({values:[],Add(v){this.values.push(v);}}),
+        Vector:function(){},LinearColor:function(...rgba){this.rgba=rgba;}},'./PBZRouteWorld':{plain:()=>({x:0,y:0,z:0}),vec:p=>p}});
+    const row={fiberMaterial:{SetVectorParameterValue:(key,v)=>tints.push([key,v.rgba])},fiber:{K2_GetComponentLocation(){},
+        CreateMeshSection_LinearColor(...args){uploads.push(args[8]);},UpdateMeshSection_LinearColor(...args){uploads.push(args[7]);}}};
+    const ps=[{x:0,y:0,z:105},{x:100,y:0,z:105}];
+    for(const cfg of [{},{ThreadColor:'red'},{ThreadColor:'custom',ThreadCustomColor:'#00FF00'}]){
+        draw(row,true,()=>{},ps,Color.resolve(cfg));now+=40;
+    }
+    assert.equal(uploads.length,3);assert.notEqual(uploads[0],uploads[1]);assert.notEqual(uploads[1],uploads[2]);
+    assert.ok(uploads[0].values.every(c=>c.rgba[2]>c.rgba[0]));
+    assert.ok(uploads[1].values.every(c=>c.rgba[0]>c.rgba[2]));
+    assert.ok(uploads[2].values.every(c=>c.rgba[0]===0&&c.rgba[1]>0&&c.rgba[2]===0));
+    assert.deepEqual(tints.at(-1),['Tint',[0,1,0,1]]);
+    now+=40;draw(row,true,()=>{},ps,Color.resolve({ThreadColor:'custom',ThreadCustomColor:'#00FF00'}));
+    assert.equal(uploads[2],uploads[3]);assert.equal(tints.length,9,'unchanged tint crossed the engine bridge again');
+});
+
+test('changing rope color redraws stationary far sections without changing the route version',()=>{
+    const r=ribbon();for(let i=0;i<12;i++){r.threads.show(r.state);r.advance(40);}
+    const before=r.drawn.length,version=r.state.version;
+    r.state.cfg={ThreadColor:'red'};r.threads.show(r.state);
+    assert.ok(r.drawn.length-before>=3,'only the moving head changed color');assert.equal(r.state.version,version);
 });
 
 test('an idle thread does not repeat its near collision sweep at render frequency',t=>{

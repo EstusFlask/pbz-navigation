@@ -66,6 +66,6 @@ for definition in definitions:
           'terminal distance', round(math.dist(points[-1], course['target'])), 'cm;', 'reviewed gaps', gaps)
 
 data = dict(version=1, sourceTraceSHA256=hashlib.sha256(raw).hexdigest(), courses=courses)
-output = root / 'Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteGuideData.js'
+output = root / 'Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteGuideData.js'
 output.write_text("'use strict';\n// Fixed author data. Provenance/limits: MANUAL-ROUTES.md. No runtime learning.\nexports.data=" +
                   json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n', encoding='utf-8')

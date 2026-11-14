@@ -6,7 +6,7 @@ import subprocess
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
-nav = root / 'Quest_Navigation_0.8.5'
+nav = root / 'Quest_Navigation'
 release = json.loads((root/'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))
 lock = json.loads((root/'release/VERSION-LOCK.json').read_text(encoding='utf-8'))
 version = str(release['version'])

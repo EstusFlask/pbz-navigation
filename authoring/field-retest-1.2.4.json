@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "build": "1.2.4",
+  "case": "A-01",
+  "result": "failed; user reselected and reran",
+  "scope": "Installed game diagnostic logs, no new continuous player/Y recording",
+  "evidence": "build/field-1.2.4-a01-logs/events.json",
+  "nativePartial": true,
+  "nativeEnd": [
+    -64781.284261637724,
+    219543.6862953449,
+    -15500.610402231934
+  ],
+  "target": [
+    -64848,
+    219573,
+    -11386
+  ],
+  "ascentConnectorCpuMs": 2402,
+  "ascentConnectorWallMs": 27683,
+  "nextCandidate": "1.2.5",
+  "livePassed": false
+}

@@ -1,5 +1,6 @@
 """Run with Python + lupa (Lua 5.4), or run tracker-bridge.lua with a Lua 5.4 CLI."""
 from pathlib import Path
+import argparse
 import os
 import sys
 import subprocess
@@ -11,7 +12,25 @@ sys.path.insert(0, str(Path(os.environ.get('TEMP', '.')) / 'pbz-navigation-test-
 from lupa.lua54 import LuaRuntime
 
 root = Path(__file__).resolve().parents[1]
-adapter = root / 'Quest_Navigation_0.8.5/platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts'
+adapter = root / 'Quest_Navigation/platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts'
+parser = argparse.ArgumentParser()
+parser.add_argument('--mod-config-scripts', type=Path, help='Read-only PbzModConfig/Scripts for an actual-host integration test')
+args = parser.parse_args()
+if args.mod_config_scripts:
+    lua = LuaRuntime()
+    lua.globals().adapter_scripts = adapter.as_posix()
+    lua.globals().framework_scripts = args.mod_config_scripts.resolve().as_posix()
+    lua.execute("package.path = adapter_scripts .. '/?.lua;' .. framework_scripts .. '/?.lua;' .. package.path")
+    lua.execute((root / 'tests/rope-modconfig-host.lua').read_text(encoding='utf-8'))
+    subprocess.run([sys.executable,str(root/'tests/rope-modconfig-rows.py'),
+        '--mod-config-scripts',str(args.mod_config_scripts),'--patch'],check=True)
+with tempfile.TemporaryDirectory(prefix='pbz-rope-') as folder:
+    lua = LuaRuntime()
+    lua.globals().adapter_scripts = adapter.as_posix()
+    lua.globals().config_test_root = Path(folder).as_posix()
+    lua.execute("package.path = adapter_scripts .. '/?.lua;' .. package.path")
+    lua.execute((root / 'tests/rope-config.lua').read_text(encoding='utf-8'))
+    subprocess.run(['node', str(root/'tests/rope-color-roundtrip.cjs'), folder], check=True)
 fixtures=[original_fixture(root),next(root.glob('Map_Collectible_Tracker_1.0.14*'))]
 for fixture in fixtures:
     lua = LuaRuntime()

@@ -1,0 +1,13 @@
+{
+  "world": "pbz_xigu_wp",
+  "source": "1.3.1 A-02 live roof origin; earlier worksheet-015 grounded samples supply candidate positions only",
+  "liveEvidence": "build/field-live-1.3.1-20261114-48148-A02",
+  "sourceTrace": "build/field-live-20261113-20828/run-worksheet-015.player.jsonl",
+  "sourceSHA256": "1c14c9d797a4a263e9351b70b076945745a93befe1e8f94c50d82c918a7fa039",
+  "start": {"x": -63648.81305689141, "y": 217530.52602247294, "z": -10228.856524876257},
+  "goal": {"x": -59851.74999979659, "y": 216602.65624956385, "z": -9467.224392161292},
+  "takeoff": {"x": -63544.3, "y": 217564.4, "z": -10243.9},
+  "landing": {"x": -63260.3, "y": 217611.4, "z": -10446.7},
+  "gapPlaneX": -63300,
+  "scope": "Candidate-graph/drop-validation replay with substituted physics, not a reconstruction of game collision or proof the whole A-02 is fixed"
+}

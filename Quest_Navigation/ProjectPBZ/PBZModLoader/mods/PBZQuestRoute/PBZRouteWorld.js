@@ -24,7 +24,7 @@ function contact(w,h,ground=true){
 }
 function supportHit(w,a,b){
  const hit=w.hit(a,b);
- if(hit&&(hit.penetrating||hit.walkable===false||walkable(w,hit)))return hit;
+ if(hit&&(hit.penetrating||walkable(w,hit)))return hit;
  // A centre ray on a rock's side is not the character's whole floor contact.
  // Sample inside the capsule footprint without weakening its body sweep.
  const d=Math.max(8,Math.min(22,(Number(w.r)||35)*.45)),samples=[];let best=null;
@@ -35,11 +35,13 @@ function supportHit(w,a,b){
   samples.push(valid?q:null);
   if(valid&&(!best||Math.abs(q.point.z-reference)<Math.abs(best.point.z-reference)))best=q;
  }
- // Missing centre support needs ground on opposite sides of the capsule.
+ // A missing or unwalkable centre hit needs independently walkable ground
+ // on opposite sides of the capsule. IsWalkable=false describes the sampled
+ // riser/side contact; it does not forbid probing a different floor contact.
  // A single nearby bank must not turn a pit or a platform edge into a walk.
- if(!hit){
+ if(!hit||!walkable(w,hit)){
   const pairs=[[samples[0],samples[1]],[samples[2],samples[3]]].filter(([a,b])=>a&&b&&Math.abs(a.point.z-b.point.z)<=12);
-  if(!pairs.length)return null;
+  if(!pairs.length)return hit;
   const pair=pairs.sort((x,y)=>Math.abs((x[0].point.z+x[1].point.z)/2-(a.z+b.z)/2)-Math.abs((y[0].point.z+y[1].point.z)/2-(a.z+b.z)/2))[0];
   best={...pair[0],point:{...pair[0].point,z:(pair[0].point.z+pair[1].point.z)/2}};
  }
@@ -72,7 +74,7 @@ class Ground{
   if(!yes)return null;const h=P.$unref(o);if(!h||!h.bBlockingHit)return null;
   const point=plain(h.ImpactPoint),nz=Number(h.ImpactNormal.Z);if(!R.finite(point))return null;
   const {component,...limits}=contact(this,h,!body);
-  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating,...limits};
+  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating,component,complex:!!tail[1],body,...limits};
   if(body)try{result.actor=component?.GetOwner?.();}catch(_){}
   if(owners){
    result.owners=[];
@@ -118,6 +120,20 @@ class Ground{
   yield* this.slopeRules.refresh();
  }
  resetRules(){this.slopeRules=null;this.blockerCache=new WeakMap();}
+ describeTrace(hit){
+  if(!hit)return null;
+  const out={profile:this.profile,shape:hit.body?'capsule':'line',complex:!!hit.complex,point:hit.point,normal:hit.normal};
+  const read=(key,fn)=>{try{const value=fn();if(typeof value==='string'||typeof value==='boolean'||typeof value==='number'&&Number.isFinite(value))out[key]=value;}catch(_){}};
+  const component=hit.component;let actor=hit.actor;
+  if(!actor)try{actor=component?.GetOwner?.();}catch(_){}
+  read('actor',()=>actor&&String(actor.GetName()));read('component',()=>component&&String(component.GetName()));
+  read('componentProfile',()=>component&&String(component.GetCollisionProfileName()));
+  read('playerProfile',()=>this.cap?.GetCollisionProfileName?String(this.cap.GetCollisionProfileName()):undefined);
+  read('hitObjectType',()=>component?.GetCollisionObjectType?.());read('playerObjectType',()=>this.cap?.GetCollisionObjectType?.());
+  if(out.hitObjectType!==undefined)read('playerResponseToHitType',()=>this.cap?.GetCollisionResponseToChannel?.(out.hitObjectType));
+  if(out.playerObjectType!==undefined)read('hitResponseToPlayerType',()=>component?.GetCollisionResponseToChannel?.(out.playerObjectType));
+  return out;
+ }
  describeBlocker(actor){
   if(!actor)return null;
   const cache=this.blockerCache||=new WeakMap(),now=Date.now(),old=cache.get(actor);
@@ -150,7 +166,7 @@ class Ground{
    const hit=supportHit(this,{x:q.x,y:q.y,z:from.z+reach},{x:q.x,y:q.y,z:from.z-reach-8});
    let failure;
    if(!hit)failure={why:'no supporting floor'};
-   else if(hit.penetrating||!walkable(this,hit))failure={hit:hit.point,why:'surface is not walkable'};
+   else if(hit.penetrating||!walkable(this,hit))failure={hit:hit.point,why:'surface is not walkable',collision:hit};
    else if(Math.abs(hit.point.z-from.z)>reach+1)failure={why:'different floor'};
    else if(hit.nz>.98&&Math.abs(hit.point.z-from.z)>this.rise+2)failure={hit:hit.point,why:'ledge exceeds step height'};
    else if(hit.stepUp===false&&hit.nz>.98&&hit.point.z-from.z>3)failure={hit:hit.point,why:'component forbids step up'};
@@ -158,7 +174,7 @@ class Ground{
     const rule=this.slopeRules?.blocked(from,hit.point);
     if(rule)return {hit:hit.point,why:'forced slope slide uphill',block:rule};
     const wall=this.hit(from,hit.point,true);
-    if(wall){const block=this.describeBlocker?.(wall.actor);failure={hit:wall.point,normal:wall.normal,owners:wall.owners,why:'blocked body clearance',block,locked:!!block?.locked};}
+    if(wall){const block=this.describeBlocker?.(wall.actor);failure={hit:wall.point,normal:wall.normal,owners:wall.owners,why:'blocked body clearance',block,locked:!!block?.locked,collision:wall};}
     else return {p:hit.point,points:[hit.point]};
    }
    // Several individually legal risers can lie inside one 35 cm sample.

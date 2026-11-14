@@ -1,7 +1,7 @@
 'use strict';
 // Local loading benchmark, not an in-game frame-rate measurement.
 const path=require('node:path');
-const source=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const source=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const {AtlasCache}=require(source+'/PBZRouteAtlas'),R=require(source+'/PBZRouteCore');
 const generated=path.resolve(process.argv[2]||'build/streamed-atlas'),world=process.argv[3]||'pbz_pangzhen_wp';
 let frame=1000,pumps=0,reads=0,cpu=0,maxSlice=0;

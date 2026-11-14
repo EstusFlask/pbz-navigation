@@ -29,7 +29,7 @@ function* repair(world,source,failure,origin,options={}){
    from:prefix[from],to:p,rejoinDistance:distance,budgetMs:Math.max(0,Math.round(deadline-clock()))});
   let detour=null,localResult;
   if(options.traverse&&Math.abs(prefix[from].z-p.z)>120)detour=yield* options.traverse(prefix[from],p,{deadline});
-  if(!detour&&clock()<deadline)detour=yield* Local.search(world,prefix[from],p,{maxNodes:700,maxMs:Math.max(1,Math.min(1200,deadline-clock())),clock,
+  if(!detour&&clock()<deadline)detour=yield* Local.search(world,prefix[from],p,{hints:require('./PBZRouteWalkHints').forWorld(source.world),maxNodes:700,maxMs:Math.max(1,Math.min(1200,deadline-clock())),clock,
    report:(phase,result)=>{if(phase==='scene walking result')localResult=result;}});
   if(!detour&&options.traverse&&clock()<deadline)detour=yield* options.traverse(prefix[from],p,{deadline});
   options.report?.('local detour result',{world:source.world,found:!!detour,reason:detour?'checked connector':localResult?.reason||(clock()>=deadline?'time budget':'no checked connector'),

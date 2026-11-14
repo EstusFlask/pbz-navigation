@@ -48,7 +48,7 @@ function* check(world,leg,origin,radius=12000){
    // Follow the connected physical floor, not the height of a straight chord
    // between sparse navmesh endpoints. Keep the endpoint's floor constraint.
    if(!row.p||j===n&&Math.abs(row.p.z-b.z)>200)return {ok:false,edge,why:row.why||'destination is on another floor',p:row.hit||previous,a,b,
-    unknown:!row.hit,locked:row.locked,block:row.block,segment:i,fraction:(j-1)/n,prefix:points.slice(),prefixLeg:finish(false).leg};
+    unknown:!row.hit,locked:row.locked,block:row.block,collision:row.collision,segment:i,fraction:(j-1)/n,prefix:points.slice(),prefixLeg:finish(false).leg};
    for(const p of row.points||[row.p])if(R.dist(previous,p)>.1){const from=points.length-1;points.push(p);walks.push({a:previous,b:p,from,to:from+1,edge});previous=p;}
   }
   indices[i+1]=points.length-1;

@@ -9,12 +9,13 @@ class Queue{
 // disagree. Every edge uses the same floor/capsule checks as route auditing.
 // One neighbour is processed per yield; never invent a vertical connection.
 function* search(world,start,goal,options={}){
+ if(options.hintsOnly)return yield* require('./PBZRouteHintWalk').search(world,start,goal,options);
  const spacing=options.spacing||70,maxNodes=options.maxNodes||4500,clock=options.clock||Date.now;
  if(!world?.step||!world.floorAt||!R.finite(start)||!R.finite(goal)||R.dist(start,goal)>(options.maxDistance||12000))return null;
  const began=clock(),limit=options.maxMs||7000;
- let expanded=0,probes=0,refined=0,bestPoint=start;const rejected=new Map();
- const finish=(route,reason)=>{options.report?.('scene walking result',{reason,expanded,probes,refined,start:first,goalSupported:supportedGoal,
-  best:bestPoint,rejected:[...rejected].sort((a,b)=>b[1]-a[1]).slice(0,6)});return route;};
+ let expanded=0,probes=0,refined=0,hintProbes=0,hintAccepted=0,bestPoint=start;const rejected=new Map();
+ const finish=(route,reason)=>{options.report?.('scene walking result',{reason,hintsOnly:!!options.hintsOnly,expanded,probes,refined,start:first,goalSupported:supportedGoal,
+  best:bestPoint,hintProbes,hintAccepted,rejected:[...rejected].sort((a,b)=>b[1]-a[1]).slice(0,6)});return route;};
  const first=world.floorAt(start,true);yield;
  const last=options.goals?.length?options.goals[0]:world.floorAt(goal,true);yield;
  const supportedGoal=!!last&&(!!options.goals?.length||Math.abs(last.z-goal.z)<=125);
@@ -33,7 +34,7 @@ function* search(world,start,goal,options={}){
  const open=new Queue(),best=new Map(),closed=new Set();
  const initial={p:first,cost:0,parent:null,key:key(first),score:heuristic(first)};
  best.set(initial.key,initial);open.push(initial);
- const directions=[];for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)if(x||y)directions.push([x,y]);
+ const directions=[];if(!options.hintsOnly)for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)if(x||y)directions.push([x,y]);
  const result=row=>{
    const chain=[];for(let n=row;n;n=n.parent)chain.push(n);chain.reverse();const points=[first],moves=[],checks=[],walks=[];
    for(const n of chain.slice(1)){
@@ -53,7 +54,7 @@ function* search(world,start,goal,options={}){
   if(heuristic(row.p)<heuristic(progress.p)){progress=row;bestPoint=row.p;}
   closed.add(row.key);expanded=closed.size;if(clock()-began>limit){publish();return finish(null,'time budget');}
   if(closed.size%16===0&&publish())yield;
-  for(const target of goals)if(supportedGoal&&R.xy(row.p,target)<=spacing*1.5&&Math.abs(row.p.z-target.z)<100){
+  for(const target of goals)if(supportedGoal&&R.xy(row.p,target)<=spacing*(options.hintsOnly?3:1.5)&&Math.abs(row.p.z-target.z)<100){
    const join=world.step(row.p,target,true);yield;
    if(join.p&&R.xy(join.p,target)<10&&Math.abs(join.p.z-target.z)<25){
     const via=join.points||[join.p],cost=row.cost+R.extent([row.p,...via]),old=best.get('@goal');
@@ -62,6 +63,11 @@ function* search(world,start,goal,options={}){
   }
   const candidates=directions.map(([dx,dy])=>({x:row.p.x+dx*spacing,y:row.p.y+dy*spacing,z:row.p.z}));
   for(const p of waypoints)if(R.xy(row.p,p)>1&&R.dist(row.p,p)<=spacing*3)candidates.push(p);
+  // Author observations supply candidate positions, never unchecked edges.
+  // Defer their physical queries until nearby; avoid projecting a whole trace.
+  const hintStart=candidates.length;
+  for(const p of options.hints?.near(row.p,spacing*3,12)||[])if(R.finite(p)&&R.dist(row.p,p)>1&&R.dist(row.p,p)<=spacing*3)candidates.push(p);
+  const hintEnd=candidates.length;
   const blockedCoarse=[];let coarseSupported=false;
   for(let candidate=0;;candidate++){
    // A wholly trapped coarse row may sit on a small bell landing. Keep the
@@ -71,6 +77,7 @@ function* search(world,start,goal,options={}){
    }
    if(candidate>=candidates.length)break;const expected=candidates[candidate];
    if(expected.x<lo.x||expected.x>hi.x||expected.y<lo.y||expected.y>hi.y)continue;
+   const hinted=candidate>=hintStart&&candidate<hintEnd;if(hinted)hintProbes++;
    let step=world.step(row.p,expected,true);probes++;yield;
    if(!step.p&&!step.locked&&options.allowDrops&&typeof world.hit==='function'&&R.xy(row.p,expected)<=315){
     const down=world.floorAt(expected,true);yield;
@@ -84,6 +91,7 @@ function* search(world,start,goal,options={}){
     if(candidate<directions.length&&!step.locked)blockedCoarse.push(expected);
     continue;
    }
+   if(hinted)hintAccepted++;
    if(candidate<directions.length)coarseSupported=true;
    const p=step.p;if(!R.finite(p)||p.z<lo.z||p.z>hi.z||R.xy(p,expected)>10)continue;
    const id=key(p);if(closed.has(id))continue;

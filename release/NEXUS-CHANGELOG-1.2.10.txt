@@ -1,0 +1,4 @@
+Improved stair, multi-floor and climbing navigation.
+改善楼梯、上下层和攀爬前后的路线衔接。
+Adjusted route calculation to reduce unnecessary waiting.
+调整路线计算，减少不必要的等待。

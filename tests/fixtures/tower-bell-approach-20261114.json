@@ -1,0 +1,39 @@
+{
+  "source": "Installed1.2.8 logs; user confirms standing by tower first-floor bell and targeting summit",
+  "sourceSHA256": "fc65d2a0ca35477f8944f1995671c195b43a1c85b08e778d9805b5226c249422",
+  "world": "pbz_xigu_wp",
+  "start": {
+    "x": -61907.761864760156,
+    "y": 223089.9212121932,
+    "z": -15839.85071445055
+  },
+  "target": {
+    "x": -64848,
+    "y": 219573,
+    "z": -11386
+  },
+  "goal": {
+    "x": -64708.00000018706,
+    "y": 219572.9999999917,
+    "z": -11420.772583238635
+  },
+  "ascent": {
+    "guid": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+    "kind": "ascent",
+    "entry": {
+      "x": -64810.17578124981,
+      "y": 217523.4375,
+      "z": -14462.497596686248
+    },
+    "exit": {
+      "x": -64709.515623290776,
+      "y": 217928.1562289085,
+      "z": -13888.395202691909
+    }
+  },
+  "goodAscent": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+  "straightDistanceToEntryCm": 6427.040459788635,
+  "oldGridLimitCm": 4500,
+  "nativePartial": true,
+  "physics": "Integration replay substitutes floor/body callbacks; actual collision is not reconstructed"
+}

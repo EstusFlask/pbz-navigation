@@ -1,0 +1,49 @@
+{
+  "version": "1.2.5",
+  "status": "local-fix-candidate; A-01 live pass pending",
+  "clientDate": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.5.zip",
+  "bytes": 120584731,
+  "sha256": "154191be0c0b28a06df02de32f1166dad69814c31e2f7c39920431241a44c650",
+  "files": 1376,
+  "addedPaths": [
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWalkHintData/pbz_xigu_wp.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWalkHints.js"
+  ],
+  "changedPathsFrom1.2.4": [
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteConnectivity.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteLocalWalk.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePassages.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteRepair.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWalkHintData/pbz_xigu_wp.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWalkHints.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "INSTALL-README.md",
+    "CHANGELOG.md",
+    "BELL-ROUTE-AUDIT.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "MOVEMENT-COVERAGE.md",
+    "MANUAL-ROUTES.md",
+    "BELL-NETWORK-COVERAGE.md",
+    "ITEM-DESCRIPTION-AUDIT.md"
+  ],
+  "javascriptPassed": 277,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "nativeChecks": "passed",
+  "packageVerification": "1376 exact matches; original streamed hashes retained",
+  "walkHintPoints": 546,
+  "walkHintsRole": "candidate positions only; all edges physically checked",
+  "fixedCoursesAdded": 0,
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "nextCase": "A-01 doorway/stairs-to-wall short retest"
+}

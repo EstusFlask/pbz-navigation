@@ -1,0 +1,45 @@
+Version: 1.3.1 (published; scan monitoring not requested; not installed to game)
+Validation date: 2026-11-14 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.3.1.zip
+
+Reported symptom
+- User screenshot: red rope preset selected while a floating blue square remains
+  above Reset. It is the hidden custom-color field's default swatch.
+
+Root cause and minimal probe
+- Real PbzModConfig1.0.4 NativeRows makes entry.row and its color swatch siblings
+  in entry.outer. Runtime collapses only entry.row on initial render/update.
+- Probe: row visibility=1(collapsed), outer=0(visible), swatch=3(hit-test-invisible),
+  sibling=true. Changing only outer visibility hides the swatch. Reopening Custom
+  also requires the outer to be restored on update.
+
+Reproduction and regression
+- Unpatched command fails with the exact orphan-swatch assertion:
+  py -3.12 tests/rope-modconfig-rows.py --mod-config-scripts <PbzModConfig/Scripts>
+  Recorded in build/validation-131-red.txt.
+- Adding --patch passes using real Editors/NativeRows and a simulated widget tree.
+  Both early startup and already-loaded attachment pass. Includes initial hidden
+  state, Custom visible, red hidden, Custom visible again, dispose, world discard,
+  duplicate boot, require restoration, and other-provider isolation.
+- Runtime-owned PBZModConfigHost.lua syncs outer visibility only for navigation's
+  ThreadCustomColor row. Exact native Mod-name dispatch; no companion file changes.
+
+Verification
+- 297 JavaScript regressions pass: build/validation-131-js.txt.
+- ModConfig remote host, row visibility regression, settings persistence/reset,
+  standalone boot and real tracker1.0.9/1.0.14 integration pass:
+  build/validation-131-lua.txt.
+- Native ABI/SHA/mod filtering/ModConfig-host dispatch tests pass:
+  build/validation-131-native.txt.
+- Full package:1383 exact files,951 streams and291 unchanged legacy chunk values;
+  runtime/provider/native/docs agree on1.3.1. No player settings, Map Tracker or
+  PbzModConfig shared directory included: build/validation-131-package.txt.
+- git diff --check passes; no temporary DEBUG instrumentation retained.
+
+Limits
+- Actual game/UI rendering after the fix still needs user retest. Widget lifecycle
+  tests simulate Unreal, rather than observing a live corrected settings page.
+- Published on Nexus by explicit user request; file4025. Per latest user preference,
+  no scan monitoring after upload. Last scan observation was pending.
+  Publication and two requester replies are recorded separately. No game installation.
+  Existing navigation field limitations remain.

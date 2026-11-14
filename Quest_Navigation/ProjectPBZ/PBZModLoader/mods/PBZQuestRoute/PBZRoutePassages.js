@@ -390,7 +390,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
   }
   options.report?.('action candidates',{count:candidates.length,start,goal});
   return yield* Transitions.route({name:g.name,world,start,goal,goals:options.goals,clock,deadline:options.deadline,maxConnectors:options.maxConnectors,
-   allowPartial:options.allowPartial,onPartial:options.onPartial,
+   allowPartial:options.allowPartial,onPartial:options.onPartial,stagedWalk:true,
    onAction:function*(action,settings){
     const linked=yield* LiveLinks.attachCheckedJob(g,action,(a,b)=>checkedWalkJob(world,a,b,nativeWalk,{graph:g,clock,deadline:settings.deadline}),{clock,deadline:settings.deadline});
     if(linked)options.report?.('action attached',{guid:action.feature.guid,kind:action.feature.kind,entry:action.entry,exit:action.exit});
@@ -407,12 +407,27 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
    },
    validate:function*(a){return yield* checkJob(world,{kind:9,mode:a.feature.kind,guid:a.feature.guid,a:a.entry,b:a.exit,first:a.path[0],last:a.path[a.path.length-1]});},
    walk:function*(a,b,settings){
-    const samples={graph:g,clock,deadline:settings.deadline};let points=yield* checkedWalkJob(world,a,b,nativeWalk,samples);
+    const walkDeadline=settings.quick?Math.min(settings.deadline,clock()+200):settings.deadline;
+    const samples={graph:g,clock,deadline:walkDeadline};let points=yield* checkedWalkJob(world,a,b,nativeWalk,samples);
     if(points)return {points,meters:R.extent(points)/100};
-    if(!settings.local||R.dist(a,b)>4500)return null;
-    const vertical=Math.abs(a.z-b.z)>200;
-    const local=yield* Local.search(world,a,b,{clock,maxMs:Math.max(1,Math.min(vertical?2400:1200,settings.deadline-clock())),
-     maxNodes:vertical?1800:1000,waypoints:samples.waypoints});
+    if(!settings.local)return null;
+    const distance=R.dist(a,b),vertical=Math.abs(a.z-b.z)>200;
+    const until=Math.min(walkDeadline,clock()+(vertical?2400:1200)),hints=require('./PBZRouteWalkHints').forWorld(g.name);
+    const report=options.report?(phase,data)=>options.report('action '+phase,{...data,goal:b}):undefined;
+    // Check the finite author candidates first. Sprouting another offset grid
+    // at every hint needlessly multiplies the nodes in a narrow stair corridor.
+    // These edges still use the exact same live floor/body/lock step checks.
+    // The 45m limit bounds expensive grid exploration, not traversal of a
+    // finite author graph. A bell can be farther from its first usable action.
+    // Retain the graph's 120m endpoint range and all per-edge live checks.
+    if(hints&&distance<=12000&&clock()<until){
+     const hinted=yield* Local.search(world,a,b,{clock,hints,hintsOnly:true,allowDrops:true,maxDistance:12000,maxGraphNodes:768,maxChecks:64,maxMs:Math.min(200,until-clock()),report});
+     if(hinted)return hinted;
+    }
+    if(settings.quick||distance>4500||clock()>=until)return null;
+    const local=yield* Local.search(world,a,b,{clock,hints,maxMs:Math.max(1,until-clock()),
+     maxNodes:vertical?1800:1000,waypoints:samples.waypoints,
+     report});
     return local;
    }});
 }

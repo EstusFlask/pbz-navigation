@@ -1,0 +1,60 @@
+{
+  "source": "Installed 1.2.6 loader.log; lower last-stair start",
+  "sourceSHA256": "fdeedfc11c7cf4187ca06407c7b87670aafe61386a86ddbe79c42606a15569ad",
+  "world": "pbz_xigu_wp",
+  "start": {
+    "x": -62737.70147266871,
+    "y": 219862.38286020834,
+    "z": -12571.755940356037
+  },
+  "goal": {
+    "x": -64708.00000018706,
+    "y": 219572.9999999917,
+    "z": -11420.772583238635
+  },
+  "recordedProbeResult": {
+    "reason": "time budget",
+    "hintsOnly": true,
+    "expanded": 107,
+    "probes": 1015,
+    "refined": 0,
+    "start": {
+      "x": -62737.70311489813,
+      "y": 219862.39061520033,
+      "z": -12574.246981636064
+    },
+    "goalSupported": true,
+    "best": {
+      "x": -64404.80078152874,
+      "y": 219796.796876196,
+      "z": -12326.092498593809
+    },
+    "hintProbes": 1015,
+    "hintAccepted": 1001,
+    "rejected": [
+      [
+        "surface is not walkable",
+        8
+      ],
+      [
+        "no supporting floor",
+        6
+      ]
+    ]
+  },
+  "pointGraphCut": {
+    "maxNeighbourCm": 210,
+    "smallestGapCm": 222.0492287759678,
+    "a": [
+      -63339.1,
+      219760.6,
+      -12205.5
+    ],
+    "b": [
+      -63519.8,
+      219797.7,
+      -12081.9
+    ]
+  },
+  "testScope": "Point-graph and validation-operation control; does not reconstruct game collision or real elapsed time"
+}

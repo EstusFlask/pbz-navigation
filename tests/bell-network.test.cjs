@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const G=require(root+'/PBZRouteGuides'),R=require(root+'/PBZRouteCore');
 const p=(x,y=0,z=0)=>({x,y,z});
 const w=()=>({step:(a,b)=>({p:b}),hit:()=>null});

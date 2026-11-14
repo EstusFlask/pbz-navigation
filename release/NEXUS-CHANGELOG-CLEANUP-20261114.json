@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "url": "https://www.nexusmods.com/phantombladezero/mods/994?tab=logs",
+  "request": "Remove development/testing language from changelogs, including historical cumulative entries.",
+  "publicVersionsRewritten": [
+    "1.2.1",
+    "1.0.1"
+  ],
+  "publicVersionsReviewed": [
+    "1.3.1",
+    "1.2.10",
+    "1.2.1",
+    "1.0.1"
+  ],
+  "removed": [
+    "Test counts and integration/validation details",
+    "Pending live-test wording",
+    "Diagnostic and internal implementation details",
+    "Release consolidation and archive-operation notes"
+  ],
+  "format": "Concise English and Chinese descriptions of player-visible features and fixes",
+  "archivedFilesRestored": true,
+  "currentPrimaryVersion": "1.3.1",
+  "packageChanged": false,
+  "newUpload": false,
+  "scanMonitoring": false,
+  "verification": "Public Logs page reloaded, expanded and checked; no engineering/testing phrases remained in the displayed changelogs.",
+  "screenshot": "build/nexus-changelog-cleaned-20261114.jpg",
+  "publicSnapshot": "build/nexus-changelog-cleaned-20261114.txt",
+  "previousCopy": "build/nexus-changelog-copy-before-20261114",
+  "sources": {
+    "release/NEXUS-CHANGELOGS.json": "d523c4d6f63cdbd96f3ce09471cb193d4c89b2c9e15aced91c9cea70075a56de",
+    "release/NEXUS-CHANGELOG-1.2.1.txt": "ad066746020ce488b24845b5b5a751721910bf4e44efadd7df3aa4cdb5b35937",
+    "release/NEXUS-CHANGELOG-1.0.1.txt": "e25ced28350fde29c439f7759e5bcf6c7613bd4df8a61b12b0333caee2a6e6e3",
+    "release/NEXUS-CHANGELOG-1.3.1.txt": "43017cc1a7c9b14c00935bf36a31da1f31e7f3d0d9b5667cb608b331eae92768"
+  }
+}

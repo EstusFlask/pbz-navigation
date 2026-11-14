@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const root=process.env.PBZ_TEST_SOURCE||path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=process.env.PBZ_TEST_SOURCE||path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const moduleWorld={exports:{}};
 vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteWorld.js','utf8')+'\n})')(
  id=>id==='ue'||id==='puerts'?{}:require(path.resolve(root,id)),moduleWorld,moduleWorld.exports);
@@ -23,7 +23,8 @@ test('walking and ribbon traces detect a wall with triangle collision but no sim
   id=>id==='ue'?UE:id==='puerts'?{$ref:value=>({value}),$unref:ref=>ref.value}:require(path.resolve(root,id)),mod,mod.exports);
  const cap={GetScaledCapsuleHalfHeight:()=>90,GetScaledCapsuleRadius:()=>35,GetCollisionProfileName:()=> 'Pawn'};
  const w=new mod.exports.Ground({CapsuleComponent:cap}),a={x:0,y:0,z:0},b={x:100,y:0,z:0};
- assert.ok(w.hit(a,b,true),'walking capsule passed through a triangle-only wall');
+ const body=w.hit(a,b,true);assert.ok(body,'walking capsule passed through a triangle-only wall');
+ assert.equal(body.complex,true,'the diagnostic lost which collision representation produced the hit');
  assert.ok(w.threadHit({...a,z:105},{...b,z:105}),'the drawn thread passed through the same wall');
  assert.ok(w.hit(a,b),'floor/lock line queries skipped triangle collision');
  assert.ok(queries.includes(true));
@@ -37,6 +38,21 @@ function terrain(floor){
  };
  return world;
 }
+
+test('a rejected walking trace exposes actual component responses without changing its verdict',()=>{
+ const world=terrain(()=>0),owner={GetName:()=> 'decoration'},component={GetName:()=> 'mesh',GetOwner:()=>owner,
+  GetCollisionObjectType:()=>0,GetCollisionProfileName:()=> 'BlockAll',GetCollisionResponseToChannel:()=>2};
+ world.profile='Profile_Capsule';world.cap={GetCollisionObjectType:()=>2,GetCollisionResponseToChannel:()=>0};
+ const base=world.hit;world.hit=(a,b,body)=>body?{point:b,nz:0,normal:{x:-1,y:0,z:0},actor:owner,component,complex:true,body:true}:base(a,b,body);
+ const row=world.step({x:0,y:0,z:0},{x:70,y:0,z:0},false);
+ assert.equal(row.p,undefined);assert.equal(row.why,'blocked body clearance');
+ const trace=world.describeTrace(row.collision);
+ assert.equal(trace.actor,'decoration');assert.equal(trace.component,'mesh');assert.equal(trace.complex,true);
+ assert.equal(trace.playerResponseToHitType,0);assert.equal(trace.hitResponseToPlayerType,2);
+ assert.doesNotThrow(()=>world.describeTrace({component:{GetOwner(){throw new Error('unloaded');}}}),'unloaded diagnostic objects changed the navigation verdict');
+ world.cap.GetCollisionObjectType=()=>({unknown:true});
+ assert.equal(world.describeTrace(row.collision).playerObjectType,undefined,'opaque reflected values leaked into diagnostic JSON');
+});
 
 function reflectedGround(component,nz=1,movement={}){
  const raw={bBlockingHit:true,ImpactPoint:{X:35,Y:0,Z:15},ImpactNormal:{X:0,Y:0,Z:nz},Component:component};
@@ -71,6 +87,35 @@ test('real ground stepping follows closely spaced legal stair treads in both dir
 test('real ground stepping uses capsule support beside a narrow pavement crack',()=>{
  const world=terrain((x,y)=>x>=30&&x<=40&&Math.abs(y)<6?null:0);
  assert.ok(world.step({x:0,y:0,z:0},{x:70,y:0,z:0},true).p,'a crack narrower than the capsule was treated as a missing floor');
+});
+
+test('a game-unwalkable stair-side ray still checks the capsule footprint for valid floor support',()=>{
+ const world=terrain(()=>0),read=world.hit;
+ world.hit=(a,b,body)=>{
+  if(body)return null;
+  // A reflected IsWalkable=false on a riser/side is local to that hit;
+  // the two neighbouring floor contacts are both game-walkable.
+  if(Math.abs(b.x-35)<.01&&Math.abs(b.y)<6)return {point:{x:b.x,y:b.y,z:0},nz:.38,walkable:false};
+  const hit=read(a,b,body);return hit&&{...hit,walkable:true};
+ };
+ assert.ok(world.floorAt({x:35,y:0,z:0},true),'the centre side hit hid walkable support on both sides of the occupied footprint');
+ assert.ok(world.step({x:0,y:0,z:0},{x:70,y:0,z:0},true).p,'a side hit split an otherwise supported stair approach');
+});
+
+test('footprint recovery cannot use one bank or bypass a blocking body sweep',()=>{
+ for(const closed of [false,true]){
+  const world=terrain(()=>0),read=world.hit;
+  world.hit=(a,b,body)=>{
+   if(body)return closed?{point:b,nz:0,normal:{x:-1,y:0,z:0}}:null;
+   if(!closed&&b.y<=6||closed&&Math.abs(b.x-35)<.01&&Math.abs(b.y)<6)
+    return {point:{x:b.x,y:b.y,z:0},nz:.38,walkable:false};
+   const hit=read(a,b,body);return hit&&{...hit,walkable:true};
+  };
+  const row=world.step({x:0,y:0,z:0},{x:70,y:0,z:0},true);
+  assert.equal(row.p,undefined,
+   closed?'a footprint contact skipped the body collision':'one bank became invented centre support');
+  if(!closed)assert.equal(row.why,'surface is not walkable','insufficient support hid the original collision verdict');
+ }
 });
 test('terrain recovery keeps wide pits and a genuinely high ledge blocked',()=>{
  for(const floor of [(x,y)=>x>20&&x<110?null:0,x=>x>=60?120:0]){

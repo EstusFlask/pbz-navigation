@@ -10,7 +10,7 @@ function guidePath(feature,path,entry,exit){
 // Search chains of walking connectors and authored movement actions. An action
 // is directional; it never becomes an ordinary walk across a vertical gap.
 function assemble(world,start,segments){
- const points=[start],moves=[],walks=[];
+ const points=[start],moves=[],walks=[],checks=[];
  const append=p=>{if(R.dist(points[points.length-1],p)>.1)points.push({...p});};
  for(const segment of segments){
   if(segment.action){
@@ -18,10 +18,23 @@ function assemble(world,start,segments){
    for(const p of path)append(p);append(exit);
    moves.push({kind:feature.kind,guid:feature.guid,p:entry,end:exit,from,to:points.length-1,fold:false,
     scripted:feature.kind==='lift'&&!feature.both});
-  }else for(const p of segment.points){const a=points[points.length-1],from=points.length-1;append(p);
-   if(points.length>from+1)walks.push({a,b:p,from,to:points.length-1,edge:-1});}
+  }else {
+   const indices=[];
+   for(let i=0;i<segment.points.length;i++){
+    const p=segment.points[i],a=points.at(-1),from=points.length-1;append(p);indices[i]=points.length-1;
+    const action=i>0&&(segment.moves||[]).some(m=>m.from<=i-1&&m.to>=i)&&
+     !(segment.walks||[]).some(w=>w.from<=i-1&&w.to>=i);
+    if(points.length>from+1&&!action)walks.push({a,b:p,from,to:points.length-1,edge:-1});
+   }
+   // A walking connector may contain a physically checked short descent.
+   // Preserve its direction and mandatory audit when joining the next action.
+   for(const m of segment.moves||[])if(indices[m.from]!==undefined&&indices[m.to]>indices[m.from])
+    moves.push({...m,from:indices[m.from],to:indices[m.to]});
+   for(const c of segment.checks||[])checks.push({...c,
+    ...(c.from===undefined?{}:{from:indices[c.from],to:indices[c.to??c.from+1]})});
+  }
  }
- return {world,points,moves,walks,checks:[],gates:[],meters:R.extent(points)/100,physicalVerified:true};
+ return {world,points,moves,walks,checks,gates:[],meters:R.extent(points)/100,physicalVerified:true};
 }
 function* route(options){
  const {world,start,goal,features,landing,walk,canTraverse,validate}=options;
@@ -60,62 +73,98 @@ function* route(options){
  const assembled=row=>{const chain=[];for(let p=row;p;p=p.parent)chain.push(p);chain.reverse();return assemble(options.name,start,chain.flatMap(p=>p.segments));};
  const partial=row=>{const leg=assembled(row);return {legs:[{...leg,provider:'scene',partial:true,scenePartial:true,
   obstacles:[{id:'action-frontier',world:options.name,p:row.p,unknown:true,icon:'mechanism',label:'前方通路待确认'}]}],transfer:null};};
- const cache=new Map();let connectors=0;
- const connection=function*(a,b,goalEdge=false,afterAction=false){
+ const cache=new Map(),maxConnectors=options.maxConnectors||128;let connectors=0;
+ const signature=(a,b,goalEdge,afterAction)=>{
+  const local=!goalEdge||Math.abs(a.z-b.z)<200||afterAction;
+  return {local,key:[a.x,a.y,a.z,b.x,b.y,b.z,goalEdge,local].join('/')};
+ };
+ const connection=function*(a,b,goalEdge=false,afterAction=false,feature,quick=false,phaseLimit=maxConnectors){
   // A checked action may end below stairs leading to the final destination.
   // Keep the bounded local connector available there, with the same physical
   // checks and overall deadline, instead of treating every higher goal as a
   // second unmodelled traversal. The direct start-to-goal policy is unchanged.
-  const local=!goalEdge||Math.abs(a.z-b.z)<200||afterAction;
-  const key=[a.x,a.y,a.z,b.x,b.y,b.z,goalEdge,local].join('/');if(cache.has(key))return cache.get(key);
-  if(++connectors>(options.maxConnectors||128)||clock()>deadline)return null;
-  const result=yield* walk(a,b,{deadline,local});
-  cache.set(key,result);return result;
+  const {local,key}=signature(a,b,goalEdge,afterAction),cached=cache.get(key);
+  // A quick failure means the cheap providers did not connect these pads;
+  // it must not suppress the later grid repair. Successful checks may be
+  // reused inside this same job by either phase.
+  if(cached&&(cached.result||!cached.quick||quick))return cached.result;
+  if(connectors>=phaseLimit||connectors>=maxConnectors||clock()>deadline)return null;
+  const id=++connectors,began=clock(),wall=Date.now(),detail={id,from:a,to:b,goalEdge,local,quick,
+   ...(feature?{kind:feature.kind,guid:feature.guid}:{}),remainingMs:Math.max(0,Math.round(deadline-began))};
+  if(id<=16)options.report?.('action connector start',detail);
+  let finished=false,result;
+  try{
+   result=yield* walk(a,b,{deadline,local,quick});
+   if(result?.partial)result=null;
+   finished=true;cache.set(key,{result,quick});return result;
+  }finally{
+   const cpuMs=Math.max(0,Math.round(clock()-began)),wallMs=Math.max(0,Date.now()-wall);
+   if(id<=16||!finished||cpuMs>250||wallMs>2000)options.report?.(finished?'action connector result':'action connector interrupted',
+    {...detail,found:!!result,cpuMs,wallMs,pointCount:result?.points?.length||0});
+  }
  };
- function* search(goalLimit){
- const open=[{id:'start',p:start,cost:0,score:heuristic(start),parent:null,segments:[]}],best=new Map([['start',0]]),seen=new Set();
- while(open.length&&clock()<=deadline){
-  open.sort((a,b)=>a.score-b.score||Number(!!a.pending)-Number(!!b.pending));const row=open.shift();
-  if(row.pending){
-   if(seen.has(row.id)||row.score>=(best.get('goal')??Infinity)||best.get(row.parent.id)!==row.parent.cost)continue;
-   const leg=yield* connection(row.parent.p,row.target,!row.action,row.parent.id!=='start');if(!leg)continue;
-   const cost=row.parent.cost+leg.meters*100+(row.action?.cost||0);
-   if(cost<(best.get(row.id)??Infinity)){
-    best.set(row.id,cost);open.push({id:row.id,p:row.action?.exit||row.target,cost,
-     score:cost+(row.action?heuristic(row.action.exit):0),parent:row.parent,segments:row.action?[leg,{action:row.action}]:[leg]});
+ function* search(goalLimit,quick=false,phaseLimit=maxConnectors){
+  // Plan an entire candidate chain using only coordinates/cached results.
+  // Validate its edges in order, remove a failed connector for this phase and
+  // replan. Once a complete checked chain exists, return it immediately; do
+  // not hold guidance while proving every optimistic alternative is longer.
+  const candidate=function*(){
+   const open=[{id:'start',p:start,cost:0,score:heuristic(start),parent:null}],best=new Map([['start',0]]),seen=new Set();let expanded=0;
+   while(open.length&&clock()<=deadline){
+    open.sort((a,b)=>a.score-b.score);const row=open.shift();
+    if(seen.has(row.id)||best.get(row.id)!==row.cost)continue;
+    if(row.id==='goal'){const chain=[];for(let n=row;n.parent;n=n.parent)chain.push(n);return chain.reverse();}
+    seen.add(row.id);if((++expanded&7)===0)yield;
+    const offer=(target,action)=>{
+     const id=action?.id||'goal';if(seen.has(id))return;
+     const {key}=signature(row.p,target,!action,row.id!=='start'),known=cache.get(key);
+     if(known&&!known.result&&(!known.quick||quick))return;
+     const walkCost=known?.result?known.result.meters*100:R.dist(row.p,target),cost=row.cost+walkCost+(action?.cost||0);
+     if(cost>=(best.get(id)??Infinity))return;
+     best.set(id,cost);const p=action?.exit||target;
+     open.push({id,p,target,action,cost,score:cost+(action?heuristic(p):0),parent:row});
+    };
+    for(const target of goals.slice().sort((a,b)=>R.dist(row.p,a)-R.dist(row.p,b)).slice(0,goalLimit))offer(target);
+    for(const action of actions)offer(action.entry,action);
    }
-   continue;
+   return null;
+  };
+  for(let attempt=0;attempt<=maxConnectors&&clock()<=deadline;attempt++){
+   const chain=yield* candidate();if(!chain)return null;
+   if(attempt<8)options.report?.('action chain candidate',{quick,attempt:attempt+1,estimatedMeters:chain.at(-1).cost/100,
+    actions:chain.filter(r=>r.action).map(r=>r.action.feature.guid)});
+   let row={id:'start',p:start,cost:0,parent:null,segments:[]},failed=false;
+   for(const edge of chain){
+    const leg=yield* connection(row.p,edge.target,!edge.action,row.id!=='start',edge.action?.feature,quick,phaseLimit);
+    if(!leg){if(connectors>=phaseLimit||clock()>deadline)return null;failed=true;break;}
+    const next={id:edge.id,p:edge.action?.exit||edge.target,cost:row.cost+leg.meters*100+(edge.action?.cost||0),parent:row,
+     segments:edge.action?[leg,{action:edge.action}]:[leg]};row=next;
+    if(options.allowPartial&&row.id!=='goal'&&heuristic(row.p)<heuristic(start)-140&&(!frontier||heuristic(row.p)<heuristic(frontier.p)-50)){
+     frontier=row;options.onPartial?.(partial(row));
+    }
+   }
+   if(!failed){const leg=assembled(row);
+    options.report?.('action chain accepted',{quick,attempts:attempt+1,connectors,meters:leg.meters,actions:leg.moves.map(m=>m.guid)});
+    return {legs:[leg],transfer:null};
+   }
   }
-  if(seen.has(row.id)||best.get(row.id)!==row.cost)continue;
-  if(row.id==='goal'){
-   return {legs:[assembled(row)],transfer:null};
-  }
-  if(options.allowPartial&&row.id!=='start'&&heuristic(row.p)<heuristic(start)-140&&(!frontier||heuristic(row.p)<heuristic(frontier.p)-50)){
-   frontier=row;options.onPartial?.(partial(row));
-  }
-  seen.add(row.id);
-  for(const target of goals.slice().sort((a,b)=>R.dist(row.p,a)-R.dist(row.p,b)).slice(0,goalLimit)){
-   const score=row.cost+R.dist(row.p,target);if(score>=(best.get('goal')??Infinity))continue;
-   open.push({id:'goal',pending:true,target,score,parent:row});
-  }
-  const next=actions.filter(a=>!seen.has(a.id)).sort((a,b)=>R.dist(row.p,a.entry)+heuristic(a.exit)-R.dist(row.p,b.entry)-heuristic(b.exit));
-  for(const action of next){
-   if(row.cost+R.dist(row.p,action.entry)+action.cost+heuristic(action.exit)>=(best.get('goal')??Infinity))continue;
-   // Queue an optimistic edge before doing its expensive physical walk. This
-   // lets a promising first action reach the next action while other entry
-   // probes remain pending, instead of exhausting the budget on the start.
-   const score=row.cost+R.dist(row.p,action.entry)+action.cost+heuristic(action.exit);
-   open.push({id:action.id,pending:true,target:action.entry,action,score,parent:row});
-  }
+  return null;
  }
- return null;
+ // First combine checked native/atlas/hint connectors across the action graph.
+ // One speculative grid repair must not starve an already reachable climb and
+ // its upstairs continuation. Reserve half the finite connector quota for the
+ // original full-repair fallback; neither pass extends the overall deadline.
+ if(options.stagedWalk){
+  const limit=Math.max(1,Math.floor(maxConnectors/2));
+  const quick=yield* search(actions.length?2:goals.length,true,limit);if(quick)return quick;
+  if(actions.length&&goals.length>2&&connectors<limit&&clock()<=deadline){const more=yield* search(goals.length,true,limit);if(more)return more;}
  }
  // Test a couple of nearby standing positions before expanding action chains.
  // Repeating every variant of a blocked direct path can consume the entire job.
  const primary=yield* search(actions.length?2:goals.length);if(primary)return primary;
  if(actions.length&&goals.length>2&&clock()<=deadline){const fallback=yield* search(goals.length);if(fallback)return fallback;}
  if(options.onClosed)for(const action of closed.slice(0,3)){
-  const first=yield* connection(start,action.entry);if(first)options.onClosed(first,action);
+  const first=yield* connection(start,action.entry,false,false,action.feature);if(first)options.onClosed(first,action);
  }
  options.report?.('action search exhausted',{connectors,ready:actions.length,remainingMs:Math.round(deadline-clock()),
   reason:clock()>deadline?'time budget':connectors>=(options.maxConnectors||128)?'connector budget':'no checked chain'});

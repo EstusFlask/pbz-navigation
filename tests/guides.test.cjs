@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const G=require(root+'/PBZRouteGuides'),R=require(root+'/PBZRouteCore'),O=require(root+'/PBZRouteObstacles'),L=require(root+'/PBZRouteLocks');
 const courses=require(root+'/PBZRouteGuideData').data.courses,p=a=>({x:a[0],y:a[1],z:a[2]});
 function run(job){let row,count=0;do{row=job.next();assert.ok(++count<100000);}while(!row.done);return row.value;}

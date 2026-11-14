@@ -1,0 +1,68 @@
+Version: 1.2.7 (local algorithm-fix candidate; no live pass)
+Validation date: 2026-11-14 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.7.zip
+
+Field facts
+- Installed 1.2.6 audit: 1366 exact runtime files; no changed/missing/extra.
+- Correct upper-stair requests took 583-885ms. Lower-stair requests repeatedly
+  reached the 30s whole-job limit. User reports long waits and missing routes.
+- The game had exited at review. Frozen logs only; no continuous sampler or
+  Y listener was started. Evidence: authoring/field-retest-1.2.6.json.
+- 210cm candidate radius disconnects a 222.049cm ordinary sampling gap in the
+  author-point graph, even with no collision. This is a topology fault, not
+  proof that the stairs are unreachable in the game.
+
+Architecture and feedback
+- Finite 3D graph A* first; certify only selected directed edges with the
+  existing world.step fine ground/body/floor/lock checks. Delete a failed
+  candidate edge and replan; never display an unchecked complete proposal.
+- Same-job, same-actual-origin physical reuse only. New requests get fresh
+  checks; no cross-request collision cache or learned author edge.
+- Each candidate graph search <=768 nodes; each preflight <=64 connector
+  checks, <=16 proposals and existing200ms execution budget. Whole30s wall
+  cap and frame scheduler retained. Graph/physical/time limits distinguished.
+- Capture fixture test fails on pristine1.2.6 ZIP sources, then passes:
+  build/lazy-hints-127-pristine-red.txt; build/validation-127-js.txt.
+- Real implementation tests cover blocked-edge rerouting, no unchecked edges,
+  same-job validation reuse, new-request closed gate, wrong-floor endpoint,
+  graph-node budget and physical-check budget.
+- Official/open-source evidence and applicability limits:
+  docs/NAVIGATION-ARCHITECTURE-RESEARCH-20261114.md.
+  No external project source code, persistent scanning or server was copied.
+
+Algorithm-operation control (not game timing or collision)
+- Same17 captured requests, collision-free step replacement, .2ms per-step
+  operation clock for both versions. Larger candidate edges are also counted
+  as35cm geometric subdivisions so they are not treated as zero-cost spans.
+- Old1.2.6:3 graph routes,14366 step calls,46646 subdivisions.
+- New candidate:15 graph routes,282 step calls,1935 subdivisions.
+- Other2 requests have no candidate walking chain, spend0 step calls, then
+  preserve action/other fallbacks. No global-unreachability claim.
+- Failed lower-stair example:9 step calls /36 graph expansions. All of these
+  remain simulation operation counts, not live UE ray counts or latency.
+- Reproduce: node tools/benchmark-walk-hints.cjs --source
+  build/lazy-hints-127-baseline-1.2.6 --output build/lazy-hints-127-before.json
+  Then omit --source for the current implementation.
+
+Required checks
+- All tests/*.test.cjs:284 passed,0 failed: build/validation-127-js.txt.
+- Real tracker1.0.9/1.0.14 Lua target/selection/file round trips PASS:
+  build/validation-127-lua.txt.
+- Native1.2.7 ABI/runtime SHA/filter/dispatch PASS:
+  build/validation-127-native.txt.
+- Full ZIP:1377 exact files;951 original streamed modules,291 legacy chunk
+  paths and original column hashes retained; no collector-owned paths:
+  build/validation-127-package.txt.
+- Bytes:120,590,099. SHA256:
+  cae68bea709af77505777caf1b7bebb57d3c43fc0e2d1ad064c9f678bede0b15
+- One added owned runtime module; no removed ownership paths. Previous1.2.6
+  archived with SHA in release/DIST-ARCHIVE-20261114.json. dist only1.2.7.
+
+Still pending
+- Version-specific field correctness, wall-clock latency and FPS/frame spikes.
+  No performance ratio or millisecond guarantee derived from mock checks.
+- Short staircase ~1s typical is an engineering target, not an achieved claim.
+- A-01 full route, doorway and post-climb corners remain unaccepted. Existing
+  two reference courses /86 candidates /52 authoring gaps unchanged.
+- No game installation/manager writes, Nexus upload, new author points,
+  fixed courses, runtime learning, or background monitoring from this turn.

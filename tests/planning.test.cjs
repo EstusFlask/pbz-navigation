@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const path=require('node:path'),fs=require('node:fs'),vm=require('node:vm');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=process.env.PBZ_TEST_SOURCE||path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 function planner(world,options={}){
     const level=options.level||'test';
     const p={...(options.start||{x:0,y:0,z:0})},goal={x:100,y:0,z:600};
@@ -28,6 +28,7 @@ function planner(world,options={}){
         './PBZRouteSurface':{...require(root+'/PBZRouteSurface'),anchorsJob:function*(g,q,goal){return [{id:goal?1:0,q:{...q},r:0,dz:0}];}},
         './PBZPrivateRibbon':{},'./PBZRouteInk':{},'./PBZRouteItems':{},'./PBZRouteMinimap':{},'./PBZRouteScout':{}};
     if(options.localWalk)mocks['./PBZRouteLocalWalk']=options.localWalk;
+    if(options.repair)mocks['./PBZRouteRepair']=options.repair;
     if(options.roadbook)mocks['./PBZRouteRoadbook']=options.roadbook;
     if(options.bells){const array=xs=>({Num:()=>xs.length,Get:i=>xs[i]});const bellService={ActivateBellIDs:array(options.activeBellIDs||options.bells.map(b=>b.id)),DisableTeleportBellIDs:array([])};
         mocks['Library/TsHelper'].default.getWorldSubsystem=(p,t)=>t==='map'?map:t==='ship'?options.ship:bellService;}
@@ -42,6 +43,138 @@ function planner(world,options={}){
     return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:level}};
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
+
+test('a proved complete action chain reaches the caller before optional scene walking optimization',()=>{
+ const field=require('./fixtures/tower-chain-completion-20261114.json'),good=field.features.find(f=>f.guid===field.goodAscent);
+ let wall=0,expensiveSearches=0,result,metrics;
+ const world={floorAt:p=>p,step:(a,b)=>({p:b})};
+ const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},liveRouteJob:function*(g,w,start,goal){
+  const points=[start,good.entry,good.exit,goal];
+  return {legs:[{world:'test',points,walks:[{a:start,b:good.entry,from:0,to:1,edge:-1},{a:good.exit,b:goal,from:2,to:3,edge:-1}],
+   moves:[{kind:'ascent',guid:field.goodAscent,from:1,to:2,p:good.entry,end:good.exit}],checks:[],gates:[],meters:229}],transfer:null};
+ }};
+ const h=planner(world,{quiet:true,start:field.start,now:()=>wall,passages,localWalk:{search:function*(w,a,b,options){
+  if(options.maxNodes<=192&&options.maxMs<=200)return null;
+  expensiveSearches++;const until=options.clock()+2000;while(options.clock()<until){wall+=.25;yield;}return null;
+ }}});
+ Object.assign(h.goal,field.goal);
+ const scheduler=new (require(root+'/PBZRouteJobs').Planner)(()=>{},()=>wall);
+ scheduler.request({key:h.dest.key,world:'test',level:'test',start:field.start,p:h.goal,revision:0,originRevision:0},
+  clock=>h.api.makePlan(h.dest,true,false,false,{clock}), (trip,request,stats)=>{result=trip;metrics=stats;});
+ for(let frame=0;scheduler.pending&&frame<3000;frame++){scheduler.pump();wall+=16;}
+ assert.ok(result&&!result.legs[0].partial&&!metrics?.timeout);
+ assert.equal(expensiveSearches,0,'makePlan held an audited complete action chain while a pure-walking optimization ran');
+ assert.ok(metrics.wall<5000);
+ assert.deepEqual(result.legs[0].moves.map(m=>m.guid),[field.goodAscent]);
+});
+
+test('a nearby staircase reaches the bell before an unrelated climb consumes the wall deadline',()=>{
+ // Captured final-stair query; the physical floor below is an analytic
+ // staircase, not a reconstruction of the game's collision mesh.
+ const field=require('./fixtures/tower-last-stairs-20261113.json'),start=field.start,goal=field.landing;
+ const runLength=Math.hypot(goal.x-start.x,goal.y-start.y),dx=(goal.x-start.x)/runLength,dy=(goal.y-start.y)/runLength;
+ const floor=p=>{const t=(p.x-start.x)*dx+(p.y-start.y)*dy,side=Math.abs(-(p.x-start.x)*dy+(p.y-start.y)*dx);
+  return side<=95&&t>=-30&&t<=runLength+30?{...p,z:start.z+Math.min(1,Math.max(0,t/runLength))*(goal.z-start.z)}:null;};
+ let wall=0,actionStarted=false,result,metrics;
+ const world={floorAt:floor,step:(a,b)=>{wall+=.025;const p=floor(b);return p&&Math.abs(p.z-a.z)<=50+Math.hypot(p.x-a.x,p.y-a.y)?{p}:{why:'outside stairs'};}};
+ const native={IsValid:()=>true,IsPartial:()=>true,PathPoints:{Num:()=>2,Get:i=>{
+  const p=field.nativePoints[i];return {X:p.x,Y:p.y,Z:p.z};}}};
+ const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},liveRouteJob:function*(g,w,a,b,native,settings){
+  actionStarted=true;const until=settings.clock()+12000;while(settings.clock()<until){wall+=.1;yield;}return null;}};
+ const h=planner(world,{quiet:true,start,now:()=>wall,UE:{NavigationSystemV1:{FindPathToLocationSynchronously:()=>native}},passages});
+ Object.assign(h.goal,goal);
+ const scheduler=new (require(root+'/PBZRouteJobs').Planner)(()=>{},()=>wall);
+ scheduler.request({key:h.dest.key,world:'test',level:'test',start,p:goal,revision:0,originRevision:0},
+  clock=>h.api.makePlan(h.dest,true,false,false,{clock}), (trip,request,stats)=>{result=trip;metrics=stats;});
+ for(let frame=0;scheduler.pending&&frame<3000;frame++){scheduler.pump();wall+=16;}
+ assert.ok(result&&!result.legs[0].partial,'a walkable last staircase is starved behind an unrelated ascent until no route is returned');
+ assert.equal(actionStarted,false,'the checked ordinary staircase should finish before the costly action-chain search');
+ assert.ok(!metrics?.timeout);
+ assert.equal(result.legs[0].moves.length,0);
+ assert.ok(Math.abs(result.legs[0].points.at(-1).z-goal.z)<1);
+});
+
+test('the recorded lower-floor native partial endpoint is not presented as upstairs guidance',()=>{
+ const field=require('./fixtures/tower-doorway-20261113.json'),reports=[];
+ const native={IsValid:()=>true,IsPartial:()=>true,PathPoints:{Num:()=>field.nativePoints.length,
+  Get:i=>{const p=field.nativePoints[i];return {X:p.x,Y:p.y,Z:p.z};}}};
+ const world={floorAt:p=>({...p}),step:(a,b)=>({p:{...b,z:a.z}})};
+ const h=planner(world,{quiet:true,start:field.start,UE:{NavigationSystemV1:{FindPathToLocationSynchronously:()=>native}},
+  repair:{repair:function*(){return null;}},localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,field.target);
+ const trip=run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0,onDiagnostic:r=>reports.push(r)}));
+ assert.equal(reports.some(r=>r.legs.some(l=>l.provider==='native')),false,'a partial path ending below the tower is still published as primary guidance');
+ assert.equal(trip,null,'without a checked upstairs continuation the lower-floor endpoint is not a usable route');
+ assert.equal(h.goal.z,field.target.z);
+});
+
+test('native diagnostics preserve the original partial endpoint before a goal is appended',()=>{
+ const reports=[],world={floorAt:p=>({...p}),step:(a,b)=>Math.abs(a.z-b.z)<100?{p:b}:{hit:b,why:'other floor'}};
+ const h=planner(world,{quiet:true,repair:{repair:function*(){return null;}},localWalk:{search:function*(){return null;}}});
+ run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0,report:(phase,data)=>reports.push({phase,...data})}));
+ const raw=reports.find(r=>r.phase==='native candidate');
+ assert.ok(raw,'the original native query state is missing from the field diagnostic');
+ assert.equal(raw.provider,'native');assert.equal(raw.partial,true);
+ assert.equal(raw.pointCount,2);assert.equal(raw.last.z,0);
+ assert.equal(raw.goal.z,600);assert.equal(raw.points.at(-1).p.z,0,'diagnostics recorded a synthetic goal as an engine path point');
+ const query=reports.find(r=>r.phase==='native query');assert.ok(query,'native API result was lost before candidate filtering');
+ assert.equal(query.status,'partial');assert.equal(query.last.z,0);
+});
+
+test('native diagnostic point lists are bounded while retaining the original endpoint',()=>{
+ const reports=[],native={IsValid:()=>true,IsPartial:()=>true,PathPoints:{Num:()=>100,Get:i=>({X:i,Y:0,Z:0})}};
+ const world={floorAt:p=>({...p}),step:(a,b)=>Math.abs(a.z-b.z)<100?{p:b}:{hit:b,why:'other floor'}};
+ const h=planner(world,{quiet:true,UE:{NavigationSystemV1:{FindPathToLocationSynchronously:()=>native}},
+  repair:{repair:function*(){return null;}},localWalk:{search:function*(){return null;}}});
+ run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0,report:(phase,data)=>reports.push({phase,...data})}));
+ for(const phase of ['native query','native candidate']){
+  const r=reports.find(r=>r.phase===phase);assert.ok(r);assert.equal(r.pointCount,100);assert.equal(r.points.length,32);
+  assert.equal(r.points[0].i,0);assert.equal(r.points.at(-1).i,99);assert.equal(r.truncated,true);
+ }
+});
+
+test('a rejected vertical native candidate cannot consume the wall deadline before a ready action',t=>{
+ let wall=0,result,metrics;const events=[],point=(x,z=0)=>({x,y:0,z});
+ const world={normal:.7,rise:50,slope:1.4,r:45,hit:()=>null,floorAt:p=>({...p}),
+  step:(a,b)=>Math.abs(a.z-b.z)>100?{hit:b,why:'climb required'}:{p:b}};
+ const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},
+  liveRouteJob:function*(g,w,start,goal){
+   events.push({phase:'ready action',wall});
+   return {legs:[{world:'test',points:[start,goal],moves:[{kind:'ascent',guid:'resident-climb',from:0,to:1}],walks:[],checks:[],gates:[],meters:6}],transfer:null};
+  }};
+ const repair={repair:function*(w,leg,failure,origin,options){
+  events.push({phase:'slow repair',wall});
+  while(options.clock()<options.deadline){wall+=2;yield;}
+  return null;
+ }};
+ const h=planner(world,{quiet:true,now:()=>wall,complete:true,passages,repair});
+ const scheduler=new (require(root+'/PBZRouteJobs').Planner)(()=>{},()=>wall);
+ scheduler.request({key:h.dest.key,world:'test',level:'test',start:point(0),p:h.goal,revision:0,originRevision:0},
+  clock=>h.api.makePlan(h.dest,true,false,false,{clock}), (trip,request,stats)=>{result=trip;metrics=stats;});
+ for(let frame=0;scheduler.pending&&frame<3000;frame++){scheduler.pump();wall+=16;}
+ t.diagnostic(JSON.stringify({events,metrics}));
+ assert.ok(!metrics?.error,'the replay failed for a different reason');
+ assert.ok(result?.legs[0].moves.some(m=>m.guid==='resident-climb'),'a resident usable climb was starved behind native detour repair until the 30-second wall timeout');
+ assert.ok(!metrics?.timeout,'ready action guidance should finish within the wall deadline');
+});
+
+test('an unavailable vertical action still falls back to a checked native walking repair',()=>{
+ const events=[],point=(x,y=0,z=0)=>({x,y,z}),F=require(root+'/PBZRouteFeasibility');
+ const world={normal:.7,rise:50,slope:1.4,r:45,hit:()=>null,floorAt:p=>({...p}),
+  step:(a,b)=>Math.abs(a.z-b.z)>100?{hit:b,why:'climb required'}:{p:b}};
+ const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},
+  liveRouteJob:function*(){events.push('action unavailable');return null;}};
+ const repair={repair:function*(w,leg,failure,origin){
+  events.push('walking repair');
+  const points=[origin,point(0,700),...Array.from({length:20},(_,i)=>point((i+1)*5,700,(i+1)*30)),point(100,0,600)];
+  const candidate={...leg,points,moves:[],walks:[],checks:[],gates:[],repaired:true,partial:false};
+  const verdict=yield* F.check(w,candidate,origin);return {candidate,verdict};
+ }};
+ const h=planner(world,{quiet:true,complete:true,passages,repair});
+ const trip=run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0}));
+ assert.ok(trip&&!trip.legs[0].partial&&trip.legs[0].repaired,'deferring failed native repair discarded a valid walking fallback');
+ assert.deepEqual(events,['action unavailable','walking repair']);
+});
 
 test('the main planner completes a corridor with consecutive rejected rejoin tails',()=>{
  const p=(x,y=0)=>({x,y,z:0}),goal=p(2000),walls=[500,1000,1500];
@@ -331,11 +464,13 @@ test('the main planner retries newly attached actions before starting an unrelat
  const passages={refreshLadders(){},isLookout:()=>false,liveRouteJob:function*(){ready=true;g.liveEdges.push({});return null;}};
  const floor=p=>p.x>=100&&p.z>300?600:0;
  const h=planner({floorAt:p=>({...p,z:floor(p)}),step:(a,b)=>Math.abs(floor(b)-a.z)<100?{p:{...b,z:floor(b)}}:{hit:b,why:'climb required'}},
-  {quiet:true,graph:g,passages,localWalk:{search:function*(){grids++;return null;}}});
+  {quiet:true,graph:g,passages,localWalk:{search:function*(w,a,b,settings){
+   assert.ok(settings.maxNodes<=192&&settings.maxMs<=200,'the unbounded scene search preceded the new atlas action');grids++;return null;
+  }}});
  Object.assign(h.goal,points.at(-1));
  const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
  assert.ok(trip&&!trip.legs[0].partial&&attempts>0);
- assert.equal(grids,0,'scene search delayed the new atlas action until movement could cancel it');
+ assert.equal(grids,1,'only one small walking preflight may precede the new atlas action');
 });
 
 test('a long scene search can leave a small bell platform through a narrow supported exit',()=>{
@@ -525,7 +660,8 @@ test('same-height obstacles try loaded interactions before the expensive local w
  let actions=0;
  const h=planner({floorAt:p=>({...p,z:0}),step:()=>({why:'gap'})},{quiet:true,
   passages:{refreshLadders(){},isLookout:()=>false,liveRouteJob:function*(){actions++;return null;}},
-  localWalk:{search:function*(){assert.ok(actions>0,'same-height rope/climb was postponed until after walking search');return null;}}});
+  localWalk:{search:function*(w,a,b,settings){if(!actions)assert.ok(settings.maxNodes<=192&&settings.maxMs<=200,
+   'same-height rope/climb was postponed until after the expensive walking search');return null;}}});
  Object.assign(h.goal,{x:1000,y:0,z:0});run(h.api.makePlan(h.dest));
 });
 
@@ -804,8 +940,8 @@ test('a roof with a shallow overall bearing tries its climb before spending the 
             walks:[{a:start,b:points[1],from:0,to:1,edge:-1},{a:points[2],b:goal,from:2,to:3,edge:-1}],
             meters:require(root+'/PBZRouteCore').extent(points)/100}],transfer:null};
     }};
-    const h=planner(world,{quiet:true,passages,localWalk:{search:function*(){
-        assert.equal(actions,1,'the valid climb was postponed behind an expensive walking search');return yield* empty();
+    const h=planner(world,{quiet:true,passages,localWalk:{search:function*(w,a,b,settings){
+        if(!actions)assert.ok(settings.maxNodes<=192&&settings.maxMs<=200,'the valid climb was postponed behind an expensive walking search');return yield* empty();
     }}});
     Object.assign(h.goal,{x:3000,y:0,z:600});
     const trip=run(h.api.makePlan(h.dest));assert.ok(trip&&!trip.legs[0].partial);
@@ -818,8 +954,8 @@ test('a nearby climb is considered before walking even when the player starts at
     const graph={name:'test',actors:[{kind:'ascent',path:[[900,0,-600],[1000,0,-134]]}],observedPassages:new Map(),
         sameComponent:()=>false,routeJob:function*(){return null;}};
     const passages={refreshLadders(){},isLookout:()=>false,liveRouteJob:function*(){actions++;return null;}};
-    const h=planner(world,{quiet:true,graph,passages,localWalk:{search:function*(){
-        assert.equal(actions,1,'overall floor height hid a lower approach followed by a climb');return null;
+    const h=planner(world,{quiet:true,graph,passages,localWalk:{search:function*(w,a,b,settings){
+        if(!actions)assert.ok(settings.maxNodes<=192&&settings.maxMs<=200,'overall floor height postponed a climb behind the expensive walking search');return null;
     }}});
     Object.assign(h.goal,{x:3000,y:0,z:0});run(h.api.makePlan(h.dest));assert.equal(actions,1);
 });

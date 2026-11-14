@@ -86,7 +86,7 @@
 ## 本轮本地依据
 
 - `README.md`、`docs/MOVEMENT-COVERAGE.md`、`docs/MANUAL-ROUTES.md`、`docs/BELL-NETWORK-COVERAGE.md`。
-- `Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js` 的 `nativeWalk`、日志与公开设置；`PBZRouteWorld.js` 的实际脚点、地面/身体查询及 `snapshot`；`PBZRouteJobs.js` 的分帧与超时状态。
+- `Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js` 的 `nativeWalk`、日志与公开设置；`PBZRouteWorld.js` 的实际脚点、地面/身体查询及 `snapshot`；`PBZRouteJobs.js` 的分帧与超时状态。
 - `authoring/roadbook-course-audit.json`；`tests/fixtures/tavern-blocker-20261113.json`；`PBZRouteTables.js` 的目标身份。
 - 本轮只读检查的本机 `ProjectPBZ/Saved/PBZQuestRoute-log.txt`：2026-11-14T01:29:34.864Z 局部连接found=true，01:29:35.353Z重新验证surface is not walkable；对应客户端日期为2026-11-13。现有日志仅滚动保留130条，正式现场采集需要独立案例文件。
 - UE方案与官方来源见 [NAVIGATION-ENGINE-RESEARCH.md](NAVIGATION-ENGINE-RESEARCH.md)。

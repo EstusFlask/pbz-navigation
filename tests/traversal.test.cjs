@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 function fixture(){
  const module={exports:{}},UE={ESplineCoordinateSpace:{World:0}},W={alive:o=>!!o,plain:p=>p?{x:p.X,y:p.Y,z:p.Z}:null};
  const mocks={ue:UE,puerts:{$ref:value=>({value}),$unref:ref=>ref.value},'./PBZRouteWorld':W};
@@ -10,6 +10,17 @@ function fixture(){
 }
 const v=(X,Y=0,Z=0)=>({X,Y,Z}),at=(...args)=>({K2_GetComponentLocation:()=>v(...args)}),actor=props=>({K2_GetActorLocation:()=>v(0),...props});
 const plain=x=>JSON.parse(JSON.stringify(x));
+
+test('an interrupted action connector records its unfinished boundary for field replay',()=>{
+ const T=require(root+'/PBZRouteTransitions'),reports=[];
+ const job=T.route({name:'test',world:{},start:{x:0,y:0,z:0},goal:{x:100,y:0,z:0},features:[],clock:()=>0,
+  canTraverse:()=>true,landing:function*(f,p){return p;},
+  report:(phase,data)=>reports.push({phase,...data}),walk:function*(){yield;yield;return null;}});
+ for(let n=0;n<20&&!reports.some(r=>r.phase==='action connector start');n++){if(job.next().done)break;}
+ assert.ok(reports.some(r=>r.phase==='action connector start'),'connector start is not observable');
+ job.return();
+ assert.ok(reports.some(r=>r.phase==='action connector interrupted'&&r.id===1),'cancellation lost the connector that was holding the planner');
+});
 test('legacy lateral wall-running uses the authored directional start and end components',()=>{
  const api=fixture(),a=actor({StartPositionA:at(0,0,100),EndPositionStaticA:at(1000,0,100),StartPositionB:at(1000,0,100),EndPositionStaticB:at(0,0,100)});
  assert.deepEqual(plain(api.placedCurve(a,'wallrun')),[{x:0,y:0,z:100},{x:1000,y:0,z:100}]);

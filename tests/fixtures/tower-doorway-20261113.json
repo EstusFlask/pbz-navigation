@@ -1,0 +1,67 @@
+{
+  "source": "1.2.4 installed game loader.log; current doorway stationary query",
+  "sourceSHA256": "d1b866fcab157f9dda9f87c8dce72c97f4fc20559840583d881d438fef964f8d",
+  "world": "pbz_xigu_wp",
+  "start": {
+    "x": -62723.62216142053,
+    "y": 220136.84829888766,
+    "z": -15514.116758908529
+  },
+  "target": {
+    "x": -64848,
+    "y": 219573,
+    "z": -11386
+  },
+  "landing": {
+    "x": -64708.00000018706,
+    "y": 219572.9999999917,
+    "z": -11420.772583238635
+  },
+  "nativePoints": [
+    {
+      "x": -62723.62109375,
+      "y": 220136.84375,
+      "z": -15500.610402231934
+    },
+    {
+      "x": -64704.76128768921,
+      "y": 219523.80743026733,
+      "z": -15510.610402231934
+    },
+    {
+      "x": -64780.951763153076,
+      "y": 219542.8550491333,
+      "z": -15500.610402231934
+    },
+    {
+      "x": -64781.284261637724,
+      "y": 219543.6862953449,
+      "z": -15500.610402231934
+    }
+  ],
+  "partial": true,
+  "actor": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+  "connector": {
+    "id": 4,
+    "from": {
+      "x": -62723.62216142053,
+      "y": 220136.84829888766,
+      "z": -15514.116758908529
+    },
+    "to": {
+      "x": -64810.17578124981,
+      "y": 217523.4375,
+      "z": -14462.497596686248
+    },
+    "goalEdge": false,
+    "local": true,
+    "kind": "ascent",
+    "guid": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+    "remainingMs": 11921,
+    "found": false,
+    "cpuMs": 2402,
+    "wallMs": 27683,
+    "pointCount": 0
+  },
+  "physics": "Tests use substitutes; this fixture does not reconstruct collision."
+}

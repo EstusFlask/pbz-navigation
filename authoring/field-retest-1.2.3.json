@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "session": "build/field-live-1.2.3-20261113-45348-A01",
+  "case": "A-01",
+  "build": "1.2.3",
+  "result": "failed before ascending stairs",
+  "stationaryReselect": "still wrong",
+  "goalXYZVerified": true,
+  "resultFile": "build/field-live-1.2.3-20261113-45348-A01/result.json",
+  "workersStopped": true
+}

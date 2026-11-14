@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const L=require(root+'/PBZRouteLocks'),Local=require(root+'/PBZRouteLocalWalk'),O=require(root+'/PBZRouteObstacles');
 const lock={id:'key-door',world:'test',p:{x:280,y:0,z:0},locked:true,icon:'keylock',label:'需钥匙/物品解锁'};
 

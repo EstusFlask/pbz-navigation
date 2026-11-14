@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const tables=require(root+'/PBZRouteTables').data;
 const bell=tables.bells.bell_yxzr_004,goal={x:bell.at[0],y:bell.at[1],z:bell.at[2]};
 const wrong={x:24160,y:67840,z:6769};

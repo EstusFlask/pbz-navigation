@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "url": "https://www.nexusmods.com/phantombladezero/mods/994",
+  "version": "1.2.10",
+  "fileId": 4023,
+  "previousFileId": 3879,
+  "previousFileArchived": true,
+  "authorizedBy": "explicit current user request",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.10.zip",
+  "bytes": 120544958,
+  "sha256": "a7926b013b287f81e735f8d69f43efbf4024e40ae14303cd5321bd137eda7184",
+  "runtimeChangedThisPublication": false,
+  "changedPackageDocuments": [
+    "README-en.txt",
+    "README-zh.txt",
+    "INSTALL-README.md",
+    "CHANGELOG.md"
+  ],
+  "descriptionChanged": false,
+  "shortDescriptionChanged": false,
+  "changelog": [
+    "Improved stair, multi-floor and climbing navigation.",
+    "改善楼梯、上下层和攀爬前后的路线衔接。",
+    "Adjusted route calculation to reduce unnecessary waiting.",
+    "调整路线计算，减少不必要的等待。"
+  ],
+  "verification": [
+    "Public header version1.2.10",
+    "Public Main file1.2.10,ID4023",
+    "Public changelog popup contains the four supplied player-facing entries",
+    "Editor re-open confirms short new file description",
+    "Public new file description matches the short bilingual text",
+    "Manual download button available for the only active Main file1.2.10"
+  ],
+  "scanStatus": "download_available",
+  "fieldAcceptance": "still pending; publication is not a navigation pass",
+  "sourceFiles": {
+    "release/NEXUS-DESCRIPTION.bbcode": "e640aa8725a73196d87cc86f698dce6efa7608041c1836a5f809211a504c700e",
+    "release/NEXUS-CHANGELOG-1.2.10.txt": "84e20f05c64b0603dacbdd2da0db3a2c46918b6aeac294baefe894f4c19a3c0e"
+  },
+  "repoDocumentation": [
+    "README.md",
+    "release/README.md",
+    "release/CHANGELOG.md",
+    "docs/USER-GUIDE.md"
+  ],
+  "preservedEngineeringHistory": [
+    "docs/DEVELOPMENT.md",
+    "docs/CHANGELOG-DEVELOPMENT.md",
+    "docs/USER-GUIDE-DEVELOPMENT.md"
+  ],
+  "serverArchiveHashVerified": false,
+  "uploadVerification": "Uploaded exact validated local path through the Nexus file chooser; public version/fileId/download state verified. No server hash comparison claimed."
+}

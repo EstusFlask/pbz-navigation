@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const F=require(root+'/PBZRouteFeasibility'),Repair=require(root+'/PBZRouteRepair');
 const p=(x,y=0,z=0)=>({x,y,z});
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'unbounded replay');}while(!row.done);return row.value;}

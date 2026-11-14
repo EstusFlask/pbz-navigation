@@ -156,7 +156,7 @@ def main():
         inputs={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(CACHE.glob('map-*-getLandmarkList.json'))})
     (ROOT/'build/tracker-hint-candidates.json').write_text(json.dumps(candidates,ensure_ascii=False,indent=2),encoding='utf-8')
     (ROOT/'authoring/item-description-audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
-    out=ROOT/'Quest_Navigation_0.8.5/platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZItemHintsData.lua'
+    out=ROOT/'Quest_Navigation/platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZItemHintsData.lua'
     def literal(v):
         if isinstance(v,dict):return '{'+','.join('['+literal(k)+']='+literal(x) for k,x in v.items())+'}'
         if isinstance(v,list):return '{'+','.join(literal(x) for x in v)+'}'

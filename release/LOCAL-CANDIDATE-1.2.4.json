@@ -1,0 +1,40 @@
+{
+  "version": "1.2.4",
+  "status": "local-diagnostic-candidate; A-01 unresolved",
+  "clientDate": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.4.zip",
+  "bytes": 120575954,
+  "sha256": "b3eb0e74626073ceea24b9c7c64dbae6bdaf1451bd787cf0d2021a12dbf4b705",
+  "files": 1374,
+  "changedPathsFrom1.2.3": [
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteFeasibility.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteTransitions.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWorld.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "INSTALL-README.md",
+    "CHANGELOG.md",
+    "BELL-ROUTE-AUDIT.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "MOVEMENT-COVERAGE.md",
+    "MANUAL-ROUTES.md",
+    "BELL-NETWORK-COVERAGE.md",
+    "ITEM-DESCRIPTION-AUDIT.md"
+  ],
+  "javascriptPassed": 273,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "nativeChecks": "passed",
+  "packageVerification": "1374 exact file matches; original hashes preserved",
+  "routingPolicyChanged": false,
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "nextFieldCase": "A-01 stationary doorway selection; preserve target XYZ; wait until query ends or 30 seconds"
+}

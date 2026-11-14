@@ -1,0 +1,41 @@
+{
+  "build": "1.2.5",
+  "case": "A-01",
+  "result": "failed",
+  "scope": "Frozen installed logs and user report; no new continuous motion or Y sampler",
+  "gameExitedAtReview": true,
+  "installedAudit": {
+    "matchedRuntimeFiles": 1366,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.5-a01-logs/installation.json"
+  },
+  "userReports": [
+    "之前指向错误路线变成没有路线出现",
+    "最后一个楼梯站了很久才加载一条错误路线，上楼梯后指向攀爬而非铃铛"
+  ],
+  "logSHA256": "4dcac3aad95fa3e97b252a12bea831f0472802d2a9dd14469abbe40ca088c80f",
+  "evidence": [
+    "build/field-1.2.5-a01-logs/loader.log",
+    "build/field-1.2.5-a01-logs/events.json",
+    "tests/fixtures/tower-last-stairs-20261113.json"
+  ],
+  "findings": [
+    {
+      "type": "scheduling",
+      "fact": "Initial high-Z goal connectors have local=false; instead an ascent entry is searched for 1589ms CPU / 21453ms wall and published as an incomplete action-chain preview. The request then times out at 30 seconds."
+    },
+    {
+      "type": "support",
+      "fact": "Several stair/turn audits reject surface normals around 0.35-0.38. Their exact physical surroundings were not captured, so footprint-contact cause remains unconfirmed in the game."
+    },
+    {
+      "type": "node-growth",
+      "fact": "Action connector expanded 709 nodes and made 7242 step probes, including 1429 hint probes / 1237 accepted. A finite candidate-only control isolates offset-grid duplication, not game collision."
+    }
+  ],
+  "targetXYZChanged": false,
+  "candidateFixBuild": "1.2.6",
+  "livePassed": false
+}

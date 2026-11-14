@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const {Planner}=require(root+'/PBZRouteJobs'),R=require(root+'/PBZRouteCore'),O=require(root+'/PBZRouteObstacles');
 const request=start=>({key:'roof-currency',world:'test',level:'test',p:{x:1000,y:0,z:600},start,revision:'0/0'});
 test('landing upstairs replaces an in-flight ground-floor plan for the same target',()=>{

@@ -2,7 +2,7 @@
 // Offline candidates from actual game navigation/interaction data. The public
 // roadbook supplies direction and identity, never interpolated world height.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const ROOT=path.resolve(__dirname,'..'),JS=path.join(ROOT,'Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const ROOT=path.resolve(__dirname,'..'),JS=path.join(ROOT,'Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const R=require(JS+'/PBZRouteCore'),S=require(JS+'/PBZRouteSurface');
 const coverage=require(ROOT+'/authoring/bell-network-coverage.json'),tables=require(JS+'/PBZRouteTables').data;
 const facts=require(ROOT+'/authoring/placed-passage-facts.json').rows;

@@ -1,0 +1,525 @@
+{
+  "schema": 1,
+  "objective": "Complete and validate navigation for the current game version through short field cases, generic fixes, directed coverage and save-state tests",
+  "roadmap": "docs/NAVIGATION-TODO.md",
+  "timezone": "America/Tijuana",
+  "currentBuild": "1.3.2",
+  "currentPhase": "A",
+  "activeCase": "A-02",
+  "currentAction": "Live1.3.2 original-origin A-02 retest: select Waterfall Suspension Bridge at summit; retain two climbs as controls; stop at second rooftop and report initial guidance/latency, then mark any wrong direction. Do not count local correctness as complete-route pass.",
+  "fieldSession": "build/field-live-1.3.2-20261114-42804-A02",
+  "recording": "Active1.3.2 session: fresh registry, read-only logs,10Hz feet/CurrentFloor and foreground Y markers verified",
+  "installedAudit": {
+    "build": "1.3.2",
+    "matchedRuntimeFiles": 1373,
+    "missing": [],
+    "changed": [],
+    "status": "passed"
+  },
+  "saveProfile": "Current user save: full map unlocked, most collectibles already taken",
+  "priorEvidence": [
+    "authoring/field-session-20261113.json",
+    "authoring/field-confirmations-20261113.json"
+  ],
+  "cases": [
+    {
+      "id": "A-01",
+      "status": "passed_user_confirmed",
+      "acceptance": {
+        "clientDate": "2026-11-14",
+        "source": "User confirmation in current chat",
+        "userStatement": "A-01已经通过了，看下计划接下来测试什么",
+        "build": "1.3.1",
+        "scope": "A-01 accepted from user field confirmation. The subsequently frozen 1.3.1 loader log includes completed tower routes and arrival at Bell_NLES_012 before A-02 selection. First/hot-selection success rate and latency are not quantified.",
+        "evidence": "build/field-1.3.1-a02-logs/loader.log"
+      },
+      "world": "pbz_xigu_wp",
+      "fromBell": "Bell_NLES_005",
+      "toBell": "Bell_NLES_012",
+      "name": "溪谷杀气塔一层→塔顶：攀爬后楼梯",
+      "worksheet": "worksheet-014",
+      "capturedBuilds": [
+        "1.2.1"
+      ],
+      "livePassedBuilds": [
+        "1.3.1"
+      ],
+      "checkpoint": "Same first-floor bell, stationary summit selection; complete vs partial guidance and timing separately",
+      "resultEvidence": [
+        "build/field-live-1.2.2-20261113-19624/events.jsonl",
+        "build/field-live-1.2.2-20261113-19624/player.jsonl",
+        "build/field-live-1.2.2-20261113-19624/A-01-entrance-wrong-floor/marker.json",
+        "build/field-live-1.2.2-20261113-19624/result.json",
+        "authoring/field-retest-1.2.2.json",
+        "build/field-1.2.3-coordinate-audit/coordinate-audit.json",
+        "build/field-live-1.2.3-20261113-45348-A01/result.json",
+        "authoring/field-retest-1.2.3.json",
+        "build/field-1.2.4-a01-logs/events.json",
+        "tests/fixtures/tower-doorway-20261113.json",
+        "authoring/walk-hints-audit.json",
+        "build/field-1.2.5-a01-logs/events.json",
+        "tests/fixtures/tower-last-stairs-20261113.json",
+        "authoring/field-retest-1.2.5.json",
+        "docs/FIELD-FIXES-1.2.6.md",
+        "build/field-1.2.6-a01-logs/events.json",
+        "tests/fixtures/tower-stair-budget-20261114.json",
+        "authoring/field-retest-1.2.6.json",
+        "docs/FIELD-FIXES-1.2.7.md",
+        "build/field-1.2.7-a01-logs/events.json",
+        "tests/fixtures/tower-doorway-scheduling-20261114.json",
+        "build/action-scheduling-128-pristine-red.txt",
+        "authoring/field-retest-1.2.7.json",
+        "docs/FIELD-FIXES-1.2.8.md",
+        "build/field-1.2.8-a01-logs/events.json",
+        "tests/fixtures/tower-bell-approach-20261114.json",
+        "build/bell-approach-129-pristine-red.txt",
+        "authoring/field-retest-1.2.8.json",
+        "docs/FIELD-FIXES-1.2.9.md",
+        "build/field-1.2.9-a01-logs/events.json",
+        "tests/fixtures/tower-chain-completion-20261114.json",
+        "build/chain-submit-1210-pristine-red.txt",
+        "build/chain-delivery-1210-red.txt",
+        "authoring/field-retest-1.2.9.json",
+        "docs/FIELD-FIXES-1.2.10.md"
+      ],
+      "issues": [
+        "FIELD-01",
+        "FIELD-07",
+        "FIELD-08",
+        "FIELD-09",
+        "FIELD-10",
+        "FIELD-11",
+        "FIELD-12",
+        "FIELD-13",
+        "FIELD-14",
+        "FIELD-15",
+        "FIELD-16",
+        "FIELD-17",
+        "FIELD-18",
+        "FIELD-19"
+      ],
+      "attempts": [
+        {
+          "build": "1.2.2",
+          "result": "failed",
+          "session": "build/field-live-1.2.2-20261113-19624",
+          "evidence": "build/field-live-1.2.2-20261113-19624/result.json"
+        },
+        {
+          "build": "1.2.3",
+          "result": "partial improvement; not passed",
+          "userReport": "上楼梯到二楼后马上出现爬墙，其他差不多",
+          "scope": "Existing game log plus one-shot read-only player/bell snapshots; no continuous motion/Y session started",
+          "evidence": "build/field-1.2.3-coordinate-audit/coordinate-audit.json"
+        },
+        {
+          "build": "1.2.3",
+          "result": "failed before stairs; stationary reselect unchanged",
+          "session": "build/field-live-1.2.3-20261113-45348-A01",
+          "evidence": "build/field-live-1.2.3-20261113-45348-A01/result.json"
+        },
+        {
+          "build": "1.2.4",
+          "result": "failed again; user stationary reselected and reran",
+          "scope": "diagnostic game logs only",
+          "evidence": "build/field-1.2.4-a01-logs/events.json"
+        },
+        {
+          "build": "1.2.5",
+          "result": "failed: missing guidance, delayed final-stair ascent detour",
+          "scope": "Frozen installed logs and user report; no new continuous motion or Y sampler",
+          "evidence": "authoring/field-retest-1.2.5.json"
+        },
+        {
+          "build": "1.2.6",
+          "result": "failed: repeated lower-stair timeout despite correct upper-stair routes",
+          "scope": "Frozen installed logs and user report; no new continuous motion or Y sampler",
+          "evidence": "authoring/field-retest-1.2.6.json"
+        },
+        {
+          "build": "1.2.7",
+          "result": "partial improvement; doorway still fails",
+          "scope": "Frozen installed logs and user report; game exited, no new continuous motion/Y session",
+          "evidence": "authoring/field-retest-1.2.7.json"
+        },
+        {
+          "build": "1.2.8",
+          "result": "doorway guidance visible by user; first-floor bell origin still has no guidance",
+          "scope": "Frozen logs and user clarification; game exited, no new continuous motion/Y sampler",
+          "evidence": "authoring/field-retest-1.2.8.json"
+        },
+        {
+          "build": "1.2.9",
+          "result": "failed; individual checked connections were not promptly submitted as a complete route",
+          "scope": "Frozen installed logs; game exited, no new continuous motion/Y sampler",
+          "evidence": "authoring/field-retest-1.2.9.json"
+        }
+      ],
+      "candidateFixBuilds": [
+        "1.2.2",
+        "1.2.3",
+        "1.2.5",
+        "1.2.6",
+        "1.2.7",
+        "1.2.8",
+        "1.2.9",
+        "1.2.10"
+      ],
+      "diagnosticBuild": "1.2.4",
+      "checkpointObservations1.2.7": [
+        {
+          "name": "一楼楼梯前",
+          "guidance": "correct",
+          "latency": "long according to user; not separately stopwatch measured"
+        },
+        {
+          "name": "二楼",
+          "guidance": "correct immediately according to user",
+          "latency": "short according to user"
+        },
+        {
+          "name": "大门口",
+          "guidance": "no route",
+          "latency": "two final stationary tower requests hit30s"
+        }
+      ],
+      "checkpointObservations1.2.8": [
+        {
+          "name": "大门口",
+          "user": "路线生成成功",
+          "status": "visible guidance observed; full A-01 not accepted",
+          "logLimit": "tower routes in this snapshot are blocked/partial previews, with no completed tower planner result"
+        },
+        {
+          "name": "一层铃铛旁→塔顶",
+          "user": "没看到路线",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "id": "A-02",
+      "status": "live_retesting_1.3.2; acceptance_pending",
+      "world": "pbz_xigu_wp",
+      "fromBell": "Bell_NLES_012",
+      "toBell": "Bell_NLES_018",
+      "name": "塔顶→瀑布吊桥：出发地面与墙后重接",
+      "worksheet": "worksheet-015",
+      "capturedBuilds": [
+        "1.2.1"
+      ],
+      "codeFixedBuild": null,
+      "livePassedBuilds": [],
+      "resultEvidence": [
+        "authoring/field-retest-1.3.1-a02.json",
+        "build/field-live-1.3.1-20261114-48148-A02/result.json",
+        "docs/FIELD-FIXES-1.3.2.md"
+      ],
+      "checkpointObservations1.3.1": [
+        {
+          "name": "连续两次上墙",
+          "guidance": "correct according to user"
+        },
+        {
+          "name": "第二次上墙后屋顶",
+          "guidance": "missing for a long wait, then through-roof/inappropriate-drop direction according to user",
+          "status": "failed"
+        }
+      ],
+      "issues": [
+        "FIELD-02",
+        "FIELD-03",
+        "FIELD-20",
+        "FIELD-21"
+      ],
+      "liveSession": "build/field-live-1.3.2-20261114-42804-A02",
+      "markerAnnotations": "build/field-live-1.3.1-20261114-48148-A02/marker-annotations.json",
+      "candidateFixBuild": "1.3.2"
+    },
+    {
+      "id": "A-03",
+      "status": "pending",
+      "world": "pbz_xigu_wp",
+      "fromBell": "Bell_NLES_018",
+      "toBell": "Bell_NLES_007",
+      "name": "瀑布吊桥→大瀑布：桥洞和跑墙",
+      "worksheet": "worksheet-016",
+      "capturedBuilds": [
+        "1.2.1"
+      ],
+      "codeFixedBuild": null,
+      "livePassedBuilds": [],
+      "resultEvidence": [],
+      "issues": [
+        "FIELD-04",
+        "FIELD-05",
+        "FIELD-06"
+      ]
+    },
+    {
+      "id": "A-04",
+      "status": "pending_short_checkpoint_selection",
+      "world": "pbz_xigu_wp",
+      "fromBell": "Bell_NLES_007",
+      "toBell": "Bell_NLES_006",
+      "name": "大瀑布→远眺龙柱处：短段复核与正确对照",
+      "worksheet": "worksheet-017",
+      "capturedBuilds": [
+        "1.2.1"
+      ],
+      "codeFixedBuild": null,
+      "livePassedBuilds": [],
+      "resultEvidence": [],
+      "issues": []
+    },
+    {
+      "id": "C-03-short-hook",
+      "status": "interaction_presence_confirmed_only",
+      "world": "pbz_houjie_wp",
+      "fromBell": "Bell_SZ_031",
+      "toBell": null,
+      "name": "窄巷民居二楼旁钩索：短动作检查",
+      "presenceEvidence": "authoring/field-confirmations-20261113.json",
+      "livePassedBuilds": [],
+      "resultEvidence": []
+    }
+  ],
+  "issues": [
+    {
+      "id": "FIELD-20",
+      "symptom": "A-02两次正确上墙后，屋顶后续缺线并长时间等待；后续位置出现两次约30秒搜索超时",
+      "state": "reproduced_on_1.3.1; root_cause_unconfirmed",
+      "severity": "high",
+      "evidence": "authoring/field-retest-1.3.1-a02.json"
+    },
+    {
+      "id": "FIELD-21",
+      "symptom": "A-02屋顶久等后引导穿屋顶或从不该跳的位置下去；日志出现fall受阻前段，没有完整路线",
+      "state": "user_confirmed_on_1.3.1; exact_rendered_segment_and_collision_replay_missing",
+      "severity": "high",
+      "evidence": "authoring/field-retest-1.3.1-a02.json"
+    },
+    {
+      "id": "FIELD-01",
+      "symptom": "攀爬后应上楼梯，低层断线并指向错误高度",
+      "state": "still_reproduces_on_1.2.2",
+      "candidateFixes": [
+        "post-action local goal connector",
+        "zero-distance occupied floor"
+      ],
+      "severity": "high",
+      "evidence": "build/field-live-1.2.2-20261113-19624/result.json"
+    },
+    {
+      "id": "FIELD-02",
+      "symptom": "塔顶不平处短暂缺少指示",
+      "state": "awaiting_live_retest_and_cause_confirmation",
+      "cause": "unconfirmed",
+      "severity": "high"
+    },
+    {
+      "id": "FIELD-03",
+      "symptom": "下塔后先指向墙，稍后才算出正确路线",
+      "state": "partial_generic_fix_awaiting_live_retest",
+      "candidateFixes": [
+        "farther repair rejoin"
+      ],
+      "severity": "high"
+    },
+    {
+      "id": "FIELD-04",
+      "symptom": "吊桥和山洞段未给出路线",
+      "state": "unresolved",
+      "severity": "high"
+    },
+    {
+      "id": "FIELD-05",
+      "symptom": "出洞跑墙起初入口拒绝，稍后才接入",
+      "state": "unresolved",
+      "severity": "high"
+    },
+    {
+      "id": "FIELD-06",
+      "symptom": "人工到大瀑布附近时仍有blocked preview",
+      "state": "needs_goal_access_and_arrival_confirmation",
+      "cause": "unconfirmed",
+      "severity": "unconfirmed"
+    },
+    {
+      "id": "FIELD-07",
+      "symptom": "用户确认一层楼梯口沿途方向错误，到墙前等待后指示才正确",
+      "state": "reproduced_on_1.2.2",
+      "severity": "high",
+      "evidence": "build/field-live-1.2.2-20261113-19624/A-01-entrance-wrong-floor/marker.json",
+      "cause": "unconfirmed: compare movement/actor loading with planner latency and connector state"
+    },
+    {
+      "id": "FIELD-08",
+      "symptom": "上墙后短暂正确，过拐角持续错误并要求折返",
+      "state": "reproduced_on_1.2.2",
+      "severity": "high",
+      "evidence": "build/field-live-1.2.2-20261113-19624/result.json"
+    },
+    {
+      "id": "FIELD-09",
+      "symptom": "高差错误原生候选的修补先占用长时间，动作搜索延迟",
+      "state": "code_fix_1.2.3_awaiting_live_retest",
+      "severity": "high",
+      "evidence": "build/vertical-scheduling-red.txt",
+      "note": "Controlled framed regression goes from wall-time timeout to action-first; actual game timings still pending"
+    },
+    {
+      "id": "FIELD-10",
+      "symptom": "原生部分路径终点在目标下约41米，仍被发布为上层方向",
+      "state": "1.2.5_wrong_floor_filter_observed_but_no_alternate_guidance; case_not_passed",
+      "severity": "high",
+      "evidence": "authoring/field-retest-1.2.5.json"
+    },
+    {
+      "id": "FIELD-11",
+      "symptom": "最后楼梯的普通步行被高层攀爬入口搜索抢先，久等后错指攀爬",
+      "state": "code_fixed_1.2.6_live_pending",
+      "severity": "high",
+      "cause": "scheduling replay from final-stair query; live collision not reconstructed",
+      "evidence": "authoring/field-retest-1.2.5.json"
+    },
+    {
+      "id": "FIELD-12",
+      "symptom": "楼梯侧面不可走的中心射线可能遮蔽脚底有效支撑",
+      "state": "candidate_support_fix_1.2.6; actual_field_cause_unconfirmed",
+      "severity": "high",
+      "cause": "negative normal hits in logs plus analytic footprint regression; not proof of scene geometry",
+      "evidence": "authoring/field-retest-1.2.5.json"
+    },
+    {
+      "id": "FIELD-13",
+      "symptom": "脚点与偏移网格混合扩展耗费大量局部搜索节点",
+      "state": "code_fixed_1.2.6_live_pending",
+      "severity": "high",
+      "cause": "finite candidate control on recorded point cloud; same step interface, actual collision unmodelled",
+      "evidence": "authoring/field-retest-1.2.5.json"
+    },
+    {
+      "id": "FIELD-14",
+      "symptom": "作者候选点的210厘米连边上限遇到222厘米采样间隙，普通楼梯图断连",
+      "severity": "high",
+      "state": "code_fixed_1.2.7; live correctness and latency pending",
+      "evidence": "authoring/field-retest-1.2.6.json"
+    },
+    {
+      "id": "FIELD-15",
+      "symptom": "候选搜索对大量未采用边进行物理认证，分帧后放大为长等待或30秒超时",
+      "severity": "high",
+      "state": "code_fixed_1.2.7; live correctness and latency pending",
+      "evidence": "authoring/field-retest-1.2.6.json"
+    },
+    {
+      "id": "FIELD-16",
+      "symptom": "大门口已验正确攀爬入口后，无关向下梯子的昂贵局部绕障抢占28.55秒，完整动作链未获扩展即超时",
+      "severity": "high",
+      "state": "code_fixed1.2.8; doorway live retest pending",
+      "evidence": "authoring/field-retest-1.2.7.json"
+    },
+    {
+      "id": "FIELD-17",
+      "symptom": "一层铃铛至正确攀爬入口64.27米，有限作者图被45米实时网格限制提前拒绝",
+      "severity": "high",
+      "state": "code_fixed1.2.9; bell-origin live retest pending",
+      "evidence": "authoring/field-retest-1.2.8.json"
+    },
+    {
+      "id": "FIELD-18",
+      "symptom": "动作图已有通过检查的终点连接，但仍逐边比较乐观分支，延迟完整链返回",
+      "severity": "high",
+      "state": "code_fixed1.2.10; live delivery and original-pose physics pending",
+      "evidence": "authoring/field-retest-1.2.9.json"
+    },
+    {
+      "id": "FIELD-19",
+      "symptom": "主规划器对完整动作链审核后仍先做纯步行寻优，延迟最终交付",
+      "severity": "high",
+      "state": "code_fixed1.2.10; live delivery and original-pose physics pending",
+      "evidence": "authoring/field-retest-1.2.9.json"
+    }
+  ],
+  "correctControls": [
+    {
+      "case": "case-20261114T032737.467+0000-Y",
+      "build": "1.2.1",
+      "description": "User confirmed final Y near bridge was a false problem mark; navigation was correct",
+      "isNavigationError": false
+    }
+  ],
+  "coveragePolicy": "Track capture, authored geometry, automated checks and version-specific live pass independently; directed edges and current save conditions are mandatory",
+  "nextSaveNeeded": "Only after movement/road validation reaches collectible or pre-unlock/quest-state cases; retain current save",
+  "releaseGate": "Version-specific live validation and unresolved major issue audit; no automatic public upload",
+  "installedBuild": "1.3.2",
+  "localCandidateBuild": "1.3.2",
+  "localCandidateReceipt": "release/LOCAL-CANDIDATE-1.3.2.json",
+  "installedAudit1.2.3": {
+    "build": "1.2.3",
+    "status": "passed",
+    "matchedRuntimeFiles": 1364,
+    "evidence": "build/field-1.2.3-coordinate-audit/installation.json"
+  },
+  "coordinateAudit": {
+    "bellId": "Bell_NLES_012",
+    "targetXYZCorrect": true,
+    "worldErrorCm": 0.464,
+    "evidence": "build/field-1.2.3-coordinate-audit/coordinate-audit.json",
+    "remaining": "Intermediate floor choice and traversal connectivity not verified"
+  },
+  "installedAudit1.2.4": {
+    "status": "passed",
+    "matchedRuntimeFiles": 1364,
+    "evidence": "build/field-1.2.4-a01-logs/installation.json"
+  },
+  "installedAudit1.2.5": {
+    "build": "1.2.5",
+    "status": "passed",
+    "matchedRuntimeFiles": 1366,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.5-a01-logs/installation.json"
+  },
+  "installedAudit1.2.6": {
+    "build": "1.2.6",
+    "status": "passed",
+    "matchedRuntimeFiles": 1366,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.6-a01-logs/installation.json"
+  },
+  "installedAudit1.2.7": {
+    "build": "1.2.7",
+    "status": "passed",
+    "matchedRuntimeFiles": 1367,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.7-a01-logs/installation.json"
+  },
+  "installedAudit1.2.8": {
+    "build": "1.2.8",
+    "status": "passed",
+    "matchedRuntimeFiles": 1367,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.8-a01-logs/installation.json"
+  },
+  "installedAudit1.2.9": {
+    "build": "1.2.9",
+    "status": "passed",
+    "matchedRuntimeFiles": 1367,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.9-a01-logs/installation.json"
+  },
+  "publishedBuild": "1.3.1",
+  "publicationEvidence": "release/NEXUS-PUBLISH-RECORD-1.3.1-20261114.json",
+  "publicationDoesNotImplyFieldPass": true
+}

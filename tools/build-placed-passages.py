@@ -7,7 +7,7 @@ import math
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'authoring/placed-passage-facts.json'
-OUTPUT = ROOT / 'Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePlacedPassages'
+OUTPUT = ROOT / 'Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePlacedPassages'
 data = json.loads(SOURCE.read_text(encoding='utf-8'))
 worlds = defaultdict(list)
 identities = set()

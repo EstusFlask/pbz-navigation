@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=process.env.PBZ_TEST_SOURCE||path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const R=require(root+'/PBZRouteCore');
 function fixture(conditional=false){
  const W={alive:o=>!!o,plain:p=>({x:p.X,y:p.Y,z:p.Z})};
@@ -19,6 +19,24 @@ function fixture(conditional=false){
  return {api:module.exports,g,world,native,UE:mocks.ue,start:{x:0,y:0,z:0},goal:{x:1400,y:0,z:1200}};
 }
 function run(job){let row,n=0;do{row=job.next();assert.ok(++n<100000);}while(!row.done);return row.value;}
+
+test('the captured first-floor bell can join its long author-backed climb approach with full live checks',()=>{
+ const h=fixture(),field=require('./fixtures/tower-bell-approach-20261114.json');
+ const ascent=field.ascent,start=field.start;
+ h.g.name='pbz_xigu_wp';h.g.actors=[{guid:ascent.guid,kind:'ascent',path:[ascent.entry,ascent.exit].map(p=>[p.x,p.y,p.z])}];
+ let checks=0;const world={rise:50,normal:.573576,slope:1.43,r:45,hit:()=>null,floorAt:p=>p,
+  step:(a,b)=>{checks++;return {p:b};}};
+ const trip=run(h.api.liveRouteJob(h.g,world,start,field.goal,()=>null,{clock:()=>0}));
+ assert.ok(trip&&!trip.legs[0].partial,'the45m grid-search limit also disabled the available64m author-backed approach from the first-floor bell');
+ assert.ok(checks>0,'the author route bypassed live step validation');
+ assert.deepEqual(trip.legs[0].moves.map(m=>m.guid),[field.goodAscent]);
+ assert.ok(R.dist(trip.legs[0].points.at(-1),field.goal)<1);
+ const blocked={...world,step:(a,b)=>Math.min(a.x,b.x)<-63000&&Math.max(a.x,b.x)>=-63000?
+  {hit:{x:-63000,y:b.y,z:b.z},why:'locked wall',locked:true}:{p:b}};
+ assert.equal(run(h.api.liveRouteJob(h.g,blocked,start,field.goal,()=>null,{clock:()=>0})),null,'the longer author connector bypassed a blocking wall/lock');
+ h.g.name='pbz_houjie_wp';
+ assert.equal(run(h.api.liveRouteJob(h.g,world,start,field.goal,()=>null,{clock:()=>0})),null,'a long unrecorded area gained an unbounded physical grid search');
+});
 
 test('resident condition refresh rotates beyond the first sixty-four movement actors',()=>{
  const h=fixture(),v=X=>({X,Y:0,Z:0});h.g.actors=[];h.world.feet=()=>h.start;

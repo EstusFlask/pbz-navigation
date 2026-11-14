@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const {AtlasCache}=require(root+'/PBZRouteAtlas'),R=require(root+'/PBZRouteCore');
 
 test('requesting a cold atlas queues it without loading or constructing it in the caller frame',()=>{

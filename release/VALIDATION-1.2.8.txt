@@ -1,0 +1,56 @@
+Version:1.2.8 (local scheduling fix; doorway live retest pending)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.2.8.zip
+
+1.2.7 field facts
+- Installed runtime audit:1367 exact matches;0 missing/changed/extra.
+- User confirms correct first-floor stair guidance with long wait, then quick
+  correct second-floor guidance. Doorway still produces no route.
+- Tower-only complete requests logged1011ms and315ms wall. These are separate
+  per-request times, not cumulative user waiting time. Interleaved collectible
+  targets were excluded from A-01 diagnosis.
+- Last doorway selection:correct ascent entry checked in25ms CPU /402ms wall,
+  then an unrelated descending-ladder connector spends1898ms CPU /28550ms wall
+  in full local-grid repair. Whole request cancelled at30009ms.
+- Frozen logs and identity:authoring/field-retest-1.2.7.json. No new continuous
+  motion/Y sampler was started; game exited at review.
+
+Fix and reproduction
+- First combine checked native/atlas/author walking connectors across actions
+  without full local-grid repair. If no route, use the original full fallback.
+- Both phases share existing deadline(default12s execution) and connector
+  quota. Quick phase uses at most half the connectors, reserving full repair.
+- Positive links may be reused within this job; a quick negative does not
+  poison a full repair. New requests still get fresh physical checks.
+- No new traversal permissions, author points, collision exceptions, runtime
+  learning, fixed routes, or world/target coordinate changes.
+- Captured doorway boundaries + modeled walk callbacks/costs fail under
+  pristine1.2.7 ZIP sources:build/action-scheduling-128-pristine-red.txt.
+  Modified real transition scheduler reaches the checked climb continuation
+  before the slow unrelated repair in a framed model. This is not game
+  collision reconstruction, new live latency or shortest-path proof.
+- Controls:quick-negative still gets full repair; checked quick entry reused
+  when its continuation needs full repair. Existing wall/lock/action/floor
+  negatives and all previous navigation regressions retained.
+
+Required checks
+- All JS:287 passed /0 failed:build/validation-128-js.txt.
+- Real Lua tracker1.0.9/1.0.14 service/selection/file round trips PASS:
+  build/validation-128-lua.txt.
+- Native1.2.8 ABI/runtime SHA/filter/host dispatch PASS:
+  build/validation-128-native.txt.
+- Full ZIP:1377 exact owned files;951 streamed original modules,291 legacy
+  chunk paths and original column hashes retained; no collector-owned paths:
+  build/validation-128-package.txt. No added/removed ownership paths.
+- Git diff whitespace check PASS:build/validation-128-diff.txt.
+- Archive:120,591,542 bytes. SHA256:
+  166156a6d04c2ea22b31a727c62a30ea9b1d1efa61f0beabbd2e08efd90f3a3e
+- Old1.2.7 archived with SHA in release/DIST-ARCHIVE-20261114.json;
+  dist contains only1.2.8.
+
+Pending
+- Doorway latency/correctness in1.2.8; full A-01, unchanged first/second floor
+  controls and all broader coverage work. No FPS claim or milliseconds promise.
+- Next card:stationary summit selection from the same doorway. Observe first
+  correct complete guide before choosing whether to walk a short section.
+- No game installation/manager modification or Nexus upload by this turn.

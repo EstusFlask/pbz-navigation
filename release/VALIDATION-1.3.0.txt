@@ -1,0 +1,35 @@
+Version: 1.3.0 (local candidate; not installed or uploaded)
+Validation date: 2026-11-14 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.3.0.zip
+
+Feature
+- PbzModConfig provider: Quest & Exploration Navigation / 任务与探索导航.
+- Rope color choice: Red, Blue (default), Custom; native color picker visible only for Custom.
+- Navigation owns Saved/PBZQuestRoute-settings.json. No Map Tracker dependency for settings.
+- JS polls valid saved colors every900ms; sRGB picker colors become linear RGB.
+- Refresh vertex colors and owned dynamic material tint on stationary/far and moving sections.
+- Retain same-color vertex cache and existing collision/geometry rules.
+- Bundle unmodified ModConfig client/core SDK as instructed by its integration header.
+
+Validation
+- 297/297 JavaScript tests passed: build/validation-130-js.txt.
+- Provider protocol, save/restart/reset, invalid/stale commands, picker visibility,
+  save-error retry, standalone game-thread entry and Lua->file->JS transfer passed.
+- Real PbzModConfig1.0.4 remote host and locale modules accepted provider and
+  red/blue/custom edits using simulated shared variables/scheduling. No live menu test.
+- Real Map Tracker1.0.9/1.0.14 Lua target/selection/tooltip integrations passed.
+  Command: py -3.12 tests/run-lua-tests.py --mod-config-scripts <PbzModConfig/Scripts>
+  Log: build/validation-130-lua.txt.
+- Native build/tests passed against existing read-only UE4SS1195 DLL:
+  ABI size, runtime SHA gate, mod filtering and version-independent host dispatch.
+  Log: build/validation-130-native.txt.
+- Complete ZIP verified: 1382 exact files;951 streamed modules and291 original
+  legacy chunks retained. All runtime/provider/native/doc versions agree.
+  No Map Tracker/PbzModConfig owned directory or player settings file included.
+  Logs: build/validation-130-build.txt and build/validation-130-package.txt.
+- git diff --check passed. Prior uncommitted navigation work was preserved.
+
+Limits
+- Not installed to game or uploaded to Nexus. In-game settings-page appearance,
+  color picker operation and visible rope color still need live acceptance.
+- Existing incomplete-route and A-01 field limitations are unchanged.

@@ -1,0 +1,66 @@
+{
+  "version": "1.2.7",
+  "status": "local-algorithm-fix-candidate; field correctness and latency pending",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.7.zip",
+  "bytes": 120590099,
+  "sha256": "cae68bea709af77505777caf1b7bebb57d3c43fc0e2d1ad064c9f678bede0b15",
+  "files": 1377,
+  "addedPaths": [
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteHintWalk.js"
+  ],
+  "removedPaths": [],
+  "changedPathsFrom1.2.6": [
+    "BELL-NETWORK-COVERAGE.md",
+    "BELL-ROUTE-AUDIT.md",
+    "CHANGELOG.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "INSTALL-README.md",
+    "ITEM-DESCRIPTION-AUDIT.md",
+    "MANUAL-ROUTES.md",
+    "MOVEMENT-COVERAGE.md",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteLocalWalk.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePassages.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll"
+  ],
+  "javascriptPassed": 284,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "nativeChecks": "passed",
+  "packageVerification": "1377 exact files; original951streams and291legacychunk values/hashes retained",
+  "fieldEvidence": "authoring/field-retest-1.2.6.json",
+  "research": "docs/NAVIGATION-ARCHITECTURE-RESEARCH-20261114.md",
+  "redFeedback": "build/lazy-hints-127-pristine-red.txt",
+  "algorithm": "Finite 3D candidate graph search followed by lazy, directed live edge certification; failed edge removal and same-job-only validation reuse",
+  "limits": {
+    "candidateSpanCm": 350,
+    "perProposalGraphNodes": 768,
+    "perPreflightPhysicalConnectorChecks": 64,
+    "candidateProposals": 16,
+    "executionMs": 200,
+    "wholeRequestWallMs": 30000
+  },
+  "operationControl": {
+    "scope": "Collision-free algorithm-operation model, NOT real elapsed time, game collision or live pass",
+    "capturedQueries": 17,
+    "beforeFound": 3,
+    "afterFound": 15,
+    "beforeStepCalls": 14366,
+    "afterStepCalls": 282,
+    "before35cmSegments": 46646,
+    "after35cmSegments": 1935
+  },
+  "fixedCoursesAdded": 0,
+  "authorPointsAdded": 0,
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "nextCase": "A-01 previous lower-stair failure origin: select summit while stationary, record first correct guidance wall latency, then walk only upstairs to bell"
+}

@@ -1,0 +1,37 @@
+Version: 1.3.2 (local complete package; not installed or uploaded)
+Validation date: 2026-11-14 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.3.2.zip
+
+Field evidence
+- A-01 remains user-accepted on1.3.1. A-02 failed after two correct climbs.
+- Active read-only session: build/field-live-1.3.1-20261114-48148-A02.
+- Three user-labeled Y marks: rooftop arrival, no line, then backwards/through-wall
+  direction. Later correct foreground guidance is not a full A-02 acceptance.
+- Frozen clip contains696 player rows and1204 event records; hashes in result.json.
+
+Reproduction and change
+- Installed1.3.1 fails the captured-roof candidate regression: build/roof-131-red.txt.
+- Assembly separately drops fall metadata before its fix: build/roof-assembly-red.txt.
+- Add276 grounded worksheet-015 candidate positions to the previous546; no air
+  samples, authored edges or automatic reverse traversals are installed.
+- Candidate graph can call existing Drops.inspect for directed short descents;
+  original short-drop range, support, capsule, lock and budget checks remain.
+- Assembly preserves connector movement/check indices for the final audit.
+- Both regressions pass after the changes, including blocked sweeps, closed locks
+  and reverse-climb rejection. Physics callbacks remain a model, not game collision.
+
+Verification
+-299 JavaScript regressions: build/validation-132-js.txt.
+- Real tracker1.0.9/1.0.14 and ModConfig1.0.4 Lua checks: build/validation-132-lua.txt.
+- Native ABI/SHA/dispatch checks: build/validation-132-native.txt.
+- Full ZIP:1383 exact files;951 streams and291 unchanged legacy chunk values;
+  version1.3.2 agrees across runtime/config/native/docs: build/validation-132-package.txt.
+- Host-side capture integrity:9 tests passed. git diff --check passed for changed
+  tracked navigation sources. No temporary DEBUG instrumentation was added.
+
+Limits and next field step
+- Candidate has not been installed or tested in the game. No claim that the
+  reported wall crossing, initial roof latency or full A-02 is fixed.
+- User installs the full package after exiting. Rebind fresh read-only sampling
+  to the current process, check loaded version, then retest the same roof origin.
+- Retain two correct climbs and the later correct section as separate controls.

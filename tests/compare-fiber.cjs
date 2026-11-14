@@ -1,7 +1,7 @@
 'use strict';
 // Compare a delivered baseline against current rendering math and allocations.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 function load(file){
  let now=1000,colors=0,uploads=0;
  const mocks={ue:{Vector:function(){},LinearColor:function(...rgba){colors++;this.rgba=rgba;},NewArray:()=>({Add(){}})},

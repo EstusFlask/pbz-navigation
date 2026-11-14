@@ -36,7 +36,7 @@ function* installJob(g,world,starts,ends,start,goal,options={}){
   for(const row of candidates){
    if(clock()>=deadline)return added;
    const target=targets[0],from=reverse?p:row.q,to=reverse?row.q:p;
-   const route=yield* Local.search(world,from,to,{clock,maxMs:Math.max(1,Math.min(1500,deadline-clock())),maxNodes:1000,
+   const route=yield* Local.search(world,from,to,{clock,hints:require('./PBZRouteWalkHints').forWorld(g.name),maxMs:Math.max(1,Math.min(1500,deadline-clock())),maxNodes:1000,
     waypoints:yield* Surface.samplesJob(g,p)});
    if(!route)continue;
    const a=reverse?target.id:row.id,b=reverse?row.id:target.id;

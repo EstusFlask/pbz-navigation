@@ -1,0 +1,57 @@
+{
+  "source": "Installed 1.2.5 loader.log, final stair query and ascent preview",
+  "sourceSHA256": "4dcac3aad95fa3e97b252a12bea831f0472802d2a9dd14469abbe40ca088c80f",
+  "world": "pbz_xigu_wp",
+  "queryTime": "[22:39:20.169]",
+  "start": {
+    "x": -63403.9978818796,
+    "y": 219800.2841390877,
+    "z": -12164.869535612026
+  },
+  "landing": {
+    "x": -64708.00000018706,
+    "y": 219572.9999999917,
+    "z": -11420.772583238635
+  },
+  "target": {
+    "x": -64848,
+    "y": 219573,
+    "z": -11386
+  },
+  "nativePoints": [
+    {
+      "x": -63390.4755859375,
+      "y": 219800.28125,
+      "z": -12200.610402231934
+    },
+    {
+      "x": -63390.4755859375,
+      "y": 219714.283618927,
+      "z": -12200.610402231934
+    }
+  ],
+  "partial": true,
+  "selectedAscent": {
+    "id": 3,
+    "from": {
+      "x": -63403.9978818796,
+      "y": 219800.2841390877,
+      "z": -12164.869535612026
+    },
+    "to": {
+      "x": -64569.4375001593,
+      "y": 218580.85937486374,
+      "z": -11384.16303587626
+    },
+    "goalEdge": false,
+    "local": true,
+    "kind": "ascent",
+    "guid": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058A98988402_1736629466",
+    "remainingMs": 11960,
+    "found": true,
+    "cpuMs": 1589,
+    "wallMs": 21453,
+    "pointCount": 59
+  },
+  "physics": "Tests supply analytic support; this does not reconstruct game collision."
+}

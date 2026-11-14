@@ -1,7 +1,7 @@
 'use strict';
 // Change storage only: preserve every original column byte and actor order.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const root=path.resolve(__dirname,'..'),nav=path.join(root,'Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'..'),nav=path.join(root,'Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const option=name=>{const at=process.argv.indexOf(name);return at>=0?process.argv[at+1]:undefined;};
 const chunkChars=Number(option('--chunk-chars')||524288),buildRoot=path.resolve(root,option('--build-root')||'build');
 if(!Number.isSafeInteger(chunkChars)||chunkChars<65536||chunkChars>1048576||chunkChars%65536)throw Error('chunk size must be a multiple of 65536, up to 1 MiB');

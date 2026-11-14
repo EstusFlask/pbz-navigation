@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const {LuaTracker}=require(path.join(root,'PBZRouteLuaTracker'));
 const {Tracker}=require(path.join(root,'PBZRouteTracker'));
 const folder=process.argv[2],events=[];

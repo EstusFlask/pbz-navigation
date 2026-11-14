@@ -1,0 +1,4 @@
+Added red, blue and custom guiding-rope colors via PbzModConfig.
+在PbzModConfig中新增红色、蓝色和自定义导航绳子颜色。
+Fixed the custom-color preview remaining visible when a preset is selected.
+修复选择预设颜色后自定义颜色预览仍然残留的问题。

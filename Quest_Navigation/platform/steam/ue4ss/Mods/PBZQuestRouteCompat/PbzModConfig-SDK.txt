@@ -1,0 +1,9 @@
+PbzModConfig client SDK, bundled according to PbzModConfigClient.lua's integration instructions.
+
+Files: Scripts/PbzModConfigClient.lua, Scripts/PbzConfigCore.lua (unmodified).
+Source: installed PbzModConfig 1.0.4, author 皮一下就很凡@Bilibili.
+Author: https://space.bilibili.com/26786884
+
+The client exchanges JSON through ModRef shared variables. It does not include
+the ModConfig menu or create a Map Tracker instance. Navigation owns its settings
+provider and Saved/PBZQuestRoute-settings.json; install PbzModConfig for the UI.

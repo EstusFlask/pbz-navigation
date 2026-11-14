@@ -1,0 +1,54 @@
+Version: 1.2.6 (local fix candidate; A-01 live verification pending)
+Validation date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.6.zip
+
+Field facts
+- Installed 1.2.5 exact runtime audit: 1366 matches, 0 missing/changed/extra.
+- User reports no route after wrong-floor filtering, delayed final-stair
+  guidance toward an ascent rather than the bell. Case remains failed.
+- Frozen logs: build/field-1.2.5-a01-logs. Game had exited; no continuous
+  motion/Y sampler was started. No claim of current background monitoring.
+- High goal initial action connector had local=false. Ascent entry search:
+  1589ms CPU / 21453ms wall, 709 expanded nodes / 7242 step probes. Partial
+  climb preview published; whole job then cancelled at 30 seconds.
+- Footprint explanation is still an unconfirmed in-game cause: existing
+  logs show unwalkable normals but not reconstructed nearby collision.
+
+Red / green loop
+- Three new cases fail on pristine 1.2.5 sources extracted from its ZIP:
+  build/stairs-126-pristine-red.txt. No runtime source was mutated for red.
+- Final-stair captured request plus analytic floor reaches the real planner
+  and framed scheduler; it no longer starves behind an unrelated climb.
+- Unwalkable centre side contacts check opposite-side walkable support;
+  single bank, body wall, slope/no-step restriction, and locks stay blocked.
+  Insufficient support retains the original collision rejection reason.
+- Original author candidate cloud completes under the 192-node cap in a
+  collision-free control. Candidate edges still call world.step. The control
+  measures duplicate search topology, not actual scene reachability/time.
+- Hints-only closed-gate and vertical-action controls remain rejected.
+- Old action-priority regressions now allow only the strict small preflight;
+  expensive full-grid work still cannot precede available action routes.
+- Full suite: 281 passed / 0 failed: build/validation-126-js.txt.
+
+Other required checks
+- Real collector 1.0.9 / 1.0.14 Lua target/hover/selection/file round trips:
+  PASS, build/validation-126-lua.txt.
+- Native 1.2.6 ABI size / runtime SHA / mod filter / dispatch: PASS,
+  build/validation-126-native.txt.
+- Full package: 1376 exact matches, no collector-owned paths, all original
+  951 streamed modules, 291 legacy chunk paths and column hashes retained;
+  build/validation-126-package.txt. No added or removed ownership paths.
+- Archive: 120,586,208 bytes; SHA256:
+  51da22cac7ab17d8426e115247bd45ab1ca83e375e52c6031da4b642c5b8977c
+- Previous 1.2.5 archived with SHA in release/DIST-ARCHIVE-20261113.json.
+  dist contains only 1.2.6.
+
+Limits and next test
+- Execution-time cap is not a wall-time latency claim; no FPS measurements.
+- Whole-request 30s wall limit and existing action connector budgets remain.
+  Nearby preflight is new bounded work; runtime timing needs live validation.
+- No new fixed courses, author points, runtime learning, game installation,
+  manager edit or Nexus upload. Public text/history left unchanged.
+- Next short test: below the final stairs -> summit bell. Must show correct
+  stairs guidance before and after ascent; no line remains a failure. Then
+  separately retest doorway -> stairs -> wall. A-01 is still not live passed.

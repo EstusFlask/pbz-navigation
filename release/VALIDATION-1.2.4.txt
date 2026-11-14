@@ -1,0 +1,51 @@
+Version: 1.2.4 (local diagnostic candidate, not a proven A-01 fix)
+Validation date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.4.zip
+
+Field outcome retained
+- 1.2.3 still points incorrectly immediately after the doorway, before stairs.
+- Cancel/reselect the same target without movement: still wrong after about
+  ten seconds. Goal XYZ remains verified; do not alter target Z.
+- All four field workers were stopped. Evidence:
+  authoring/field-retest-1.2.3.json and its archived source directory.
+
+Diagnostic additions only
+- Native query status and partial flag, original points/endpoints before
+  synthetic candidate extension. Rejected/unavailable API results are distinct
+  from direct fallback. Report at most 32 indexed points with truncation flag.
+- Connector start/result timing for the first 16 attempts; later slow results
+  and all interrupted connectors are retained, including generator return.
+- Rejected physical traces retain collision representation and component/player
+  response metadata. Unreadable object details are tolerated; verdict unchanged.
+- No routing, floor, capsule, lock, direction, goal or search-budget change.
+
+Failing-before / passing-after diagnostic contracts
+  node --test --test-name-pattern="native diagnostic|interrupted action connector" tests/planning.test.cjs tests/traversal.test.cjs
+- Original partial endpoint survives before goal append.
+- Large diagnostic point lists retain endpoints and explicit original indices.
+- Cancelling a yielded connector preserves its unfinished boundary.
+- Collision trace representation/response assertions also fail before the
+  instrumentation and pass after it (diagnostic-124-collision-red.txt).
+- Red: build/diagnostic-124-red.txt, build/diagnostic-124-query-red.txt.
+  Green: build/diagnostic-124-green.txt. This is instrumentation validation,
+  not a red/green proof that the in-game route defect has been fixed.
+
+Automated checks
+- All tests/*.test.cjs: 273 passed, 0 failed (build/validation-124-js.txt).
+- Real tracker 1.0.9/1.0.14 services and file round trips: PASS
+  (build/validation-124-lua.txt).
+- Native rebuilt as 1.2.4: ABI/runtime SHA/filtering/dispatch PASS
+  (build/validation-124-native.txt).
+- Complete package: 1374 exact matches, 951 streams and all 291 legacy
+  chunk paths match original data hashes; no collector-owned files.
+- Runtime, native DLL and packaged document versions agree: 1.2.4.
+- Package: 120,575,954 bytes. SHA256:
+  b3eb0e74626073ceea24b9c7c64dbae6bdaf1451bd787cf0d2021a12dbf4b705
+- Prior 1.2.3 archived with its SHA; dist contains only 1.2.4.
+
+Limits and next step
+- Next field request is one stationary selection at the known bad doorway;
+  capture native source flags and active connector, not another full walk.
+- A-01 stays unresolved in navigation-validation.json. No new fixed routes,
+  no full-map claim and no game installation or published-page changes.
+- Diagnostic output is bounded. New logging overhead has no field FPS result.

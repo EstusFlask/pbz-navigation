@@ -1,0 +1,68 @@
+{
+  "build": "1.2.6",
+  "case": "A-01",
+  "reviewDate": "2026-11-14",
+  "gameLogLocalDate": "2026-11-13",
+  "result": "failed: repeated lower-stair timeout despite correct upper-stair routes",
+  "scope": "Frozen installed logs and user report; no new continuous motion or Y sampler",
+  "gameExitedAtReview": true,
+  "installedAudit": {
+    "matchedRuntimeFiles": 1366,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.6-a01-logs/installation.json"
+  },
+  "userReport": "加载很久，经常加载不出；有一次出现时方向正确，希望改到正确且快",
+  "logSHA256": "fdeedfc11c7cf4187ca06407c7b87670aafe61386a86ddbe79c42606a15569ad",
+  "fieldTimings": {
+    "successfulCompleteWallMs": [
+      885,
+      742,
+      650,
+      583
+    ],
+    "failedWholeRequestWallMs": [
+      30036,
+      30005
+    ],
+    "scope": "1.2.6 installed logs, not new-code latency"
+  },
+  "pointGraphCut": {
+    "candidateRadiusCm": 210,
+    "smallestGapCm": 222.0492287759678,
+    "a": [
+      -63339.1,
+      219760.6,
+      -12205.5
+    ],
+    "b": [
+      -63519.8,
+      219797.7,
+      -12081.9
+    ],
+    "collisionFreeReachableSourcePoints": 345
+  },
+  "operationControl": {
+    "scope": "Collision-free algorithm operation model, NOT game reachability or timings",
+    "queries": 17,
+    "beforeFound": 3,
+    "afterFound": 15,
+    "beforeStepCalls": 14366,
+    "afterStepCalls": 282,
+    "beforeSampled35cmSegments": 46646,
+    "afterSampled35cmSegments": 1935,
+    "evidence": [
+      "build/lazy-hints-127-before.json",
+      "build/lazy-hints-127-after.json"
+    ]
+  },
+  "targetXYZChanged": false,
+  "candidateFixBuild": "1.2.7",
+  "livePassed": false,
+  "evidence": [
+    "build/field-1.2.6-a01-logs/loader.log",
+    "build/field-1.2.6-a01-logs/events.json",
+    "tests/fixtures/tower-stair-budget-20261114.json"
+  ]
+}

@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const data=require('../authoring/bell-network-coverage.json');
-const courses=require('../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteGuideData').data.courses;
+const courses=require('../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteGuideData').data.courses;
 
 test('the authoring audit accounts for every ordered game-table bell pair on all eight maps',()=>{
  assert.deepEqual(data.maps.map(m=>m.id),[251,252,253,254,255,256,257,258]);

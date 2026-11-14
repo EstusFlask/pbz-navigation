@@ -1,0 +1,105 @@
+{
+  "source": "Installed1.2.7 doorway query and action boundaries; walking callbacks remain substituted",
+  "sourceSHA256": "efa434330de130ba0aafa2c2e2ea28e6d2836c60f96fac15f512415c1f6d6400",
+  "world": "pbz_xigu_wp",
+  "start": {
+    "x": -62847.12938211132,
+    "y": 220488.15325384054,
+    "z": -15506.699982363598
+  },
+  "goal": {
+    "x": -64708.00000018706,
+    "y": 219572.9999999917,
+    "z": -11420.772583238635
+  },
+  "features": [
+    {
+      "guid": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058A98988402_1736629466",
+      "kind": "ascent",
+      "entry": {
+        "x": -64569.4375001593,
+        "y": 218580.85937486374,
+        "z": -11384.16303587626
+      },
+      "exit": {
+        "x": -64522.51562059926,
+        "y": 218336.79687540449,
+        "z": -10678.719832216482
+      }
+    },
+    {
+      "guid": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+      "kind": "ascent",
+      "entry": {
+        "x": -64810.17578124981,
+        "y": 217523.4375,
+        "z": -14462.497596686248
+      },
+      "exit": {
+        "x": -64709.515623290776,
+        "y": 217928.1562289085,
+        "z": -13888.395202691909
+      }
+    },
+    {
+      "guid": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1241189980",
+      "kind": "ladder",
+      "entry": {
+        "x": -62894.99999983054,
+        "y": 220529.99999819667,
+        "z": -17375.220198612325
+      },
+      "exit": {
+        "x": -62636.22265500383,
+        "y": 220513.4531322951,
+        "z": -16671.098737950862
+      }
+    }
+  ],
+  "goodAscent": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+  "slowLadder": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1241189980",
+  "entryResult": {
+    "id": 4,
+    "from": {
+      "x": -62847.12938211132,
+      "y": 220488.15325384054,
+      "z": -15506.699982363598
+    },
+    "to": {
+      "x": -64810.17578124981,
+      "y": 217523.4375,
+      "z": -14462.497596686248
+    },
+    "goalEdge": false,
+    "local": true,
+    "kind": "ascent",
+    "guid": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+    "remainingMs": 11939,
+    "found": true,
+    "cpuMs": 25,
+    "wallMs": 402,
+    "pointCount": 216
+  },
+  "interruption": {
+    "id": 5,
+    "from": {
+      "x": -62847.12938211132,
+      "y": 220488.15325384054,
+      "z": -15506.699982363598
+    },
+    "to": {
+      "x": -62636.22265500383,
+      "y": 220513.4531322951,
+      "z": -16671.098737950862
+    },
+    "goalEdge": false,
+    "local": true,
+    "kind": "ladder",
+    "guid": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1241189980",
+    "remainingMs": 11913,
+    "found": false,
+    "cpuMs": 1898,
+    "wallMs": 28550,
+    "pointCount": 0
+  }
+}

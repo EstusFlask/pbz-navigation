@@ -1,0 +1,41 @@
+{
+  "version": "1.2.3",
+  "status": "local-test-candidate",
+  "clientDate": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.3.zip",
+  "bytes": 120573605,
+  "sha256": "654851761ba13ca85760ba068666cf53c0a677a934ac1802afa8ce986cb81a86",
+  "files": 1374,
+  "changedPathsFrom1.2.2": [
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "INSTALL-README.md",
+    "CHANGELOG.md",
+    "BELL-ROUTE-AUDIT.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "MOVEMENT-COVERAGE.md",
+    "MANUAL-ROUTES.md",
+    "BELL-NETWORK-COVERAGE.md",
+    "ITEM-DESCRIPTION-AUDIT.md"
+  ],
+  "javascriptPassed": 269,
+  "hostCapturePassed": 9,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "nativeChecks": "passed",
+  "packageVerification": "1374 exact matches; original streamed hashes preserved",
+  "installedToGame": false,
+  "uploaded": false,
+  "liveRetested": false,
+  "openFieldIssues": [
+    "A-01 first-floor guidance",
+    "post-climb corner/backtracking"
+  ],
+  "roadmap": "docs/NAVIGATION-TODO.md"
+}

@@ -49,10 +49,10 @@ StateTree 是状态机，EQS 用于生成并评分环境候选，Mass 是面向�
 ## 本地依据
 
 - [README](../README.md)：Puerts / UE4SS 边界、混合规划职责、全图覆盖尚未完成、现场验证限制。
-- [PBZQuestRoute.js](../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js)：`nativeWalk` 已调用原生同步求路，检查 `IsValid/IsPartial` 和起终点偏差；`makePlan` 组合路网、场景、动作与修复。
-- [PBZRouteWorld.js](../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWorld.js)：`feet/standingFloor/floorAt/step` 处理胶囊脚点、CurrentFloor、地面与跨步。
-- [PBZRouteFeasibility.js](../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteFeasibility.js)：原生“完整”路径仍作为候选，进一步核对地面、身体空间和动作后落地。
-- [PBZRouteSurface.js](../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurface.js)、[PBZRouteLocalWalk.js](../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteLocalWalk.js)：已使用离线 Recast 面和经物理检查的局部搜索。
+- [PBZQuestRoute.js](../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js)：`nativeWalk` 已调用原生同步求路，检查 `IsValid/IsPartial` 和起终点偏差；`makePlan` 组合路网、场景、动作与修复。
+- [PBZRouteWorld.js](../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWorld.js)：`feet/standingFloor/floorAt/step` 处理胶囊脚点、CurrentFloor、地面与跨步。
+- [PBZRouteFeasibility.js](../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteFeasibility.js)：原生“完整”路径仍作为候选，进一步核对地面、身体空间和动作后落地。
+- [PBZRouteSurface.js](../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurface.js)、[PBZRouteLocalWalk.js](../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteLocalWalk.js)：已使用离线 Recast 面和经物理检查的局部搜索。
 - [移动支持与缺口](MOVEMENT-COVERAGE.md)、[游戏通行审计](GAME-TRAVERSAL-AUDIT.md)：特殊移动、放置实例、方向/条件和未完成连接；已有本地测试不能替代玩家现场走通。
 
 本次只新增本笔记，没有修改运行时代码、游戏配置或发布包；没有进行游戏现场验证。

@@ -1,0 +1,47 @@
+Version: 1.2.3 (local navigation test candidate)
+Validation date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.3.zip
+
+Field evidence
+- User-installed 1.2.2 matches all 1364 runtime files; fresh loader startup
+  confirms 1.2.2. A-01 still fails along first-floor stairs and after the
+  post-climb corner. Preserve this failed outcome in navigation-validation.json.
+- Native repair begins at 05:08:34.995Z; it reports budget failure at
+  05:08:51.203Z, then action search runs and emits an ascent prefix about
+  1.3 seconds later. This is field timing, not an FPS measurement.
+- Resident NavMesh and player agent dimensions differ; no claim that this
+  alone caused the defect. No mod-owned NavigationPath was captured.
+
+Failing-before / passing-after loop
+  node --test --test-name-pattern="rejected vertical native candidate|unavailable vertical action" tests/planning.test.cjs
+- Controlled framed test: a usable resident action is starved behind a
+  rejected vertical native path's repair until the 30-second wall limit.
+- Keep physical validation first; defer only expensive failed vertical native
+  repair until actions have been considered. Preserve checked repair fallback
+  when actions do not finish, same-level behavior and existing safety/budgets.
+- A separate test proves unavailable actions still reach walking repair.
+- Red: build/vertical-scheduling-red.txt. Green:
+  build/vertical-scheduling-green.txt. Simulated timings are not game timings.
+
+Automated checks
+- All tests/*.test.cjs: 269 passed, 0 failed (build/validation-123-js.txt).
+- Host-side capture/discovery: 9 passed; fresh player bindings and active
+  abilities were also actually captured read-only during A-01.
+- Real tracker 1.0.9 / 1.0.14 Lua services and real file round trips: PASS
+  (build/validation-123-lua.txt).
+- Native rebuilt as 1.2.3: ABI size, runtime SHA gate, filtering and dispatch
+  PASS (build/validation-123-native.txt).
+- Full package: 1374 exact file matches; 951 streamed modules, 291 legacy
+  paths and original column hashes preserved. No collector/capture tool paths.
+- Package size: 120,573,605 bytes; SHA256:
+  654851761ba13ca85760ba068666cf53c0a677a934ac1802afa8ce986cb81a86
+- Runtime, native and all packaged document versions agree: 1.2.3.
+- Previous complete 1.2.2 archived with SHA256; dist contains only 1.2.3.
+
+Scope and limits
+- A-01 must be repeated on the new version before moving to A-02. Wrong
+  direction after the corner remains an open issue until field validation.
+- Full-map coverage is unchanged. No new fixed routes, trace learning,
+  game installation writes, Mod Manager edits or Nexus upload.
+- Active source-root references now use Quest_Navigation after the prior
+  repository rename; this fixes author/test/build tooling, not game behavior.

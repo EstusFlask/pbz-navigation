@@ -1,0 +1,50 @@
+{
+  "version": "1.2.6",
+  "status": "local-fix-candidate; 1.2.5 field failed, A-01 live pass pending",
+  "clientDate": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.6.zip",
+  "bytes": 120586208,
+  "sha256": "51da22cac7ab17d8426e115247bd45ab1ca83e375e52c6031da4b642c5b8977c",
+  "files": 1376,
+  "addedPaths": [],
+  "removedPaths": [],
+  "changedPathsFrom1.2.5": [
+    "BELL-NETWORK-COVERAGE.md",
+    "BELL-ROUTE-AUDIT.md",
+    "CHANGELOG.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "INSTALL-README.md",
+    "ITEM-DESCRIPTION-AUDIT.md",
+    "MANUAL-ROUTES.md",
+    "MOVEMENT-COVERAGE.md",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteLocalWalk.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePassages.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWorld.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll"
+  ],
+  "javascriptPassed": 281,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "nativeChecks": "passed",
+  "packageVerification": "1376 exact files; original streamed data hashes and 291 legacy chunks retained",
+  "fieldEvidence": "authoring/field-retest-1.2.5.json",
+  "redFeedback": "build/stairs-126-pristine-red.txt",
+  "fixes": [
+    "192-node / 200ms execution nearby walking preflight",
+    "Finite checked hint graph before offset grid within existing connector budget",
+    "Opposite-side valid footprint support around unwalkable side hits; original rejection kept if support fails"
+  ],
+  "walkHintPoints": 546,
+  "fixedCoursesAdded": 0,
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "nextCase": "A-01 below the last staircase -> summit bell, then doorway -> wall independently"
+}

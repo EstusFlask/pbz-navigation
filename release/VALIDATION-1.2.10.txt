@@ -1,0 +1,72 @@
+Version:1.2.10 (published experimental; no live pass)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.2.10.zip
+
+1.2.9 field evidence and limits
+- Installed audit:1367 exact runtime files;0 missing/changed/extra.
+- Original bell origin entered author search; its correct-entry query was
+  interrupted after572ms when player context moved. Original-pose physical
+  verdict remains UNKNOWN, not reachable/unreachable proof.
+- Later origin's entrance checked in511ms wall; its post-climb goal connectors
+  reported complete with63/64 checks. Other action probes continued afterward.
+- Main scene walking optimization starts at13:25:39.768 before final delivery.
+  No completed tower result was shown; player movement/cancel caused restarts.
+- Frozen logs/limits:authoring/field-retest-1.2.9.json. Game exited; no new
+  continuous motion/Y sampler or current background monitoring from this turn.
+
+Two delivery boundaries fixed
+- Finite action topology first proposes a full chain; validate its walking
+  edges in order. Failed connectors exclude the edge for the phase. First
+  complete checked chain returns without checking speculative alternatives.
+- Main planner retains full physical audit and goal match, then delivers the
+  complete assisted chain before optional pure-walking/atlas shortening.
+- Existing complete-native walking comparison, deadlines/quotas, floor/body/
+  lock checks, action conditions/directions and same-job validity retained.
+- Explicit partial-walk rejection; first8 failed hint edges gain scalar
+  component/collision diagnostics without allowing diagnostic errors to alter
+  route decisions. No new points, fixed courses, learning or collision bypass.
+- First feasible checked chain is prioritized; no global-shortest guarantee.
+
+Red/green evidence
+- Minimal2-action and captured25-direction-pad replays fail on pristine1.2.9
+  ZIP sources:build/chain-submit-1210-pristine-red.txt. Direction samples are
+  grouped per actor to match actual bidirectional-pad caching semantics.
+- Old model queried1/14 speculative connectors after the goal chain passed;
+  new model queries0 after completion. The model charges ONLY extra probes,
+  so its0ms metric IS NOT real game0ms, throughput, latency or FPS evidence.
+- Independent main makePlan+physical-audit+framed-job replay fails before its
+  delivery fix:build/chain-delivery-1210-red.txt, then passes.
+- Partial connector negative, ready-route delivery, failed-edge rerouting,
+  full fallback and existing safety/target/transfer controls all retained.
+
+Required checks
+- JS292 passed /0 failed:build/validation-1210-js.txt.
+- Real tracker1.0.9/1.0.14 Lua target/selection/file round trips PASS:
+  build/validation-1210-lua.txt.
+- Native1.2.10 ABI/runtime SHA/filter/dispatch PASS:
+  build/validation-1210-native.txt.
+- ZIP1377 exact owned files;951 original streams,291 legacy chunks and
+  original column hashes retained; no collector-owned paths:
+  build/validation-1210-package.txt. No ownership paths added/removed.
+- Diff whitespace check PASS:build/validation-1210-diff.txt.
+- Archive:120,544,958 bytes. SHA256:
+  a7926b013b287f81e735f8d69f43efbf4024e40ae14303cd5321bd137eda7184
+- Previous1.2.9 archived with SHA in release/DIST-ARCHIVE-20261114.json.
+  dist contains only1.2.10.
+
+Pending
+- Original bell standing-pose physics, full A-01, cold/warm latency and FPS.
+- Next test:stationary summit selection from first-floor bell once. Distinguish
+  safe prefix vs complete guide vs actual traversal. Inspect chain accepted,
+  main audit/target check and final submission if still failing.
+- No game installation/manager edit. Nexus publication subsequently authorized
+  by user on2026-11-14; public version/changelog/file description and download availability verified.
+
+Publication documentation update2026-11-14
+- Short player README/guide/changelog rebuilt into the same1.2.10 package.
+- Only README-en.txt, README-zh.txt, INSTALL-README.md and CHANGELOG.md changed;
+  every other archive file matches the delivered code candidate exactly.
+- Complete package verification passed:build/nexus-1210-package.txt.
+- Original candidate/validation preserved under
+  build/release-archive/pre-nexus-1.2.10-20261114/.
+- Publishing does not imply the pending game navigation cases passed.

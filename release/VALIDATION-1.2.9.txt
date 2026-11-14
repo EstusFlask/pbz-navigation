@@ -1,0 +1,52 @@
+Version:1.2.9 (local range-policy fix; bell-origin live retest pending)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.2.9.zip
+
+1.2.8 field facts
+- Full installed runtime audit:1367 exact matches,0 missing/changed/extra.
+- User confirms visible guidance at doorway, but no route when standing by
+  the first-floor bell and targeting the tower summit. Meaning clarified.
+- Doorway observation is not a full-route pass; snapshot tower routes include
+  blocked/partial previews with no completed tower planner result.
+- Failed origin has valid walking CurrentFloor. Correct ascent entry is
+  6427.04cm away in3D. The45m local search check returns before consulting the
+  existing author graph; the correct-entry quick query returns false in13ms.
+- User confirmation/logs:authoring/field-retest-1.2.8.json. No new continuous
+  sampler/Y listener was started; game had exited at review.
+
+Fix and feedback
+- Author graph search precedes the45m expensive-grid restriction. Retain its
+  original120m endpoint distance,768-node/64-edge/200ms limits and all live
+  floor/body/step/slope/lock checks. Live grid remains limited to45m.
+- No added author points, fixed courses, unlocks, collision exceptions,
+  cross-request physical cache, world/goal coordinate or game-config edits.
+- Actual Passages.liveRouteJob integration at captured bell origin fails on
+  pristine1.2.8:build/bell-approach-129-pristine-red.txt; passes after the fix.
+- Same model with a locked wall rejects; foreign/unrecorded world does not
+  gain unbounded long-grid exploration. Mock physics is not game collision.
+- Separate open-space candidate control finds103.48m path with156 graph
+  expansions and41 world.step calls; these are NOT real game timings or
+  collision proof. Budgets are not wall-clock response guarantees.
+
+Required checks
+- All JS:288 passed /0 failed:build/validation-129-js.txt.
+- Real collector1.0.9/1.0.14 Lua target/hover/selection/file round trips PASS:
+  build/validation-129-lua.txt.
+- Native1.2.9 ABI/runtime SHA/filter/dispatch PASS:
+  build/validation-129-native.txt.
+- Full ZIP:1377 exact owned files;951 original streamed modules,291 legacy
+  chunk paths and source column hashes retained; no collector-owned paths:
+  build/validation-129-package.txt. No added/removed ownership paths.
+- Diff whitespace check PASS:build/validation-129-diff.txt.
+- Bytes:120,592,605. SHA256:
+  1bdefee75420063552ef6cd260cd93363b9e93d26af95998b4c0db7d6845d727
+- Previous1.2.8 archived with SHA in release/DIST-ARCHIVE-20261114.json.
+  dist contains only1.2.9.
+
+Pending
+- First-floor bell -> summit current-version guidance/latency and full A-01.
+- Record full vs safe partial guidance separately; do not mark whole route
+  accepted from a visible doorway line. No FPS/elapsed-time improvement claim.
+- Next card:stationary summit selection beside the same first-floor bell,
+  before walking only a short approach after recording is confirmed.
+- No installation/manager writes or Nexus upload by this turn.

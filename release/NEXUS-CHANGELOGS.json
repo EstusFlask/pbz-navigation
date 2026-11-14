@@ -1,46 +1,73 @@
 [
   {
+    "version": "1.3.1",
+    "entries": [
+      "Added red, blue and custom guiding-rope colors via PbzModConfig.",
+      "在PbzModConfig中新增红色、蓝色和自定义导航绳子颜色。",
+      "Fixed the custom-color preview remaining visible when a preset is selected.",
+      "修复选择预设颜色后自定义颜色预览仍然残留的问题。"
+    ]
+  },
+  {
+    "version": "1.3.0",
+    "entries": [
+      "Choose red, blue or a custom guiding-rope color in PbzModConfig.",
+      "在PbzModConfig中选择红色、蓝色或自定义导航绳子颜色。"
+    ]
+  },
+  {
+    "version": "1.2.10",
+    "entries": [
+      "Improved stair, multi-floor and climbing navigation.",
+      "改善楼梯、上下层和攀爬前后的路线衔接。",
+      "Adjusted route calculation to reduce unnecessary waiting.",
+      "调整路线计算，减少不必要的等待。"
+    ]
+  },
+  {
     "version": "1.2.1",
     "entries": [
-      "Fix D-pad input when the game does not deliver preview-key events; polling and events share press/repeat gating. / 修复预览按键未送达时十字键无响应，轮询与事件共用去重和长按节流。",
-      "Fix grouped-map collectible filtering and projection; preserve each item world, location and floor. / 修复合并地图跨世界物品被过滤及投影错误，保留物品真实世界、位置和楼层。",
-      "Add pad focus diagnostics; retain the 1.2.0 wall-safety changes. / 增加手柄选物诊断日志，保留1.2.0穿墙显示修补。",
-      "264 local JS regressions, real 1.0.9/1.0.14 Lua integrations and native/package checks pass. New controls still need in-game retesting. / 264项本地回归、两版真实Lua及原生/包检查通过，新版按键仍待游戏复测。"
+      "Fixed D-pad collectible selection and markers on combined maps.",
+      "修复十字键选物和合并地图标记问题。"
     ]
   },
   {
     "version": "1.2.0",
     "entries": [
-      "Revoke expired distant-line checks before incremental revalidation; only release the rechecked prefix. / 远段碰撞检查过期立即撤销旧安全终点，仅放行复查通过的前段。",
-      "Add triangle-collision checks after simple misses; preserve checked map corners and mark blocked suffixes unconfirmed. / 简化碰撞未命中时补查三角面；保留地图真实拐角，阻挡后段标为待确认。",
-      "Add directional D-pad collectible focus, A confirmation at the real height and protection against native bell snap. / 新增十字键按方向选最近可见收集物、A保留真实高度确认，并防止铃铛抢焦点。",
-      "Engine physics and input tests are simulated; full-map and live-game verification remain incomplete. / 物理与输入使用模拟接口验证，全图覆盖及游戏实测仍未完成。"
+      "Improved route display near walls; added D-pad item selection and A confirmation.",
+      "改善墙边的路线显示，新增十字键选物与A键确认。"
     ]
   },
   {
     "version": "1.1.1",
     "entries": [
-      "Recognize native tracker bell identity; unopened bells use overland routing and activated bells retain walking/transfer comparison. / 识别收集Mod原生铃铛，未解锁铃铛走陆路，已激活铃铛保留步行/中转比较。",
-      "Restore bounded repair for blocked roadbook candidates and allow checked open side passages around closed gates. Locks and collision remain enforced. / 恢复路书遇阻局部修复，可检查闭锁旁的开放侧路，门锁与碰撞约束保留。",
-      "Add detour search/result/validation diagnostics; the complete market-to-tavern route still needs game retesting. / 增加绕行搜索、结果与验证日志，市集至幻鬼酒馆全程仍待游戏复测。"
+      "Improved bell selection and detours around blocked routes.",
+      "改善铃铛识别和受阻路线绕行。"
     ]
   },
   {
     "version": "1.1.0",
     "entries": [
-      "Expand experimental wall-running, wall-jump, ledge/pole and boarding recognition; retain directed actions and mechanism conditions. / 实验性扩展走壁、蹬墙跳、翻越、立柱与登船识别，保留动作方向和机关条件。",
-      "Add 487 placed interaction instances and 86 directional 3D roadbook candidates requiring scene checks. / 接入487个关卡交互实例与86条需当前场景检查的有向三维路书候选。",
-      "Retain targets during sailing/recognized cinematic rides and replan after ending. Actions remain manual. / 乘船及已识别剧情骑乘时保留目标，结束后续算，动作仍由玩家完成。",
-      "52 of 140 worksheet links, full sailing routes and dedicated chase routing remain unfinished. / 140条工作连接仍缺52条，完整水上航线与专用追逐路线未完成。"
+      "Added navigation support for more traversal actions and kept targets while sailing.",
+      "增加更多移动方式的导航支持，乘船时保留导航目标。"
     ]
   },
   {
     "version": "1.0.2",
     "entries": [
-      "Keep inactive/non-teleportable bells on overland routes; compare nearby walking before selecting a bell transfer. / 未激活或不可传送铃铛保留陆路，近处物品先比较步行与铃铛中转。",
-      "Connect traversal actions through checked ground corridors when native walking is absent or incomplete. / 原生步行缺失或不完整时，以经检查的地面路网连接动作段。",
-      "Correct down-slide top entry and append the native rappel landing. / 修正下滑顶部入口，补入沿绳下降的原生落点。",
-      "Preserve floor, collision, direction and lock checks; complete routes still need in-game verification. / 保留地面、碰撞、方向与门锁检查，完整路线仍待游戏验证。"
+      "Improved walking routes, bell transfers, sliding and rope-descent guidance.",
+      "改善步行路线、铃铛中转、下滑和沿绳下降导航。"
+    ]
+  },
+  {
+    "version": "1.0.1",
+    "entries": [
+      "Added route-calculation and map-loading messages with elapsed time.",
+      "增加路线计算、地图加载提示和等待秒数。",
+      "Improved bell transfers and compatibility with Map Tracker.",
+      "改善铃铛中转及与Map Tracker的兼容性。",
+      "Added Chinese acquisition hints for more items.",
+      "补充更多物品的中文获取提示。"
     ]
   }
 ]

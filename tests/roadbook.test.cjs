@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypto');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const facts=require('../authoring/placed-passage-facts.json'),audit=require('../authoring/roadbook-course-audit.json');
 const data=require(root+'/PBZRouteRoadbookData'),placed=require(root+'/PBZRoutePlacedPassages');
 const run=job=>{let r,count=0;do{r=job.next();assert.ok(++count<100000);}while(!r.done);return r.value;};

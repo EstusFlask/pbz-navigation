@@ -1,0 +1,6 @@
+Added route-calculation and map-loading messages with elapsed time.
+增加路线计算、地图加载提示和等待秒数。
+Improved bell transfers and compatibility with Map Tracker.
+改善铃铛中转及与Map Tracker的兼容性。
+Added Chinese acquisition hints for more items.
+补充更多物品的中文获取提示。

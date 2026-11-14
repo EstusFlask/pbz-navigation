@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "build": "1.2.2",
+  "caseId": "A-01",
+  "result": "failed",
+  "session": "build/field-live-1.2.2-20261113-19624",
+  "resultFile": "build/field-live-1.2.2-20261113-19624/result.json",
+  "userBeforeClimb": "一层楼梯口沿途方向错误，到了墙前等待后指示才正确",
+  "userAfterClimb": "一开始对了一点，然后过了拐角一直不对，在楼梯口前仍然不对，现在想让我折返",
+  "yMarkers": 4,
+  "workersStopped": true,
+  "next": "Retest A-01 after new local candidate; do not advance coverage",
+  "sourceSHA256": {
+    "player.jsonl": "7fdd52cf45f5efd804998d755649a297249fa7286b038cbca0be6ff4526ed0d8",
+    "events.jsonl": "116aa1f317cbbb7f19711eadd3302f5334f29fa5fb9f5ff7670bf5be80204579",
+    "markers.jsonl": "b23130a144698fa4cedcfa7396d7864ba640366c3f0425296aeaee5792b5517e",
+    "abilities.jsonl": "1692c5152efbc18effac2821ea3b9b36a044de8bd75e00cfb4cca1d8caac9fe7"
+  }
+}

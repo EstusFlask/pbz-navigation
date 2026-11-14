@@ -1,0 +1,69 @@
+{
+  "build": "1.2.9",
+  "case": "A-01",
+  "reviewDate": "2026-11-14",
+  "result": "failed; individual checked connections were not promptly submitted as a complete route",
+  "scope": "Frozen installed logs; game exited, no new continuous motion/Y sampler",
+  "userReport": "试了一下还是不行",
+  "installedAudit": {
+    "matchedRuntimeFiles": 1367,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.9-a01-logs/installation.json"
+  },
+  "originalBellStart": {
+    "x": -61997.4393700697,
+    "y": 222876.9262633589,
+    "z": -15838.50250347254
+  },
+  "initialAttempt": {
+    "authorGraphEntered": true,
+    "correctEntryStartedAt": "13:25:29.922",
+    "interruptedAt": "13:25:30.477",
+    "wallMs": 572,
+    "cause": "player context moved; query incomplete",
+    "physicsVerdict": "unknown at original bell pose"
+  },
+  "laterCheckedConnectors": {
+    "start": {
+      "x": -62331.91473913291,
+      "y": 222510.1068549299,
+      "z": -15760.306458157693
+    },
+    "entryCompleteAt": "13:25:32.952",
+    "entryCpuMs": 37,
+    "entryWallMs": 511,
+    "goalCompleteAt": [
+      "13:25:35.224",
+      "13:25:36.133"
+    ],
+    "goalProbes": [
+      63,
+      64
+    ],
+    "alternativesContinueThrough": "13:25:38.910"
+  },
+  "mainOptimization": {
+    "time": "13:25:39.768",
+    "phase": "scene walking search",
+    "finding": "makePlan can start optional pure walking search after complete assisted-chain physical audit; separate failing replay confirms it holds delivery"
+  },
+  "modelFeedback": {
+    "scope": "Substituted walk costs/clock; NOT real game performance",
+    "twoActionBeforeExtraQueries": 1,
+    "captured25DirectionsBeforeExtraQueries": 14,
+    "afterExtraQueries": 0,
+    "note": "Directional samples grouped per actor before replay; clock charges only speculative alternatives, so modified0ms is NOT a real latency result."
+  },
+  "logSHA256": "63e331b68ae853267afa0b3f43eb0187087795d808c716689a6d078d4a44c003",
+  "evidence": [
+    "build/field-1.2.9-a01-logs/events.json",
+    "tests/fixtures/tower-chain-completion-20261114.json",
+    "build/chain-submit-1210-pristine-red.txt",
+    "build/chain-delivery-1210-red.txt"
+  ],
+  "candidateFixBuild": "1.2.10",
+  "targetXYZChanged": false,
+  "livePassed": false
+}

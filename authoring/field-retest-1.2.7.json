@@ -1,0 +1,95 @@
+{
+  "build": "1.2.7",
+  "case": "A-01",
+  "reviewDate": "2026-11-14",
+  "result": "partial improvement; doorway still fails",
+  "scope": "Frozen installed logs and user report; game exited, no new continuous motion/Y session",
+  "installedAudit": {
+    "matchedRuntimeFiles": 1367,
+    "missing": 0,
+    "changed": 0,
+    "extraScripts": 0,
+    "evidence": "build/field-1.2.7-a01-logs/installation.json"
+  },
+  "userCheckpoints": [
+    {
+      "name": "一楼楼梯前",
+      "guidance": "correct",
+      "latency": "long according to user; not separately stopwatch measured"
+    },
+    {
+      "name": "二楼",
+      "guidance": "correct immediately according to user",
+      "latency": "short according to user"
+    },
+    {
+      "name": "大门口",
+      "guidance": "no route",
+      "latency": "two final stationary tower requests hit30s"
+    }
+  ],
+  "towerRequestMetrics": [
+    {
+      "time": "12:41:33.720",
+      "cpuMs": 78,
+      "wallMs": 1011,
+      "complete": true
+    },
+    {
+      "time": "12:41:52.759",
+      "cpuMs": 26,
+      "wallMs": 315,
+      "complete": true
+    },
+    {
+      "time": "12:44:26.540",
+      "cpuMs": 1887,
+      "wallMs": 30014,
+      "timeout": true
+    },
+    {
+      "time": "12:44:57.950",
+      "cpuMs": 1999,
+      "wallMs": 30009,
+      "timeout": true
+    }
+  ],
+  "timingScope": "Per-request times only; not cumulative wait since user first selected/moved. Floor label correlation is based on user report and trajectory ordering, not an independently recorded screen.",
+  "doorway": {
+    "start": {
+      "x": -62847.12938211132,
+      "y": 220488.15325384054,
+      "z": -15506.699982363598
+    },
+    "goal": {
+      "x": -64708.00000018706,
+      "y": 219572.9999999917,
+      "z": -11420.772583238635
+    },
+    "goodAscent": "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058ACC6F9202_2082288281",
+    "entryConnection": {
+      "cpuMs": 25,
+      "wallMs": 402,
+      "pointCount": 216,
+      "found": true
+    },
+    "starvingProbe": {
+      "guid": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1241189980",
+      "direction": "downward from its upper pad",
+      "cpuMs": 1898,
+      "wallMs": 28550,
+      "found": false,
+      "interruptedBy": "whole planning wall deadline"
+    }
+  },
+  "logSHA256": "efa434330de130ba0aafa2c2e2ea28e6d2836c60f96fac15f512415c1f6d6400",
+  "excludedFromA01": "Interleaved collectible-item target requests were not attributed to tower navigation.",
+  "evidence": [
+    "build/field-1.2.7-a01-logs/events.json",
+    "tests/fixtures/tower-doorway-scheduling-20261114.json",
+    "build/action-scheduling-128-pristine-red.txt"
+  ],
+  "candidateFixBuild": "1.2.8",
+  "targetXYZChanged": false,
+  "livePassed": false
+}

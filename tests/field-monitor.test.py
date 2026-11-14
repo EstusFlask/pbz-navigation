@@ -21,6 +21,7 @@ def module(filename):
 
 monitor = module('monitor-navigation.py')
 markers = module('mark-navigation-case.py')
+discovery = module('discover-navigation-runtime.py')
 
 
 class FieldCapture(unittest.TestCase):
@@ -43,6 +44,15 @@ class FieldCapture(unittest.TestCase):
         rows = self.source.read()
         self.assertEqual([r['line'] for r in rows], ['[PBZQuestRoute] 楼梯上行'])
         self.assertEqual(self.source.read(), [])
+
+    def test_discovery_uses_latest_logged_metadata(self):
+        text = ('GUObjectArray address: 0x10000\nFound FName::ToString: 0x20000\n'
+                'GUObjectArray address: 0x30000\nFound FName::ToString: 0x40000\n')
+        self.assertEqual(discovery.addresses(text), (0x30000, 0x40000))
+
+    def test_discovery_requires_ready_metadata_instead_of_old_bindings(self):
+        with self.assertRaises(ValueError):
+            discovery.addresses('GUObjectArray address: 0x10000\n')
 
     def test_ring_rewrite_keeps_new_entries_without_repeating_old(self):
         self.ring.write_text('one\ntwo\n', 'utf-8')

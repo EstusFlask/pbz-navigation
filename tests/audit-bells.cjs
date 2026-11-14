@@ -2,7 +2,7 @@
 // Real authored data audit. This deliberately makes no claim about live scene
 // collision, current keys, folding ladders or streamed actor availability.
 const path=require('node:path'),fs=require('node:fs');
-const root=path.resolve(__dirname,'../Quest_Navigation_0.8.5/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const R=require(root+'/PBZRouteCore'),Surface=require(root+'/PBZRouteSurface'),tables=require(root+'/PBZRouteTables').data;
 const point=bell=>({x:bell.at[0],y:bell.at[1],z:bell.at[2]});
 function load(){return new R.Graph(require(root+'/PBZRouteWorlds/pbz_zhengdaodaying_wp').data,require(root+'/PBZRouteFaces/pbz_zhengdaodaying_wp').faces);}

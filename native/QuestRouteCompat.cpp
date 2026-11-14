@@ -60,20 +60,22 @@ class QuestRouteCompat final : public RC::CppUserModBase {
     static void lua_started(RC::CppUserModBase*, RC::CStringView name,
         RC::LuaMadeSimple::Lua&, RC::LuaMadeSimple::Lua& main,
         RC::LuaMadeSimple::Lua&, RC::LuaMadeSimple::Lua*) noexcept {
-        if (std::wstring_view(name.data, name.size) != L"PbzMapTracker") return;
+        const std::wstring_view target(name.data, name.size);
+        const wchar_t* filename = target == L"PbzMapTracker" ? L"PBZTrackerHost.lua"
+            : target == L"PbzModConfig" ? L"PBZModConfigHost.lua" : nullptr;
+        if (!filename) return;
         try {
-            // Entry text changes with every collector release. The Lua host
-            // checks the target/selection contracts in the collector's own VM.
-            const auto script=own_root() / "Scripts" / "PBZTrackerHost.lua";
+            // Each host checks its Lua module contracts inside the owning VM.
+            const auto script=own_root() / "Scripts" / filename;
             main.execute_file(std::wstring_view(script.native()));
-            status("Navigation target adapter attached; no collector files were written.");
+            status("Navigation compatibility host attached; no companion mod files were written.");
         } catch (const std::exception& e) { status(e.what()); }
-        catch (...) { status("Navigation target adapter could not attach."); }
+        catch (...) { status("Navigation compatibility host could not attach."); }
     }
 public:
     QuestRouteCompat() {
-        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"1.2.2";
-        ModDescription=L"Navigation-owned target bridge; no Map Tracker file replacements";
+        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"1.3.2";
+        ModDescription=L"Navigation-owned collectible bridge and settings UI compatibility";
         ModAuthors=L"kurosakana (fork); original navigation by azqwq333";
         register_on_lua_start(&lua_started);
     }

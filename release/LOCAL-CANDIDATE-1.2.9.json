@@ -1,0 +1,51 @@
+{
+  "version": "1.2.9",
+  "status": "local-range-fix-candidate; first-floor bell live retest pending",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.9.zip",
+  "bytes": 120592605,
+  "sha256": "1bdefee75420063552ef6cd260cd93363b9e93d26af95998b4c0db7d6845d727",
+  "files": 1377,
+  "addedPaths": [],
+  "removedPaths": [],
+  "changedPathsFrom1.2.8": [
+    "BELL-NETWORK-COVERAGE.md",
+    "BELL-ROUTE-AUDIT.md",
+    "CHANGELOG.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "INSTALL-README.md",
+    "ITEM-DESCRIPTION-AUDIT.md",
+    "MANUAL-ROUTES.md",
+    "MOVEMENT-COVERAGE.md",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePassages.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll"
+  ],
+  "javascriptPassed": 288,
+  "realLuaTrackers": [
+    "1.0.9",
+    "1.0.14"
+  ],
+  "nativeChecks": "passed",
+  "packageVerification": "1377 exact owned files;951 original streams and291 legacy chunk paths/hashes retained",
+  "fieldEvidence": "authoring/field-retest-1.2.8.json",
+  "redFeedback": "build/bell-approach-129-pristine-red.txt",
+  "fix": "Allow finite checked author graph connectors up to their existing120m endpoint range before applying the45m expensive live-grid cutoff. All budgets and live checks retained.",
+  "limits": {
+    "authorGraphEndpointCm": 12000,
+    "liveGridEndpointCm": 4500,
+    "graphNodes": 768,
+    "physicalEdgeChecks": 64,
+    "hintExecutionMs": 200
+  },
+  "fixedCoursesAdded": 0,
+  "authorPointsAdded": 0,
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "nextCase": "Stand at the same first-floor bell and select summit while stationary; measure first visible correct guidance, full/partial state and latency"
+}
