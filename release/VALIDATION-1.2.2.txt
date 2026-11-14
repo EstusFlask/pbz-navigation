@@ -1,0 +1,67 @@
+Version: 1.2.2 (local navigation test candidate)
+Validation date: 2026-11-13 (America/Tijuana)
+Archive: dist/Quest_and_Exploration_Navigation_Fork_1.2.2.zip
+
+Source evidence
+- Four user-walked 1.2.1 runs, actual foot positions, CurrentFloor, movement
+  boundaries and navigation diagnostics. They are authoring evidence, not new
+  runtime courses. The unsuccessful unfamiliar exploration is excluded.
+- The final Y at 2026-11-14T03:27:37.467Z was explicitly corrected by the user:
+  navigation was correct while approaching the bridge. It is not bug evidence.
+- User confirmed a hook near Bell_SZ_031; actual traversal is not captured.
+
+Failing-before / passing-after feedback loops
+  node --test --test-name-pattern="main planner completes a corridor with consecutive rejected rejoin tails" tests/planning.test.cjs
+- The main-planner replay with three consecutive blockers also fails on the
+  pristine HEAD repair module and passes with the fixed module. The baseline
+  was checked byte-for-byte against HEAD (line endings normalized), then the
+  exact fixed bytes were restored. This covers the caller's two-repair limit,
+  not only the local repair helper.
+  node --test tests/field-repair.test.cjs
+- Two finite obstacles reproduce a checked connector followed by a rejected
+  provider tail. Either obstacle alone works. The old code returns immediately
+  after the failed whole-leg audit; continuing bounded rejoin attempts finds
+  the complete checked bypass without changing the deadline or wall rules.
+- Actual valley tower movement boundaries reproduce a post-climb destination
+  roughly 24.8 m higher and 30.1 m away in 3D. The old action-chain caller sets
+  local=false for every vertical goal connector. The corrected caller permits
+  the existing bounded local walker after a checked action. Direct initial
+  goal behavior is retained; cache entries distinguish local-search permission.
+  The 17 action samples and 385 upper-walk points are actual observations;
+  native navigation and physics are substituted in this policy replay.
+  node --test --test-name-pattern="character movement floor remains usable" tests/terrain-regression.test.cjs
+- A grounded pawn with valid CurrentFloor loses a zero-distance connector
+  when the substitute profile ray misses. Reuse only valid occupied-foot
+  contact for this no-movement case. Neighbouring steps, another layer and
+  airborne contact do not gain this certification.
+- Original failing output: build/field-fix-1.2.2-baseline/*-red.txt.
+
+Automated checks
+- All tests/*.test.cjs: 267 passed, 0 failed. Raw TAP:
+  build/validation-122-js.txt.
+- Real tracker 1.0.9 / 1.0.14 Lua service and file round trips: PASS.
+- Host-side field capture tests: 7 passed. Capture utilities are not packaged.
+- Native adapter rebuilt as 1.2.2: PASS ABI size, runtime SHA gate, collector
+  filtering and version-independent host dispatch. Native code behavior is
+  unchanged; its version metadata is synchronized.
+- Original authored bell audit: PASS. This is not a live traversability audit.
+
+Package verification
+- tests/build-patch.py and tests/verify-package.py: PASS.
+- 1374 exact file matches; 951 streamed modules and all 291 legacy chunk
+  strings match their source hashes. No collector-owned or capture-tool paths.
+- Runtime, native DLL and packaged documentation all report 1.2.2.
+- Package: 120,571,969 bytes; SHA256:
+  ad4639ef45bcef67fc406bc91d17bbebf399a0c25a60d5f4d070f21006648d60
+- Package paths equal the previous complete 1.2.1 archive. The old ZIP is
+  preserved under build/release-archive/pre-1.2.2-20261113/ with its SHA256
+  in DIST-ARCHIVE-20261113.json; dist contains only 1.2.2.
+
+Limitations
+- No fresh 1.2.2 in-game run, complete collision reconstruction, FPS result or
+  full-map navigation claim. Terrain rejection and delayed wall-run entry may
+  have further causes; retest the reported routes when the user is available.
+- No new fixed routes or runtime trace learning. Original atlas/scene checks,
+  directional actions, locks and search limits remain.
+- This is a local complete test package. Game installation, Mod Manager and
+  the published Nexus 1.2.1 files/page are not modified by this work.

@@ -1,5 +1,5 @@
 {
-  "status": "published-update-in-progress",
+  "status": "published",
   "draftId": 994,
   "draftEditUrl": "https://www.nexusmods.com/games/phantombladezero/mods/994/edit/general",
   "draftSavedSections": [
@@ -7,20 +7,20 @@
     "Media",
     "Requirements - PBZModLoader 1.0.0 only; optional companions documented in description"
   ],
-  "draftFileUploaded": false,
+  "draftFileUploaded": true,
   "name": "Quest and Exploration Navigation - Fork",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "upstreamVersion": "0.8.5-beta",
   "localPatchBase": "0.8.5-local-fix5",
   "authorField": "azqwq333 - original - kurosakana - fork",
   "category": "User Interface",
   "language": "Any",
-  "shortDescription": "Quest, map pin and collectible navigation with checked bell transfers, Map Tracker 1.0.14 sync and supplementary Chinese acquisition hints. / 任务、地图标记及物品导航，修复新版收集联动，增加铃铛中转及中文获取提示。",
+  "shortDescription": "Quest, collectible and bell navigation with a blue guide, checked detours, transfers and D-pad item focus. Experimental; map coverage is incomplete. / 任务、收集物与铃铛导航：场景蓝线、绕行、中转及十字键选物。实验版，全图覆盖未完成。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
-  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.1.zip",
-  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.2.1",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.2.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.2.2",
   "fileCategory": "Main Files",
-  "fileDescription": "Controller hotfix: poll D-pad held keys when CommonUI omits preview events, coalesce event/poll repeats, and select visible collectibles across grouped-map worlds using each item map ID. Includes 1.2.0 wall-safety fixes. 修复十字键无响应及合并地图选物失败；完整游戏效果仍待复测。",
+  "fileDescription": "1.2.2 local test candidate: continue checked detours after a rejected tail, allow bounded stair connections after traversal, and keep occupied-ground checks consistent. In-game retesting pending. / 本地测试候选：修复绕行后段失败即放弃、动作后高层目标的楼梯接路，以及原地地面检查不一致；游戏复测待补。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -61,5 +61,30 @@
   "permissionEvidence": null,
   "published": true,
   "lastVerifiedNexusVersion": "1",
-  "modUrl": "https://www.nexusmods.com/phantombladezero/mods/994"
+  "modUrl": "https://www.nexusmods.com/phantombladezero/mods/994",
+  "latestTextUpdate": {
+    "date": "2026-11-13",
+    "timezone": "America/Tijuana",
+    "version": "1.2.1",
+    "sections": [
+      "General: full bilingual description and short description",
+      "Files: cumulative 1.2.1 changelog and file description"
+    ],
+    "coveredVersions": [
+      "1.0.2",
+      "1.1.0",
+      "1.1.1",
+      "1.2.0",
+      "1.2.1"
+    ],
+    "verifiedOnPublicPage": true
+  },
+  "localCandidate": {
+    "version": "1.2.2",
+    "date": "2026-11-13",
+    "timezone": "America/Tijuana",
+    "uploaded": false,
+    "basedOnPublishedFileVersion": "1.2.1",
+    "note": "Local package only. Published 1.2.1 description and text-update records are retained."
+  }
 }

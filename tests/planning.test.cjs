@@ -43,6 +43,24 @@ function planner(world,options={}){
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
 
+test('the main planner completes a corridor with consecutive rejected rejoin tails',()=>{
+ const p=(x,y=0)=>({x,y,z:0}),goal=p(2000),walls=[500,1000,1500];
+ const blocked=(a,b)=>walls.find(x=>{
+  if(a.x===b.x||(a.x<x&&b.x<x)||(a.x>=x&&b.x>=x))return false;
+  const t=(x-a.x)/(b.x-a.x);return Math.abs(a.y+(b.y-a.y)*t)<230;
+ });
+ const world={normal:.7,rise:45,slope:1,r:35,floorAt:q=>q,hit:()=>null,
+  step:(a,b)=>{const x=blocked(a,b);return x===undefined?{p:b}:{hit:p(x,a.y),why:'blocked body clearance'};}};
+ const leg=()=>({world:'test',provider:'roadbook',points:[p(0),goal],moves:[],walks:[],checks:[],gates:[],meters:20});
+ const h=planner(world,{quiet:true,UE:{NavigationSystemV1:{}},
+  roadbook:{plan:function*(){return {legs:[leg()],transfer:null};},prepare(){}},
+  localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,goal);h.dest.bell='unopened-corridor';
+ const trip=run(h.api.makePlan(h.dest,true,false,false,{clock:()=>0}));
+ assert.ok(trip?.legs[0].repaired&&!trip.legs[0].partial,'two top-level repairs left a blocked preview despite a complete bounded bypass');
+ assert.ok(trip.legs[0].points.slice(1).every((b,i)=>blocked(trip.legs[0].points[i],b)===undefined));
+});
+
 test('tracker native bell selection retains its bell identity instead of using item teleport planning',()=>{
  const goal={x:6400,y:0,z:0},bell={id:'Bell_SZ_004',world:'test',area:'pangzhen',name:'幻鬼酒馆',at:[6400,0,0]};
  const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,bells:[bell],activeBellIDs:[],areas:{pangzhen:{world:'test'}}});

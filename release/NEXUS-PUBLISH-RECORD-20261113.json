@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "url": "https://www.nexusmods.com/phantombladezero/mods/994",
+  "version": "1.2.1",
+  "fileId": 3879,
+  "uploadedBy": "user",
+  "textChanges": [
+    "Cumulative bilingual changelog on the 1.2.1 file, covering 1.0.2 through 1.2.1",
+    "Updated full English/Chinese description and short description",
+    "Added bilingual file description"
+  ],
+  "verification": [
+    "Public page shows Version 1.2.1 and Changes since 1.0.1 in both languages",
+    "Public Changelogs shows 19 cumulative entries under 1.2.1 and retains the original 1.0.1 record",
+    "Public Files page shows the new 1.2.1 file description"
+  ],
+  "sourceFiles": {
+    "release/NEXUS-DESCRIPTION.bbcode": "e640aa8725a73196d87cc86f698dce6efa7608041c1836a5f809211a504c700e",
+    "release/NEXUS-CHANGELOG-1.2.1.txt": "00c5c8fd59b4cbd6dca25edc42b7f4e123d3249780f77d69551accfa841c690e"
+  },
+  "runtimeArchiveModified": false,
+  "limitationsRetained": [
+    "264 automated JS regressions with simulated input/projection/physics",
+    "Real Lua 1.0.9 and 1.0.14 integration",
+    "Two reference courses, 86 generated candidates, 52 of 140 links still missing",
+    "New controller behavior and complete routes require live-game retesting"
+  ]
+}

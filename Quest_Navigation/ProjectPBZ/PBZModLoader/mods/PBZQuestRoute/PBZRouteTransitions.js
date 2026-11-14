@@ -61,10 +61,15 @@ function* route(options){
  const partial=row=>{const leg=assembled(row);return {legs:[{...leg,provider:'scene',partial:true,scenePartial:true,
   obstacles:[{id:'action-frontier',world:options.name,p:row.p,unknown:true,icon:'mechanism',label:'前方通路待确认'}]}],transfer:null};};
  const cache=new Map();let connectors=0;
- const connection=function*(a,b,goalEdge=false){
-  const key=[a.x,a.y,a.z,b.x,b.y,b.z,goalEdge].join('/');if(cache.has(key))return cache.get(key);
+ const connection=function*(a,b,goalEdge=false,afterAction=false){
+  // A checked action may end below stairs leading to the final destination.
+  // Keep the bounded local connector available there, with the same physical
+  // checks and overall deadline, instead of treating every higher goal as a
+  // second unmodelled traversal. The direct start-to-goal policy is unchanged.
+  const local=!goalEdge||Math.abs(a.z-b.z)<200||afterAction;
+  const key=[a.x,a.y,a.z,b.x,b.y,b.z,goalEdge,local].join('/');if(cache.has(key))return cache.get(key);
   if(++connectors>(options.maxConnectors||128)||clock()>deadline)return null;
-  const result=yield* walk(a,b,{deadline,local:!goalEdge||Math.abs(a.z-b.z)<200});
+  const result=yield* walk(a,b,{deadline,local});
   cache.set(key,result);return result;
  };
  function* search(goalLimit){
@@ -73,7 +78,7 @@ function* route(options){
   open.sort((a,b)=>a.score-b.score||Number(!!a.pending)-Number(!!b.pending));const row=open.shift();
   if(row.pending){
    if(seen.has(row.id)||row.score>=(best.get('goal')??Infinity)||best.get(row.parent.id)!==row.parent.cost)continue;
-   const leg=yield* connection(row.parent.p,row.target,!row.action);if(!leg)continue;
+   const leg=yield* connection(row.parent.p,row.target,!row.action,row.parent.id!=='start');if(!leg)continue;
    const cost=row.parent.cost+leg.meters*100+(row.action?.cost||0);
    if(cost<(best.get(row.id)??Infinity)){
     best.set(row.id,cost);open.push({id:row.id,p:row.action?.exit||row.target,cost,

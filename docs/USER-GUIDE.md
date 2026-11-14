@@ -1,10 +1,12 @@
 # Quest and Exploration Navigation - Fork
 
-任务与探索导航分支，版本 **1.2.1**。基于 **azqwq333** 的 [Quest and Exploration Navigation 0.8.5-beta](https://www.nexusmods.com/phantombladezero/mods/472) 及本地 `0.8.5-local-fix5`。Fork 整理：kurosakana。原导航系统、11 个世界路网、行走表面数据及原包资产归原作者。本分支代码与说明使用 AI 辅助生成。
+任务与探索导航分支，版本 **1.2.2**。基于 **azqwq333** 的 [Quest and Exploration Navigation 0.8.5-beta](https://www.nexusmods.com/phantombladezero/mods/472) 及本地 `0.8.5-local-fix5`。Fork 整理：kurosakana。原导航系统、11 个世界路网、行走表面数据及原包资产归原作者。本分支代码与说明使用 AI 辅助生成。
 
 **发布页为 Nexus #994。** 本分支保留原作者署名与随包资产归属，不表示 azqwq333 背书。
 
 ## 本版改动
+
+- 1.2.2本地测试候选：绕行接回后的后段仍受阻时，在原有预算内继续尝试更远接回点；攀爬等动作结束后允许有界的楼梯步行连接，不再因目标高出2米就禁用；原地零距离连接复用角色当前有效地面接触。普通移动、身体碰撞、门锁和楼层检查保留。四段1.2.1现场记录用于定位，尚未编入固定课程；1.2.2游戏内复测待补。
 
 - 1.2.1：修复实际游戏未送达预览按键时十字键完全不响应的问题，新增UI路由/控制器按键轮询，并与事件回调共用去重、松键及长按节流。跨子区域/世界的合并地图按原生地图归属选物，使用物品自身地图ID投影；不再将后街/戏梦物品按世界不一致误排除。现场读取175个真实标记用于回放，新增输入/跨图回归；新版按键效果仍待游戏复测。
 
@@ -85,7 +87,7 @@
 
 ## 安装与更新
 
-完整包：`dist/Quest_and_Exploration_Navigation_Fork_1.2.1.zip`。不包含加载器、UE4SS 本体或收集 Mod。
+完整包：`dist/Quest_and_Exploration_Navigation_Fork_1.2.2.zip`。不包含加载器、UE4SS 本体或收集 Mod。
 
 1. 退出游戏，备份 `ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt`。
 2. 安装 PBZModLoader 1.0.0。需要收集联动或补充描述时，另行安装上表对应 UE4SS 与原版 Map Tracker Plus。
@@ -114,7 +116,7 @@
 
 ## 验证范围
 
-264项本地JavaScript回归通过，新增过期远段首帧截线、精细碰撞墙体、地图真实拐角/受阻后段与十字键选物品验证；保留既有寻路/动作/乘船测试。真实收集Mod 1.0.9/1.0.14的Lua服务及文件往返、原生组件与完整ZIP另行验证。当前版本完整验证见release/VALIDATION-1.2.1.txt。本版没有新的游戏全程通过记录；86条候选与487个实例不等于全图已可走。未完成的52条连接、完整水上航线及剧情追逐详见[MOVEMENT-COVERAGE.md](MOVEMENT-COVERAGE.md)。
+267项本地JavaScript回归通过，新增绕行后段重接与真实上塔坐标的动作后楼梯连接回放，扩展原地地面一致性验证；保留既有寻路/动作/乘船、穿墙显示和输入测试。真实收集Mod 1.0.9/1.0.14的Lua服务及文件往返、原生组件与完整ZIP另行验证。当前版本完整验证见release/VALIDATION-1.2.2.txt。本版没有新的游戏全程通过记录；86条候选与487个实例不等于全图已可走。未完成的52条连接、完整水上航线及剧情追逐详见[MOVEMENT-COVERAGE.md](MOVEMENT-COVERAGE.md)。
 
 本版不再采样、保存或加载玩家通路；旧 LearnRoutes 配置会被忽略，旧 trails 文件不参与规划。门锁/交互为只读查询，不会自动解锁、触发装置或移动角色。资源审计区分了已接入规则与仅发现存在的类型，包括旧穿洞/跨障、舞狮立柱、部分移动物与叙事机关的未完成支持。
 

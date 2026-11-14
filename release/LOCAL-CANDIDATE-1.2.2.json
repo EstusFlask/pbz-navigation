@@ -1,0 +1,44 @@
+{
+  "version": "1.2.2",
+  "status": "local-test-candidate",
+  "clientDate": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.2.2.zip",
+  "bytes": 120571969,
+  "sha256": "ad4639ef45bcef67fc406bc91d17bbebf399a0c25a60d5f4d070f21006648d60",
+  "files": 1374,
+  "changedPathsFrom1.2.1": [
+    "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteEntry.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteRepair.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteTransitions.js",
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWorld.js",
+    "README-en.txt",
+    "README-zh.txt",
+    "INSTALL-README.md",
+    "CHANGELOG.md",
+    "BELL-ROUTE-AUDIT.md",
+    "GAME-TRAVERSAL-AUDIT.md",
+    "MOVEMENT-COVERAGE.md",
+    "MANUAL-ROUTES.md",
+    "BELL-NETWORK-COVERAGE.md",
+    "ITEM-DESCRIPTION-AUDIT.md"
+  ],
+  "validation": {
+    "javascript": {
+      "passed": 267,
+      "failed": 0
+    },
+    "realLuaTrackers": [
+      "1.0.9",
+      "1.0.14"
+    ],
+    "native": "ABI/runtime SHA/mod filtering tests passed; synchronized version only",
+    "hostCaptureTests": 7,
+    "package": "1374 exact matches; streamed hashes and legacy paths preserved"
+  },
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false
+}

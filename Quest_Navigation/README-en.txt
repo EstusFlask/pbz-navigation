@@ -1,5 +1,6 @@
 Quest and Exploration Navigation - Fork
-Version: 1.2.1 (experimental release candidate)
+Version: 1.2.2 (experimental release candidate)
+1.2.2 local test candidate: try farther detour rejoin points after a checked connector leaves a rejected tail; allow bounded local stair walking after a validated traversal; reuse valid occupied floor contact for zero-distance connectors. Walking, capsule, lock and floor checks remain. The four 1.2.1 field runs informed diagnosis and are not added as fixed courses. 1.2.2 in-game retesting is pending.
 1.2.1 fixes missing D-pad input with CommonUI/player-controller polling and shared event/repeat gating. Grouped maps retain collectibles from other streamed worlds and project using each item map ID. A live 1.2.0 snapshot supplied 175 markers; the new controller behavior still needs in-game retesting.
 1.2.0 revokes expired ribbon proofs, checks triangle-only collision and preserves checked map corners. Blocked suffixes stay unconfirmed. On the map, D-pad snaps to the nearest visible collectible in that direction, skipping native bells; A confirms its real 3D location. Moving the stick, changing map/layer or hiding the item releases focus. Local integration tests pass for both tracker versions; in-game retesting is pending.
 Based on azqwq333's Quest and Exploration Navigation 0.8.5-beta and local-fix5.

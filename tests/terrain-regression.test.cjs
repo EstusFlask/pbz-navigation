@@ -112,9 +112,12 @@ test('the character movement floor remains usable when a profile ray misses the 
  world.feet=()=>({...p});
  world.pawn={CharacterMovement:{IsMovingOnGround:()=>true,CurrentFloor:{bBlockingHit:true,bWalkableFloor:true,HitResult:hit}}};
  assert.ok(world.floorAt(p,true),'standing player lost the floor reported by CharacterMovement');
+ assert.ok(world.step(p,{...p},false).p,'a zero-distance connector rejected the floor already occupied by the grounded player');
+ assert.equal(world.step(p,{...p,x:p.x+35},false).p,undefined,'occupied floor evidence was extended to an unmeasured neighbouring step');
  assert.equal(world.floorAt({...p,z:p.z-600},true),null,'the pawn floor was reused for an unoccupied lower level');
  world.pawn.CharacterMovement.IsMovingOnGround=()=>false;
  assert.equal(world.floorAt(p,true),null,'an airborne pawn reused a stale floor');
+ assert.equal(world.step(p,{...p},false).p,undefined,'an airborne pawn reused floor evidence for a zero-distance connector');
 });
 
 test('reflected character limits admit the same steep slopes and steps as the game',()=>{

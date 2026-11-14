@@ -22,7 +22,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.2.1';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.2.2';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();

@@ -1,3 +1,14 @@
+# 1.2.2 — checked detour continuation and post-traversal stairs (local candidate)
+
+- A locally checked bypass no longer ends repair when its unmodified remaining tail fails validation. Try the remaining bounded rejoin distances within the same deadline; retain a rejected checked prefix as a diagnostic if no complete repair succeeds.
+- After a validated traversal, permit the existing bounded local walking connector to a higher goal. Previously a goal-height difference of 200 cm disabled that connector, including the recorded valley-tower climb followed by stairs. Keep the direct start-to-goal policy, connector limits, floor/capsule/lock checks and deadline.
+- Make zero-distance Ground.step agree with valid CharacterMovement floor contact at the occupied feet. This does not certify neighbouring steps, another floor or airborne contact.
+- Use actual tower movement boundaries and 385 sampled upper-walk positions in the planning-policy replay. Local physics/query behavior is substituted in regression tests. The four recorded routes are not installed as fixed courses and full-map coverage remains incomplete.
+
+Validation: 267 JavaScript regressions pass, including the new failing-before/passing-after cases. Real tracker Lua integration, native rebuild and complete package verification are recorded in VALIDATION-1.2.2.txt. No new game validation of 1.2.2; remaining cave/wall-run and collision disagreements require retesting.
+
+中文：修复一次局部绕行接回后段失败就停止、动作完成后高层目标无法使用局部楼梯，以及原地有效地面被重复扫线拒绝的问题。没有放宽行走碰撞/锁/楼层检查，没有把现场轨迹当作已启用路书。完整路线仍待进游戏复测。
+
 # 1.2.1 — D-pad delivery and grouped-map item focus
 
 - 1.2.0 handled D-pad presses only in the map's preview callback. Poll the CommonUI held-key router and the owning player controller as well, so selection still runs when no preview event is delivered. Event and polling paths share press/release state, a 350 ms initial hold delay and 180 ms repeat interval; one physical press cannot skip two items.

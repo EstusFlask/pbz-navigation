@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "confirmations": [
+    {
+      "id": "houjie-narrow-alley-hook",
+      "source": "user in-game verification after field session",
+      "bellId": "Bell_SZ_031",
+      "bellName": "窄巷民居二楼",
+      "world": "pbz_houjie_wp",
+      "confirmed": "A hook is present near this bell",
+      "userStatement": "这个我核对了，确实是钩索",
+      "staticCandidateGuid": "BP_GapBlocker_C_UAID_60CF84809909C2B202_2063269725",
+      "liveActorIdentityCaptured": false,
+      "traversalCompletionConfirmed": false,
+      "note": "User confirmed the nearby interaction is a hook; this is not a recorded traversal or proof every GapBlocker type is a hook."
+    }
+  ]
+}

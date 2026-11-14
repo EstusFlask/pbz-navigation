@@ -18,8 +18,9 @@ function* repair(world,source,failure,origin,options={}){
  while(from>0&&back<180){back+=R.dist(prefix[from],prefix[from-1]);from--;}
  const meta=failure.prefixLeg||{};
  for(const m of meta.moves||[])if(m.to<prefix.length)from=Math.max(from,m.to);
+ let rejected=null;
  for(const distance of [400,800,1400]){
-  if(clock()>=deadline)return null;
+  if(clock()>=deadline)break;
   const join=anchor(source.points,failure,distance);
   if((source.moves||[]).some(m=>m.from<join.tailIndex&&m.to>=join.tailIndex))continue;
   const p=world.floorAt(join.p,true);yield;
@@ -50,8 +51,13 @@ function* repair(world,source,failure,origin,options={}){
   const candidate={...source,points,moves,checks,obstacles:[],partial:false,scenePartial:false,repaired:true,walks,meters:R.extent(points)/100};
   const verdict=yield* Feasible.check(world,candidate,origin);
   options.report?.('local detour validation',{world:source.world,ok:verdict.ok,partial:!!verdict.leg?.partial,reason:verdict.why||'checked',edge:verdict.edge});
-  return {candidate,verdict};
+  const result={candidate,verdict};
+  if(verdict.ok)return result;
+  // A checked connector can still rejoin before the next bad provider chord.
+  // Keep that frontier for the caller, but try a farther join within the same
+  // deadline before abandoning a route whose local bypass is already valid.
+  if(!rejected||R.extent(verdict.prefix||[])>R.extent(rejected.verdict.prefix||[]))rejected=result;
  }
- return null;
+ return rejected;
 }
 exports.repair=repair;

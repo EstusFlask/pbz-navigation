@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-13",
+  "timezone": "America/Tijuana",
+  "gameProcessIdDuringCapture": 20828,
+  "navigationBuild": "1.2.1",
+  "status": "capture complete; user ended this round; resume remaining field work only when user returns",
+  "runtimeGameFilesModified": false,
+  "saveModified": false,
+  "workersStopped": true,
+  "yMarkers": 15,
+  "chatMarkers": 1,
+  "confirmedFalsePositiveY": [
+    "case-20261114T032737.467+0000-Y"
+  ],
+  "markerInterpretation": "Remaining marks are candidate observations, including repeated/calibration presses; not a count of distinct confirmed bugs",
+  "runs": [
+    {
+      "schema": 1,
+      "worksheet": "worksheet-014",
+      "world": "pbz_xigu_wp",
+      "sourceBell": "Bell_NLES_005",
+      "targetBell": "Bell_NLES_012",
+      "source": "user walked while external read-only observer recorded; navigation 1.2.1",
+      "status": "captured; author review and fresh-start in-game route validation pending",
+      "sourceSHA256": "66ae421b37cc5c25e1ab47d1273086cb9c18e68d21b47e275f39c35c2255e3df",
+      "begin": "2026-11-14T02:59:21.187+00:00",
+      "end": "2026-11-14T03:06:15.800+00:00",
+      "observedMetersIncludingBacktracking": 307.66,
+      "sampleCount": 4114,
+      "gaps": [],
+      "limitations": [
+        "Includes stops, heavy attacks and backtracking; not shortest-path evidence",
+        "10Hz cross-process observations are not atomic engine frames",
+        "Only the walked direction and current save state were observed",
+        "Not installed or enabled as a navigation course"
+      ]
+    },
+    {
+      "schema": 1,
+      "worksheet": "worksheet-015",
+      "world": "pbz_xigu_wp",
+      "sourceBell": "Bell_NLES_012",
+      "targetBell": "Bell_NLES_018",
+      "source": "user walked while external read-only observer recorded; navigation 1.2.1",
+      "status": "captured; author review and fresh-start in-game validation pending",
+      "sourceSHA256": "1c14c9d797a4a263e9351b70b076945745a93befe1e8f94c50d82c918a7fa039",
+      "begin": "2026-11-14T03:08:20.000+00:00",
+      "end": "2026-11-14T03:09:17.300+00:00",
+      "observedMetersIncludingBacktracking": 233.79,
+      "sampleCount": 569,
+      "gaps": [],
+      "userDescription": "塔顶有一段没有指示，用户推测因不平坦；下来后指向墙，随后迅速算出正确路。地形归因尚待验证。",
+      "limitations": [
+        "Only walked direction and current save state observed",
+        "10Hz external samples are not atomic engine frames",
+        "Log archiver interruption recovered from original loader log",
+        "Not installed or enabled as navigation course"
+      ]
+    },
+    {
+      "schema": 1,
+      "worksheet": "worksheet-016",
+      "world": "pbz_xigu_wp",
+      "sourceBell": "Bell_NLES_018",
+      "targetBell": "Bell_NLES_007",
+      "source": "external read-only player observer, navigation 1.2.1",
+      "status": "manually reached target vicinity; navigation still showed blocked preview; author review pending",
+      "begin": "2026-11-14T03:12:20.013+00:00",
+      "end": "2026-11-14T03:13:43.609+00:00",
+      "sourceSHA256": "b70cee032d4cf054d5743f47699d354ce87ae08671ca931cdb56d69f454f8678",
+      "sampleCount": 832,
+      "observedMetersIncludingBacktracking": 199.78,
+      "gaps": [],
+      "userDescription": "吊桥还有山洞这一段完全没算出来，出山洞之后要跑墙过一开始没算出来我按y了，后来算出来了",
+      "limitations": [
+        "Current volume references may persist after action; modes and the full timeline must also be reviewed",
+        "Not enabled or installed as a navigation course",
+        "Manual path only demonstrates the observed direction and current save state"
+      ]
+    },
+    {
+      "schema": 1,
+      "worksheet": "worksheet-017",
+      "attempt": 2,
+      "world": "pbz_xigu_wp",
+      "sourceBell": "Bell_NLES_007",
+      "targetBell": "Bell_NLES_006",
+      "source": "external read-only player observer, navigation 1.2.1",
+      "status": "walked to target; navigation arrived; author review pending",
+      "begin": "2026-11-14T03:25:13.632+00:00",
+      "end": "2026-11-14T03:28:06.300+00:00",
+      "sourceSHA256": "5fe82ca6e990fc83f9625bae8f9f76b4a4645d2a421cc2bf600cb8d79e7475cd",
+      "sampleCount": 1712,
+      "observedMetersIncludingBacktracking": 969.6,
+      "gaps": [],
+      "limitations": [
+        "Earlier unfamiliar exploration is excluded",
+        "User walked route is not necessarily the published hook shortcut or shortest route",
+        "Volume references can persist after action; semantic action labels require review",
+        "One Y marker is explicitly correct-route evidence",
+        "No runtime navigation data modified"
+      ]
+    }
+  ],
+  "incompleteExploration": "exploration-worksheet-017.json; not a valid route or proof of unreachability",
+  "sourceDirectory": "build/field-live-20261113-20828",
+  "sourceFileSHA256": {
+    "player.jsonl": "6edd41acbaa4b8bc018edf73d0b76c6dd6c8e7d307422c15dd90f838b026cff7",
+    "events.jsonl": "d6c62086324fcb3cf406e391420ef14c429c223e65699dfb65bb66281914dfec",
+    "markers.jsonl": "63fd50a3b2d86c47b50e855991099dc24446c8a561a4072d83bac83b1a397edf",
+    "abilities.jsonl": "f12f75555982cbf210c44f55539bb6662d1f278e084ee1d83381e4fdc77f4eaa",
+    "navigation-loader-recovery.log": "0aed37477ccf5b28a2c4e288a8af58dcad0e97ff13649481ae4739765e779396"
+  },
+  "recordingLimits": [
+    "10Hz external samples are not atomic engine frames",
+    "Logging interruption recovered from original loader log",
+    "Sampling maintenance occurred while stationary between completed runs, and remains a gap",
+    "User-confirmed final Y is correct-route evidence",
+    "Hook semantic state not observed for all earlier movement windows"
+  ],
+  "navigationFixStatus": "No runtime navigation fix implemented or installed in this round",
+  "confirmationFile": "authoring/field-confirmations-20261113.json",
+  "finalYCorrectionApplied": true,
+  "resumeNotes": "Keep completed runs014/015/016/017; exclude incomplete exploration; final Y032737.467 is correct-route evidence. Next field round only when user is available.",
+  "followUpFix": {
+    "version": "1.2.2",
+    "status": "local complete test package; no game retest yet",
+    "report": "docs/FIELD-FIXES-1.2.2.md",
+    "receipt": "release/LOCAL-CANDIDATE-1.2.2.json",
+    "navigationCodeChanged": true,
+    "gameInstallationChanged": false,
+    "uploaded": false
+  }
+}

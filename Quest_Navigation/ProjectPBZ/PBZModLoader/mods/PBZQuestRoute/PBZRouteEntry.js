@@ -2,7 +2,7 @@
 
 // One owner even if two loaders or two installation layouts find this mod.
 // A failed partial start is never retried within the same game session.
-const BUILD = '1.2.1';
+const BUILD = '1.2.2';
 function start(load, output) {
     output.version = BUILD;
     output.stop = function () {

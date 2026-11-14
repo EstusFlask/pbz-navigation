@@ -140,6 +140,10 @@ class Ground{
   }this.lastFloorQuery={source:best?'ray':'missing',at:p,...(best?{floor:best}:{}),attempts};return best;
  }
  step(a,b,expected){
+  // Rechecking a zero-distance connector must agree with floorAt at the
+  // occupied feet. This contact certifies no movement; nearby steps and other
+  // floors still require their ordinary support, slope and capsule probes.
+  if(R.dist(a,b)<.1){const occupied=this.standingFloor(a);if(occupied)return {p:occupied,points:[occupied]};}
   const n=Math.max(1,Math.ceil(R.xy(a,b)/35)),points=[];let previous=a;
   const probe=(from,q,depth=0)=>{
    const run=R.xy(from,q),reach=this.rise+run*this.slope+7;
