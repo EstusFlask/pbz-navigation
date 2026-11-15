@@ -3,10 +3,10 @@
   "objective": "Complete and validate navigation for the current game version through short field cases, generic fixes, directed coverage and save-state tests",
   "roadmap": "docs/NAVIGATION-TODO.md",
   "timezone": "America/Tijuana",
-  "currentBuild": "1.8.1",
+  "currentBuild": "1.8.2",
   "currentPhase": "A",
-  "activeCase": "CURRENCY-180",
-  "currentAction": "Prioritize the reported nearby currency regression. 1.8.0 user field result is not accepted. 1.8.1 scheduling/cold-load controls pass; first retest only the same-floor 10-20m approach, then the original floor-changing route. No new recording or game installation by the agent.",
+  "activeCase": "ROUTE-001",
+  "currentAction": "User accepted only the route1 suffix after final F. Remove reverse search on main and isolate Heybox planning on codex/heybox-navigation; do not attribute the cause to old maps until a source-isolated comparison.",
   "fieldSession": "build/field-1.8.0-no-routes",
   "recording": "Session ended with game exit;12 reports and completed post windows imported read-only. No external listener or background capture started.",
   "installedAudit": {
@@ -586,9 +586,9 @@
   "coveragePolicy": "Track capture, authored geometry, automated checks and version-specific live pass independently; directed edges and current save conditions are mandatory",
   "nextSaveNeeded": "Only after movement/road validation reaches collectible or pre-unlock/quest-state cases; retain current save",
   "releaseGate": "Version-specific live validation and unresolved major issue audit; no automatic public upload",
-  "installedBuild": "1.8.0",
-  "localCandidateBuild": "1.8.1",
-  "localCandidateReceipt": "release/LOCAL-CANDIDATE-1.8.1.json",
+  "installedBuild": "1.8.1",
+  "localCandidateBuild": "1.8.2",
+  "localCandidateReceipt": "release/LOCAL-CANDIDATE-1.8.2.json",
   "installedAudit1.2.3": {
     "build": "1.2.3",
     "status": "passed",
@@ -763,5 +763,15 @@
       "status": "passed",
       "evidence": "build/field-a04-150/installation.json"
     }
-  ]
+  ],
+  "route1SuffixAcceptance": {
+    "capturedBuild": "1.8.1-dev",
+    "lastMarker": "20261115T102431962Z-004",
+    "acceptedScope": "after final F only",
+    "wholeRoutePassed": false,
+    "providerAtMarkers": "atlas",
+    "solverAtMarkers": "reverse",
+    "reference": "authoring/route-001-reference-1.8.1-20261115.json",
+    "compiledIntoRoutes": false
+  }
 }

@@ -23,11 +23,10 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.8.1';
-const Search=require('./PBZRouteSearch');
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.8.2';
 const Build=require('./PBZRouteBuild');
 let diagnostics=null,developerAPI=null,developerPC=null,developerPawn=null,developerWorld=null,developerKeys=null,surveyTracker=null;
-const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,ReverseSearch:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
+const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
 let dir='',logPath='',mousePath='',ink,threads,previous=null,lastPoll=0,lastCfg=0,lastBells=0,lastLocks=0,permitted=[],lastSolve=0,oldWorld='',oldLocks='',lockRows=[],menu=false,serial=0;
@@ -46,17 +45,15 @@ function log(k,s){if(history.get(k)===s)return;history.set(k,s);notes.push(new D
 function safe(k,fn){try{return fn();}catch(e){log('error '+k,String(e)+' '+String(e.stack||'').split('\n').slice(1,2).join(''));}}
 function textFile(path){const out=P.$ref('');return UE.BlueprintPathsLibrary.FileExists(path)&&UE.EasyCsv.LoadStringFromLocalFile(path,out)?String(P.$unref(out)):'';}
 function settings(force=false){const now=Date.now();if(!force&&now-lastCfg<900)return;lastCfg=now;const old=S.cfg,cfg={...old};
- for(const line of textFile(dir+'Paks/~mods/PBZQuestRoute.txt').split(/\r?\n/)){const m=/^\s*(LargeItemIcons|AutoAccessory|MapRoute|MinimapRoute|WorldThread|DisplayMode|FogBellSense|ReverseSearch)\s*=\s*(\w+)/.exec(line);if(m)cfg[m[1]]=m[1]==='DisplayMode'?(/^Sense30$/i.test(m[2])?'Sense30':'Always'):/^(on|1|true)$/i.test(m[2]);}
+ for(const line of textFile(dir+'Paks/~mods/PBZQuestRoute.txt').split(/\r?\n/)){const m=/^\s*(LargeItemIcons|AutoAccessory|MapRoute|MinimapRoute|WorldThread|DisplayMode|FogBellSense)\s*=\s*(\w+)/.exec(line);if(m)cfg[m[1]]=m[1]==='DisplayMode'?(/^Sense30$/i.test(m[2])?'Sense30':'Always'):/^(on|1|true)$/i.test(m[2]);}
  let configFile=dir+'../Saved/PBZQuestRoute-settings.json';
  try{const k=UE.KismetSystemLibrary,root=k.ConvertToAbsolutePath(k.GetProjectSavedDirectory());
   if(root)configFile=String(root).replace(/[\\/]+$/,'')+'/PBZQuestRoute-settings.json';
  }catch(_){}
  const saved=textFile(configFile);
- cfg.ReverseSearch=Search.read(saved,cfg.ReverseSearch,old.ReverseSearch);
  Object.assign(cfg,ThreadColor.read(saved,{
   ThreadColor:old.ThreadColor||ThreadColor.defaults.ThreadColor,ThreadCustomColor:old.ThreadCustomColor||ThreadColor.defaults.ThreadCustomColor}));
- S.cfg=cfg;Search.configure(cfg.ReverseSearch);
- if(old.ReverseSearch!==cfg.ReverseSearch){planning.clear('search direction changed');previous=null;S.contextEpoch++;}
+ S.cfg=cfg;
  if(JSON.stringify(old)!==JSON.stringify(cfg))log('settings',JSON.stringify(cfg));}
 function show(){return S.cfg.DisplayMode==='Always'||Date.now()<S.expires;}
 function graph(world){return tables.worlds.includes(world)?atlas.get(world,[S.level,S.manual?.world]):null;}
@@ -279,7 +276,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  context.start||={...start};context.goal||={...dest.p};context.goalWorld||=dest.world;
  safe('ladder state',()=>Passages.refreshLadders(a,S.pawn));if(b!==a)safe('ladder state',()=>Passages.refreshLadders(b,S.pawn,false));
  const starts=(yield* Surface.anchorsJob(a,start)),ends=dest.node!==undefined?[{id:dest.node,q:dest.p}]:(yield* Surface.anchorsJob(b,dest.p,true));
- if(depth===0)context.report?.('atlas endpoints',{direction:Search.direction(),start,goal:dest.p,starts:starts.map(r=>r.id),ends:ends.map(r=>r.id),
+ if(depth===0)context.report?.('atlas endpoints',{direction:'forward',start,goal:dest.p,starts:starts.map(r=>r.id),ends:ends.map(r=>r.id),
   sharedComponent:starts.some(s=>ends.some(e=>a===b&&a.sameComponent(s.id,e.id)))});
  if(depth===0&&S.world.snapshot)context.report?.('ground origin',S.world.snapshot(start));
  const targetFloor=dest.item&&dest.world===S.level?S.world.floorAt(dest.p,true):null;yield;
@@ -399,7 +396,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   for(let attempt=0;attempt<(nearPads?3:lookout?9:4);attempt++){
   const r=yield* R.itineraryJob(a,b,s.q,dest.item?e.q:dest.p,entry,restrictions,e.id,s.id);if(!r)return null;let rejected=false;
   for(const l of r.legs)l.provider='atlas';
-  context.report?.('atlas candidate',{direction:Search.direction(),legs:r.legs.map(l=>({world:l.world,meters:l.meters,search:graphs.get(l.world)?.lastSearch,actions:l.moves?.map(m=>({kind:m.kind,guid:m.guid})),checks:l.checks?.length}))});
+  context.report?.('atlas candidate',{direction:'forward',legs:r.legs.map(l=>({world:l.world,meters:l.meters,search:graphs.get(l.world)?.lastSearch,actions:l.moves?.map(m=>({kind:m.kind,guid:m.guid})),checks:l.checks?.length}))});
   const lead=getJoin(s);if(!lead)return null;const first=r.legs[0];first.points=[...lead.slice(0,-1),...first.points];first.meters=R.extent(first.points)/100;
   for(const c of first.checks)if(c.from!==undefined){c.from+=lead.length-1;if(c.to!==undefined)c.to+=lead.length-1;}
   for(const c of [...(first.walks||[]),...(first.moves||[])]){c.from+=lead.length-1;c.to+=lead.length-1;}
@@ -777,7 +774,7 @@ function developerTick(now){
  const capture=()=>developerAPI.snapshot({...S,manual:S.manual||planning.job?.request||previous||S.scout,
   captureOrigin:planning.job?.request.start||previous?.start,observedLocks:lockRows},planning,threads,notes);
  if(diagnostics.context!==S.level+'/'+S.contextEpoch||now-diagnostics.lastSample>=100){const sample={context:S.level+'/'+S.contextEpoch,world:S.level,feet,routeVersion:S.version,
-  targetKey:S.manual?.key||S.targetKey||planning.job?.request.key||null,searchRequested:Search.direction(),
+  targetKey:S.manual?.key||S.targetKey||planning.job?.request.key||null,searchRequested:'forward',
   physical:S.world.snapshot(feet),travel:S.travelPhase||null};
   diagnostics.sample(sample,now);diagnostics.survey?.sample(sample,!menu,now);
  }
@@ -1080,7 +1077,6 @@ function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(global
  {key:'MapRoute',type:'toggle',default:true,label:t('Map route','地图路线')},{key:'MinimapRoute',type:'toggle',default:true,label:t('Minimap route','小地图路线')},{key:'WorldThread',type:'toggle',default:true,label:t('Guiding thread','场景引路线')},
  {key:'LargeItemIcons',type:'toggle',default:true,label:t('Large unframed item icons','放大物品图标并移除黑底')},{key:'AutoAccessory',type:'toggle',default:true,label:t('Nearest accessory hint','自动提示最近饰品')},
  {key:'FogBellSense',type:'toggle',default:true,label:t('Sense a bell in fog','迷雾中洞照寻铃')},
- {key:'ReverseSearch',type:'toggle',default:true,label:t('Reverse candidate search (experimental)','候选图反向搜索（实验）')},
  {key:'DisplayMode',type:'choice',default:'Always',label:t('Display mode','显示方式'),options:[{value:'Always',label:t('While tracking','追踪时持续显示')},{value:'Sense30',label:t('30 seconds after Sense','洞照后显示30秒')}]}],onChange:()=>settings(true)});}
 exports.install=function(){if(globalThis.__PBZQuestRouteInstalled)return;dir=UE.KismetSystemLibrary.ConvertToAbsolutePath(UE.KismetSystemLibrary.GetProjectContentDirectory()).replace(/[\\/]?$/,'/');
  logPath=dir+'../Saved/PBZQuestRoute-log.txt';mousePath=dir+'../Saved/PBZQuestRoute-middle.txt';ink=new Ink(dir+'Mods/PBZQuestRoute/',log);mini=new MinimapRoute(dir+'Mods/PBZQuestRoute/',log);threads=new Threads(log);statusHud=new RouteStatus.StatusHud(UE,W,log);

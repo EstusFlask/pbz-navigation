@@ -1,0 +1,8 @@
+main 1.8.2: forward-only solvers; 370 JS tests passed; Lua/native passed.
+PASS: all streamed actor metadata hashes match; 951 modules, largest 524319 bytes
+PASS: all 291 legacy navigation chunk paths retain their exact original string values
+PASS: every streamed column matches original data byte hashes; original source files unchanged
+PASS: release complete archive, 19715 exact file matches, no collector-owned paths
+PASS: archive, runtime, native adapter and documentation versions agree: 1.8.2
+PASS: development complete archive, 19722 exact file matches, no collector-owned paths
+PASS: archive, runtime, native adapter and documentation versions agree: 1.8.2

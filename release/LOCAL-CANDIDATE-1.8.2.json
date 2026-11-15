@@ -1,0 +1,54 @@
+{
+  "version": "1.8.2",
+  "branch": "main",
+  "clientDate": "2026-11-15",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.2.zip",
+      "bytes": 164305301,
+      "sha256": "a4b4ed551178219d29f871d3006039b0865a7b9f76fe3edd72844765d57f9e4e",
+      "files": 19715,
+      "profile": {
+        "version": "1.8.2",
+        "flavor": "release",
+        "label": "1.8.2",
+        "development": false,
+        "sourceSHA256": "b50833a7ec149102612dfafec7db6b1999325887b0c107cc6fa66c84a7c73b04",
+        "captureSchema": 1,
+        "surfaceDataSHA256": "e42734d41671533d1f92cc7b8597344fbcb1b8e501b42115739237d092d01721"
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.2_Development.zip",
+      "bytes": 164328088,
+      "sha256": "629c6da57c827929664b18f46f3b7d19fc405a9abc1abce79cfba9320d2c44d3",
+      "files": 19722,
+      "profile": {
+        "version": "1.8.2",
+        "flavor": "development",
+        "label": "1.8.2-dev",
+        "development": true,
+        "sourceSHA256": "b50833a7ec149102612dfafec7db6b1999325887b0c107cc6fa66c84a7c73b04",
+        "captureSchema": 1,
+        "surfaceDataSHA256": "e42734d41671533d1f92cc7b8597344fbcb1b8e501b42115739237d092d01721",
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 370,
+  "luaChecks": "passed",
+  "nativeChecks": "passed",
+  "reverseSearchRemoved": true,
+  "report": "docs/HEYBOX-BRANCH.md",
+  "installedToGame": false,
+  "uploaded": false
+}

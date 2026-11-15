@@ -1,5 +1,5 @@
 Quest and Exploration Navigation - Fork
-Version:1.8.1 (Experimental)
+Version:1.8.2 (Experimental)
 
 Map routes and a blue guide for quests, collectibles and bells. Some routes still need improvement and testing.
 
@@ -7,7 +7,6 @@ Install:close the game and replace the old navigation with the complete ZIP in U
 Package choice: standard for everyday use, Development for testing. Install one at a time. Development records a local case on gamepad heavy-attack Y or keyboard Y during gameplay and shows a saved/failed notice, including target, routes and before/after context.
 Requires PBZModLoader1.0.0. Mods Menu is optional; collectible navigation also needs Map Tracker Plus and its UE4SS dependency.
 Controls:select a map target. For tracker items, hover and press the middle mouse button, or use the D-pad and press A. Movement actions remain manual.
-Search direction: target-first search is enabled by default. With PbzModConfig and UE4SS, toggle "Reverse candidate search (experimental)" under Settings -> Mods -> Quest & Exploration Navigation -> Route planning. Changing it replans the current target.
 
 Rope color: install PbzModConfig and UE4SS, then choose Red, Blue (default) or Custom under Quest & Exploration Navigation on the Mods settings page. Changes save and apply automatically.
 

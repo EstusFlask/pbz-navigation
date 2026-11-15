@@ -1,6 +1,6 @@
 # 任务与探索导航 / Quest and Exploration Navigation
 
-版本 / Version **1.8.1** · 实验版 / Experimental
+版本 / Version **1.8.2** · 实验版 / Experimental
 
 ## 安装与更新
 
@@ -31,9 +31,6 @@
 - 手柄在地图中用十字键选择对应方向的收集物，再按A确认。
 - 攀爬、钩索、跳跃和乘船仍由玩家操作；导航只提供指引。
 - Mods Menu可选装，用于调整原有导航设置。
-- 寻路方向：默认开启“候选图反向搜索（实验）”。安装PbzModConfig及UE4SS后，在游戏设置→Mods→任务与探索导航→路线规划中切换，约1秒内重新规划当前目标。该设置与绳子颜色一起保存在实际Saved目录的`PBZQuestRoute-settings.json`，更新时保留。
-- 此开关控制离线路网、有限步行候选图与动作图；UE原生和实时局部网格仍使用各自的正向策略。开发报告分别记录请求方向和实际使用方向。同图、同代价下正反向可能得到同一条路线。
-- 未使用PbzModConfig保存寻路方向时，也可通过旧Mods Menu，或在`ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt`中设置`ReverseSearch=false`关闭、`true`开启；PbzModConfig保存的寻路方向优先。
 - 绳子颜色：另装PbzModConfig及其UE4SS依赖，在游戏设置的Mods页选择“任务与探索导航”→“绳子颜色”，可选红色、蓝色（默认）或自定义；选择自定义后使用颜色选择器。约1秒内生效并自动保存，不需要Map Tracker。
 - 颜色配置保存在实际ProjectPBZ/Saved目录下的PBZQuestRoute-settings.json，更新时保留该文件。
 
@@ -54,6 +51,5 @@ Experimental: some multi-floor routes, special moves and unloaded areas still ne
 
 Choose one complete package: standard or Development. The development package records local reports when you press gamepad heavy-attack Y or keyboard Y during gameplay, without consuming the attack. It saves the current target, actual route/render inputs, effective solver/direction, collision failures and up to 20 seconds before / 5 seconds after the mark. Reports are `PBZQuestRoute-dev-*.json` in the engine Saved directory; they stay local. Menus are excluded, held input is debounced, and reports remain unreviewed observations. The standard archive excludes the recorder. Restart after changing packages. The reverse-candidate option affects atlas/hint/action graphs; native and local-grid fallbacks retain their own direction.
 
-“Reverse candidate search (experimental)” is enabled by default. With PbzModConfig and UE4SS, open Settings → Mods → Quest & Exploration Navigation → Route planning. Changing the option replans the current target within about one second and saves it with rope colors in the actual Saved directory's `PBZQuestRoute-settings.json`. The legacy Mods Menu or `ReverseSearch=false`/`true` in `ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt` remains a fallback until this option is saved in PbzModConfig; the saved PbzModConfig value takes priority. Preserve your settings when updating.
 
 Original navigation and assets: azqwq333,0.8.5-beta. Fork:kurosakana. Code and documentation assisted by AI.

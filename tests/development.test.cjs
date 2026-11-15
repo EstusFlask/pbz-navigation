@@ -12,16 +12,16 @@ test('development input reaches the real capture adapter and saves exact target,
  const c={Build:{development:true,label:'1.5.0-dev'},developerAPI:null,diagnostics:null,surveyTracker:null,developerPC:null,developerPawn:null,developerWorld:null,developerKeys:null,
   require:id=>require(path.resolve(root,id)),UE:{KismetSystemLibrary:{GetProjectSavedDirectory:()=> 'actual-saved/',ConvertToAbsolutePath:p=>p},
    GameplayStatics:{GetPlayerController:()=>pc},Key:class{constructor(name){this.name=name;}},EasyCsv:{SaveStringToFileWithFullPath:(text,p)=>{files.set(p,text);return true;}}},
-  W:{alive:x=>!!x},Search:{direction:()=> 'reverse'},textFile:p=>files.get(p)||'',log(){},updateRouteStatus(){},menu:false,previous:null,
+  W:{alive:x=>!!x},textFile:p=>files.get(p)||'',log(){},updateRouteStatus(){},menu:false,previous:null,
   notes:[],lockRows:[],threads:{shape(){}},ink:{},tables:require(root+'/PBZRouteTables').data,planning:{pending:false,stats:{}},
-  S:{pawn:{},world:{feet:()=>feet,snapshot:()=>({profile:'Pawn'}),step:(a,b)=>({p:b})},level:'world',contextEpoch:1,cfg:{ReverseSearch:true},
+  S:{pawn:{},world:{feet:()=>feet,snapshot:()=>({profile:'Pawn'}),step:(a,b)=>({p:b})},level:'world',contextEpoch:1,cfg:{WorldThread:true},
    manual:{key:'gate',world:'world',p:{x:99,y:0,z:0}},line:[feet,{x:99,y:0,z:0}],active:0,version:1,
    trip:{legs:[{world:'world',provider:'native',searchDirection:'forward',points:[feet,{x:99,y:0,z:0}],moves:[],checks:[]}]}}};
  vm.createContext(c);vm.runInContext(initialize,c)();c.threads.pool=[row];c.threads.shape(row,[feet,{x:80,y:0,z:105}]);
  const tick=vm.runInContext(source.slice(source.indexOf('function developerTick('),source.indexOf('function tick('))+';developerTick',c);
  tick(0);held.add('Gamepad_FaceButton_Top');tick(16);assert.equal(files.size,1);
  const [name,text]=[...files][0],data=JSON.parse(text);assert.ok(name.startsWith('actual-saved/PBZQuestRoute-dev-'));
- assert.equal(data.snapshot.target.key,'gate');assert.equal(data.snapshot.settings.ReverseSearch,true);
+ assert.equal(data.snapshot.target.key,'gate');assert.equal(data.snapshot.settings.WorldThread,true);
  assert.equal(data.snapshot.trip.legs[0].searchDirection,'forward','requested direction disguised the solver actually used');
  assert.equal(data.snapshot.rendered[0].points[1].x,80);
  tick(32);assert.equal(files.size,1,'held attack created duplicate cases');

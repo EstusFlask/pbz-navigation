@@ -1,5 +1,5 @@
 'use strict';
-const R=require('./PBZRouteCore'),Search=require('./PBZRouteSearch');
+const R=require('./PBZRouteCore');
 class Queue{
  constructor(){this.rows=[];}
  push(row){const a=this.rows;let i=a.length;a.push(row);while(i){const p=(i-1)>>1;if(a[p].score<=row.score)break;a[i]=a[p];i=p;}a[i]=row;}
@@ -14,8 +14,7 @@ function* searchOne(world,start,goal,options={}){
  if(!hints?.near||!world?.floorAt||!world.step||!R.finite(start)||!R.finite(goal)||R.dist(start,goal)>(options.maxDistance||12000))return null;
  const began=clock(),limit=options.maxMs||200,span=350;
  const graphLimit=Math.max(1,Math.min(1024,options.maxGraphNodes||768)),checkLimit=Math.max(1,Math.min(128,options.maxChecks||64));
- const reverse=(options.direction||Search.direction())==='reverse'&&typeof hints.candidates==='function';
- const stats={hintsOnly:true,lazy:true,direction:reverse?'reverse':'forward',graphLimit,checkLimit,expanded:0,probes:0,proposals:0,rejected:[]};
+ const stats={hintsOnly:true,lazy:true,direction:'forward',graphLimit,checkLimit,expanded:0,probes:0,proposals:0,rejected:[]};
  let frontier=null,frontierDistance=Infinity,goalSupported=false;
  const finish=(route,reason)=>{options.report?.('scene walking result',{...stats,reason,start,goal,goalSupported});return route||frontier;};
  const first=world.floorAt(start,true);yield;
@@ -25,7 +24,7 @@ function* searchOne(world,start,goal,options={}){
  goalSupported=!!goals.length;
  if(!goals.length&&options.allowFrontier&&hints.near(goal,span,16).length)goals=[{...goal}];
  if(!goals.length)return finish(null,'goal floor missing');
- const key=p=>[p.x,p.y,p.z].join(','),nodes=new Map(),adjacency=new Map(),incoming=new Map(),banned=new Set(),checked=new Map();
+ const key=p=>[p.x,p.y,p.z].join(','),nodes=new Map(),adjacency=new Map(),banned=new Set(),checked=new Map();
  const add=(p,id=key(p))=>{if(!nodes.has(id))nodes.set(id,{id,p:{...p}});return nodes.get(id);};
  const initial=add(first,'@start'),ends=goals.map((p,i)=>add(p,'@goal'+i));
  const rise=Number(world.rise)||50,slope=Number(world.slope)||1.5;
@@ -43,34 +42,21 @@ function* searchOne(world,start,goal,options={}){
   return adjacency.get(node.id);
  };
  const heuristic=p=>Math.min(...goals.map(q=>R.dist(p,q)));let graphReason='no candidate chain';
- const predecessors=function*(node){
-  if(incoming.has(node.id))return incoming.get(node.id);
-  const rows=[];let count=0;
-  if(neighbours(initial).some(n=>n.id===node.id))rows.push(initial);
-  // A capped nearest-neighbour list is not symmetric. Inspect nearby source
-  // nodes' original outgoing lists, rather than calling near() at the goal
-  // and pretending every returned edge can be traversed in either direction.
-  for(const p of hints.candidates(node.p,options.allowDrops?450:span)){
-   if((++count&7)===0){yield;if(clock()-began>=limit){graphReason='time budget';return null;}}
-   const candidate=add(p);if(neighbours(candidate).some(n=>n.id===node.id))rows.push(candidate);
-  }
-  incoming.set(node.id,rows);return rows;
- };
  const proposal=function*(){
   const open=new Queue(),best=new Map(),closed=new Set();
-  const estimate=p=>reverse?R.dist(p,first):heuristic(p);
-  for(const node of reverse?ends:[initial]){const row={node,cost:0,score:estimate(node.p),parent:null};open.push(row);best.set(node.id,row);}
+  const estimate=heuristic;
+  for(const node of [initial]){const row={node,cost:0,score:estimate(node.p),parent:null};open.push(row);best.set(node.id,row);}
   // This cap bounds cheap graph work, not live physics probes. The graph must
   // be allowed to traverse its finite candidates rather than repeat a small
   // truncated physical search from scratch on every attempt.
   while(open.rows.length&&stats.expanded<graphLimit){
    const row=open.pop(),id=row.node.id;if(closed.has(id)||best.get(id)!==row)continue;
-   if(reverse?id===initial.id:id.startsWith('@goal')){const chain=[];for(let n=row;n;n=n.parent)chain.push(n.node);return reverse?chain:chain.reverse();}
+   if(id.startsWith('@goal')){const chain=[];for(let n=row;n;n=n.parent)chain.push(n.node);return chain.reverse();}
    if(clock()-began>=limit){graphReason='time budget';return null;}
    closed.add(id);stats.expanded++;if((stats.expanded&7)===0)yield;
-   const adjacent=reverse?yield* predecessors(row.node):neighbours(row.node);if(!adjacent)return null;
+   const adjacent=neighbours(row.node);
    for(const next of adjacent){
-    if(closed.has(next.id)||banned.has(reverse?next.id+'>'+id:id+'>'+next.id))continue;
+    if(closed.has(next.id)||banned.has(id+'>'+next.id))continue;
     const cost=row.cost+R.dist(row.node.p,next.p),old=best.get(next.id);
     if(old&&old.cost<=cost)continue;
     const value={node:next,cost,score:cost+estimate(next.p),parent:row};best.set(next.id,value);open.push(value);
@@ -92,7 +78,7 @@ function* searchOne(world,start,goal,options={}){
   if(!chain){
    if(hints.pending?.size&&stats.expanded<graphLimit&&clock()-began<limit){
     while(hints.pending.size&&clock()-began<limit)yield;
-    adjacency.clear();incoming.clear();continue;
+    adjacency.clear();continue;
    }
    return finish(null,clock()-began>=limit?'time budget':graphReason);
   }

@@ -4,10 +4,9 @@ local json = Core.json
 local M = {}
 local function text(en, zh, hant) return {en=en, ['zh-Hans']=zh, ['zh-Hant']=hant or zh} end
 M.descriptor = {
-    apiVersion=1, modId='PBZQuestRoute', modVersion='1.8.1', schemaVersion=1,
+    apiVersion=1, modId='PBZQuestRoute', modVersion='1.8.2', schemaVersion=1,
     displayName=text('Quest & Exploration Navigation', '任务与探索导航', '任務與探索導航'),
-    groups={{id='thread', label=text('Guiding thread', '导航绳子', '導航繩子'), order=0},
-        {id='navigation', label=text('Route planning', '路线规划', '路線規劃'), order=1}},
+    groups={{id='thread', label=text('Guiding thread', '导航绳子', '導航繩子'), order=0}},
     entries={
         {key='ThreadColor', group='thread', type='choice', defaultValue='blue',
             label=text('Rope color', '绳子颜色', '繩子顏色'),
@@ -18,9 +17,7 @@ M.descriptor = {
             label=text('Custom color', '自定义颜色', '自訂顏色'),
             description=text('Applies to the scene guiding rope immediately.', '即时应用到场景中的导航绳子。', '即時套用至場景中的導航繩子。'),
             visibleWhen={key='ThreadColor', equals='custom'}},
-        {key='ReverseSearch', group='navigation', type='toggle', defaultValue=true,
-            label=text('Reverse candidate search (experimental)', '候选图反向搜索（实验）', '候選圖反向搜尋（實驗）'),
-            description=text('Changes candidate-graph search. Native and local-grid fallbacks keep their own search direction.', '切换候选图搜索方向并重算。原生与局部网格回退仍按各自方向搜索。', '切換候選圖搜尋方向並重算；原生及局部網格回退維持各自方向。')}
+
     }
 }
 

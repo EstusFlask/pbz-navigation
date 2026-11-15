@@ -39,7 +39,7 @@ test('physics probe traffic cannot evict planning events from the pre-marker win
 });
 test('case snapshot retains exact active route and visible blue-line inputs as plain data',()=>{
  const a={x:1,y:2,z:3},b={x:4,y:5,z:6};
- const state={level:'w',manual:{key:'item',p:b},trip:{legs:[{world:'w',points:[a,b],moves:[],checks:[],obstacles:[]}]},active:0,line:[a,b],cfg:{ReverseSearch:true},version:2};
+ const state={level:'w',manual:{key:'item',p:b},trip:{legs:[{world:'w',points:[a,b],moves:[],checks:[],obstacles:[]}]},active:0,line:[a,b],cfg:{WorldThread:true},version:2};
  const data=snapshot(state,{pending:false,stats:{}},{pool:[{on:true,__devPoints:[a,b],__devTotal:2},{on:false,__devPoints:[b]}]},['log']);
  a.x=900;assert.equal(data.trip.legs[0].points[0].x,1);assert.equal(data.rendered.length,1);assert.deepEqual(data.rendered[0].points[1],b);
 });

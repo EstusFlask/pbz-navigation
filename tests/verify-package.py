@@ -82,7 +82,7 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     assert version.encode('utf-16le') in z.read(adapter), 'native adapter version mismatch'
     assert ("modVersion='"+version+"'") in z.read('platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZRouteConfig.lua').decode('utf-8'), 'settings provider version mismatch'
     assert not any(n.endswith('PBZQuestRoute-settings.json') for n in names), 'player color settings included in update'
-    for name in ['README-en.txt','README-zh.txt',*package_documents]:
+    for name in ['README-en.txt','README-zh.txt','INSTALL-README.md','CHANGELOG.md','HEYBOX-MAP-IMPORT.md']:
         assert version in z.read(name).decode('utf-8'), 'documentation version mismatch'
     for name in names:
         if name in (BUILD,LUA_BUILD):continue

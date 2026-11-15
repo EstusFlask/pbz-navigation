@@ -1,3 +1,8 @@
+### Version 1.8.2
+
+- Removed the experimental reverse-search option.
+- 移除实验性的反向搜索选项。
+
 ### Version 1.8.1
 
 - Prioritized nearby collectible routes and reduced delays from model loading and repeated searches.

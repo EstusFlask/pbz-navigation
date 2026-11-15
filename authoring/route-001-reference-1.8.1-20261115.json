@@ -1,0 +1,2344 @@
+{
+  "schema": 1,
+  "kind": "field-acceptance-window",
+  "role": "validation reference only; never navigation input",
+  "humanRoute": 1,
+  "target": {
+    "key": "bell:pbz_pangzhen_wp/bell_xm_015",
+    "world": "pbz_pangzhen_wp",
+    "area": "pangzhen",
+    "bell": "Bell_XM_015",
+    "item": true,
+    "label": "戏梦山庄正门",
+    "p": {
+      "x": -187916,
+      "y": 114639,
+      "z": -1057
+    },
+    "start": null
+  },
+  "capturedBuild": "1.8.1-dev",
+  "world": "pbz_pangzhen_wp",
+  "lastMarker": "20261115T102431962Z-004",
+  "lastMarkerAt": "2026-11-15T10:31:07.572Z",
+  "userAcceptance": {
+    "statement": "1号路线，在最后一次f之后的路都是对的了",
+    "acceptedScope": "suffix after final marker only",
+    "wholeRoutePassed": false
+  },
+  "sources": [
+    {
+      "case": "20261115T102431962Z-004",
+      "at": "2026-11-15T10:31:07.572Z",
+      "sha256": "997cbed0da57df619874fac061226c877b2a32f490d16e7c5f0cded28ee74466"
+    },
+    {
+      "case": "20261115T102431962Z-003",
+      "at": "2026-11-15T10:31:00.335Z",
+      "sha256": "6e0cb48064a9edab58d46dc3567c7d18cac5f23b64e96ced5d422e40906575c5"
+    },
+    {
+      "case": "20261115T102431962Z-002",
+      "at": "2026-11-15T10:30:48.067Z",
+      "sha256": "3a1b77613f72a0d13c51d475f571103b6c280e6530d85b069f14809645ba7606"
+    },
+    {
+      "case": "20261115T102431962Z-001",
+      "at": "2026-11-15T10:30:41.468Z",
+      "sha256": "300e06fb734530a8a24457649122c3e2be57f047b0874a2e58ff3878efbad45b"
+    }
+  ],
+  "providerAtMarkers": "atlas",
+  "solverAtMarkers": "reverse",
+  "availableAfterWindowMs": 5000,
+  "samples": [
+    {
+      "at": 1794738667632,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182009.64116326903,
+        "y": 119370.82031233348,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182009.64116326903,
+          "y": 119370.82031233348,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182009.64116326903,
+          "y": 119370.82031233348,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -182377.1407956239,
+            "y": 119062.85936376291,
+            "z": -4133.978648168945
+          },
+          "floor": {
+            "x": -182377.1407956239,
+            "y": 119062.85936376291,
+            "z": -4133.978648168945
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4133.978648168945,
+                "nz": 1,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738667736,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182024.85440793136,
+        "y": 119362.31331800188,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182024.85440793136,
+          "y": 119362.31331800188,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182024.85440793136,
+          "y": 119362.31331800188,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -182742.85950798084,
+            "y": 118697.14065140598,
+            "z": -4133.978648168945
+          },
+          "floor": {
+            "x": -182742.85950798084,
+            "y": 118697.14065140598,
+            "z": -4133.978648168945
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4133.978648168945,
+                "nz": 1,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738667846,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182063.84539391423,
+        "y": 119354.50341213727,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182063.84539391423,
+          "y": 119354.50341213727,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182063.84539391423,
+          "y": 119354.50341213727,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183291.42195151787,
+            "y": 118148.57039536977,
+            "z": -4133.978648168945
+          },
+          "floor": {
+            "x": -183291.42195151787,
+            "y": 118148.57039536977,
+            "z": -4133.978648168945
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4133.978648168945,
+                "nz": 1,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738667977,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182108.23997369834,
+        "y": 119353.13061775766,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182108.23997369834,
+          "y": 119353.13061775766,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182108.23997369834,
+          "y": 119353.13061775766,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183475.09375080274,
+            "y": 117077.35937673657,
+            "z": -4059.4022477373996
+          },
+          "floor": {
+            "x": -183475.09374501236,
+            "y": 117077.35937177148,
+            "z": -4059.402247572886
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4059.402247572886,
+                "nz": 0.9973999699091066,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668081,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182247.3656745616,
+        "y": 119339.32109228626,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182247.3656745616,
+          "y": 119339.32109228626,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182247.3656745616,
+          "y": 119339.32109228626,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183770.03125280718,
+            "y": 116624.94531436011,
+            "z": -4059.3152218460878
+          },
+          "floor": {
+            "x": -183770.03125280718,
+            "y": 116624.94531436011,
+            "z": -4059.3152218460878
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4059.3152218460878,
+                "nz": 0.9999970255177897,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668187,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182263.28894620066,
+        "y": 119340.31148558532,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182263.28894620066,
+          "y": 119340.31148558532,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182263.28894620066,
+          "y": 119340.31148558532,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183543.35937659722,
+            "y": 115952.35937556786,
+            "z": -3930.260106417732
+          },
+          "floor": {
+            "x": -183543.35937659722,
+            "y": 115952.35937556786,
+            "z": -3930.260106417732
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3930.260106417732,
+                "nz": 0.9221076957805413,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668294,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182263.70610580946,
+        "y": 119340.25695816135,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182263.70610580946,
+          "y": 119340.25695816135,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182263.70610580946,
+          "y": 119340.25695816135,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182263.70610580946,
+            "y": 119340.25695816135,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182263.70610580946,
+            "y": 119340.25695816135,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668399,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182269.5297122149,
+        "y": 119338.24339775997,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182269.5297122149,
+          "y": 119338.24339775997,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182269.5297122149,
+          "y": 119338.24339775997,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182269.5297122149,
+            "y": 119338.24339775997,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182269.5297122149,
+            "y": 119338.24339775997,
+            "z": -4133.978640539551
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668524,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182281.33081616153,
+        "y": 119331.81698588638,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182281.33081616153,
+          "y": 119331.81698588638,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182281.33081616153,
+          "y": 119331.81698588638,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -182571.50000098685,
+            "y": 113505.00000250702,
+            "z": -3195.1284222815357
+          },
+          "floor": {
+            "x": -182571.50000098685,
+            "y": 113505.00000250702,
+            "z": -3195.128422281536
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3195.128422281536,
+                "nz": 0.9255855052036024,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668630,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182299.73841061335,
+        "y": 119312.41433457437,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182299.73841061335,
+          "y": 119312.41433457437,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182299.73841061335,
+          "y": 119312.41433457437,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182299.73841061335,
+            "y": 119312.41433457437,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182299.73841061335,
+            "y": 119312.41433457437,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668760,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182327.78412054785,
+        "y": 119275.65062272399,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182327.78412054785,
+          "y": 119275.65062272399,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182327.78412054785,
+          "y": 119275.65062272399,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182327.78412054785,
+            "y": 119275.65062272399,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182327.78412054785,
+            "y": 119275.65062272399,
+            "z": -4133.97865579834
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668873,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182362.07977530087,
+        "y": 119227.22108925856,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182362.07977530087,
+          "y": 119227.22108925856,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182362.07977530087,
+          "y": 119227.22108925856,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182362.07977530087,
+            "y": 119227.22108925856,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182362.07977530087,
+            "y": 119227.22108925856,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738668980,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182398.3337401369,
+        "y": 119175.1238805957,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182398.3337401369,
+          "y": 119175.1238805957,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182398.3337401369,
+          "y": 119175.1238805957,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -181408.35136900394,
+            "y": 119463.27887493315,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -181408.3440203412,
+            "y": 119463.28119754788,
+            "z": -4133.978648168945
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4133.978648168945,
+                "nz": 1,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669108,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182440.14070147587,
+        "y": 119114.78936445156,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182440.14070147587,
+          "y": 119114.78936445156,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182440.14070147587,
+          "y": 119114.78936445156,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182440.14070147587,
+            "y": 119114.78936445156,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182440.14070147587,
+            "y": 119114.78936445156,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669225,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182480.28002283344,
+        "y": 119056.74222375499,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182480.28002283344,
+          "y": 119056.74222375499,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182480.28002283344,
+          "y": 119056.74222375499,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182480.28002283344,
+            "y": 119056.74222375499,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182480.28002283344,
+            "y": 119056.74222375499,
+            "z": -4133.978640539551
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669341,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182547.77005560527,
+        "y": 118958.98720195662,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182547.77005560527,
+          "y": 118958.98720195662,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182547.77005560527,
+          "y": 118958.98720195662,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182547.77005560527,
+            "y": 118958.98720195662,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182547.77005560527,
+            "y": 118958.98720195662,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669446,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182612.78788801664,
+        "y": 118864.81300521057,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182612.78788801664,
+          "y": 118864.81300521057,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182612.78788801664,
+          "y": 118864.81300521057,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182612.78788801664,
+            "y": 118864.81300521057,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182612.78788801664,
+            "y": 118864.81300521057,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669568,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182653.89745536336,
+        "y": 118805.2684131502,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182653.89745536336,
+          "y": 118805.2684131502,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182653.89745536336,
+          "y": 118805.2684131502,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183360.0000694592,
+            "y": 118080.00008992763,
+            "z": -4133.978648168945
+          },
+          "floor": {
+            "x": -183360.0000694592,
+            "y": 118080.00008992763,
+            "z": -4133.978648168945
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4133.978648168945,
+                "nz": 1,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669668,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182689.89746661388,
+        "y": 118753.1246927586,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182689.89746661388,
+          "y": 118753.1246927586,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182689.89746661388,
+          "y": 118753.1246927586,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183492.1249993014,
+            "y": 117363.11718623523,
+            "z": -4090.803069958378
+          },
+          "floor": {
+            "x": -183492.1249993014,
+            "y": 117363.11718623523,
+            "z": -4090.803069958378
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4090.803069958378,
+                "nz": 0.9221076949923137,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669783,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182739.9785743112,
+        "y": 118681.17684168462,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182739.9785743112,
+          "y": 118681.17684168462,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182739.9785743112,
+          "y": 118681.17684168462,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183711.28124999485,
+            "y": 116718.57031250198,
+            "z": -4055.995464019225
+          },
+          "floor": {
+            "x": -183711.28124999485,
+            "y": 116718.57031250198,
+            "z": -4055.995464019225
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4055.995464019225,
+                "nz": 0.9998792629867882,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738669911,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182794.74136560626,
+        "y": 118604.1108265697,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182794.74136560626,
+          "y": 118604.1108265697,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182794.74136560626,
+          "y": 118604.1108265697,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183533.7343735303,
+            "y": 115923.80468701356,
+            "z": -3917.863911959724
+          },
+          "floor": {
+            "x": -183533.7343735303,
+            "y": 115923.80468701356,
+            "z": -3917.863911959724
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3917.863911959724,
+                "nz": 0.9221076957805413,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670014,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182842.79729568533,
+        "y": 118537.42222317003,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182842.79729568533,
+          "y": 118537.42222317003,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182842.79729568533,
+          "y": 118537.42222317003,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183300.92187630388,
+            "y": 115233.00781485488,
+            "z": -3604.252670949357
+          },
+          "floor": {
+            "x": -183300.92187630388,
+            "y": 115233.00781485488,
+            "z": -3604.252670949357
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3604.252670949357,
+                "nz": 0.9221076947531033,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670128,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182890.54102137577,
+        "y": 118471.85530228412,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182890.54102137577,
+          "y": 118471.85530228412,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182890.54102137577,
+          "y": 118471.85530228412,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -182953.26562484415,
+            "y": 114359.92187526307,
+            "z": -3586.612636827303
+          },
+          "floor": {
+            "x": -182953.26562484415,
+            "y": 114359.92187526307,
+            "z": -3586.612636827303
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3586.612636827303,
+                "nz": 1,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670228,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182937.88291742717,
+        "y": 118407.25543270363,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182937.88291742717,
+          "y": 118407.25543270363,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182937.88291742717,
+          "y": 118407.25543270363,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -182658.12499981266,
+            "y": 113698.98437545662,
+            "z": -3299.866345493141
+          },
+          "floor": {
+            "x": -182658.12499981266,
+            "y": 113698.98437545662,
+            "z": -3299.866345493141
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3299.866345493141,
+                "nz": 0.9221029481074506,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670344,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -182984.72551368125,
+        "y": 118343.61145296444,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -182984.72551368125,
+          "y": 118343.61145296444,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -182984.72551368125,
+          "y": 118343.61145296444,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -182984.72551368125,
+            "y": 118343.61145296444,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -182984.72551368125,
+            "y": 118343.61145296444,
+            "z": -4133.97865579834
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670457,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183037.50840030148,
+        "y": 118272.1858476228,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183037.50840030148,
+          "y": 118272.1858476228,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183037.50840030148,
+          "y": 118272.1858476228,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183015.358133335,
+            "y": 118302.13706219528,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183015.358133335,
+            "y": 118302.13706219528,
+            "z": -4133.97865579834
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670587,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183093.73332607828,
+        "y": 118196.24007733383,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183093.73332607828,
+          "y": 118196.24007733383,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183093.73332607828,
+          "y": 118196.24007733383,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183072.11187410078,
+            "y": 118225.43537443306,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183072.11187410078,
+            "y": 118225.43537443306,
+            "z": -4133.97865579834
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670693,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183143.63127978262,
+        "y": 118128.90892299656,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183143.63127978262,
+          "y": 118128.90892299656,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183143.63127978262,
+          "y": 118128.90892299656,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183123.43094021335,
+            "y": 118156.15159366473,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183123.43094021335,
+            "y": 118156.15159366473,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670810,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183194.4896318892,
+        "y": 118060.65043203595,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183194.4896318892,
+          "y": 118060.65043203595,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183194.4896318892,
+          "y": 118060.65043203595,
+          "z": -4133.978640539551
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183174.68280096387,
+            "y": 118087.15464576741,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183174.68280096387,
+            "y": 118087.15464576741,
+            "z": -4133.978640539551
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738670913,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183242.665243188,
+        "y": 117997.02971848835,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183242.665243188,
+          "y": 117997.02971848835,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183242.665243188,
+          "y": 117997.02971848835,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183233.45281909892,
+            "y": 118009.05787287213,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183233.45281909892,
+            "y": 118009.05787287213,
+            "z": -4133.978640539551
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671030,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183294.2509783889,
+        "y": 117930.42397498616,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183294.2509783889,
+          "y": 117930.42397498616,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183294.2509783889,
+          "y": 117930.42397498616,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -182477.68749497904,
+            "y": 112749.10937125747,
+            "z": -2890.070468582853
+          },
+          "floor": {
+            "x": -182477.68749497904,
+            "y": 112749.10937125747,
+            "z": -2890.070468582853
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -2890.070468582853,
+                "nz": 0.9219441063007393,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671137,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183345.83767680274,
+        "y": 117864.55976331241,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183345.83767680274,
+          "y": 117864.55976331241,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183345.83767680274,
+          "y": 117864.55976331241,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183345.83767680274,
+            "y": 117864.55976331241,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183345.83767680274,
+            "y": 117864.55976331241,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671241,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183391.9133026532,
+        "y": 117805.99596263474,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183391.9133026532,
+          "y": 117805.99596263474,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183391.9133026532,
+          "y": 117805.99596263474,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183345.83767680274,
+            "y": 117864.55976331241,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183345.83767680274,
+            "y": 117864.55976331241,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671352,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183443.9977367523,
+        "y": 117739.91615584634,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183443.9977367523,
+          "y": 117739.91615584634,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183443.9977367523,
+          "y": 117739.91615584634,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183399.54493603663,
+            "y": 117796.30920291175,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183399.54493603663,
+            "y": 117796.30920291175,
+            "z": -4133.97865579834
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671480,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183501.40188053806,
+        "y": 117665.06307146251,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183501.40188053806,
+          "y": 117665.06307146251,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183501.40188053806,
+          "y": 117665.06307146251,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183501.40188053806,
+            "y": 117665.06307146251,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183501.40188053806,
+            "y": 117665.06307146251,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671591,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183563.88552204813,
+        "y": 117603.8457873999,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 350,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183563.88552204813,
+          "y": 117603.8457873999,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183563.88552204813,
+          "y": 117603.8457873999,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183563.88552204813,
+            "y": 117603.8457873999,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183563.88552204813,
+            "y": 117603.8457873999,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671705,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183643.54567072404,
+        "y": 117554.56799078036,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183643.54567072404,
+          "y": 117554.56799078036,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183643.54567072404,
+          "y": 117554.56799078036,
+          "z": -4133.978648168945
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183643.54567072404,
+            "y": 117554.56799078036,
+            "z": -4132.02938312245
+          },
+          "floor": {
+            "x": -183643.54567072404,
+            "y": 117554.56799078036,
+            "z": -4133.978648168945
+          }
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671836,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183748.65863906962,
+        "y": 117494.3753108731,
+        "z": -4132.02938312245
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183748.65863906962,
+          "y": 117494.3753108731,
+          "z": -4132.02938312245
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183748.65863906962,
+          "y": 117494.3753108731,
+          "z": -4133.97865579834
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183477.1718749899,
+            "y": 117112.10937501014,
+            "z": -4058.1326822223705
+          },
+          "floor": {
+            "x": -183477.1718749899,
+            "y": 117112.10937501014,
+            "z": -4058.1326822223705
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4058.1326822223705,
+                "nz": 0.9991292289370332,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738671964,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183827.1347794588,
+        "y": 117408.17537114829,
+        "z": -4110.013743402943
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183827.1347794588,
+          "y": 117408.17537114829,
+          "z": -4110.013743402943
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183827.1347794588,
+          "y": 117408.17537114829,
+          "z": -4108.658590114139
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183711.28124999485,
+            "y": 116718.57031250198,
+            "z": -4055.995464019225
+          },
+          "floor": {
+            "x": -183711.28124999485,
+            "y": 116718.57031250198,
+            "z": -4055.995464019225
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4055.995464019225,
+                "nz": 0.9998792629867882,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738672066,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183862.64310964374,
+        "y": 117321.97899025459,
+        "z": -4074.545133456047
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183862.64310964374,
+          "y": 117321.97899025459,
+          "z": -4074.545133456047
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183862.64310964374,
+          "y": 117321.97899025459,
+          "z": -4073.18999370203
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183748.07812497948,
+            "y": 116559.83593750292,
+            "z": -4060.7122863765962
+          },
+          "floor": {
+            "x": -183748.07812497948,
+            "y": 116559.83593750292,
+            "z": -4060.7122863765962
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4060.7122863765962,
+                "nz": 0.9999365418880097,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738672189,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183882.8846993352,
+        "y": 117213.84183264991,
+        "z": -4057.5222014565634
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183882.8846993352,
+          "y": 117213.84183264991,
+          "z": -4057.5222014565634
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183882.8846993352,
+          "y": 117213.84183264991,
+          "z": -4059.6685675164667
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183704.1250127004,
+            "y": 116429.37499529462,
+            "z": -4024.3278623070564
+          },
+          "floor": {
+            "x": -183704.12499856236,
+            "y": 116429.37500484173,
+            "z": -4024.3278661227737
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -4024.3278661227737,
+                "nz": 0.9220430686620742,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738672291,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183887.73841071804,
+        "y": 117114.39796037524,
+        "z": -4058.379378714101
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183887.73841071804,
+          "y": 117114.39796037524,
+          "z": -4058.379378714101
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183887.73841071804,
+          "y": 117114.39796037524,
+          "z": -4060.525749078861
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183660.15624794172,
+            "y": 116298.9140619801,
+            "z": -3967.6235770757776
+          },
+          "floor": {
+            "x": -183660.15624794172,
+            "y": 116298.9140619801,
+            "z": -3967.6235770757776
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3967.6235770757776,
+                "nz": 0.9220430686620742,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738672415,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183884.7309715168,
+        "y": 116998.63704848704,
+        "z": -4059.4094876427816
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183884.7309715168,
+          "y": 116998.63704848704,
+          "z": -4059.4094876427816
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183884.7309715168,
+          "y": 116998.63704848704,
+          "z": -4061.558883757843
+        },
+        "query": {
+          "source": "ray",
+          "at": {
+            "x": -183583.20312523178,
+            "y": 116070.61718719089,
+            "z": -3942.3219003640097
+          },
+          "floor": {
+            "x": -183583.20312523178,
+            "y": 116070.61718719089,
+            "z": -3942.3219003640097
+          },
+          "attempts": [
+            {
+              "up": 12,
+              "hit": {
+                "z": -3942.3219003640097,
+                "nz": 0.9997326957000732,
+                "penetrating": false
+              }
+            }
+          ]
+        }
+      },
+      "travel": null
+    },
+    {
+      "at": 1794738672541,
+      "context": "pbz_pangzhen_wp/5",
+      "world": "pbz_pangzhen_wp",
+      "feet": {
+        "x": -183875.22521147234,
+        "y": 116878.49811695301,
+        "z": -4055.6899122121185
+      },
+      "routeVersion": 352,
+      "targetKey": "bell:pbz_pangzhen_wp/bell_xm_015",
+      "searchRequested": "reverse",
+      "physical": {
+        "feet": {
+          "x": -183875.22521147234,
+          "y": 116878.49811695301,
+          "z": -4055.6899122121185
+        },
+        "halfHeight": 96,
+        "radius": 45,
+        "stepHeight": 50,
+        "normal": 0.5735764503479004,
+        "profile": "Profile_Capsule",
+        "mode": 1,
+        "customMode": 0,
+        "slopeVolumes": 0,
+        "movementFloor": {
+          "x": -183875.22521147234,
+          "y": 116878.49811695301,
+          "z": -4057.5042674664587
+        },
+        "query": {
+          "source": "movement",
+          "at": {
+            "x": -183875.22521147234,
+            "y": 116878.49811695301,
+            "z": -4055.6899122121185
+          },
+          "floor": {
+            "x": -183875.22521147234,
+            "y": 116878.49811695301,
+            "z": -4057.5042674664587
+          }
+        }
+      },
+      "travel": null
+    }
+  ]
+}
