@@ -408,6 +408,25 @@
         "authoring/field-retest-1.8.0-currency.json",
         "docs/FIELD-FIXES-1.8.1.md"
       ]
+    },
+    {
+      "id": "ROUTE-001",
+      "name": "1号路线：戏梦山庄正门方向",
+      "world": "pbz_pangzhen_wp",
+      "targetBell": "Bell_XM_015",
+      "status": "suffix_user_accepted_front_unresolved",
+      "capturedBuilds": [
+        "1.8.1-dev"
+      ],
+      "livePassedBuilds": [],
+      "suffixLivePassedBuilds": [
+        "1.8.1"
+      ],
+      "acceptedScope": "after final F only",
+      "candidateBuild": "1.8.2",
+      "resultEvidence": [
+        "authoring/route-001-reference-1.8.1-20261115.json"
+      ]
     }
   ],
   "issues": [
@@ -670,7 +689,10 @@
     "fieldStatus": "pending",
     "report": "docs/FIELD-FIXES-1.4.0.md",
     "priorAcceptedCasesPreserved": true,
-    "recordingStarted": false
+    "recordingStarted": false,
+    "status": "retired",
+    "retiredIn": "1.8.2",
+    "enabled": false
   },
   "resumeCaseAfterHook": "A-04",
   "focusedRetest": {
