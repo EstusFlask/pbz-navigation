@@ -11,7 +11,7 @@ ExecuteInGameThreadWithDelay=function(delay,fn) assert(delay==200);queued[#queue
 assert(loadfile(adapter_scripts .. '/PBZTrackerHost.lua'))()
 assert(calls==0, 'host touched engine objects before tracker game-thread boot')
 assert(require~=saved_require)
-local Target=require('PbzMapTarget') -- original 1.0.9 bytecode, in the collector VM
+local Target=require('PbzMapTarget') -- original 1.0.14 bytecode, in the collector VM
 assert(require~=saved_require, 'selection factory has not been observed yet')
 local Selection=require('PbzMapSelection')
 assert(require==saved_require, 'host did not restore require after attaching')

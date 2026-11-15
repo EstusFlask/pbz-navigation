@@ -1,0 +1,73 @@
+{
+  "source": "1.5.0-dev A-04 marker005; action cycle is outside the user-reported wrong-ladder excursion",
+  "caseId": "20261115T030942803Z-005",
+  "sourceSHA256": "1167296282a51b4854e623bfabd86244ca6d46ec985ebf64fe96f69e1933707c",
+  "scope": "Actual selected route metadata and endpoint coordinates; test walk callbacks isolate planning policy and do not replay game collision.",
+  "world": "pbz_xigu_wp",
+  "start": {
+    "x": -56688.696126041345,
+    "y": 216444.86895858,
+    "z": -15152.690317793209
+  },
+  "goal": {
+    "x": -52359,
+    "y": 227135,
+    "z": -20715
+  },
+  "feature": {
+    "guid": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1076387978",
+    "kind": "ladder",
+    "both": true,
+    "runtimePath": [
+      {
+        "x": -57505.000004783935,
+        "y": 217103.9999963574,
+        "z": -15140.757955040286
+      },
+      {
+        "x": -57651.74217649295,
+        "y": 217102.98437778166,
+        "z": -13514.335598407772
+      }
+    ]
+  },
+  "observedMoves": [
+    {
+      "kind": "ladder",
+      "guid": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1076387978",
+      "from": 248,
+      "to": 251,
+      "p": {
+        "x": -57505.000004783935,
+        "y": 217103.9999963574,
+        "z": -15140.757955040286
+      },
+      "end": {
+        "x": -57651.74217649295,
+        "y": 217102.98437778166,
+        "z": -13514.335598407772
+      },
+      "fold": false,
+      "scripted": false
+    },
+    {
+      "kind": "ladder",
+      "guid": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1076387978",
+      "from": 251,
+      "to": 254,
+      "p": {
+        "x": -57651.74217649295,
+        "y": 217102.98437778166,
+        "z": -13514.335598407772
+      },
+      "end": {
+        "x": -57505.000004783935,
+        "y": 217103.9999963574,
+        "z": -15140.757955040286
+      },
+      "fold": false,
+      "scripted": false
+    }
+  ],
+  "excludedUserLadder": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98258502_1502607232"
+}

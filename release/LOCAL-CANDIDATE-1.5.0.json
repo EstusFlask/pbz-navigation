@@ -1,0 +1,54 @@
+{
+  "version": "1.5.0",
+  "status": "12 actual development reports reviewed; capture transport verified; full navigation not accepted",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.5.0.zip",
+      "bytes": 120580186,
+      "sha256": "6bdc7a97fb24a3a8194122332ac250e403023eaaf5ae9791542c06d0c23f7ff1",
+      "files": 1386,
+      "runtimeFiles": 1376,
+      "profile": {
+        "version": "1.5.0",
+        "flavor": "release",
+        "label": "1.5.0",
+        "development": false,
+        "sourceSHA256": "0e7ca15e9b7755556099a75c715cc5f69b67db105e9cf10648d5760370ac8221",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.5.0_Development.zip",
+      "bytes": 120583494,
+      "sha256": "bbc80340d51fcf29fa4c13cfdd1087e457ced6203b4b6994f53d4717bb3efe83",
+      "files": 1387,
+      "runtimeFiles": 1377,
+      "profile": {
+        "version": "1.5.0",
+        "flavor": "development",
+        "label": "1.5.0-dev",
+        "development": true,
+        "sourceSHA256": "0e7ca15e9b7755556099a75c715cc5f69b67db105e9cf10648d5760370ac8221",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "81ef72e4e5adfc099c4635042945c455d9b39a5bb89f9c782c41cfca36bc885e"
+      }
+    }
+  ],
+  "javascriptPassed": 332,
+  "fieldToolTests": 9,
+  "luaChecks": "real ModConfig1.0.4 and tracker1.0.9/1.0.14 passed",
+  "nativeChecks": "passed",
+  "packageChecks": "release1386 and development1387 exact matches; same navigation-core hash; recorder absent from standard",
+  "report": "docs/DEVELOPMENT-CAPTURE-1.5.0.md",
+  "installedToGame": true,
+  "liveMarkerRetested": true,
+  "uploaded": false,
+  "existingRouteGapsResolved": false,
+  "installationBy": "user",
+  "fieldCaptureEvidence": "authoring/field-retest-1.5.0-a04.json",
+  "liveMarkerScope": "12 actual game reports, verified write/readback and completed post windows; HUD visibility not independently observed"
+}

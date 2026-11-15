@@ -23,8 +23,11 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.3.5';
-const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.8.1';
+const Search=require('./PBZRouteSearch');
+const Build=require('./PBZRouteBuild');
+let diagnostics=null,developerAPI=null,developerPC=null,developerPawn=null,developerWorld=null,developerKeys=null,surveyTracker=null;
+const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,ReverseSearch:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
 let dir='',logPath='',mousePath='',ink,threads,previous=null,lastPoll=0,lastCfg=0,lastBells=0,lastLocks=0,permitted=[],lastSolve=0,oldWorld='',oldLocks='',lockRows=[],menu=false,serial=0;
@@ -38,15 +41,23 @@ const provenJoins=new Map();
 const confirmations=new WeakMap();let mini=null;
 const pointers=new WeakMap(),pads=new WeakMap();let tracker=null,waitingTracker=null,gameContext=null,lastPlayerCheck=0;
 const low=v=>String(v||'').toLowerCase(),xyz=p=>({x:p.X,y:p.Y,z:p.Z}),toPoint=a=>({x:a[0],y:a[1],z:a[2]});
-function log(k,s){if(history.get(k)===s)return;history.set(k,s);notes.push(new Date().toISOString()+' '+k+' '+s);if(notes.length>130)notes.shift();console.log('[PBZQuestRoute] '+k+' '+s);
+function log(k,s){if(history.get(k)===s)return;history.set(k,s);notes.push(new Date().toISOString()+' '+k+' '+s);if(notes.length>130)notes.shift();diagnostics?.event(k,s);console.log('[PBZQuestRoute] '+k+' '+s);
  if(logPath)try{UE.EasyCsv.SaveStringToFileWithFullPath(notes.join('\n')+'\n',logPath);}catch(_){}}
 function safe(k,fn){try{return fn();}catch(e){log('error '+k,String(e)+' '+String(e.stack||'').split('\n').slice(1,2).join(''));}}
 function textFile(path){const out=P.$ref('');return UE.BlueprintPathsLibrary.FileExists(path)&&UE.EasyCsv.LoadStringFromLocalFile(path,out)?String(P.$unref(out)):'';}
 function settings(force=false){const now=Date.now();if(!force&&now-lastCfg<900)return;lastCfg=now;const old=S.cfg,cfg={...old};
- for(const line of textFile(dir+'Paks/~mods/PBZQuestRoute.txt').split(/\r?\n/)){const m=/^\s*(LargeItemIcons|AutoAccessory|MapRoute|MinimapRoute|WorldThread|DisplayMode|FogBellSense)\s*=\s*(\w+)/.exec(line);if(m)cfg[m[1]]=m[1]==='DisplayMode'?(/^Sense30$/i.test(m[2])?'Sense30':'Always'):/^(on|1|true)$/i.test(m[2]);}
- Object.assign(cfg,ThreadColor.read(textFile(dir+'../Saved/PBZQuestRoute-settings.json'),{
+ for(const line of textFile(dir+'Paks/~mods/PBZQuestRoute.txt').split(/\r?\n/)){const m=/^\s*(LargeItemIcons|AutoAccessory|MapRoute|MinimapRoute|WorldThread|DisplayMode|FogBellSense|ReverseSearch)\s*=\s*(\w+)/.exec(line);if(m)cfg[m[1]]=m[1]==='DisplayMode'?(/^Sense30$/i.test(m[2])?'Sense30':'Always'):/^(on|1|true)$/i.test(m[2]);}
+ let configFile=dir+'../Saved/PBZQuestRoute-settings.json';
+ try{const k=UE.KismetSystemLibrary,root=k.ConvertToAbsolutePath(k.GetProjectSavedDirectory());
+  if(root)configFile=String(root).replace(/[\\/]+$/,'')+'/PBZQuestRoute-settings.json';
+ }catch(_){}
+ const saved=textFile(configFile);
+ cfg.ReverseSearch=Search.read(saved,cfg.ReverseSearch,old.ReverseSearch);
+ Object.assign(cfg,ThreadColor.read(saved,{
   ThreadColor:old.ThreadColor||ThreadColor.defaults.ThreadColor,ThreadCustomColor:old.ThreadCustomColor||ThreadColor.defaults.ThreadCustomColor}));
- S.cfg=cfg;if(JSON.stringify(old)!==JSON.stringify(cfg))log('settings',JSON.stringify(cfg));}
+ S.cfg=cfg;Search.configure(cfg.ReverseSearch);
+ if(old.ReverseSearch!==cfg.ReverseSearch){planning.clear('search direction changed');previous=null;S.contextEpoch++;}
+ if(JSON.stringify(old)!==JSON.stringify(cfg))log('settings',JSON.stringify(cfg));}
 function show(){return S.cfg.DisplayMode==='Always'||Date.now()<S.expires;}
 function graph(world){return tables.worlds.includes(world)?atlas.get(world,[S.level,S.manual?.world]):null;}
 function worldOf(area){const row=tables.areas[low(area)];if(row?.world)return row.world;if(low(area)===S.area)return S.level;return W.norm(UE.BellManager.GetMapData(area)?.LevelName);}
@@ -190,7 +201,7 @@ function* proofJob(leg,lookout,context,options={}){
   while(!physical.ok&&!options.deferRepair&&(context.repairs||0)<2){
    context.repairs=(context.repairs||0)+1;
    const clock=context.clock||Date.now;context.repairDeadline??=clock()+3500;
-   const fixed=yield* Repair.repair(w,candidate,physical,foot,{clock,deadline:context.repairDeadline,
+   const fixed=yield* Repair.repair(w,candidate,physical,foot,{clock,deadline:context.repairDeadline,surfaceBudget:context.surfaceBudget,
     traverse:['atlas','roadbook'].includes(leg.provider)?context.repairTraversal:undefined,report:context.report});if(!fixed)break;
    candidate=fixed.candidate;physical=fixed.verdict;
    if(!physical.ok){rememberCollision(candidate,physical);Blocked.offer(context,Blocked.fromFailure(candidate,physical,previewGoal),context.start,previewGoal);}
@@ -214,9 +225,10 @@ function updateRouteStatus(force=false){
  if(now-lastStatusCulture>=1000){lastStatusCulture=now;statusEnglish=/^en/i.test(String(UE.KismetInternationalizationLibrary?.GetCurrentLanguage?.()||'zh'));}
  const enabled=W.alive(S.pawn)&&S.world&&(S.cfg.MapRoute||S.cfg.MinimapRoute||S.cfg.WorldThread)&&S.arrival.completedTarget!==S.routeWork?.key;
  S.routeStatus=enabled?(TravelMode.message(S.travelPhase,statusEnglish)||RouteStatus.message(planning,atlas,S.routeWork,now,statusEnglish)):'';
+ const notice=[diagnostics?.notice(now),diagnostics?.survey?.notice(now)].filter(Boolean).join('\n');if(notice&&W.alive(S.pawn)&&!menu)S.routeStatus=notice+(S.routeStatus?'\n'+S.routeStatus:'');
  statusHud?.update(gameContext||S.pawn,S.routeStatus,now);
 }
-function reset(){S.travelPhase=null;clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
+function reset(){diagnostics?.survey?.finish('player context reset');S.travelPhase=null;clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
 function setTrip(trip,dest,start,why,requestContext){
  if(trip?.legs.some(l=>l.diagnostic))why+=' [blocked preview]';
  else if(trip?.legs.some(l=>l.partial))why+=' [partial]';else if(trip)why+=' [complete]';
@@ -235,7 +247,7 @@ function sampledPath(points){
   points:indices.map(i=>({i,p:{...points[i]}})),truncated:points.length>32};
 }
 function nativeWalk(start,goal,allowPartial=false,report){
- const unavailable=reason=>{report?.({status:'unavailable',reason,start:{...start},goal:{...goal}});return null;};
+ const unavailable=reason=>{const data={direction:'forward',status:'unavailable',reason,start:{...start},goal:{...goal}};report?.(data);diagnostics?.event('native query',data);return null;};
  if(R.dist(start,goal)>20000)return unavailable('query range');
  const nav=UE.NavigationSystemV1;if(typeof nav?.FindPathToLocationSynchronously!=='function')return unavailable('API missing');
  const path=nav.FindPathToLocationSynchronously(S.pawn,W.vec(start),W.vec(goal),S.pawn);
@@ -243,14 +255,16 @@ function nativeWalk(start,goal,allowPartial=false,report){
  const arr=path.PathPoints,points=[];for(let i=0;i<(arr?.Num()||0);i++)points.push(W.plain(arr.Get(i)));
  const reason=points.length<2?'too few points':points.some(p=>!R.finite(p))?'non-finite points':R.dist(start,points[0])>140?'start mismatch':
   !partial&&(R.xy(goal,points.at(-1))>140||Math.abs(goal.z-points.at(-1).z)>110)?'goal mismatch':'';
- if(report)report({status:reason?'rejected':partial?'partial':'complete',reason,partial,start:{...start},goal:{...goal},...sampledPath(points)});
+ if(report)report({direction:'forward',status:reason?'rejected':partial?'partial':'complete',reason,partial,start:{...start},goal:{...goal},...sampledPath(points)});
+ if(diagnostics)diagnostics.event('native full candidate',{direction:'forward',reason,partial,start:{...start},goal:{...goal},points:points.slice(0,12000).map(p=>({...p})),total:points.length});
  if(reason)return null;
  // Partial paths may supply doorway samples to checked local search, but
  // makePlan never presents one as a complete route to the selected item.
- const leg={world:S.level,provider:'native',points,checks:[],gates:[],moves:[],walks:points.slice(1).map((b,i)=>({a:points[i],b,edge:-1,from:i,to:i+1})),meters:R.extent(points)/100,partial};
+ const leg={world:S.level,provider:'native',searchDirection:'forward',points,checks:[],gates:[],moves:[],walks:points.slice(1).map((b,i)=>({a:points[i],b,edge:-1,from:i,to:i+1})),meters:R.extent(points)/100,partial};
  if(partial)Obstacles.obstacle(leg,{id:'native-frontier',world:S.level,p:points[points.length-1],unknown:true,icon:'mechanism',label:'前方通路待确认'});return leg;
 }
 function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=0){
+ if(dest.noTransfer)walkOnly=true;
  const bellApproach=atArrivalBell(dest);
  const inactiveBell=!!dest.bell&&!bellList().some(b=>low(b.id)===low(dest.bell));
  if(depth===0){
@@ -261,27 +275,53 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  if(depth===0&&S.world.refreshRulesJob)yield* S.world.refreshRulesJob();
  const routeWorld=context.world||=Locks.constrain(S.world,lockRows,S.level);
  const clock=context.clock||Date.now;
+ context.surfaceBudget||={remainingMs:100,attempted:new Set()};
  context.start||={...start};context.goal||={...dest.p};context.goalWorld||=dest.world;
  safe('ladder state',()=>Passages.refreshLadders(a,S.pawn));if(b!==a)safe('ladder state',()=>Passages.refreshLadders(b,S.pawn,false));
  const starts=(yield* Surface.anchorsJob(a,start)),ends=dest.node!==undefined?[{id:dest.node,q:dest.p}]:(yield* Surface.anchorsJob(b,dest.p,true));
- if(depth===0)context.report?.('atlas endpoints',{start,goal:dest.p,starts:starts.map(r=>r.id),ends:ends.map(r=>r.id),
+ if(depth===0)context.report?.('atlas endpoints',{direction:Search.direction(),start,goal:dest.p,starts:starts.map(r=>r.id),ends:ends.map(r=>r.id),
   sharedComponent:starts.some(s=>ends.some(e=>a===b&&a.sameComponent(s.id,e.id)))});
  if(depth===0&&S.world.snapshot)context.report?.('ground origin',S.world.snapshot(start));
  const targetFloor=dest.item&&dest.world===S.level?S.world.floorAt(dest.p,true):null;yield;
  const approachGoals=(dest.provider==='187'||dest.bell)&&dest.world===S.level?(yield* Goals.approaches(S.world,dest.p,140,{targetKey:dest.key})):[];
  const matchesGoal=leg=>!approachGoals.length?(!targetFloor||Math.abs(leg.points[leg.points.length-1].z-targetFloor.z)<=90):
   approachGoals.some(p=>R.xy(p,leg.points[leg.points.length-1])<185&&Math.abs(p.z-leg.points[leg.points.length-1].z)<=90);
+ // A loaded nearby collectible need not wait for far-side bell estimates or
+ // an atlas component search. Native output remains only a candidate until
+ // the same floor/capsule/lock audit has accepted its complete endpoint.
+ if(depth===0&&a===b&&dest.item&&!dest.bell&&dest.provider==='187'&&!context.nearItemTried&&R.dist(start,dest.p)<=6000){
+  context.nearItemTried=true;
+  context.preferLoadedItem=true;
+  const landing=approachGoals.length?approachGoals.slice().sort((p,q)=>R.dist(start,p)-R.dist(start,q))[0]:targetFloor||dest.p;
+  const native=safe('near item native',()=>nativeWalk(start,landing,true,context.report?data=>context.report('near item native query',data):undefined));yield;
+  if(native&&!native.partial&&native.meters<=120){
+   const checked=yield* Feasibility.check(routeWorld,native,start);
+   if(checked.ok&&!checked.leg.partial&&matchesGoal(checked.leg)){
+    context.report?.('near item complete',{provider:'native',meters:checked.leg.meters});
+    return {legs:[checked.leg],transfer:null};
+   }
+  }
+  if(R.dist(start,landing)<=2500&&Math.abs(start.z-landing.z)<=200){
+   const local=yield* LocalWalk.search(routeWorld,start,landing,{clock,maxDistance:2500,maxNodes:256,maxMs:80,
+    hints:require('./PBZRouteWalkHints').reviewedForWorld(S.level),...(approachGoals.length?{goals:approachGoals}:{}),
+    report:context.report?(phase,data)=>context.report('near item '+phase,data):undefined});
+   if(local&&!local.partial&&matchesGoal(local)){
+    local.world=S.level;context.report?.('near item complete',{provider:'scene',meters:local.meters});
+    return {legs:[local],transfer:null};
+   }
+  }
+ }
  const legs=new Map(),lookout=Passages.isLookout(S.level,start,dest);
  context.repairTraversal||=function*(from,to,settings){
   if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,from,to,{report:context.report});
-  const trip=yield* Passages.liveRouteJob(a,routeWorld,from,to,nativeWalk,{clock,deadline:settings.deadline,maxConnectors:32,report:context.report});
+  const trip=yield* Passages.liveRouteJob(a,routeWorld,from,to,nativeWalk,{clock,deadline:settings.deadline,maxConnectors:32,report:context.report,surfaceBudget:context.surfaceBudget});
   return trip?.legs[0]||null;
  };
  const actionRoute=function*(landing){
   if(context.actionsTried||a!==b)return null;context.actionsTried=true;
   context.report?.('action search',{start,landing});
   if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,start,landing,{report:context.report});
-  return yield* Passages.liveRouteJob(a,routeWorld,start,landing,nativeWalk,{clock,goals:approachGoals,allowPartial:true,report:context.report,banned:forbidden[a.name],onHorizon:trip=>{
+  return yield* Passages.liveRouteJob(a,routeWorld,start,landing,nativeWalk,{clock,goals:approachGoals,allowPartial:true,report:context.report,surfaceBudget:context.surfaceBudget,banned:forbidden[a.name],onHorizon:trip=>{
    context.topologyPrefix=trip;
    Blocked.offer(context,trip.legs[0],start,dest.p);
   },onPartial:trip=>{
@@ -307,7 +347,10 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    if((yield* proofJob(leg,false,context))===null)return reference;
   }
  }
- if(depth===0&&!walkOnly&&!bellApproach&&!inactiveBell&&dest.item&&R.dist(start,dest.p)>2500){
+ const transferEligible=depth===0&&!walkOnly&&!bellApproach&&!inactiveBell&&dest.item&&R.dist(start,dest.p)>2500;
+ const prepareTransfer=function*(){
+  if(!transferEligible||context.bellTransferTried)return context.bellTransfer;
+  context.bellTransferTried=true;
   context.bellTransfer=yield* BellTransfer.plan(a,b,start,dest.p,bellList(),{banned:forbidden,
    approaches:function*(at,bell){return yield* Goals.approaches(routeWorld,at,140,{targetKey:'bell:'+bell.id});},
    ready:function*(p,goals){
@@ -318,7 +361,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
     }
     return false;
    },native:(p,q)=>nativeWalk(p,q),verify:function*(leg){return (yield* proofJob(leg,false))===null&&!leg.partial;},
-   local:function*(at,goals){return yield* LocalWalk.search(routeWorld,start,at,{clock,goals,hints:require('./PBZRouteWalkHints').forWorld(S.level),maxDistance:6000,maxNodes:1600,maxMs:900});},
+   local:function*(at,goals){return yield* LocalWalk.search(routeWorld,start,at,{clock,goals,hints:require('./PBZRouteWalkHints').forWorld(S.level),surfaceBudget:context.surfaceBudget,maxDistance:6000,maxNodes:1600,maxMs:900});},
    inspectArrival:function*(route,bell){
     if((route.moves||[]).some(m=>m.fold||m.block))return {blocked:true};
     for(let i=1;i<route.points.length;i++){
@@ -344,7 +387,11 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
     estimatedMeters:context.bellTransfer.transfer.estimatedMeters,evidence:context.bellTransfer.transfer.evidence,arrival:'replan after teleport'});
    context.onDiagnostic?.(context.bellTransfer);
   }
- }
+  return context.bellTransfer;
+ };
+ // Nearby items can still need a real floor-changing action. Give their
+ // native/atlas/action routes a turn before optional far-side bell estimates.
+ if(transferEligible&&(a!==b||R.dist(start,dest.p)>6000))yield* prepareTransfer();
  const choose=route=>BellTransfer.prefer(context.bellTransfer,route);
  const plan=function*(s,e,entry,nearPads=false){
   const restrictions=nearPads?{...forbidden,[a.name]:{has:k=>forbidden[a.name]?.has(k)||
@@ -352,7 +399,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   for(let attempt=0;attempt<(nearPads?3:lookout?9:4);attempt++){
   const r=yield* R.itineraryJob(a,b,s.q,dest.item?e.q:dest.p,entry,restrictions,e.id,s.id);if(!r)return null;let rejected=false;
   for(const l of r.legs)l.provider='atlas';
-  context.report?.('atlas candidate',{legs:r.legs.map(l=>({world:l.world,meters:l.meters,actions:l.moves?.map(m=>({kind:m.kind,guid:m.guid})),checks:l.checks?.length}))});
+  context.report?.('atlas candidate',{direction:Search.direction(),legs:r.legs.map(l=>({world:l.world,meters:l.meters,search:graphs.get(l.world)?.lastSearch,actions:l.moves?.map(m=>({kind:m.kind,guid:m.guid})),checks:l.checks?.length}))});
   const lead=getJoin(s);if(!lead)return null;const first=r.legs[0];first.points=[...lead.slice(0,-1),...first.points];first.meters=R.extent(first.points)/100;
   for(const c of first.checks)if(c.from!==undefined){c.from+=lead.length-1;if(c.to!==undefined)c.to+=lead.length-1;}
   for(const c of [...(first.walks||[]),...(first.moves||[])]){c.from+=lead.length-1;c.to+=lead.length-1;}
@@ -367,7 +414,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  };
  // Inspect the authored corridor before the costly scene-grid searches. A
  // moving player must not have to stand still until a failed chord is repaired.
- if(a===b&&!context.atlasTried){
+ if(a===b&&!context.atlasTried&&!context.preferLoadedItem){
   context.atlasTried=true;
   for(const s of starts)for(const e of ends){
    if(!a.sameComponent(s.id,e.id))continue;
@@ -413,7 +460,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   // and larger walking fallbacks available, with no unverified preview.
   if((!accepted||accepted.partial)&&!context.nearbyWalkTried&&R.dist(start,landing)<=4500){
    context.nearbyWalkTried=true;
-   const hints=require('./PBZRouteWalkHints').forWorld(S.level);
+   const hints=require('./PBZRouteWalkHints').reviewedForWorld(S.level);
    const limits=hints?{maxGraphNodes:768,maxChecks:64}:{maxNodes:192};
    context.report?.('nearby walking search',{start,goal:landing,...limits,maxMs:200});
    const nearby=yield* LocalWalk.search(routeWorld,start,landing,{clock,maxDistance:4500,...limits,maxMs:200,
@@ -451,7 +498,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   if(!context.sceneTried&&R.dist(start,landing)<=20000){context.sceneTried=true;
    const broad=R.dist(start,landing)>12000;
    context.report?.('scene walking search',{broad,spacing:broad?140:70});
-   const local=yield* LocalWalk.search(routeWorld,start,landing,{clock,hints:require('./PBZRouteWalkHints').forWorld(S.level),report:context.report,waypoints:seeds,allowDrops:true,onProgress:progress=>{
+   const local=yield* LocalWalk.search(routeWorld,start,landing,{clock,hints:require('./PBZRouteWalkHints').forWorld(S.level),surfaceBudget:context.surfaceBudget,report:context.report,waypoints:seeds,allowDrops:true,onProgress:progress=>{
     progress.world=S.level;progress.provider='scene';
     Blocked.offer(context,Blocked.fromFailure(progress,{prefix:progress.points,prefixLeg:progress,segment:progress.points.length-1,
      p:progress.points[progress.points.length-1],unknown:true,why:'scene search continues'}),start,dest.p);
@@ -479,6 +526,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   yield* Obstacles.installSeamsJob(a);if(b!==a)yield* Obstacles.installSeamsJob(b);a.allowSeams=b.allowSeams=true;
   try{const repaired=yield* makePlan(dest,walkOnly,true,drops,context,depth+1);if(repaired)return repaired;}finally{a.allowSeams=b.allowSeams=false;a.allowBlockedTraverse=b.allowBlockedTraverse=false;}
  }
+ if(depth===0&&transferEligible&&!context.bellTransferTried){const transfer=yield* prepareTransfer();if(transfer)return transfer;}
  return depth===0?context.topologyPrefix||context.partial||Blocked.finish(context):null;
 }
 function routeRequest(dest,start=S.world.feet()){
@@ -706,16 +754,51 @@ function onSense(){
  if(accepted){S.routeWork={...request,started:Date.now()};updateRouteStatus(true);}
 }
 
-function tick(){settings();const sampleTime=Date.now();
+function developerTick(now){
+ if(!diagnostics||!S.world)return;
+ if(developerWorld!==S.world){
+  developerWorld=S.world;const world=S.world,step=world.step;
+  if(world.threadHit){const trace=world.threadHit;world.threadHit=function(a,b){const hit=trace.call(this,a,b);
+   diagnostics.event('guide probe',{from:{...a},to:{...b},hit:!!hit,...(hit?{trace:this.describeTrace(hit)}:{})});return hit;};}
+  let lastFailure='';
+  world.step=function(a,b,expected){
+   const result=step.call(this,a,b,expected);
+   if(!result.p){const key=[Math.round(a.x/100),Math.round(a.y/100),Math.round(b.x/100),Math.round(b.y/100),result.why].join('/');
+    if(key!==lastFailure){lastFailure=key;diagnostics.event('walking probe rejected',{from:{...a},to:{...b},expected,why:result.why,p:result.hit,
+     ...(result.collision?{trace:this.describeTrace(result.collision)}:{})});}}
+   return result;
+  };
+ }
+ if(developerPawn!==S.pawn||!W.alive(developerPC)){developerPawn=S.pawn;developerPC=UE.GameplayStatics.GetPlayerController(S.pawn,0);}
+ developerKeys||={heavy:['Gamepad_FaceButton_Top','F','Y'],light:['Gamepad_FaceButton_Left','LeftMouseButton'],defense:['Gamepad_LeftShoulder','RightMouseButton']};
+ const held=names=>names.some(name=>{const key=developerKeys[name]||=(new UE.Key(name));return !!developerPC?.IsInputKeyDown?.(key);});
+ const down=held(developerKeys.heavy);
+ const feet=S.world.feet();
+ const capture=()=>developerAPI.snapshot({...S,manual:S.manual||planning.job?.request||previous||S.scout,
+  captureOrigin:planning.job?.request.start||previous?.start,observedLocks:lockRows},planning,threads,notes);
+ if(diagnostics.context!==S.level+'/'+S.contextEpoch||now-diagnostics.lastSample>=100){const sample={context:S.level+'/'+S.contextEpoch,world:S.level,feet,routeVersion:S.version,
+  targetKey:S.manual?.key||S.targetKey||planning.job?.request.key||null,searchRequested:Search.direction(),
+  physical:S.world.snapshot(feet),travel:S.travelPhase||null};
+  diagnostics.sample(sample,now);diagnostics.survey?.sample(sample,!menu,now);
+ }
+ const result=diagnostics.poll(down,!menu,capture,now);
+ const action=diagnostics.survey?.poll({light:held(developerKeys.light),defense:held(developerKeys.defense)},!menu,now);
+ if(action?.kind==='player-mistake')diagnostics.mark(capture(),now,'player-mistake');
+ if(result||action)updateRouteStatus(true);
+}
+function tick(){settings();const sampleTime=Date.now();diagnostics?.advance(sampleTime);
  if(gameContext&&(sampleTime-lastPlayerCheck>=300||!W.alive(S.pawn))){lastPlayerCheck=sampleTime;const p=UE.GameplayStatics.GetPlayerCharacter(gameContext,0);
   if(W.alive(p)&&p!==S.pawn){unbind();reset();S.pawn=p;S.world=null;oldWorld='';lastPoll=0;log('player','rebound after travel');}}
- if(!W.alive(S.pawn)){planning.cancel('no player');clearRouteStatus();threads.hide();return;}if(!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread){planning.cancel('disabled');clearRouteStatus();threads.hide();return;}
+ if(!W.alive(S.pawn)){diagnostics?.survey?.finish('player unavailable',sampleTime);planning.cancel('no player');clearRouteStatus();threads.hide();return;}if(!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread){diagnostics?.survey?.finish('navigation disabled',sampleTime);planning.cancel('disabled');clearRouteStatus();threads.hide();return;}
  if(!S.world)S.world=new W.Ground(S.pawn);const now=Date.now();safe('atlas slice',()=>atlas.pump());
  if(now-lastPoll>=105){lastPoll=now;safe('tracking',observe);safe('tracker',()=>{tracker?.poll();if(waitingTracker){const item=waitingTracker;waitingTracker=null;trackerChanged(item,'restore');}});const router=T.getlocalPlayerSubsystem(S.pawn,UE.PBZUIActionRouterBase.StaticClass());menu=!!router&&router.GetActiveInputMode()===UE.ECommonInputMode.Menu;}
+ if(graphs.has(S.level))safe('surface data slice',()=>require('./PBZRouteMapHints').warm(S.level,[S.world.feet(),
+  planning.job?.request.world===S.level?planning.job.request.p:previous?.p]));
  safe('planning slice',()=>planning.pump());
  safe('route status',()=>updateRouteStatus());
  if(S.trip)safe('route clearance',()=>guardRoute(now));
- if(show()&&!menu&&S.cfg.WorldThread&&S.trip)safe('thread',()=>threads.show(S));else threads.hide();}
+ if(show()&&!menu&&S.cfg.WorldThread&&S.trip)safe('thread',()=>threads.show(S));else threads.hide();
+ if(diagnostics)safe('developer capture',()=>developerTick(now));}
 function mapAcceptsPins(h){
  return !h.BigMapMode&&h.CanUIInput?.()!==false&&!h.isModalOpen?.()&&!h.isOpenCompletion?.()&&
   !h.IsOpenByBell?.()&&!h.pbzFilterOpen?.()&&!h.__pbzTrackerControls?.open;
@@ -728,20 +811,22 @@ function trackerChanged(item,reason){
   if(!/untrack|cancel|stop|selected|clear/i.test(reason))return;
   clearManual('tracker '+reason);return;
  }
+ if(item.auto&&surveyTracker?.match(item.id))return;
  if(item.auto&&(S.manual?.provider!=='187'&&S.manual||!questGate.paused&&questID(narrative())))return;
  selectItem(item,'tracker',worldOf(item.area),item.area);
 }
 function selectItem(item,device,displayWorld,displayArea,host){
+ const survey=surveyTracker?.match(item.id);if(survey&&!item.auto)diagnostics.survey.select(survey.task.id);
  if(host&&item.provider==='187'&&tracker){
   safe('tracker selection',()=>tracker.choose(host,item));
  }
  if(item.provider!=='187')tracker?.clear('route item selected');
- const bell=BellIdentity.fromItem(item,tables.bells),targetWorld=bell?.world||worldOf(item.area)||displayWorld;
+ const bell=BellIdentity.fromItem(item,tables.bells),targetWorld=survey?.task.world||bell?.world||worldOf(item.area)||displayWorld;
  epoch++;questGate.pause(questID(narrative()));S.scout=null;S.bellArrival=null;S.arrival.restart();
  // The item's world comes from its location. Its icon UV is relative to the
  // visible chart, which can group several named subareas together.
- S.manual={p:item.p,uv:item.uv,world:targetWorld,area:displayArea,item:true,provider:item.provider,auto:!!item.auto,key:'item:'+item.area+'/'+item.id,
-  ...(bell?{bell:bell.id}:{})};
+ S.manual={p:item.p,uv:item.uv,world:targetWorld,area:displayArea,item:true,provider:item.provider,auto:!!item.auto,key:'item:'+item.area+'/'+item.id,label:String(item.name||item.title||''),
+  ...(bell?{bell:bell.id}:{}),...(survey?{survey:survey.task.id,surveyRole:survey.role,noTransfer:true}:{})};
  previous=null;safe('item route',()=>solve(S.manual,device+' item'));
  log('item',device+' '+item.id+' @ '+[item.p.x,item.p.y,item.p.z].map(Math.round).join(','));
 }
@@ -763,7 +848,7 @@ function selectionIntent(h,uv,width,height,pad,type){
 function selectBell(hit,device,area){
  const b=hit.bell;
  tracker?.clear('bell selected');epoch++;questGate.pause(questID(narrative()));S.scout=null;S.bellArrival=null;S.arrival.restart();
- S.manual={p:{...hit.p},uv:{...hit.uv},world:b.world,area,bell:b.id,item:true,key:'bell:'+b.world+'/'+low(b.id)};
+ S.manual={p:{...hit.p},uv:{...hit.uv},world:b.world,area,bell:b.id,item:true,key:'bell:'+b.world+'/'+low(b.id),label:b.name};
  previous=null;S.version++;solve(S.manual,device+' bell');
  log('selection',JSON.stringify({source:hit.source,bell:b.id,world:b.world,goal:S.manual.p,pixels:hit.distance}));
 }
@@ -898,14 +983,16 @@ function bindMouse(proto){
   const callback=function(...args){const reply=safe('map pointer '+key,()=>fn.apply(this,args));return reply??(original?original.apply(this,args):UE.WidgetBlueprintLibrary.Unhandled());};
   Object.defineProperty(proto,key,{value:callback,writable:true,configurable:true});};
  bind('OnPreviewMouseButtonDown',function(geometry,event){
-  if(String(UE.KismetInputLibrary.PointerEvent_GetEffectingButton(event)?.KeyName)!=='MiddleMouseButton')return;
+  const button=String(UE.KismetInputLibrary.PointerEvent_GetEffectingButton(event)?.KeyName);
+  if(button!=='MiddleMouseButton')return;
   let input=pointers.get(this);if(!input){input=new Pointer();pointers.set(this,input);}
   if(!input.down(pointerSample(this)))return;
   const reply=UE.WidgetBlueprintLibrary.Handled();
   return UE.WidgetBlueprintLibrary.CaptureMouse?.(reply,this)||reply;
  });
  bind('OnMouseButtonUp',function(geometry,event){
-  if(String(UE.KismetInputLibrary.PointerEvent_GetEffectingButton(event)?.KeyName)!=='MiddleMouseButton')return;
+  const button=String(UE.KismetInputLibrary.PointerEvent_GetEffectingButton(event)?.KeyName);
+  if(button!=='MiddleMouseButton')return;
   const input=pointers.get(this),sample=pointerSample(this);
   if(!input?.press)return;
   if(sample)input.up(sample);else input.cancel();
@@ -989,13 +1076,35 @@ function onMap(h){
  ink.draw(h,S,project,name,allowed,show());
 }
 function wrap(proto,k,fn){const orig=proto?.[k];if(typeof orig!=='function')return false;proto[k]=function(...args){const result=orig.apply(this,args);safe(k,()=>fn.apply(this,args));return result;};return true;}
-function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(globalThis.PBZModsMenu||=[]).push({id:'PBZQuestRoute',file:'PBZQuestRoute.txt',version:BUILD,title:t('Quest & Exploration Navigation - Fork','任务与探索导航 - Fork'),description:t('Tracker 1.0.9/1.0.14: left-click or middle-click. Controller: D-pad selects a collectible, A confirms. Blank map: middle-click to pin; hold 0.6 s to cancel. Minimap route, icon size and accessory hints apply to the legacy JS tracker only.','收集1.0.9/1.0.14：左键追踪，或悬停后中键导航。手柄十字键选物品、A确认。地图空白处中键落旗、长按 0.6 秒取消。小地图路线、图标大小及饰品提示仅适用于旧 JS 收集版。'),settings:[
+function menuOptions(){const t=(en,zh)=>({en,'zh-Hans':zh,'zh-Hant':zh});(globalThis.PBZModsMenu||=[]).push({id:'PBZQuestRoute',file:'PBZQuestRoute.txt',version:BUILD,title:t('Quest & Exploration Navigation - Fork','任务与探索导航 - Fork'),description:t('Tracker 1.0.14: left-click or middle-click. Controller: D-pad selects a collectible, A confirms. Blank map: middle-click to pin; hold 0.6 s to cancel. Minimap route, icon size and accessory hints apply to the legacy JS tracker only.','收集1.0.14：左键追踪，或悬停后中键导航。手柄十字键选物品、A确认。地图空白处中键落旗、长按 0.6 秒取消。小地图路线、图标大小及饰品提示仅适用于旧 JS 收集版。'),settings:[
  {key:'MapRoute',type:'toggle',default:true,label:t('Map route','地图路线')},{key:'MinimapRoute',type:'toggle',default:true,label:t('Minimap route','小地图路线')},{key:'WorldThread',type:'toggle',default:true,label:t('Guiding thread','场景引路线')},
  {key:'LargeItemIcons',type:'toggle',default:true,label:t('Large unframed item icons','放大物品图标并移除黑底')},{key:'AutoAccessory',type:'toggle',default:true,label:t('Nearest accessory hint','自动提示最近饰品')},
  {key:'FogBellSense',type:'toggle',default:true,label:t('Sense a bell in fog','迷雾中洞照寻铃')},
+ {key:'ReverseSearch',type:'toggle',default:true,label:t('Reverse candidate search (experimental)','候选图反向搜索（实验）')},
  {key:'DisplayMode',type:'choice',default:'Always',label:t('Display mode','显示方式'),options:[{value:'Always',label:t('While tracking','追踪时持续显示')},{value:'Sense30',label:t('30 seconds after Sense','洞照后显示30秒')}]}],onChange:()=>settings(true)});}
 exports.install=function(){if(globalThis.__PBZQuestRouteInstalled)return;dir=UE.KismetSystemLibrary.ConvertToAbsolutePath(UE.KismetSystemLibrary.GetProjectContentDirectory()).replace(/[\\/]?$/,'/');
  logPath=dir+'../Saved/PBZQuestRoute-log.txt';mousePath=dir+'../Saved/PBZQuestRoute-middle.txt';ink=new Ink(dir+'Mods/PBZQuestRoute/',log);mini=new MinimapRoute(dir+'Mods/PBZQuestRoute/',log);threads=new Threads(log);statusHud=new RouteStatus.StatusHud(UE,W,log);
+ if(Build.development){
+  developerAPI=require('./PBZRouteDiagnostics');
+  const k=UE.KismetSystemLibrary,root=String(k.ConvertToAbsolutePath(k.GetProjectSavedDirectory())).replace(/[\\/]+$/,'')+'/';
+  diagnostics=new developerAPI.Recorder({build:Build,root,report:message=>log('developer',message),write:(path,text)=>{
+   if(UE.EasyCsv.SaveStringToFileWithFullPath(text,path)===false)return false;return textFile(path)===text;
+  }});
+  const {Survey}=require('./PBZRouteSurvey'),tasks=require('./PBZRouteSurveyTasks').resolve(tables);
+  const {SurveyTracker}=require('./PBZRouteSurveyTracker');
+  diagnostics.survey=new Survey({tasks,build:Build,root,write:diagnostics.write,read:textFile,report:message=>log('developer survey',message),
+   capture:()=>developerAPI.snapshot({...S,manual:S.manual||planning.job?.request||previous||S.scout,
+    captureOrigin:planning.job?.request.start||previous?.start,observedLocks:lockRows},planning,threads,notes),
+   start:task=>{
+    tracker?.clear('survey started');epoch++;questGate.pause(questID(narrative()));S.scout=null;S.bellArrival=null;S.arrival.restart();
+    S.manual={p:{...task.end.p},world:task.world,area:task.end.area,bell:task.end.id,item:true,
+     label:task.end.name,key:'survey:'+task.id,survey:task.id,noTransfer:true};
+    previous=null;S.version++;solve(S.manual,'survey start');
+   }});
+  surveyTracker=new SurveyTracker(tasks);
+  diagnostics.observe=(kind,data,now)=>diagnostics.survey.event(kind,data,now);
+  const shape=threads.shape;threads.shape=function(row,points,...args){row.__devPoints=points.slice(0,2000).map(p=>({...p}));row.__devTotal=points.length;return shape.call(this,row,points,...args);};
+ }
  const player=require('Gameplay/RenewalPlayer').RenewalPlayerinXinInterface.prototype,m=require('UI/Widget/Map').MapInterface.prototype,sense=require('Gameplay/GA_Player_Sense').ga_Player_Sense_MixinInterface.prototype;
  wrap(player,'TsBeginPlay',function(){unbind();reset();S.pawn=this;S.world=null;S.expires=0;oldWorld='';lastPoll=0;log('player','ready '+Date.now());});
  wrap(player,'ReceiveEndPlay',function(){if(S.pawn===this){unbind();reset();S.pawn=null;S.world=null;}});
@@ -1006,10 +1115,11 @@ exports.install=function(){if(globalThis.__PBZQuestRouteInstalled)return;dir=UE.
  tracker=new Tracker(function(id){const bridge=globalThis.PBZMapTrackerBridge;if(id==='Mods/PbzTrackerTarget'&&bridge?.target)return bridge.target;if(bridge?.load&&id.startsWith('Mods/Pbz'))return bridge.load(id.slice(5));return require(id);},trackerChanged,log);
  globalThis.PBZQuestRouteBridge={
   version:BUILD,
+  flavor:Build.flavor,buildLabel:Build.label,sourceSHA256:Build.sourceSHA256||null,
   options:()=>S.cfg,
   confirmMapTarget:h=>!!safe('native item confirmation',()=>confirmMapItem(h,'native confirm')),
   hasExplicitTarget:()=>!!(S.manual&&!S.manual.auto&&S.arrival.completedTarget!==S.manual.key||!questGate.paused&&W.alive(S.pawn)&&questID(narrative())),
   paintMinimap:(view,player,rotation)=>safe('minimap route',()=>mini.draw(view,player,rotation,S,show())),
   removeMinimap:host=>mini.remove(host)
  };
- scout=new Scout(tables,log);const gi=P.argv.getByName('GameInstance');gameContext=gi;const existing=UE.GameplayStatics.GetPlayerCharacter(gi,0);if(W.alive(existing)){S.pawn=existing;S.world=null;}menuOptions();settings(true);globalThis.__PBZQuestRouteInstalled=true;setInterval(()=>safe('tick',tick),16);log('loaded',BUILD+' built-in atlases='+tables.worlds.length);};
+ scout=new Scout(tables,log);const gi=P.argv.getByName('GameInstance');gameContext=gi;const existing=UE.GameplayStatics.GetPlayerCharacter(gi,0);if(W.alive(existing)){S.pawn=existing;S.world=null;}menuOptions();settings(true);globalThis.__PBZQuestRouteInstalled=true;setInterval(()=>safe('tick',tick),16);log('loaded',BUILD+' flavor='+Build.flavor+' built-in atlases='+tables.worlds.length);};

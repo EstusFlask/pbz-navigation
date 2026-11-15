@@ -1,0 +1,6 @@
+Derived PBZ planning positions from the user's local Heybox PBZ 1.4.0 packs.
+Source assets: Copyright (c) 2026 Heybox. All rights reserved.
+The installed Unreal Game Assistant README.md states: 权利人明确授权，允许使用。
+Source models, textures, codec binaries and key material are not distributed here.
+These positions propose searches; the game must check every used connection.
+See docs/HEYBOX-MAP-IMPORT.md and authoring/heybox-map-audit.json in the project.

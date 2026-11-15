@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "sources": [
+    {
+      "file": "pbz-nav-1.4.0.wkpack",
+      "sha256": "ccec21b4a8b1b55ab74efb4fa3b0691957458eb18f323425ba2745bd9fa8734a",
+      "bytes": 5844483
+    },
+    {
+      "file": "pbz-model-1.4.0.wkpack",
+      "sha256": "ba872263b6ff885254f832d91571f3296ae312d977105600855c42308c7772bb",
+      "bytes": 216074325
+    }
+  ],
+  "spacingCm": 140,
+  "dedupCm": [
+    70,
+    70,
+    35
+  ],
+  "role": "planning candidates only; no edges or collision certificates imported",
+  "modelPlanningBounds": "declared navigation bounds + 32m; model-only backdrop areas excluded",
+  "modelSupportCategories": [
+    "bridge",
+    "building",
+    "floor",
+    "roof",
+    "stairs",
+    "surface",
+    "terrain",
+    "timber"
+  ],
+  "modelCoverage": [
+    {
+      "chapter": 0,
+      "label": "序章",
+      "assets": 428,
+      "chunks": 5992,
+      "baseModelChunks": 0,
+      "baseModelTriangles": 0,
+      "available": true
+    },
+    {
+      "chapter": 1,
+      "label": "悲泣溪谷",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 36,
+      "baseModelTriangles": 2625423,
+      "available": true
+    },
+    {
+      "chapter": 2,
+      "label": "血色森林",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 57,
+      "baseModelTriangles": 1895106,
+      "available": true
+    },
+    {
+      "chapter": 3,
+      "label": "陆家村地区",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 53,
+      "baseModelTriangles": 2138442,
+      "available": true
+    },
+    {
+      "chapter": 4,
+      "label": "正道大营",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 53,
+      "baseModelTriangles": 2138442,
+      "available": true
+    },
+    {
+      "chapter": 5,
+      "label": "庞镇地区",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 64,
+      "baseModelTriangles": 5547926,
+      "available": true
+    },
+    {
+      "chapter": 6,
+      "label": "梅谷湖",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 81,
+      "baseModelTriangles": 3245382,
+      "available": true
+    },
+    {
+      "chapter": 7,
+      "label": "戏梦山庄",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 36,
+      "baseModelTriangles": 2509765,
+      "available": true
+    },
+    {
+      "chapter": 8,
+      "label": "枷笼山",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 18,
+      "baseModelTriangles": 456121,
+      "available": true
+    },
+    {
+      "chapter": 9,
+      "label": "梅谷湖 · 幻术师遗迹",
+      "assets": 0,
+      "chunks": 0,
+      "baseModelChunks": 22,
+      "baseModelTriangles": 1611859,
+      "available": true
+    },
+    {
+      "chapter": 10,
+      "label": "断魂山",
+      "assets": 1378,
+      "chunks": 2280,
+      "baseModelChunks": 0,
+      "baseModelTriangles": 0,
+      "available": true
+    },
+    {
+      "chapter": 11,
+      "label": "断魂崖",
+      "assets": 1378,
+      "chunks": 2280,
+      "baseModelChunks": 0,
+      "baseModelTriangles": 0,
+      "available": true
+    }
+  ],
+  "worlds": {
+    "pbz_dengdingshandao_wp": {
+      "points": 163198,
+      "tiles": 233,
+      "navTriangles": 8306,
+      "navPoints": 51861,
+      "steepOrDegenerate": 110210,
+      "baseModelTriangles": 204390,
+      "baseModelPoints": 111337,
+      "outsidePlanningBounds": 419
+    },
+    "pbz_duanhun_wp": {
+      "points": 319305,
+      "tiles": 451,
+      "navTriangles": 49842,
+      "navPoints": 208719,
+      "steepOrDegenerate": 1456494,
+      "modelTriangles": 4817824,
+      "modelPoints": 110586,
+      "outsidePlanningBounds": 2035405,
+      "oversizedInstances": 54
+    },
+    "pbz_fujizhilin_wp": {
+      "points": 538615,
+      "tiles": 803,
+      "navTriangles": 23181,
+      "navPoints": 75695,
+      "steepOrDegenerate": 373458,
+      "baseModelTriangles": 920323,
+      "outsidePlanningBounds": 216996,
+      "baseModelPoints": 462920
+    },
+    "pbz_houjie_wp": {
+      "points": 737950,
+      "tiles": 774,
+      "navTriangles": 26758,
+      "navPoints": 89459,
+      "steepOrDegenerate": 204138,
+      "baseModelTriangles": 839508,
+      "outsidePlanningBounds": 261336,
+      "baseModelPoints": 648491
+    },
+    "pbz_huanshuyiji2_wp": {
+      "points": 712252,
+      "tiles": 647,
+      "navTriangles": 51291,
+      "navPoints": 508818,
+      "steepOrDegenerate": 120617,
+      "baseModelTriangles": 507535,
+      "baseModelPoints": 203434,
+      "outsidePlanningBounds": 279052
+    },
+    "pbz_pangzhen_wp": {
+      "points": 1794155,
+      "tiles": 2214,
+      "navTriangles": 196820,
+      "navPoints": 732583,
+      "steepOrDegenerate": 521545,
+      "baseModelTriangles": 2894219,
+      "baseModelPoints": 1061572,
+      "outsidePlanningBounds": 1713349
+    },
+    "pbz_wp_zhulinguwu": {
+      "points": 1117503,
+      "tiles": 1413,
+      "navTriangles": 46390,
+      "navPoints": 529038,
+      "steepOrDegenerate": 3383217,
+      "modelTriangles": 12973895,
+      "modelPoints": 588465,
+      "outsidePlanningBounds": 3175344,
+      "oversizedInstances": 22
+    },
+    "pbz_wp_zhulinguwu_be": {
+      "points": 14019,
+      "tiles": 22,
+      "navTriangles": 1099,
+      "navPoints": 3470,
+      "steepOrDegenerate": 174421,
+      "modelTriangles": 939384,
+      "modelPoints": 10549,
+      "outsidePlanningBounds": 595073,
+      "oversizedInstances": 9
+    },
+    "pbz_xigu_wp": {
+      "points": 513307,
+      "tiles": 667,
+      "navTriangles": 25856,
+      "navPoints": 103442,
+      "steepOrDegenerate": 381809,
+      "baseModelTriangles": 878243,
+      "baseModelPoints": 409865,
+      "outsidePlanningBounds": 160183
+    },
+    "pbz_ximeng_wp": {
+      "points": 919935,
+      "tiles": 585,
+      "navTriangles": 23528,
+      "navPoints": 72758,
+      "steepOrDegenerate": 390699,
+      "baseModelTriangles": 915223,
+      "baseModelPoints": 847177,
+      "outsidePlanningBounds": 19321
+    },
+    "pbz_zhengdaodaying_wp": {
+      "points": 675601,
+      "tiles": 937,
+      "navTriangles": 85011,
+      "navPoints": 206052,
+      "steepOrDegenerate": 337104,
+      "baseModelTriangles": 777360,
+      "baseModelPoints": 469549,
+      "outsidePlanningBounds": 129476
+    }
+  }
+}

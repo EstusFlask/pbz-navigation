@@ -4,9 +4,10 @@ local json = Core.json
 local M = {}
 local function text(en, zh, hant) return {en=en, ['zh-Hans']=zh, ['zh-Hant']=hant or zh} end
 M.descriptor = {
-    apiVersion=1, modId='PBZQuestRoute', modVersion='1.3.5', schemaVersion=1,
+    apiVersion=1, modId='PBZQuestRoute', modVersion='1.8.1', schemaVersion=1,
     displayName=text('Quest & Exploration Navigation', '任务与探索导航', '任務與探索導航'),
-    groups={{id='thread', label=text('Guiding thread', '导航绳子', '導航繩子'), order=0}},
+    groups={{id='thread', label=text('Guiding thread', '导航绳子', '導航繩子'), order=0},
+        {id='navigation', label=text('Route planning', '路线规划', '路線規劃'), order=1}},
     entries={
         {key='ThreadColor', group='thread', type='choice', defaultValue='blue',
             label=text('Rope color', '绳子颜色', '繩子顏色'),
@@ -16,7 +17,10 @@ M.descriptor = {
         {key='ThreadCustomColor', group='thread', type='color', defaultValue='#3895FF', alpha=false,
             label=text('Custom color', '自定义颜色', '自訂顏色'),
             description=text('Applies to the scene guiding rope immediately.', '即时应用到场景中的导航绳子。', '即時套用至場景中的導航繩子。'),
-            visibleWhen={key='ThreadColor', equals='custom'}}
+            visibleWhen={key='ThreadColor', equals='custom'}},
+        {key='ReverseSearch', group='navigation', type='toggle', defaultValue=true,
+            label=text('Reverse candidate search (experimental)', '候选图反向搜索（实验）', '候選圖反向搜尋（實驗）'),
+            description=text('Changes candidate-graph search. Native and local-grid fallbacks keep their own search direction.', '切换候选图搜索方向并重算。原生与局部网格回退仍按各自方向搜索。', '切換候選圖搜尋方向並重算；原生及局部網格回退維持各自方向。')}
     }
 }
 
@@ -78,8 +82,12 @@ function M.create(options)
         return result
     end
     function self.reset(group,context)
-        if group~=nil and group~='thread' then return {ok=false,error='UNKNOWN_GROUP',revision=revision} end
-        return self.apply(Core.copy(schema.defaults),context)
+        if group~=nil and not schema.groups[group] then return {ok=false,error='UNKNOWN_GROUP',revision=revision} end
+        local patch={}
+        for key,value in pairs(schema.defaults) do
+            if group==nil or schema.entries[key].group==group then patch[key]=Core.copy(value) end
+        end
+        return self.apply(patch,context)
     end
     return self
 end

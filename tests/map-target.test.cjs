@@ -18,7 +18,7 @@ function fixture(options={}){
  const UE={BlueprintPathsLibrary:{FileExists:()=>false},ESlateVisibility:{HitTestInvisible:0,Collapsed:1,Hidden:2},ECommonInputType:{Gamepad:1},
   MapSubsystem:{StaticClass:()=> 'map'},BellManager:{StaticClass:()=> 'bell'},
   PBZUIActionRouterBase:{StaticClass:()=> 'router'},Key:function(name){this.KeyName=name;},Vector2D:function(X,Y){this.X=X;this.Y=Y;},
-  KismetInputLibrary:{GetKey:e=>({KeyName:e.key}),InputEvent_IsRepeat:e=>!!e.repeat},
+  KismetInputLibrary:{GetKey:e=>({KeyName:e.key}),InputEvent_IsRepeat:e=>!!e.repeat,PointerEvent_GetEffectingButton:e=>({KeyName:e.key})},
   WidgetBlueprintLibrary:{Handled:()=> 'handled',Unhandled:()=> 'unhandled'},
   PBZBlueprintFunctionLibrary:{GetPBZNarrativeComp:()=>null},WidgetLayoutLibrary:{SlotAsCanvasSlot:w=>w.slot}};
  const itemModule={exports:{}};
@@ -31,7 +31,7 @@ function fixture(options={}){
   './PBZRouteSurface':{anchors:()=>[{id:0,r:0,dz:0}]},'./PBZPrivateRibbon':{},'./PBZRouteInk':{},
   './PBZRoutePassages':{},'./PBZRouteMinimap':{},'./PBZRouteScout':{}};
  const module={exports:{}};
- const hook='\nexports.test={S,confirmMapItem,bindPadTap,frame:onMap,bridge(value){globalThis.PBZMapTrackerBridge={target:value};tracker={choose:(host,item)=>value.choose(item.tracked)};},click(h,uv){pointers.set(h,{take:()=>[{type:"pin",uv}],hold(){},cancel(){}});onMap(h);},init(g){graphs.set(g.name,g);ink={draw(){},hide(){}};threads={hide(){}};solve=()=>{};}};';
+ const hook='\nexports.test={S,confirmMapItem,bindPadTap,frame:onMap,surveys(tasks){diagnostics={event(){},survey:new (require("./PBZRouteSurvey").Survey)({tasks,build:{},root:"",write:()=>true})};surveyTracker=new (require("./PBZRouteSurveyTracker").SurveyTracker)(tasks);},fromTracker:item=>trackerChanged(item,"selected"),bridge(value){globalThis.PBZMapTrackerBridge={target:value};tracker={choose:(host,item)=>value.choose(item.tracked)};},click(h,uv){pointers.set(h,{take:()=>[{type:"pin",uv}],hold(){},cancel(){}});onMap(h);},init(g){graphs.set(g.name,g);ink={draw(){},hide(){}};threads={hide(){}};solve=()=>{};}};';
  const Clock=options.now?class extends Date{static now(){return options.now();}}:Date;
  vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+hook+'\n})',{Date:Clock,console:{log:s=>logs.push(s)}})
   (id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id)),module,module.exports);
@@ -197,4 +197,9 @@ test('a nearby disconnected road wins over a reachable but more distant road on 
  h.h.focusItemMap.clear();const p=h.project(close);h.click({x:p.X,y:p.Y});
  assert.equal(h.api.S.manual.node,1,'route reachability changed the selected map location');
  assert.equal(h.api.S.manual.p.x,close.x);
+});
+test('real tracker survey key arms the matching card and preserves the selected end/world/height',()=>{
+ const h=fixture(),task={id:'R1',number:1,world:h.g.name,start:{p:goal,area:'zhengdaodaying'},end:{p:{x:3000,y:4000,z:600},area:'zhengdaodaying'}};
+ h.api.surveys([task]);h.api.fromTracker({id:'pbz:world:pbz-survey:r1:end',p:task.end.p,area:'zhengdaodaying',provider:'187',name:'1号路线结束'});
+ assert.equal(h.api.S.manual.survey,'R1');assert.equal(h.api.S.manual.surveyRole,'end');assert.equal(h.api.S.manual.p.z,600);assert.equal(h.api.S.manual.noTransfer,true);assert.equal(h.api.S.manual.world,h.g.name);
 });

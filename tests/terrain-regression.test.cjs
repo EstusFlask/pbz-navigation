@@ -7,6 +7,30 @@ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/P
  id=>id==='ue'||id==='puerts'?{}:require(path.resolve(root,id)),moduleWorld,moduleWorld.exports);
 const {Ground}=moduleWorld.exports;
 
+test('single-sided wall triangles block walking and guide traces from their reverse face',()=>{
+ const wall={name:'BP_SplineWall',GetName:()=> 'single-sided-wall'},component={GetOwner:()=>wall};
+ const hit=(out,p,normal)=>{out.value={bBlockingHit:true,ImpactPoint:p,ImpactNormal:normal,Component:component};return true;};
+ // Field walls use complex-as-simple triangles with double-sided geometry
+ // disabled. Reproduce a query that sees only their front face; floor remains
+ // supported on both sides, so it cannot accidentally hide the body defect.
+ const body=(a,b,complex,out)=>complex&&a.X>500&&b.X<=500?
+  hit(out,{X:500,Y:0,Z:105},{X:1,Y:0,Z:0}):false;
+ const UE={KismetSystemLibrary:{
+  LineTraceSingleByProfile:(pawn,a,b,profile,complex,ignored,debug,out)=>hit(out,{X:b.X,Y:b.Y,Z:0},{X:0,Y:0,Z:1}),
+  CapsuleTraceSingleByProfile:(pawn,a,b,r,h,profile,complex,ignored,debug,out)=>body(a,b,complex,out),
+  SphereTraceSingleByProfile:(pawn,a,b,r,profile,complex,ignored,debug,out)=>body(a,b,complex,out)},
+  Vector:class{constructor(X,Y,Z){Object.assign(this,{X,Y,Z});}},NewArray:()=>({Add(){}}),LinearColor:class{},EDrawDebugTrace:{None:0}};
+ const mod={exports:{}};
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteWorld.js','utf8')+'\n})')(
+  id=>id==='ue'?UE:id==='puerts'?{$ref:value=>({value}),$unref:ref=>ref.value}:require(path.resolve(root,id)),mod,mod.exports);
+ const cap={GetScaledCapsuleHalfHeight:()=>96,GetScaledCapsuleRadius:()=>45,GetCollisionProfileName:()=> 'Profile_Capsule'};
+ const w=new mod.exports.Ground({CapsuleComponent:cap,CharacterMovement:{MaxStepHeight:50,K2_GetWalkableFloorZ:()=>.57}});
+ const a={x:0,y:0,z:0},b={x:1000,y:0,z:0};
+ assert.equal(w.step(a,b,true).p,undefined,'local search certified a walk through the reverse face of a scene wall');
+ assert.ok(w.threadHit({...a,z:105},{...b,z:105}),'the raised guide still draws through that wall');
+ assert.equal(w.step({...a,x:50},{...a,x:400},true).p.x,400,'clear same-side walking was rejected');
+});
+
 test('walking and ribbon traces detect a wall with triangle collision but no simple collision',()=>{
  const queries=[];
  const trace=(...args)=>{

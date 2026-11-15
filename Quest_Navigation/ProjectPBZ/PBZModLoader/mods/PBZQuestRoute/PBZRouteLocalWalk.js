@@ -8,13 +8,12 @@ class Queue{
 // Recover a nearby walkable staircase when the cooked atlas and live navmesh
 // disagree. Every edge uses the same floor/capsule checks as route auditing.
 // One neighbour is processed per yield; never invent a vertical connection.
-function* search(world,start,goal,options={}){
- if(options.hintsOnly)return yield* require('./PBZRouteHintWalk').search(world,start,goal,options);
+function* searchGrid(world,start,goal,options={}){
  const spacing=options.spacing||70,maxNodes=options.maxNodes||4500,clock=options.clock||Date.now;
  if(!world?.step||!world.floorAt||!R.finite(start)||!R.finite(goal)||R.dist(start,goal)>(options.maxDistance||12000))return null;
  const began=clock(),limit=options.maxMs||7000;
  let expanded=0,probes=0,refined=0,hintProbes=0,hintAccepted=0,bestPoint=start;const rejected=new Map();
- const finish=(route,reason)=>{options.report?.('scene walking result',{reason,hintsOnly:!!options.hintsOnly,expanded,probes,refined,start:first,goalSupported:supportedGoal,
+ const finish=(route,reason)=>{options.report?.('scene walking result',{reason,direction:'forward',hintsOnly:!!options.hintsOnly,expanded,probes,refined,start:first,goalSupported:supportedGoal,
   best:bestPoint,hintProbes,hintAccepted,rejected:[...rejected].sort((a,b)=>b[1]-a[1]).slice(0,6)});return route;};
  const first=world.floorAt(start,true);yield;
  const last=options.goals?.length?options.goals[0]:world.floorAt(goal,true);yield;
@@ -44,7 +43,7 @@ function* search(world,start,goal,options={}){
      checks.push({kind:12,a:points[from],b:n.p,from,to:points.length-1,edge:-1,verified:true});
     }else for(let i=from;i<points.length-1;i++)walks.push({a:points[i],b:points[i+1],from:i,to:i+1,edge:-1});
    }
-   return {points,partial:false,localWalk:true,physicalVerified:true,checks,gates:[],moves,walks,meters:R.extent(points)/100};
+   return {points,searchDirection:'forward',partial:false,localWalk:true,physicalVerified:true,checks,gates:[],moves,walks,meters:R.extent(points)/100};
  };
  let published=heuristic(first),progress=initial;
  const publish=()=>{if(options.onProgress&&heuristic(progress.p)<published-280){published=heuristic(progress.p);options.onProgress(result(progress));return true;}return false;};
@@ -101,5 +100,26 @@ function* search(world,start,goal,options={}){
   }
  }
  publish();return finish(null,closed.size>=maxNodes?'node budget':'no checked neighbours');
+}
+function* search(world,start,goal,options={}){
+ if(options.hintsOnly)return yield* require('./PBZRouteHintWalk').search(world,start,goal,options);
+ const hasSurface=options.hints?.surfaceCandidates||options.hints?.observed&&'surface'in options.hints;
+ if(!hasSurface)return yield* searchGrid(world,start,goal,options);
+ // Keep the surface graph separate from the live lattice. Adding every
+ // surface's XY phase to that lattice multiplies otherwise identical rows and
+ // can exhaust the node budget on a previously working short walk.
+ const clock=options.clock||Date.now,began=clock(),budget=options.maxMs||7000;
+ const reserve=Math.min(100,budget/4),grid=yield* searchGrid(world,start,goal,{...options,hints:options.hints?.observed||null,maxMs:Math.max(1,budget-reserve)});
+ if(grid)return grid;
+ const shared=options.surfaceBudget,stamp=[options.hints?.world||'',start.x,start.y,start.z,goal.x,goal.y,goal.z].join(',');
+ if(shared&&(shared.remainingMs<=0||shared.attempted?.has(stamp)))return null;
+ const remaining=Math.min(reserve,budget-(clock()-began),shared?.remainingMs??Infinity);if(remaining<=0)return null;
+ shared?.attempted?.add(stamp);
+ const surface=options.hints?.surface||options.hints;if(!surface)return null;
+ const at=clock(),proposed=yield* require('./PBZRouteHintWalk').search(world,start,goal,{...options,hints:surface,
+  maxMs:remaining,maxGraphNodes:Math.min(384,options.maxGraphNodes||384),maxChecks:Math.min(32,options.maxChecks||32),allowFrontier:false,
+  report:(phase,data)=>options.report?.(phase,{...data,surfaceFallback:true})});
+ if(shared)shared.remainingMs=Math.max(0,shared.remainingMs-(clock()-at));
+ return proposed;
 }
 exports.search=search;

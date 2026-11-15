@@ -1,5 +1,5 @@
 'use strict';
-const R=require('./PBZRouteCore');
+const R=require('./PBZRouteCore'),Search=require('./PBZRouteSearch');
 class Queue{
  constructor(){this.rows=[];}
  push(row){const a=this.rows;let i=a.length;a.push(row);while(i){const p=(i-1)>>1;if(a[p].score<=row.score)break;a[i]=a[p];i=p;}a[i]=row;}
@@ -9,12 +9,13 @@ class Queue{
 // its geometry first, then check only the proposed directed edges. A failed
 // edge is removed for this job and the cheap graph is searched again. Physical
 // results are not cached across requests, worlds, streaming or lock changes.
-function* search(world,start,goal,options={}){
+function* searchOne(world,start,goal,options={}){
  const hints=options.hints,clock=options.clock||Date.now;
  if(!hints?.near||!world?.floorAt||!world.step||!R.finite(start)||!R.finite(goal)||R.dist(start,goal)>(options.maxDistance||12000))return null;
  const began=clock(),limit=options.maxMs||200,span=350;
  const graphLimit=Math.max(1,Math.min(1024,options.maxGraphNodes||768)),checkLimit=Math.max(1,Math.min(128,options.maxChecks||64));
- const stats={hintsOnly:true,lazy:true,graphLimit,checkLimit,expanded:0,probes:0,proposals:0,rejected:[]};
+ const reverse=(options.direction||Search.direction())==='reverse'&&typeof hints.candidates==='function';
+ const stats={hintsOnly:true,lazy:true,direction:reverse?'reverse':'forward',graphLimit,checkLimit,expanded:0,probes:0,proposals:0,rejected:[]};
  let frontier=null,frontierDistance=Infinity,goalSupported=false;
  const finish=(route,reason)=>{options.report?.('scene walking result',{...stats,reason,start,goal,goalSupported});return route||frontier;};
  const first=world.floorAt(start,true);yield;
@@ -24,7 +25,7 @@ function* search(world,start,goal,options={}){
  goalSupported=!!goals.length;
  if(!goals.length&&options.allowFrontier&&hints.near(goal,span,16).length)goals=[{...goal}];
  if(!goals.length)return finish(null,'goal floor missing');
- const key=p=>[p.x,p.y,p.z].join(','),nodes=new Map(),adjacency=new Map(),banned=new Set(),checked=new Map();
+ const key=p=>[p.x,p.y,p.z].join(','),nodes=new Map(),adjacency=new Map(),incoming=new Map(),banned=new Set(),checked=new Map();
  const add=(p,id=key(p))=>{if(!nodes.has(id))nodes.set(id,{id,p:{...p}});return nodes.get(id);};
  const initial=add(first,'@start'),ends=goals.map((p,i)=>add(p,'@goal'+i));
  const rise=Number(world.rise)||50,slope=Number(world.slope)||1.5;
@@ -42,22 +43,37 @@ function* search(world,start,goal,options={}){
   return adjacency.get(node.id);
  };
  const heuristic=p=>Math.min(...goals.map(q=>R.dist(p,q)));let graphReason='no candidate chain';
+ const predecessors=function*(node){
+  if(incoming.has(node.id))return incoming.get(node.id);
+  const rows=[];let count=0;
+  if(neighbours(initial).some(n=>n.id===node.id))rows.push(initial);
+  // A capped nearest-neighbour list is not symmetric. Inspect nearby source
+  // nodes' original outgoing lists, rather than calling near() at the goal
+  // and pretending every returned edge can be traversed in either direction.
+  for(const p of hints.candidates(node.p,options.allowDrops?450:span)){
+   if((++count&7)===0){yield;if(clock()-began>=limit){graphReason='time budget';return null;}}
+   const candidate=add(p);if(neighbours(candidate).some(n=>n.id===node.id))rows.push(candidate);
+  }
+  incoming.set(node.id,rows);return rows;
+ };
  const proposal=function*(){
   const open=new Queue(),best=new Map(),closed=new Set();
-  const row={node:initial,cost:0,score:heuristic(first),parent:null};open.push(row);best.set(initial.id,row);
+  const estimate=p=>reverse?R.dist(p,first):heuristic(p);
+  for(const node of reverse?ends:[initial]){const row={node,cost:0,score:estimate(node.p),parent:null};open.push(row);best.set(node.id,row);}
   // This cap bounds cheap graph work, not live physics probes. The graph must
   // be allowed to traverse its finite candidates rather than repeat a small
   // truncated physical search from scratch on every attempt.
-  while(open.rows.length&&closed.size<graphLimit){
+  while(open.rows.length&&stats.expanded<graphLimit){
    const row=open.pop(),id=row.node.id;if(closed.has(id)||best.get(id)!==row)continue;
-   if(id.startsWith('@goal')){const chain=[];for(let n=row;n;n=n.parent)chain.push(n.node);return chain.reverse();}
+   if(reverse?id===initial.id:id.startsWith('@goal')){const chain=[];for(let n=row;n;n=n.parent)chain.push(n.node);return reverse?chain:chain.reverse();}
    if(clock()-began>=limit){graphReason='time budget';return null;}
    closed.add(id);stats.expanded++;if((stats.expanded&7)===0)yield;
-   for(const next of neighbours(row.node)){
-    if(closed.has(next.id)||banned.has(id+'>'+next.id))continue;
+   const adjacent=reverse?yield* predecessors(row.node):neighbours(row.node);if(!adjacent)return null;
+   for(const next of adjacent){
+    if(closed.has(next.id)||banned.has(reverse?next.id+'>'+id:id+'>'+next.id))continue;
     const cost=row.cost+R.dist(row.node.p,next.p),old=best.get(next.id);
     if(old&&old.cost<=cost)continue;
-    const value={node:next,cost,score:cost+heuristic(next.p),parent:row};best.set(next.id,value);open.push(value);
+    const value={node:next,cost,score:cost+estimate(next.p),parent:row};best.set(next.id,value);open.push(value);
    }
   }
   graphReason=open.rows.length?'graph node budget':'no candidate chain';return null;
@@ -67,12 +83,19 @@ function* search(world,start,goal,options={}){
   const end=points.at(-1),distance=heuristic(end);
   if(goalSupported&&distance>span||distance>frontierDistance+.1)return;
   frontierDistance=distance;
-  frontier={provider:'hint-roadmap',points:points.map(p=>({...p})),walks:walks.slice(),moves:moves.slice(),checks:checks.slice(),gates:[],
+  frontier={provider:'hint-roadmap',searchDirection:stats.direction,points:points.map(p=>({...p})),walks:walks.slice(),moves:moves.slice(),checks:checks.slice(),gates:[],
    partial:true,scenePartial:true,localWalk:true,physicalVerified:true,meters:R.extent(points)/100,
    frontierFailure:{why:failure.why||'endpoint awaiting scene verification',p:failure.hit||end,unknown:!failure.hit}};
  };
  for(let attempt=0;attempt<16&&clock()-began<limit;attempt++){
-  const chain=yield* proposal();if(!chain)return finish(null,clock()-began>=limit?'time budget':graphReason);
+  const chain=yield* proposal();
+  if(!chain){
+   if(hints.pending?.size&&stats.expanded<graphLimit&&clock()-began<limit){
+    while(hints.pending.size&&clock()-began<limit)yield;
+    adjacency.clear();incoming.clear();continue;
+   }
+   return finish(null,clock()-began>=limit?'time budget':graphReason);
+  }
   stats.proposals++;const points=[first],walks=[],moves=[],checks=[];let failed=false;
   for(let i=1;i<chain.length;i++){
    if(clock()-began>=limit)return finish(null,'time budget');
@@ -112,10 +135,33 @@ function* search(world,start,goal,options={}){
   if(!failed){
    const last=points.at(-1);
    if(points.length<2||!goals.some(p=>R.xy(p,last)<10&&Math.abs(p.z-last.z)<25))return finish(null,'goal endpoint mismatch');
-   return finish({provider:'hint-roadmap',points,walks,moves,checks,gates:[],partial:false,localWalk:true,physicalVerified:true,
+   return finish({provider:'hint-roadmap',searchDirection:stats.direction,points,walks,moves,checks,gates:[],partial:false,localWalk:true,physicalVerified:true,
     meters:R.extent(points)/100},'complete');
   }
  }
  return finish(null,clock()-began>=limit?'time budget':'candidate repair budget');
+}
+function* search(world,start,goal,options={}){
+ const hints=options.hints;
+ if(!hints?.observed){
+  const source=hints?.surfaceCandidates&&'surface'in hints?hints.surface:hints;
+  return yield* searchOne(world,start,goal,{...options,hints:source});
+ }
+ // Keep a reviewed trajectory's finite graph intact. Mixing a broad surface
+ // cloud into each neighbour list can crowd out its chain or multiply search
+ // work. Try the surface proposal only if that graph cannot finish, sharing
+ // the original time, graph and physical-check allowance.
+ const clock=options.clock||Date.now,began=clock();let used={probes:0,expanded:0};
+ const primary=yield* searchOne(world,start,goal,{...options,hints:hints.observed,
+  report:(phase,data)=>{used=data;options.report?.(phase,data);}});
+ if(primary&&!primary.partial)return primary;
+ const source=hints.surface;if(!source)return primary;
+ const remaining=(options.maxMs||200)-(clock()-began),checks=(options.maxChecks||64)-used.probes,
+  nodes=(options.maxGraphNodes||768)-used.expanded;
+ if(remaining<=0||checks<=0||nodes<=0)return primary;
+ const surface=yield* searchOne(world,start,goal,{...options,hints:source,maxMs:remaining,maxChecks:checks,maxGraphNodes:nodes,
+  report:(phase,data)=>options.report?.(phase,{...data,surfaceFallback:true})});
+ if(!surface)return primary;if(!primary||!surface.partial)return surface;
+ return R.dist(surface.points.at(-1),goal)<R.dist(primary.points.at(-1),goal)?surface:primary;
 }
 exports.search=search;

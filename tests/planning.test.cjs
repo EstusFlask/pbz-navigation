@@ -44,6 +44,38 @@ function planner(world,options={}){
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
 
+test('the reported near currency delivers a checked loaded route before optional bell estimates',()=>{
+ const field=require('./fixtures/currency-180-20261115.json');let optional=0;
+ const data=require(root+'/PBZRouteTables').data,bells=[data.bells.bell_nles_005,data.bells.bell_nles_018];
+ const graph={name:field.world,sameComponent:()=>false,actors:[],observedPassages:new Map(),
+  routeJob:function*(){optional++;while(true)yield;}};
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,level:field.world,start:field.origins[0].start,bells,graph,complete:true});
+ Object.assign(h.goal,field.currency.location?{x:field.currency.location[0],y:field.currency.location[1],z:field.currency.location[2]}:field.query.goal);
+ Object.assign(h.dest,{provider:'187',key:field.currency.key});
+ const task=h.api.makePlan(h.dest,false,false,false,{clock:()=>0});let result;
+ for(let i=0;i<1000;i++){const row=task.next();if(row.done){result=row.value;break;}}
+ task.return?.();
+ assert.ok(result&&!result.transfer&&!result.legs[0].partial,'an available near-currency walk waited behind optional bell graph searches: '+optional);
+ assert.equal(optional,0);assert.ok(result.legs[0].points.length>=2);
+});
+
+test('a loaded floor-changing connector to the near currency is not starved by bell recommendations',()=>{
+ const field=require('./fixtures/currency-180-20261115.json');let optional=0,actions=0;
+ const data=require(root+'/PBZRouteTables').data,bells=[data.bells.bell_nles_005,data.bells.bell_nles_018];
+ const graph={name:field.world,sameComponent:()=>true,actors:[],observedPassages:new Map(),routeJob:function*(){optional++;while(true)yield;}};
+ const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},liveRouteJob:function*(g,w,start,goal){
+  actions++;return {legs:[{world:field.world,points:[start,goal],walks:[],checks:[],gates:[],
+   moves:[{kind:'ladder',guid:'loaded-connector-control',from:0,to:1,p:start,end:goal,edge:-1}],meters:60}],transfer:null};
+ }};
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,level:field.world,start:field.origins[0].start,bells,graph,passages});
+ Object.assign(h.goal,{x:field.currency.location[0],y:field.currency.location[1],z:field.currency.location[2]});
+ Object.assign(h.dest,{provider:'187',key:field.currency.key});
+ const task=h.api.makePlan(h.dest,false,false,false,{clock:()=>0});let result;
+ for(let i=0;i<1000;i++){const row=task.next();if(row.done){result=row.value;break;}}task.return?.();
+ assert.ok(result&&!result.transfer&&!result.legs[0].partial,'a usable loaded connector waited behind optional bell searches: '+optional);
+ assert.equal(optional,0);assert.equal(actions,1);
+});
+
 test('a same-target search keeps a still-valid complete route while publishing a speculative action prefix',()=>{
  let offered=false;
  const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},liveRouteJob:function*(g,w,a,b,native,options){

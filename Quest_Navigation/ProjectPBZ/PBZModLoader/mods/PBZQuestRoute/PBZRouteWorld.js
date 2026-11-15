@@ -65,16 +65,21 @@ class Ground{
   const tail=[this.profile,false,this.ignored,UE.EDrawDebugTrace.None,o,true,c,c,0];let yes;
   // A simple-collision miss is not proof of empty space: some cooked meshes
   // expose only triangle collision. Keep the pawn profile for both queries.
-  for(const complex of [false,true]){
-   tail[1]=complex;this.calls++;
-   if(body){const lift=this.rise+3,half=Math.max(this.r,this.h-lift/2);const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(da),vec(db),Math.max(5,this.r*.98),half,...tail);}
+  let reversed=false;
+  // Single-sided triangle walls can be invisible to a back-face sweep. A
+  // walking connector must be clear from both sides of that same geometry;
+  // this does not create a reverse traversal/action edge. Ground rays retain
+  // their downward direction. Only add the reverse complex sweep after misses.
+  for(let pass=0;pass<(body?3:2);pass++){
+   tail[1]=pass>0;reversed=pass===2;this.calls++;
+   if(body){const lift=this.rise+3,half=Math.max(this.r,this.h-lift/2);const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(reversed?db:da),vec(reversed?da:db),Math.max(5,this.r*.98),half,...tail);}
    else yes=k.LineTraceSingleByProfile(this.pawn,vec(a),vec(b),...tail);
    if(yes&&P.$unref(o)?.bBlockingHit)break;
   }
   if(!yes)return null;const h=P.$unref(o);if(!h||!h.bBlockingHit)return null;
   const point=plain(h.ImpactPoint),nz=Number(h.ImpactNormal.Z);if(!R.finite(point))return null;
   const {component,...limits}=contact(this,h,!body);
-  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating,component,complex:!!tail[1],body,...limits};
+  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating,component,complex:!!tail[1],body,...limits,...(reversed?{reverse:true}:{})};
   if(body)try{result.actor=component?.GetOwner?.();}catch(_){}
   if(owners){
    result.owners=[];
@@ -86,12 +91,13 @@ class Ground{
   return result;
  }
  threadHit(a,b){
-  const k=UE.KismetSystemLibrary;if(typeof k.SphereTraceSingleByProfile!=='function')return this.hit(a,b);
+  const k=UE.KismetSystemLibrary;if(typeof k.SphereTraceSingleByProfile!=='function')return this.hit(a,b)||this.hit(b,a);
   const out=P.$ref(undefined),c=this.color;
-  for(const complex of [false,true]){
+  for(let pass=0;pass<3;pass++){
    this.calls++;
-   const yes=k.SphereTraceSingleByProfile(this.pawn,vec(a),vec(b),7,this.profile,complex,this.ignored,UE.EDrawDebugTrace.None,out,true,c,c,0);
-   const h=yes&&P.$unref(out);if(h?.bBlockingHit)return {point:plain(h.ImpactPoint)};
+   const yes=k.SphereTraceSingleByProfile(this.pawn,vec(pass===2?b:a),vec(pass===2?a:b),7,this.profile,pass>0,this.ignored,UE.EDrawDebugTrace.None,out,true,c,c,0);
+   const h=yes&&P.$unref(out);if(h?.bBlockingHit)return {point:plain(h.ImpactPoint),normal:plain(h.ImpactNormal),
+    component:contact(this,h,false).component,shape:'sphere',complex:pass>0,...(pass===2?{reverse:true}:{})};
   }
   return null;
  }
@@ -122,12 +128,15 @@ class Ground{
  resetRules(){this.slopeRules=null;this.blockerCache=new WeakMap();}
  describeTrace(hit){
   if(!hit)return null;
-  const out={profile:this.profile,shape:hit.body?'capsule':'line',complex:!!hit.complex,point:hit.point,normal:hit.normal};
+  const out={profile:this.profile,shape:hit.shape||(hit.body?'capsule':'line'),complex:!!hit.complex,point:hit.point,normal:hit.normal,...(hit.reverse?{reverse:true}:{})};
   const read=(key,fn)=>{try{const value=fn();if(typeof value==='string'||typeof value==='boolean'||typeof value==='number'&&Number.isFinite(value))out[key]=value;}catch(_){}};
   const component=hit.component;let actor=hit.actor;
   if(!actor)try{actor=component?.GetOwner?.();}catch(_){}
   read('actor',()=>actor&&String(actor.GetName()));read('component',()=>component&&String(component.GetName()));
   read('componentProfile',()=>component&&String(component.GetCollisionProfileName()));
+  read('complexCollisionEnabled',()=>component?.bEnableComplexCollision);
+  read('componentCollisionType',()=>component?.CollisionType);
+  read('doubleSidedGeometry',()=>component?.MeshBodySetup?.bDoubleSidedGeometry);
   read('playerProfile',()=>this.cap?.GetCollisionProfileName?String(this.cap.GetCollisionProfileName()):undefined);
   read('hitObjectType',()=>component?.GetCollisionObjectType?.());read('playerObjectType',()=>this.cap?.GetCollisionObjectType?.());
   if(out.hitObjectType!==undefined)read('playerResponseToHitType',()=>this.cap?.GetCollisionResponseToChannel?.(out.hitObjectType));

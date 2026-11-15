@@ -1,0 +1,22 @@
+{
+  "version": "1.4.2",
+  "status": "local wall-query guard; Bagua-to-manor full route unresolved; field verification pending",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.4.2.zip",
+  "bytes": 120576733,
+  "sha256": "b0c5d888d9c4981f8d0e5c337229100e9a0b6bf89d07ee074817a50e990c9d1b",
+  "files": 1385,
+  "runtimeFiles": 1375,
+  "javascriptPassed": 323,
+  "luaChecks": "real tracker1.0.9/1.0.14 and ModConfig1.0.4 passed",
+  "nativeChecks": "passed",
+  "packageVerification": "1385 exact files;951 streams and291 legacy values retained; versions1.4.2",
+  "report": "docs/FIELD-FIXES-1.4.2.md",
+  "fieldEvidence": "authoring/field-retest-1.4.1-bagua-gate.json",
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "captureActive": false,
+  "fullRouteFixed": false
+}

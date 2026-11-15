@@ -1,0 +1,61 @@
+{
+  "version": "1.6.0",
+  "status": "two verified local complete packages; first game survey acceptance pending",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.6.0.zip",
+      "bytes": 120581769,
+      "sha256": "9d119cd00a0b29829b4b8f3679d6b93733c8a99699371e17d36583c7222f3b2f",
+      "files": 1386,
+      "runtimeFiles": 1376,
+      "profile": {
+        "version": "1.6.0",
+        "flavor": "release",
+        "label": "1.6.0",
+        "development": false,
+        "sourceSHA256": "b6b7a437f51e285f5294c4592c8d4e445d1c0dc19408ee939aea61b0f2e2c3b2",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.6.0_Development.zip",
+      "bytes": 120594010,
+      "sha256": "bc0e00de52953079cf18f3ef025632309bd1cd49a63981d7fde97327347aeeb6",
+      "files": 1390,
+      "runtimeFiles": 1379,
+      "profile": {
+        "version": "1.6.0",
+        "flavor": "development",
+        "label": "1.6.0-dev",
+        "development": true,
+        "sourceSHA256": "b6b7a437f51e285f5294c4592c8d4e445d1c0dc19408ee939aea61b0f2e2c3b2",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "e631386a43756d1280e1e87345d063009136e953154d13f5c5db3af970227e93",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "47c9df3e84832bcbf3b9e5014b78c680b688100b1a864cc58f80d376be2ba442",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "a408cf3b6e52e9c43db6bc379557306cb2817fdd8fa1ae50950f0427f24f9ad5"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 353,
+  "surveyImporterTests": 3,
+  "fieldToolTests": 9,
+  "luaChecks": "real ModConfig1.0.4 and tracker1.0.9/1.0.14 passed",
+  "nativeChecks": "rebuild and ABI/runtime/dispatch tests passed",
+  "packageChecks": "1386 release / 1390 development exact file matches; same core hash; three development modules absent from standard",
+  "report": "docs/DEVELOPMENT-SURVEYS-1.6.0.md",
+  "plan": "authoring/development-survey-plan.json",
+  "installedToGame": false,
+  "liveSurveyRetested": false,
+  "uploaded": false,
+  "existingRouteGapsResolved": false,
+  "a04ImmediateReturnGuardIncluded": true,
+  "a04ReviewEvidence": "authoring/field-retest-1.5.0-a04.json",
+  "a04ReverifiedJavascriptPassed": 353,
+  "a04GameRetestPending": true
+}

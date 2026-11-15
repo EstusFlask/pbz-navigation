@@ -1,4 +1,4 @@
-local Target = require('PbzMapTarget') -- the actual 1.0.9 protected payload
+local Target = require('PbzMapTarget') -- the actual 1.0.14 protected payload
 local json = require('dkjson')
 local Bridge = require('PbzQuestRouteBridge')
 local files, time, scheduled = {}, 100000, {}

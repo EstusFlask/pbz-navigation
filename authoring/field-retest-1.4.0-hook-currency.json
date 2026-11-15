@@ -1,0 +1,47 @@
+{
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "testedBuild": "1.4.0",
+  "fixCandidate": "1.4.1",
+  "status": "reproduced; code regression fixed; new-build field retest pending",
+  "userReport": [
+    "No reverse-search toggle in current menu",
+    "Tower-top currency has no route before grapple; route appears after using it"
+  ],
+  "targetKey": "pbz:world:pbz_xigu_wp-bp_rubbish_c_uaid_60cf84809909c50b03_1135327191",
+  "hookGuid": "BP_GapBlocker_C_UAID_60CF84809909E7F802_1690699148",
+  "installedAudit": "build/field-1.4.0-hook-installed.json",
+  "beforeFeet": [
+    -60368.733,
+    218745.004,
+    -9624.173
+  ],
+  "afterFeet": [
+    -60548.396,
+    219463.235,
+    -9111.571
+  ],
+  "report": "docs/FIELD-FIXES-1.4.1.md",
+  "rawEvidence": "build/field-hook-141-evidence.zip",
+  "rawEvidenceSHA256": "cfc26ccbde94819ed14cd34c8b9ca6dcb24775cd3f07ee76f217dfe9082c6f8f",
+  "fileSHA256": {
+    "before-hook-state.json": "f33a6437044da09d897807fdaeac4d5c2715c672fe2bad161c5de90ddc36dbbd",
+    "after-hook-state.json": "ee5e86f5362bcea658a2f78a6e7cd92d8ac58209eead0aa7672ad78393aefda3",
+    "before-loader.log": "1ce5ea02007d50855a054df588018b1758da9f88f1db6f481e299b9a277dcaf6",
+    "after-loader.log": "4dfe1e858a9bcbe2e58dc71017ac82fa0282e6147ddde1630bb7cbebdc0bb7c4",
+    "before-route-log.txt": "af1c48996e8526f166a42859ae1fdaea61f5b9db73d1321b961a530d01053f40",
+    "after-route-log.txt": "a243c6ca3084d11b5305c08b2bc1cabdd4df4ccd14a8ff86fd8d4a841b43f134",
+    "before-tracker.json": "4d0bfb1c99d5331dd0b1163a5bc6e18a3612ce9a12de55b12bd9d717960ad343",
+    "after-tracker.json": "e2c17ad087e88538ca8784e63458f34b14b76163025b0c7b4a75856c1954e430",
+    "crossing/player.jsonl": "7f4c2f9895f28d4e292cc53b452cfd9b00475e00678f758f6f6ff0576881ae08",
+    "crossing/runtime-status.json": "cc7f329b65f7e7eaafafad016c6a0888065eedb10ead4f87c28156ecda83b91e"
+  },
+  "capture": {
+    "active": false,
+    "samples": 199,
+    "failures": 0,
+    "yListenerStarted": false
+  },
+  "newBuildInstalled": false,
+  "newBuildLiveRetested": false
+}

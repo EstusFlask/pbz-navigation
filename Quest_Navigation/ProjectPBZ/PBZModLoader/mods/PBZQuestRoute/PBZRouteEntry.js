@@ -2,7 +2,7 @@
 
 // One owner even if two loaders or two installation layouts find this mod.
 // A failed partial start is never retried within the same game session.
-const BUILD = '1.3.5';
+const BUILD = '1.8.1';
 function start(load, output) {
     output.version = BUILD;
     output.stop = function () {
@@ -34,6 +34,8 @@ function start(load, output) {
             throw new Error('An older navigation copy is already running; keep one installation and restart.');
         load('./PBZQuestRoute').install();
         state.navigation = globalThis.__PBZQuestRouteInstalled === true;
+        state.flavor = globalThis.PBZQuestRouteBridge?.flavor || 'release';
+        state.buildLabel = globalThis.PBZQuestRouteBridge?.buildLabel || BUILD;
         if (!state.navigation) throw new Error('Navigation entry returned without confirming initialization');
         // A missing or incompatible optional tracker must not disable map pins
         // or quest navigation, or turn an otherwise loaded mod into a failure.

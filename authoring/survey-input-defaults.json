@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "source": "Read-only cooked IMC_Default and IMC_Deflect mapping records; exact serialized record pattern with PlayerMappableKeySettings identity",
+  "limitations": "Default keys only; custom bindings not claimed.",
+  "mappings": [
+    {
+      "context": "IMC_Deflect",
+      "names": [
+        "IA_Guard"
+      ],
+      "key": "RightMouseButton",
+      "offset": 8
+    },
+    {
+      "context": "IMC_Deflect",
+      "names": [
+        "IA_Guard"
+      ],
+      "key": "Gamepad_LeftShoulder",
+      "offset": 43
+    },
+    {
+      "context": "IMC_Deflect",
+      "names": [
+        "IA_Guard"
+      ],
+      "key": "RightMouseButton",
+      "offset": 78
+    },
+    {
+      "context": "IMC_Deflect",
+      "names": [
+        "IA_Guard"
+      ],
+      "key": "Gamepad_LeftShoulder",
+      "offset": 113
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_LightAttack"
+      ],
+      "key": "LeftMouseButton",
+      "offset": 78
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_LightAttack"
+      ],
+      "key": "Gamepad_FaceButton_Left",
+      "offset": 113
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_HeavyAttack"
+      ],
+      "key": "F",
+      "offset": 148
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_HeavyAttack"
+      ],
+      "key": "Gamepad_FaceButton_Top",
+      "offset": 183
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_HeavyAttack"
+      ],
+      "key": "F",
+      "offset": 218
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_HeavyAttack"
+      ],
+      "key": "Gamepad_FaceButton_Top",
+      "offset": 665
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_LightAttack"
+      ],
+      "key": "LeftMouseButton",
+      "offset": 700
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_LightAttack"
+      ],
+      "key": "Gamepad_FaceButton_Left",
+      "offset": 735
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_HeavyAttack"
+      ],
+      "key": "F",
+      "offset": 824
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_HeavyAttack"
+      ],
+      "key": "Gamepad_FaceButton_Top",
+      "offset": 859
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_LightAttack"
+      ],
+      "key": "LeftMouseButton",
+      "offset": 894
+    },
+    {
+      "context": "IMC_Default",
+      "names": [
+        "IA_LightAttack"
+      ],
+      "key": "Gamepad_FaceButton_Left",
+      "offset": 929
+    }
+  ],
+  "sourceAssets": {
+    "IMC_Default": {
+      "chunk": "27749d783279e95500000001",
+      "bytes": 11572,
+      "sha256": "0d86418d736e4032d8b2c2a0a177e276fd2c40c20ed2425db91080ef50e085fe"
+    },
+    "IMC_Deflect": {
+      "chunk": "adef6382cea6e2b900000001",
+      "bytes": 3183,
+      "sha256": "be40c932e1e85be15b4ac841481c0d1f3ccd3b68948b90c006002af4543feb3f"
+    }
+  }
+}

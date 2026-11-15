@@ -1,4 +1,5 @@
 "use strict";
+const Search=require('./PBZRouteSearch');
 // Typed arrays contain only cooked routes, portal lips and known interactions.
 const b64="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const chars=new Uint8Array(128);for(let j=0;j<64;j++)chars[b64.charCodeAt(j)]=j;
@@ -44,7 +45,11 @@ function* graphJob(data,faces,read){
  for(const k of ['p','v','e','arc','lab','cells','strong','dag'])decoded[k]=yield* decodeJob(data[k],Int32Array,read);
  for(const k of ['off','weight','sizes','order'])decoded[k]=yield* decodeJob(data[k],Uint32Array,read);
  decoded.metric=yield* decodeJob(data.metric,Uint16Array,read);yield;
- return new Graph(data,faces,decoded);
+ const graph=new Graph(data,faces,decoded);
+ // Prepare immutable incoming topology with the atlas, outside route-query
+ // deadlines and bounded suffix queries. No scene/lock validity is cached.
+ yield* graph.incomingJob();
+ return graph;
 }
 const point=(a,i)=>({x:a[i*3],y:a[i*3+1],z:a[i*3+2]});
 const xy=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
@@ -65,7 +70,7 @@ class Graph{
   this.bin=new Map();for(let i=0;i<this.cells.length;i+=4)this.bin.set(this.cells[i]+','+this.cells[i+1],i);
   this.nextStrong=new Map();for(let i=0;i<this.dag.length;i+=2){const k=this.dag[i],a=this.nextStrong.get(k)||[];a.push(this.dag[i+1]);this.nextStrong.set(k,a);}
   this.g=new Float64Array(this.n);this.seen=new Uint32Array(this.n);this.closed=new Uint32Array(this.n);this.parent=new Int32Array(this.n);this.gen=0;
-  this.reachMemo=new Map();this.liveStrongLinks=new Map();this.liveEdges=[];this.liveAdj=new Map();this.liveKeys=new Set();this.liveStrong=new Map();this.liveWeak=new Map();this.observedPassages=new Map();
+  this.reachMemo=new Map();this.liveStrongLinks=new Map();this.liveEdges=[];this.liveAdj=new Map();this.liveIncoming=new Map();this.liveKeys=new Set();this.liveStrong=new Map();this.liveWeak=new Map();this.observedPassages=new Map();
   this.foldedPassages=new Set(this.actors.filter(a=>a.fold).map(a=>a.guid.toLowerCase()));
   this.openPassages=new Set();this.passageStates=new Map();this.passageRevision=0;
  }
@@ -82,12 +87,13 @@ class Graph{
   if(from===to||this.liveKeys.has(key)||points.length<2||this.liveEdges.length>=65536)return false;
   const k=this.e.length/6+this.liveEdges.length,rows=this.liveAdj.get(from)||[];
   this.liveKeys.add(key);this.liveEdges.push({from,to,points,move,cost:Math.max(extent(points),dist(this.pt(from),this.pt(to)))+(move.seam?8000:110)});
-  rows.push(k);this.liveAdj.set(from,rows);const links=this.liveStrongLinks.get(this.strong[from])||[];links.push(k);this.liveStrongLinks.set(this.strong[from],links);this.reachMemo.clear();
+  rows.push(k);this.liveAdj.set(from,rows);const incoming=this.liveIncoming.get(to)||[];incoming.push(k);this.liveIncoming.set(to,incoming);
+  const links=this.liveStrongLinks.get(this.strong[from])||[];links.push(k);this.liveStrongLinks.set(this.strong[from],links);this.reachMemo.clear();
   const a=this.weakRoot(this.lab[from]),b=this.weakRoot(this.lab[to]);if(a!==b)this.liveWeak.set(b,a);
   const strong=this.liveStrong.get(this.strong[from])||new Set();strong.add(this.strong[to]);this.liveStrong.set(this.strong[from],strong);
   return true;
  }
- clearLiveEdges(){this.dropCursor=0;this.seamCursor=0;this.liveStrongLinks.clear();this.reachMemo.clear();this.dropsInstalled=false;this.seamsInstalled=false;this.liveEdges=[];this.liveAdj.clear();this.liveKeys.clear();this.liveStrong.clear();this.liveWeak.clear();this.observedPassages.clear();this.passageStates.clear();}
+ clearLiveEdges(){this.dropCursor=0;this.seamCursor=0;this.liveStrongLinks.clear();this.reachMemo.clear();this.dropsInstalled=false;this.seamsInstalled=false;this.liveEdges=[];this.liveAdj.clear();this.liveIncoming.clear();this.liveKeys.clear();this.liveStrong.clear();this.liveWeak.clear();this.observedPassages.clear();this.passageStates.clear();}
  pt(i){return point(this.p,i);}
  reachable(nodes){const queue=[],result=new Set();const visit=c=>{if(!result.has(c)){result.add(c);queue.push(c);}};
   for(const i of nodes)if(i>=0)visit(this.strong[i]);for(let j=0;j<queue.length;j++){for(const c of this.nextStrong.get(queue[j])||[])visit(c);for(const c of this.liveStrong.get(queue[j])||[])visit(c);}return result;}
@@ -117,31 +123,51 @@ class Graph{
   return seen.has(target);
  }
  path(...args){const task=this.pathJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
- *pathJob(start,goal,banned=new Set()){
+ *incomingJob(){
+  if(this.incoming)return this.incoming;
+  // Reverse the actual signed arcs, including only the allowed direction of
+  // one-way edges. Publish only a complete index; cancellation discards it.
+  const off=new Uint32Array(this.n+1),arc=new Int32Array(this.arc.length),e=this.e;let work=0;
+  for(const a of this.arc){const k=a<0?~a:a;off[e[k*6+(a<0?0:1)]+1]++;if((++work&8191)===0)yield;}
+  for(let i=1;i<off.length;i++){off[i]+=off[i-1];if((++work&8191)===0)yield;}
+  const cursor=off.slice();
+  for(const a of this.arc){const k=a<0?~a:a,to=e[k*6+(a<0?0:1)];arc[cursor[to]++]=a;if((++work&8191)===0)yield;}
+  return this.incoming={off,arc};
+ }
+ *pathJob(start,goal,banned=new Set(),options={}){
+  const reverse=(options.direction||Search.direction())==='reverse';
+  const stats=this.lastSearch={direction:reverse?'reverse':'forward',expanded:0};
   if(start<0||goal<0||!this.sameComponent(start,goal))return null;if(start===goal)return [];
   if(!(yield* this.canReachJob(start,goal)))return null;
   const source=this.pt(start),target=this.pt(goal);
   const localGaps=this.name==='pbz_zhengdaodaying_wp'&&[source,target].every(p=>p.x>900&&p.x<15500&&p.y>75000&&p.y<91000);
   const lookout=localGaps&&xy(target,{x:6907,y:79331})<420&&Math.abs(target.z-7805)<230;
-  const id=++this.gen;const heap=new Heap();heap.add(this.h(start,goal),start);this.seen[start]=id;this.g[start]=0;
+  const origin=reverse?goal:start,destination=reverse?start:goal;
+  const adjacency=reverse?yield* this.incomingJob():this;
+  const id=++this.gen;const heap=new Heap();heap.add(this.h(origin,destination),origin);this.seen[origin]=id;this.g[origin]=0;
   const e=this.e;let work=0;while(heap.id.length){if((++work&63)===0)yield;const from=heap.pop();if(this.closed[from]===id)continue;this.closed[from]=id;
-   if(from===goal){const path=[];let at=goal;while(at!==start){const a=this.parent[at],k=a<0?~a:a;path.push(a);if((path.length&127)===0)yield;at=k>=e.length/6?this.liveEdges[k-e.length/6].from:e[k*6+(a<0?1:0)];}path.reverse();return path;}
-   for(let j=this.off[from];j<this.off[from+1];j++){const a=this.arc[j],k=a<0?~a:a,to=e[k*6+(a<0?0:1)];
-    if(this.closed[to]===id||banned.has(k))continue;
+   stats.expanded++;
+   if(from===destination){const path=[];let at=destination;while(at!==origin){const a=this.parent[at],k=a<0?~a:a;path.push(a);if((path.length&127)===0)yield;
+     at=k>=e.length/6?this.liveEdges[k-e.length/6][reverse?'to':'from']:e[k*6+((a<0)!==reverse?1:0)];}if(!reverse)path.reverse();return path;}
+   for(let j=adjacency.off[from];j<adjacency.off[from+1];j++){const a=adjacency.arc[j],k=a<0?~a:a,to=e[k*6+((a<0)!==reverse?0:1)];
+    if(banned.has(k))continue;
     const type=e[k*6+2];if(type===8&&!localGaps||type===1&&lookout)continue;
     if((type===2||type===7)&&!this.canTraverse(this.actors[e[k*6+5]-1])&&!this.allowBlockedTraverse)continue;
     const closed=(type===2||type===7)&&!this.canTraverse(this.actors[e[k*6+5]-1]);const d=this.g[from]+this.weight[k]+(closed?50000:0);if(this.seen[to]===id&&this.g[to]<=d)continue;
-    this.seen[to]=id;this.g[to]=d;this.parent[to]=a;heap.add(d+this.h(to,goal),to);}
-   for(const k of this.liveAdj.get(from)||[]){const link=this.liveEdges[k-e.length/6],to=link.to,d=this.g[from]+link.cost+(!this.canTraverse(link.move)?50000:0);
+    if(this.closed[to]===id)this.closed[to]=0;
+    this.seen[to]=id;this.g[to]=d;this.parent[to]=a;heap.add(d+this.h(to,destination),to);}
+   for(const k of (reverse?this.liveIncoming:this.liveAdj).get(from)||[]){const link=this.liveEdges[k-e.length/6],to=link[reverse?'from':'to'],d=this.g[from]+link.cost+(!this.canTraverse(link.move)?50000:0);
     if(link.move.drop&&!this.allowDrops||link.move.seam&&!this.allowSeams||!this.canTraverse(link.move)&&!this.allowBlockedTraverse)continue;
-    if(banned.has(k)||this.closed[to]===id||this.seen[to]===id&&this.g[to]<=d)continue;
-    this.seen[to]=id;this.g[to]=d;this.parent[to]=k;heap.add(d+this.h(to,goal),to);}
+    if(banned.has(k)||this.seen[to]===id&&this.g[to]<=d)continue;
+    if(this.closed[to]===id)this.closed[to]=0;
+    this.seen[to]=id;this.g[to]=d;this.parent[to]=k;heap.add(d+this.h(to,destination),to);}
   }
   return null;
  }
  route(...args){const task=this.routeJob(...args);let row;do{row=task.next();}while(!row.done);return row.value;}
- *routeJob(start,goal,{startNode=this.node(start),endNode=this.node(goal,'quest'),banned=new Set()}={}){
-  const arcs=yield* this.pathJob(startNode,endNode,banned);if(!arcs)return null;
+ *routeJob(start,goal,{startNode=this.node(start),endNode=this.node(goal,'quest'),banned=new Set(),direction}={}){
+  const searchDirection=direction||Search.direction();
+  const arcs=yield* this.pathJob(startNode,endNode,banned,{direction:searchDirection});if(!arcs)return null;
   const pp=[start],checks=[],gates=[],moves=[],walks=[];let ports=[],here=start,lastEdge=-1;
   const walk=(p,edge=lastEdge)=>{const a=pp[pp.length-1],from=pp.length-1;append(pp,p);if(pp.length>from+1)walks.push({a,b:p,edge,from,to:pp.length-1});};
   const flush=function*(to){let count=0;for(const row of yield* followPortalsJob(here,ports,to,true)){walk(row.p,row.edge??lastEdge);if((++count&127)===0)yield;}ports=[];here=to;};
@@ -184,7 +210,7 @@ class Graph{
   if(xy(pp[pp.length-1],goal)<240)walk({x:goal.x,y:goal.y,z:pp[pp.length-1].z});
   for(const move of moves){const state=this.passageStates.get(String(move.guid||'').toLowerCase());if(state?.ready===false)move.block=state.block;}
   for(const check of checks)if(check.kind===11){const move=moves.find(m=>m.edge===check.edge);if(move?.block){check.block=move.block;check.unknown=!!move.block.unknown;}}
-  return {world:this.name,points:pp,checks,gates,moves,walks,meters:extent(pp)/100};
+  return {world:this.name,searchDirection,points:pp,checks,gates,moves,walks,meters:extent(pp)/100};
  }
 }
 const arr=a=>({x:a[0],y:a[1],z:a[2]});

@@ -1,0 +1,786 @@
+{
+  "source": "Read-only installed1.8.0-dev loader.log, 2026-11-15 America/Tijuana",
+  "sourceSHA256": "70dc9465498ed5d54365a7498c122b67fc86fb08f453921572f49e6124c778c4",
+  "world": "pbz_xigu_wp",
+  "currency": {
+    "name": "货币",
+    "title": "货币",
+    "key": "pbz:world:pbz_xigu_wp-bp_rubbish_c_uaid_60cf84809909569302_1226658964",
+    "mapID": "XiGu",
+    "trackingMode": "manual",
+    "location": [
+      -62555.41,
+      215972.58,
+      -14640.531
+    ]
+  },
+  "query": {
+    "start": {
+      "x": -64103.216640169674,
+      "y": 216767.51249574937,
+      "z": -14629.02424250431
+    },
+    "goal": {
+      "x": -62654.40625,
+      "y": 216071.578125,
+      "z": -14614.39697184125
+    },
+    "maxGraphNodes": 768,
+    "maxChecks": 64,
+    "maxMs": 200
+  },
+  "origins": [
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64274.2813416095,
+        "y": 220401.71393737683,
+        "z": -13629.684034292442
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        71571,
+        68055
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -62991.7836304932,
+        "y": 220318.37303066064,
+        "z": -13690.895751745582
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        68053
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -62363.88313188256,
+        "y": 219754.75240620962,
+        "z": -13726.720454217253
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        64121,
+        68094
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -63265.440232785535,
+        "y": 220587.68865353716,
+        "z": -13679.598589592377
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        68053,
+        68055
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64474.395139060194,
+        "y": 220415.58374272333,
+        "z": -13617.547557075426
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        71571
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64894.824042807115,
+        "y": 219171.65011663784,
+        "z": -13612.309999876945
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        71875
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64805.01954935824,
+        "y": 217898.33777710798,
+        "z": -13890.50722436814
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        71878
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64114.44346917682,
+        "y": 217371.91963262405,
+        "z": -14486.909654617106
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        72076
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64021.712652952505,
+        "y": 216595.80567662523,
+        "z": -14628.866814162384
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        72094,
+        69135
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -63515.95926722239,
+        "y": 216025.5812395309,
+        "z": -14622.847748603415
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        69138,
+        69136,
+        68963
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -63863.40671881102,
+        "y": 216074.10858221634,
+        "z": -14497.976093846375
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        69125
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -63893.94424679941,
+        "y": 217082.35926367293,
+        "z": -14507.8967258701
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        69124,
+        68964
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64118.34716491702,
+        "y": 217358.18562728487,
+        "z": -14485.09237673301
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        72076
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -64103.216640169674,
+        "y": 216767.51249574937,
+        "z": -14629.02424250431
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        72089,
+        72202,
+        69135
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    },
+    {
+      "direction": "forward",
+      "start": {
+        "x": -63264.71572482667,
+        "y": 215944.10811543133,
+        "z": -14644.428701784464
+      },
+      "goal": {
+        "x": -62555.41,
+        "y": 215972.58,
+        "z": -14640.531
+      },
+      "starts": [
+        69332,
+        69136,
+        69177,
+        68963
+      ],
+      "ends": [
+        69332
+      ],
+      "sharedComponent": true
+    }
+  ],
+  "rejections": [
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -61913.85860948202,
+        "y": 222248.2238267414,
+        "z": -15706.819402950494
+      },
+      "a": {
+        "x": -62038.09464645386,
+        "y": 222590.474067688,
+        "z": -15830.610402231934
+      },
+      "b": {
+        "x": -61904.76131439209,
+        "y": 222247.6169281006,
+        "z": -15830.610402231934
+      },
+      "locked": false,
+      "segment": 2,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": false,
+        "point": {
+          "x": -61913.85860948202,
+          "y": 222248.2238267414,
+          "z": -15706.819402950494
+        },
+        "normal": {
+          "x": -0.1800385904929822,
+          "y": 0.9836377222392021,
+          "z": -0.006551077007946576
+        },
+        "actor": "StaticMeshActor_UAID_BCFCE7058ACC719702_1587128784",
+        "component": "StaticMesh",
+        "componentProfile": "Profile_ChaosSpawner",
+        "playerProfile": "Profile_Capsule",
+        "hitObjectType": 7,
+        "playerObjectType": 2,
+        "playerResponseToHitType": 2,
+        "hitResponseToPlayerType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": 50887,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -61972.306634162655,
+        "y": 220979.90992748344,
+        "z": -15404.320915408529
+      },
+      "a": {
+        "x": -61986.69784656797,
+        "y": 221238,
+        "z": -15496.086609417585
+      },
+      "b": {
+        "x": -61910.49807937603,
+        "y": 220908.19557073628,
+        "z": -15501
+      },
+      "locked": false,
+      "segment": 9,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": false,
+        "point": {
+          "x": -61972.306634162655,
+          "y": 220979.90992748344,
+          "z": -15404.320915408529
+        },
+        "normal": {
+          "x": 0.9658779898033774,
+          "y": 0.2589975039546424,
+          "z": 0
+        },
+        "actor": "BP_ChaoSpawner_Combined_001_C_UAID_BCFCE7058ACC9D8D02_1092081227",
+        "component": "NODE_AddStaticMeshComponent-0",
+        "componentProfile": "Profile_ChaosSpawner",
+        "playerProfile": "Profile_Capsule",
+        "hitObjectType": 7,
+        "playerObjectType": 2,
+        "playerResponseToHitType": 2,
+        "hitResponseToPlayerType": 2
+      },
+      "actions": [
+        {
+          "edge": 718563,
+          "kind": "ladder",
+          "guid": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058ACC61A302_2144084674"
+        }
+      ]
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -61913.85860948202,
+        "y": 222248.2238267414,
+        "z": -15706.819402950494
+      },
+      "a": {
+        "x": -62038.09464645386,
+        "y": 222590.474067688,
+        "z": -15830.610402231934
+      },
+      "b": {
+        "x": -61904.76131439209,
+        "y": 222247.6169281006,
+        "z": -15830.610402231934
+      },
+      "locked": false,
+      "segment": 2,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": false,
+        "point": {
+          "x": -61913.85860948202,
+          "y": 222248.2238267414,
+          "z": -15706.819402950494
+        },
+        "normal": {
+          "x": -0.1800385904929822,
+          "y": 0.9836377222392021,
+          "z": -0.006551077007946576
+        },
+        "actor": "StaticMeshActor_UAID_BCFCE7058ACC719702_1587128784",
+        "component": "StaticMesh",
+        "componentProfile": "Profile_ChaosSpawner",
+        "playerProfile": "Profile_Capsule",
+        "hitObjectType": 7,
+        "playerObjectType": 2,
+        "playerResponseToHitType": 2,
+        "hitResponseToPlayerType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -61913.85860948202,
+        "y": 222248.2238267414,
+        "z": -15706.819402950494
+      },
+      "a": {
+        "x": -62038.09464645386,
+        "y": 222590.474067688,
+        "z": -15830.610402231934
+      },
+      "b": {
+        "x": -61904.76131439209,
+        "y": 222247.6169281006,
+        "z": -15830.610402231934
+      },
+      "locked": false,
+      "segment": 4,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": false,
+        "point": {
+          "x": -61913.85860948202,
+          "y": 222248.2238267414,
+          "z": -15706.819402950494
+        },
+        "normal": {
+          "x": -0.1800385904929822,
+          "y": 0.9836377222392021,
+          "z": -0.006551077007946576
+        },
+        "actor": "StaticMeshActor_UAID_BCFCE7058ACC719702_1587128784",
+        "component": "StaticMesh",
+        "componentProfile": "Profile_ChaosSpawner",
+        "playerProfile": "Profile_Capsule",
+        "hitObjectType": 7,
+        "playerObjectType": 2,
+        "playerResponseToHitType": 2,
+        "hitResponseToPlayerType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "surface is not walkable",
+      "p": {
+        "x": -63725.714839080094,
+        "y": 221945.71873355753,
+        "z": -15477.527519127056
+      },
+      "a": {
+        "x": -63657.142250061035,
+        "y": 222571.42644882202,
+        "z": -15820.610402231934
+      },
+      "b": {
+        "x": -63809.52320098877,
+        "y": 221180.95027160645,
+        "z": -15500.610402231934
+      },
+      "locked": false,
+      "segment": 1,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "line",
+        "complex": false,
+        "point": {
+          "x": -63725.714839080094,
+          "y": 221945.71873355753,
+          "z": -15477.527519127056
+        },
+        "normal": {
+          "x": 0.3859079571115391,
+          "y": -0.7808623980211961,
+          "z": 0.4912524442632174
+        },
+        "playerProfile": "Profile_Capsule",
+        "playerObjectType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -64480.70345180415,
+        "y": 219383.17473221346,
+        "z": -15373.531942581958
+      },
+      "a": {
+        "x": -63238.094635009766,
+        "y": 220266.66456604004,
+        "z": -15500.610402231934
+      },
+      "b": {
+        "x": -64701.99751554003,
+        "y": 219199.9979095459,
+        "z": -15500.688833604483
+      },
+      "locked": false,
+      "segment": 3,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": false,
+        "point": {
+          "x": -64480.70345180415,
+          "y": 219383.17473221346,
+          "z": -15373.531942581958
+        },
+        "normal": {
+          "x": 0.9767645227716778,
+          "y": 0.21431534488835016,
+          "z": -6.311690161316447e-08
+        },
+        "actor": "BP_ChaosSpawner_HuotongrenDead_01_C_UAID_60CF84809909E7CB02_1921313405",
+        "component": "StaticMesh",
+        "componentProfile": "Profile_ChaosSpawner",
+        "playerProfile": "Profile_Capsule",
+        "hitObjectType": 7,
+        "playerObjectType": 2,
+        "playerResponseToHitType": 2,
+        "hitResponseToPlayerType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -63092.23984883589,
+        "y": 217304.3878258511,
+        "z": -14450.872060015
+      },
+      "a": {
+        "x": -63104.761302948,
+        "y": 217352.37887954712,
+        "z": -14530.610402231934
+      },
+      "b": {
+        "x": -62590.475593566895,
+        "y": 217180.95030975342,
+        "z": -14550.610402231934
+      },
+      "locked": false,
+      "segment": 1,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": false,
+        "point": {
+          "x": -63092.23984883589,
+          "y": 217304.3878258511,
+          "z": -14450.872060015
+        },
+        "normal": {
+          "x": -0.018695029989952316,
+          "y": 0.9998251184638478,
+          "z": 0.00011982554625323367
+        },
+        "playerProfile": "Profile_Capsule",
+        "playerObjectType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": 55334,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -63777.02559395508,
+        "y": 216176.52908789652,
+        "z": -14459.260052707763
+      },
+      "a": {
+        "x": -63814.22092116925,
+        "y": 216215.62951191532,
+        "z": -14523.591911088657
+      },
+      "b": {
+        "x": -63714,
+        "y": 216032,
+        "z": -14584
+      },
+      "locked": false,
+      "segment": 5,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": true,
+        "point": {
+          "x": -63777.02559395508,
+          "y": 216176.52908789652,
+          "z": -14459.260052707763
+        },
+        "normal": {
+          "x": -0.699170604208854,
+          "y": 0.616472229389345,
+          "z": 0.3621080815792084
+        },
+        "playerProfile": "Profile_Capsule",
+        "playerObjectType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -63731.296017075765,
+        "y": 216226.79487960803,
+        "z": -14454.807316806884
+      },
+      "a": {
+        "x": -63809.52320098877,
+        "y": 216514.28364944458,
+        "z": -14560.610402231934
+      },
+      "b": {
+        "x": -63697.247329711914,
+        "y": 215897.77127838135,
+        "z": -14672.169066091861
+      },
+      "locked": false,
+      "segment": 1,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": true,
+        "point": {
+          "x": -63731.296017075765,
+          "y": 216226.79487960803,
+          "z": -14454.807316806884
+        },
+        "normal": {
+          "x": -0.6911617365338476,
+          "y": 0.5741258192716225,
+          "z": 0.438947468996048
+        },
+        "playerProfile": "Profile_Capsule",
+        "playerObjectType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "edge": -1,
+      "why": "blocked body clearance",
+      "p": {
+        "x": -63092.23984883589,
+        "y": 217304.3878258511,
+        "z": -14450.872060015
+      },
+      "a": {
+        "x": -63104.761302948,
+        "y": 217352.37887954712,
+        "z": -14530.610402231934
+      },
+      "b": {
+        "x": -62590.475593566895,
+        "y": 217180.95030975342,
+        "z": -14550.610402231934
+      },
+      "locked": false,
+      "segment": 1,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "capsule",
+        "complex": false,
+        "point": {
+          "x": -63092.23984883589,
+          "y": 217304.3878258511,
+          "z": -14450.872060015
+        },
+        "normal": {
+          "x": -0.018695029989952316,
+          "y": 0.9998251184638478,
+          "z": 0.00011982554625323367
+        },
+        "playerProfile": "Profile_Capsule",
+        "playerObjectType": 2
+      },
+      "actions": []
+    }
+  ],
+  "coldPauseMs": 53,
+  "notes": "Recorded positions and diagnostics; regression controls simulate scheduling/physics and do not certify the game collision mesh."
+}

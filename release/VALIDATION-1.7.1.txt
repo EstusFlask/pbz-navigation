@@ -1,0 +1,66 @@
+Version: 1.7.1 (local complete standard/development packages)
+Client date: 2026-11-15, America/Tijuana
+
+User request
+- Use Map Collectible Tracker item mode because the1.7.0 self-drawn markers
+  could not be selected and names were not visible in the game.
+- Retire and delete1.0.9; maintain only1.0.14 going forward.
+
+Diagnosis and change
+- Actual host -> real collector Compose test initially found zero survey items.
+  The old implementation never registered them in the collector catalog.
+- Adding catalog records alone produced the generic task-item name. The real
+  repository also copies source records, so matching only source table identity
+  loses the survey name. Registered saveId identity now survives this path.
+- Development host adds94 own points to Catalog, then uses real Compose,
+  Repository, NativePresentation and Selection. No inventory actors or collector
+  files are created/replaced. The old SurveyMap module and Ink overlay are gone.
+- Own names are numbered start/end, with descriptions and green/orange tint;
+  normal collector names retain their original presentation.
+- Selected composed lowercase item keys map back to capture card ID, role and
+  actual world. Existing target/hover/directional bridge keeps exact XYZ/title.
+- Light-attack start/end, heavy-attack navigation issues and defense personal
+  mistakes retain their explicit capture behavior.
+- Completed UTF-16 Saved progress is read by the collector VM. Real collection
+  rules and repository refresh hide both endpoints; no game save is changed.
+- JS and Lua package flavor markers isolate the six development modules.
+  Standard host ignores leftover development catalog files.
+
+Retired reference
+- Deleted build/test-references/collector-1.0.9-ec3108f43146f274ae9acd74f96ac1ef24ca4e29.
+- tests/collector_fixture.py resolves only1.0.14. Removed Git tree/archive restore
+  and1.0.9 test loops, native build fixture and package compatibility reference.
+- Current dependency/docs point to1.0.14. Historical records remain historical.
+- Rechecked after tests: no collector-1.0.9-* reference was recreated. The1.0.14
+  source reference and installed collector were read only.
+
+Validation
+-356 JavaScript regressions: build/validation-171-js.txt.
+- Real1.0.14 host/catalog/compose/repository/name/hit-test/selection/target tests:
+  tests/survey-tracker.test.py; build/validation-171-tracker.txt.
+  Covers94 records,12 Xigu points, ordinary collectible name preservation,
+  source-copy identity, UTF-16 completion filtering, cleanup and standard flavor.
+- Real Lua target -> disk bridge -> JS Tracker -> directed survey start/end
+  retains exact coordinates and title: tests/survey-tracker-roundtrip.cjs.
+-3 file import/analysis tests: build/validation-171-survey-import.txt.
+-9 external capture integrity tests: build/validation-171-field-tools.txt.
+- Actual1.0.14 collector and ModConfig1.0.4 integration:
+  build/validation-171-lua.txt. This suite now runs only the maintained fixture.
+- Native rebuild/ABI/runtime/dispatch with1.0.14: build/validation-171-native.txt.
+- ZIP versions/hashes/source checks: build/validation-171-package.txt.
+  Release1387 / development1394 exact files. Lua/JS profiles agree. Six dev
+  modules absent from standard; no old overlay or collector-owned path included.
+ 951 streams and291 legacy navigation chunks retain original data.
+- Whitespace checks passed. Temporary observation instrumentation was removed.
+- Artifact hashes/profiles: release/LOCAL-CANDIDATE-1.7.1.json.
+  Prior1.7.0 ZIPs archived with hashes; dist contains current1.7.1 only.
+
+Limits
+- Not installed to the game or uploaded. Engine/UMG objects in tests are
+  substitutes; actual post-restart rendering and mouse/gamepad acceptance still
+  need confirmation. The actual catalog/presentation/repository/selection modules
+  were tested, rather than the old custom map abstraction.
+- Survey item visibility follows collector filters. Show all items or enable
+  the task-item category when first checking it.
+- No new field walk or navigation pass was recorded. Existing gap counts and
+  earlier acceptance evidence were not promoted by this UI change.

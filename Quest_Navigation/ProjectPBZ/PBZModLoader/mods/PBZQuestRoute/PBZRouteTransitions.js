@@ -1,6 +1,9 @@
 'use strict';
-const R=require('./PBZRouteCore');
+const R=require('./PBZRouteCore'),Search=require('./PBZRouteSearch');
 function guidePath(feature,path,entry,exit){
+ // Hook anchors are fixed world targets. Snap only the standing endpoints;
+ // interpolating their floor offsets would move the actual grab mesh in air.
+ if(feature.kind==='hook')return [{...entry},...path.slice(1,-1).map(p=>({...p})),{...exit}];
  const ladder=feature.kind==='ladder',length=R.extent(path)||1;
  const upA=ladder?entry.z-path[0].z:Math.max(0,entry.z-path[0].z),upB=ladder?exit.z-path[path.length-1].z:Math.max(0,exit.z-path[path.length-1].z);
  let distance=0;const result=path.map((p,i)=>{if(i)distance+=R.dist(path[i-1],p);return {...p,z:p.z+upA+(upB-upA)*distance/length};});
@@ -43,6 +46,13 @@ function assemble(world,start,segments){
 function* route(options){
  const {world,start,goal,features,landing,walk,canTraverse,validate}=options;
  const clock=options.clock||Date.now,deadline=options.deadline||clock()+12000;
+ const direction=options.direction||Search.direction();
+ // Both directions of one physical interaction are different graph nodes,
+ // but traversing it and immediately returning changes no world state. Such
+ // a loop must not manufacture an "after action" walking policy at its base.
+ const returnsImmediately=(a,b)=>!!a&&!!b&&!!a.feature.guid&&String(a.feature.guid).toLowerCase()===String(b.feature.guid||'').toLowerCase()&&
+  R.dist(a.entry,b.exit)<1&&R.dist(a.exit,b.entry)<1;
+ let immediateReturnsSkipped=0;
  const prepareUntil=Math.min(deadline,clock()+3500);
  const goals=options.goals?.length?options.goals:[goal],actions=[],closed=[];
  const pads=new Map(),rejected=[];
@@ -78,7 +88,7 @@ function* route(options){
  options.report?.('action pads',{ready:actions.length,closed:closed.length,rejected:rejected.slice(0,6),remainingMs:Math.round(deadline-clock())});
  const heuristic=p=>Math.min(...goals.map(q=>R.dist(p,q)));
  let frontier=null;
- const assembled=row=>{const chain=[];for(let p=row;p;p=p.parent)chain.push(p);chain.reverse();return assemble(options.name,start,chain.flatMap(p=>p.segments));};
+ const assembled=row=>{const chain=[];for(let p=row;p;p=p.parent)chain.push(p);chain.reverse();return {...assemble(options.name,start,chain.flatMap(p=>p.segments)),searchDirection:direction};};
  const partial=row=>{const leg=assembled(row);return {legs:[{...leg,provider:'scene',partial:true,scenePartial:true,
   obstacles:[{id:'action-frontier',world:options.name,p:row.p,unknown:true,icon:'mechanism',label:'前方通路待确认'}]}],transfer:null};};
  const cache=new Map(),maxConnectors=options.maxConnectors||128;let connectors=0;
@@ -116,7 +126,7 @@ function* route(options){
   // Validate its edges in order, remove a failed connector for this phase and
   // replan. Once a complete checked chain exists, return it immediately; do
   // not hold guidance while proving every optimistic alternative is longer.
-  const candidate=function*(){
+  const forwardCandidate=function*(){
    const open=[{id:'start',p:start,cost:0,score:heuristic(start),parent:null}],best=new Map([['start',0]]),seen=new Set();let expanded=0;
    while(open.length&&clock()<=deadline){
     open.sort((a,b)=>a.score-b.score);const row=open.shift();
@@ -124,6 +134,7 @@ function* route(options){
     if(row.id==='goal'){const chain=[];for(let n=row;n.parent;n=n.parent)chain.push(n);return chain.reverse();}
     seen.add(row.id);if((++expanded&7)===0)yield;
     const offer=(target,action)=>{
+     if(returnsImmediately(row.action,action)){immediateReturnsSkipped++;return;}
      const id=action?.id||'goal';if(seen.has(id))return;
      const {key}=signature(row.p,target,!action,row.id!=='start'),known=cache.get(key);
      if(known&&!known.result&&(!known.quick||quick))return;
@@ -137,9 +148,38 @@ function* route(options){
    }
    return null;
   };
+  const reverseCandidate=function*(){
+   const sink={id:'goal',p:goal,cost:0,score:R.dist(start,goal),parent:null};
+   const sources=[{id:'start',p:start},...actions.map(action=>({id:action.id,p:action.exit}))];
+   const byID=new Map(actions.map(action=>[action.id,action]));
+   const open=[sink],best=new Map([['goal',0]]),seen=new Set();let work=0;
+   while(open.length&&clock()<=deadline){
+    open.sort((a,b)=>a.score-b.score);const row=open.shift();
+    if(seen.has(row.id)||best.get(row.id)!==row.cost)continue;
+    if(row.id==='start'){
+     const chain=[];let cost=0;for(let n=row;n.parent;n=n.parent){cost+=n.edgeCost;chain.push({...n.edge,cost});}return chain;
+    }
+    seen.add(row.id);const action=byID.get(row.id);
+    for(const source of sources){
+     if((++work&31)===0)yield;
+     if(seen.has(source.id))continue;
+     if(returnsImmediately(byID.get(source.id),action)){immediateReturnsSkipped++;continue;}
+     const targets=action?[action.entry]:goals.slice().sort((a,b)=>R.dist(source.p,a)-R.dist(source.p,b)).slice(0,goalLimit);
+     for(const target of targets){
+      const {key}=signature(source.p,target,!action,source.id!=='start'),known=cache.get(key);
+      if(known&&!known.result&&(!known.quick||quick))continue;
+      const edgeCost=(known?.result?known.result.meters*100:R.dist(source.p,target))+(action?.cost||0),cost=row.cost+edgeCost;
+      if(cost>=(best.get(source.id)??Infinity))continue;
+      best.set(source.id,cost);open.push({...source,cost,score:cost+R.dist(start,source.p),parent:row,edgeCost,
+       edge:{id:row.id,p:action?.exit||target,target,action}});
+     }
+    }
+   }
+   return null;
+  };
   for(let attempt=0;attempt<=maxConnectors&&clock()<=deadline;attempt++){
-   const chain=yield* candidate();if(!chain)return null;
-   if(attempt<8)options.report?.('action chain candidate',{quick,attempt:attempt+1,estimatedMeters:chain.at(-1).cost/100,
+   const chain=yield* (direction==='reverse'?reverseCandidate():forwardCandidate());if(!chain)return null;
+   if(attempt<8)options.report?.('action chain candidate',{direction,quick,attempt:attempt+1,immediateReturnsSkipped,estimatedMeters:chain.at(-1).cost/100,
     actions:chain.filter(r=>r.action).map(r=>r.action.feature.guid)});
    let row={id:'start',p:start,cost:0,parent:null,segments:[]},failed=false;
    for(const edge of chain){
@@ -152,7 +192,7 @@ function* route(options){
     }
    }
    if(!failed){const leg=assembled(row);
-    options.report?.('action chain accepted',{quick,attempts:attempt+1,connectors,meters:leg.meters,actions:leg.moves.map(m=>m.guid)});
+    options.report?.('action chain accepted',{direction,quick,attempts:attempt+1,connectors,immediateReturnsSkipped,meters:leg.meters,actions:leg.moves.map(m=>m.guid)});
     return {legs:[leg],transfer:null};
    }
   }
@@ -174,7 +214,7 @@ function* route(options){
  if(options.onClosed)for(const action of closed.slice(0,3)){
   const first=yield* connection(start,action.entry,false,false,action.feature);if(first)options.onClosed(first,action);
  }
- options.report?.('action search exhausted',{connectors,ready:actions.length,remainingMs:Math.round(deadline-clock()),
+ options.report?.('action search exhausted',{connectors,immediateReturnsSkipped,ready:actions.length,remainingMs:Math.round(deadline-clock()),
   reason:clock()>deadline?'time budget':connectors>=(options.maxConnectors||128)?'connector budget':'no checked chain'});
  return options.allowPartial&&frontier?partial(frontier):null;
 }

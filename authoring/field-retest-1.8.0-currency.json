@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "capturedBuild": "1.8.0-dev",
+  "candidateBuild": "1.8.1",
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "status": "user reported missing/delayed nearby currency route; scheduling regressions fixed offline; live retest pending",
+  "world": "pbz_xigu_wp",
+  "target": {
+    "name": "货币",
+    "title": "货币",
+    "key": "pbz:world:pbz_xigu_wp-bp_rubbish_c_uaid_60cf84809909569302_1226658964",
+    "mapID": "XiGu",
+    "trackingMode": "manual",
+    "location": [
+      -62555.41,
+      215972.58,
+      -14640.531
+    ]
+  },
+  "firstStart": {
+    "x": -64274.2813416095,
+    "y": 220401.71393737683,
+    "z": -13629.684034292442
+  },
+  "initialXYMetres": 47.51,
+  "initialHeightMetres": 10.11,
+  "sourceFiles": {
+    "PBZQuestRoute-log.txt": "257bd69245ef62210aae8578c320ae0857537cead42242e33226033159e9e878",
+    "loader-navigation.txt": "70dc9465498ed5d54365a7498c122b67fc86fb08f453921572f49e6124c778c4",
+    "PBZQuestRoute-tracker.json": "a3d3276b12a8ab87354a8eba44556ec8f502a36892bd60e7b00d9a68680eecd2"
+  },
+  "installedAudit": "build/field-1.8.0-no-routes/installed-audit.json",
+  "fixture": "tests/fixtures/currency-180-20261115.json",
+  "tests": [
+    "tests/field-180.test.cjs",
+    "tests/planning.test.cjs"
+  ],
+  "report": "docs/FIELD-FIXES-1.8.1.md",
+  "sourceModelConnectivityCertified": false,
+  "livePassed": false,
+  "newCaptureStarted": false,
+  "gameFilesModified": false
+}

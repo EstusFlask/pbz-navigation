@@ -1,0 +1,17 @@
+local Config=require('PBZRouteConfig')
+local Core=require('PbzConfigCore')
+local saved
+local provider=Config.create({path='unused',read=function()end,write=function(v)saved=v end})
+local schema=Core.compile(provider)
+assert(schema.entries.ReverseSearch and schema.entries.ReverseSearch.type=='toggle',
+    'the actual PbzModConfig navigation provider has no reverse-search toggle')
+assert(provider.read().values.ReverseSearch==true)
+assert(provider.apply({ReverseSearch=false}).ok)
+assert(provider.read().values.ReverseSearch==false)
+assert(Config.create({path='unused',read=function()return saved end,write=function()end}).read().values.ReverseSearch==false)
+local file=assert(io.open(config_test_root..'/navigation-roundtrip.json','wb'));file:write(saved);file:close()
+assert(provider.reset('thread').ok)
+assert(provider.read().values.ReverseSearch==false,'resetting rope color changed navigation search mode')
+assert(provider.reset('navigation').ok)
+assert(provider.read().values.ReverseSearch==true)
+print('PASS: actual navigation provider exposes reverse search and isolates group resets')

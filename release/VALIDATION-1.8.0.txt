@@ -1,0 +1,187 @@
+1.8.0 local validation, 2026-11-15 America/Tijuana. No game installation/upload or live acceptance.
+Python container/geometry tests: 9 passed.
+
+JavaScript
+  ---
+  duration_ms: 0.4626
+  ...
+1..364
+# tests 364
+# suites 0
+# pass 364
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11837.0617
+
+Native
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\UE4SS.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\UE4SS.exp
+QuestRouteCompat.cpp
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\adapter.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\adapter.exp
+native-tests.cpp
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\native-tests.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\native-tests.exp
+PASS: native ABI size, runtime SHA gate, mod filtering, version-independent host dispatch
+D:\coding\git_rep\pbz-navigation\Quest_Navigation\platform\steam\ue4ss\Mods\PBZQuestRouteCompat\dlls\main.dll
+
+
+Lua
+[PBZQuestRouteConfig] REGISTERED PBZQuestRoute navigation and rope settings
+
+PASS: rope ModConfig protocol, picker visibility, save/restart/reset, invalid values, save retry, standalone game-thread boot
+PASS: actual navigation provider exposes reverse search and isolates group resets
+PASS: ModConfig Lua apply -> saved JSON -> JavaScript linear rope color
+PASS: ModConfig Lua reverse-search toggle -> saved JSON -> JavaScript search direction
+Testing real collector: Map_Collectible_Tracker_1.0.14_187_1.0.14_2026-11-12T21-13Z_s0mFcMSDh
+PASS: actual collector selection, cancellation, stale commands, hint mode, heartbeat, cleanup
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] CONNECT_FAILED: ...Mods/PBZQuestRouteCompat/Scripts/PbzQuestRouteBridge.lua:16: ROUTE_TARGET_CONTRACT_UNSUPPORTED collector API changed; navigation adapter disabled
+
+PASS: unsupported contracts disable safely; disk failure and later wrappers preserve collector behavior
+PASS: 170 reviewed hints, real pigeon tooltip, English preserved, idempotence, changed-ID/content guard, cleanup
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] ITEM_HINTS_CONNECTED 170
+
+[PBZQuestRouteCompat] TARGET_CONNECTED Map Tracker target/selection contract v1
+
+PASS: original tracker target/hover APIs, middle-click selection preserves height, stale hover rejected, require restored
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] SURVEY_CATALOG_CONNECTED 94 tracker items
+
+[PBZQuestRouteCompat] ITEM_HINTS_CONNECTED 170
+
+[PBZQuestRouteCompat] TARGET_CONNECTED Map Tracker target/selection contract v1
+
+PASS: real collector target -> saved bridge -> route Tracker -> survey start with exact XYZ/name
+PASS: real collector target -> saved bridge -> route Tracker -> survey end with exact XYZ/name
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] ITEM_HINTS_CONNECTED 170
+
+[PBZQuestRouteCompat] TARGET_CONNECTED Map Tracker target/selection contract v1
+
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.706s
+
+OK
+PASS: Lua hovered item -> JavaScript middle-click -> Lua manual target, height 2333 preserved
+PASS: Lua visible markers -> JavaScript controller focus/confirm -> Lua target without prior hover
+PASS: collector Lua -> real files -> JavaScript route Tracker -> cancel -> collector Lua
+
+
+Package build
+Streamed atlas cache is current: 951 modules
+Packaging complete navigation data and navigation-owned adapter...
+D:\coding\git_rep\pbz-navigation\dist\Quest_and_Exploration_Navigation_Fork_1.8.0.zip (164,303,964 bytes; release)
+D:\coding\git_rep\pbz-navigation\dist\Quest_and_Exploration_Navigation_Fork_1.8.0_Development.zip (164,326,750 bytes; development)
+
+
+Package validation
+PASS: all streamed actor metadata hashes match; 951 modules, largest 524319 bytes
+PASS: all 291 legacy navigation chunk paths retain their exact original string values
+PASS: every streamed column matches original data byte hashes; original source files unchanged
+PASS: release complete archive, 19715 exact file matches, no collector-owned paths
+PASS: archive, runtime, native adapter and documentation versions agree: 1.8.0
+PASS: development complete archive, 19722 exact file matches, no collector-owned paths
+PASS: archive, runtime, native adapter and documentation versions agree: 1.8.0
+
+
+Node loading benchmark (not game FPS):
+{
+  "runtime": "v20.10.0",
+  "scope": "Node cold module loading and repeated local queries; not game FPS",
+  "rows": [
+    {
+      "world": "pbz_dengdingshandao_wp",
+      "coldMs": 4.421,
+      "warmMeanMs": 0.059,
+      "coldPages": 2,
+      "nearby": 7,
+      "totalPoints": 163198
+    },
+    {
+      "world": "pbz_duanhun_wp",
+      "coldMs": 4.906,
+      "warmMeanMs": 0.084,
+      "coldPages": 2,
+      "nearby": 9,
+      "totalPoints": 319305
+    },
+    {
+      "world": "pbz_fujizhilin_wp",
+      "coldMs": 6.46,
+      "warmMeanMs": 0.021,
+      "coldPages": 1,
+      "nearby": 7,
+      "totalPoints": 538615
+    },
+    {
+      "world": "pbz_houjie_wp",
+      "coldMs": 6.2,
+      "warmMeanMs": 0.017,
+      "coldPages": 1,
+      "nearby": 7,
+      "totalPoints": 737950
+    },
+    {
+      "world": "pbz_huanshuyiji2_wp",
+      "coldMs": 7.556,
+      "warmMeanMs": 0.011,
+      "coldPages": 1,
+      "nearby": 5,
+      "totalPoints": 712252
+    },
+    {
+      "world": "pbz_pangzhen_wp",
+      "coldMs": 17.701,
+      "warmMeanMs": 0.005,
+      "coldPages": 4,
+      "nearby": 11,
+      "totalPoints": 1794155
+    },
+    {
+      "world": "pbz_wp_zhulinguwu",
+      "coldMs": 6.657,
+      "warmMeanMs": 0.004,
+      "coldPages": 1,
+      "nearby": 7,
+      "totalPoints": 1117503
+    },
+    {
+      "world": "pbz_wp_zhulinguwu_be",
+      "coldMs": 1.914,
+      "warmMeanMs": 0.063,
+      "coldPages": 1,
+      "nearby": 16,
+      "totalPoints": 14019
+    },
+    {
+      "world": "pbz_xigu_wp",
+      "coldMs": 7.512,
+      "warmMeanMs": 0.004,
+      "coldPages": 2,
+      "nearby": 11,
+      "totalPoints": 513307
+    },
+    {
+      "world": "pbz_ximeng_wp",
+      "coldMs": 6.739,
+      "warmMeanMs": 0.078,
+      "coldPages": 1,
+      "nearby": 12,
+      "totalPoints": 919935
+    },
+    {
+      "world": "pbz_zhengdaodaying_wp",
+      "coldMs": 11.471,
+      "warmMeanMs": 0.008,
+      "coldPages": 3,
+      "nearby": 6,
+      "totalPoints": 675601
+    }
+  ]
+}

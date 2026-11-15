@@ -1,0 +1,26 @@
+{
+  "version": "1.4.1",
+  "status": "local full candidate; current-menu and tower-hook regression fixed; field retest pending",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.4.1.zip",
+  "bytes": 120576450,
+  "sha256": "ee571397ba34b6cc2e52ce86fb02129f0a3bb8b7bf4418783c152e729543082c",
+  "files": 1385,
+  "runtimeFiles": 1375,
+  "javascriptPassed": 322,
+  "luaChecks": "real PbzModConfig1.0.4 toggle discover/apply/reset/restart and Lua-to-JS read passed; both real tracker versions passed",
+  "nativeChecks": "passed",
+  "packageVerification": "1385 exact files;951 streams and291 legacy values retained; all versions1.4.1",
+  "report": "docs/FIELD-FIXES-1.4.1.md",
+  "fieldEvidence": "authoring/field-retest-1.4.0-hook-currency.json",
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "captureActive": false,
+  "acceptedPriorCases": {
+    "A-01": "1.3.1",
+    "A-02": "1.3.4",
+    "A-03": "1.3.5"
+  }
+}

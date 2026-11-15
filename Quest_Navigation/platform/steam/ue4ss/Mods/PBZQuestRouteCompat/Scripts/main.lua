@@ -14,7 +14,7 @@ ExecuteInGameThread(function()
         local provider=require('PBZRouteConfig').create({path=root..'/PBZQuestRoute-settings.json'})
         local client=require('PbzModConfigClient').register(provider,{report=report})
         rawset(_G,'__PBZQuestRouteConfig',{provider=provider,client=client})
-        report('REGISTERED','PBZQuestRoute rope colors')
+        report('REGISTERED','PBZQuestRoute navigation and rope settings')
     end)
     if not ok then report('START_FAILED',err) end
 end)

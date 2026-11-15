@@ -1,0 +1,71 @@
+{
+  "version": "1.8.1",
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "status": "complete packages verified; nearby currency live acceptance pending",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.1.zip",
+      "bytes": 164308266,
+      "sha256": "860de1ef591b03722164a56a8e58c50b87956b386c60ea53c1dd0b03404f9f0f",
+      "files": 19716,
+      "runtimeFiles": 19704,
+      "profile": {
+        "version": "1.8.1",
+        "flavor": "release",
+        "label": "1.8.1",
+        "development": false,
+        "sourceSHA256": "1344d800fd2339438aa935518b681d623e6366939ee4d0b54fcfb18c88150df0",
+        "captureSchema": 1,
+        "surfaceDataSHA256": "e42734d41671533d1f92cc7b8597344fbcb1b8e501b42115739237d092d01721"
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.1_Development.zip",
+      "bytes": 164331053,
+      "sha256": "14c2e7d22b5715f4c57f2d68d5fffc1b4ee8693e388f45005f90ccb99cc7558c",
+      "files": 19723,
+      "runtimeFiles": 19710,
+      "profile": {
+        "version": "1.8.1",
+        "flavor": "development",
+        "label": "1.8.1-dev",
+        "development": true,
+        "sourceSHA256": "1344d800fd2339438aa935518b681d623e6366939ee4d0b54fcfb18c88150df0",
+        "captureSchema": 1,
+        "surfaceDataSHA256": "e42734d41671533d1f92cc7b8597344fbcb1b8e501b42115739237d092d01721",
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 370,
+  "pythonReaderAndGeometryPassed": 9,
+  "luaChecks": "full maintained-collector integration suite passed",
+  "nativeChecks": "rebuild and native tests passed",
+  "packageChecks": "release19716 / development19723 exact file matches; original atlas hashes retained",
+  "baselineReproduced": "1.8.0 archive cold-load control reports paused:true; old main loop blocks available loaded routes behind bell/atlas work",
+  "fixes": [
+    "checked nearby collectible paths delivered first",
+    "near-item loaded actions before optional bell/atlas estimates",
+    "lazy model provider and outside-planner page loading",
+    "live grid before model proposals",
+    "per-request model budget and failed-connector deduplication"
+  ],
+  "evidence": "authoring/field-retest-1.8.0-currency.json",
+  "report": "docs/FIELD-FIXES-1.8.1.md",
+  "fullModelConnectivityCertified": false,
+  "sourceMapDataChanged": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "liveRetested": false,
+  "newCaptureStarted": false
+}

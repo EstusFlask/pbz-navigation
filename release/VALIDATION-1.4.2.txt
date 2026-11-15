@@ -1,0 +1,40 @@
+Version:1.4.2 (local full package; not installed or uploaded)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.4.2.zip
+
+Field diagnosis
+- Installed/loaded1.4.1;1375 exact runtime files.
+- Bell_SZ_017 Bagua junction -> Bell_XM_015 manor gate has no original-atlas
+ path:captured source weak component8298 and target13982/15319 differ in both
+ search directions. Native invalid path; actions no checked chain; local
+ repair700 nodes/5600 probes exhausted;64m blocked preview cancelled at30s.
+- User screenshot reports solid boards/wheel at moon gate crossed by the guide.
+- Read-only current-process wall properties:complex collision enabled,
+ bDoubleSidedGeometry=false, raw CollisionTraceFlag3; simple shape arrays empty.
+- Rebooted process discovered afresh; repeated from wall after user selected
+ target. That request produced a4m partial frontier, not the old11m chain.
+
+Change and feedback loop
+- Real Ground.step/threadHit with front-face-only wall query substitutes falsely
+ accepts a back-face crossing before fix. New negative test rejects it after fix.
+- After forward simple/complex misses, walking capsules and guide spheres query
+ the same segment in reverse with complex collision; either hit blocks it.
+- Ground rays, authored action direction, movement limits and budgets retained.
+- One extra query per previously clear capsule/sphere miss; live CPU/FPS unknown.
+
+Checks
+-323 JS regressions:build/validation-142-js.txt.
+- Real ModConfig1.0.4 and tracker1.0.9/1.0.14:build/validation-142-lua.txt.
+- Rebuilt native adapter ABI/SHA/host checks:build/validation-142-native.txt.
+- ZIP1385 exact files,951 streams,291 original values, all versions1.4.2:
+ build/validation-142-package.txt.
+- Source whitespace checks passed. No temporary DEBUG instrumentation added.
+
+Limits
+- Full Bagua->gate connection NOT fixed or field accepted. No invented shortcut.
+- Back-face miss is reproduced in the real module using substitute traces;
+ exact bidirectional returns for the old screenshot segment were not captured.
+ Thus it is a confirmed code defect relevant to the observed wall settings,
+ not proof that it alone caused every segment in the old screenshot.
+- Candidate still needs a same-wall field test. Prior tower acceptances and
+ pending1.4.1 hook test are separate. No game install/upload or ongoing monitor.

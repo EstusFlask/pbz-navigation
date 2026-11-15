@@ -1,0 +1,62 @@
+{
+  "version": "1.7.1",
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "status": "complete packages verified; first game presentation acceptance pending",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.7.1.zip",
+      "bytes": 120583284,
+      "sha256": "8ab5395663b2639644ce8b9c712db7aa9f1c213935988bc4bca492c707e97c0b",
+      "files": 1387,
+      "runtimeFiles": 1377,
+      "profile": {
+        "version": "1.7.1",
+        "flavor": "release",
+        "label": "1.7.1",
+        "development": false,
+        "sourceSHA256": "276eda026d5a71e657100f44c8cf951f89663c8370b4b111a487a6173a2cf577",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.7.1_Development.zip",
+      "bytes": 120606071,
+      "sha256": "1cc53b54851da0248a8b913d0b0b1a8ba3d39a17a297c8a50511f208c0eb7c58",
+      "files": 1394,
+      "runtimeFiles": 1383,
+      "profile": {
+        "version": "1.7.1",
+        "flavor": "development",
+        "label": "1.7.1-dev",
+        "development": true,
+        "sourceSHA256": "276eda026d5a71e657100f44c8cf951f89663c8370b4b111a487a6173a2cf577",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 356,
+  "realCollectorPipelineTests": 2,
+  "surveyImporterTests": 3,
+  "fieldToolTests": 9,
+  "collectorReference": "1.0.14 only",
+  "retiredCollector": "1.0.9 reference removed; no Git restore or compatibility test",
+  "luaChecks": "real1.0.14 target/hover/tooltip/repository/hit test, source hints and ModConfig1.0.4 passed",
+  "nativeChecks": "rebuild and native tests passed using1.0.14",
+  "packageChecks": "release1387 / development1394 exact matches; JS/Lua profiles; six development modules isolated; no old overlay",
+  "report": "docs/DEVELOPMENT-SURVEYS.md",
+  "installedToGame": false,
+  "uploaded": false,
+  "liveSurveyRetested": false,
+  "newFieldCaptures": 0
+}

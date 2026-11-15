@@ -1,0 +1,31 @@
+{
+  "version": "1.4.0",
+  "status": "local reverse-search experiment; field comparison pending",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.4.0.zip",
+  "bytes": 120575523,
+  "sha256": "3828e29c0f8a5e34d4de9651b2b0fbb450e5f3985092e84fc7232230de2a6740",
+  "files": 1385,
+  "runtimeFiles": 1375,
+  "javascriptPassed": 320,
+  "luaChecks": "real tracker1.0.9/1.0.14 and ModConfig1.0.4 passed",
+  "nativeChecks": "passed",
+  "packageVerification": "1385 exact files;951 streamed modules and291 original legacy values retained",
+  "addedPaths": [
+    "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSearch.js"
+  ],
+  "report": "docs/FIELD-FIXES-1.4.0.md",
+  "defaultDirection": "reverse",
+  "setting": "ReverseSearch",
+  "liveRetested": false,
+  "installedToGame": false,
+  "uploaded": false,
+  "recordingStarted": false,
+  "acceptedPriorCases": {
+    "A-01": "1.3.1",
+    "A-02": "1.3.4",
+    "A-03": "1.3.5"
+  },
+  "comparisons": "build/search-direction-140.json"
+}

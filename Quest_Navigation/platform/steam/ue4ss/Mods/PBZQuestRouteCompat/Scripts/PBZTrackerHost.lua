@@ -6,6 +6,8 @@ local directory = assert(source:match('^(.*)/[^/]+$'), 'ROUTE_HOST_PATH_UNAVAILA
 local adapter = assert(loadfile(directory .. '/PbzQuestRouteBridge.lua'))()
 local original = require
 local control = {active = true}
+local buildLoader=loadfile(directory .. '/PBZRouteBuild.lua')
+local build=buildLoader and buildLoader() or {development=false}
 rawset(_G, '__PBZQuestRouteHost', control)
 local function report(code, detail)
     print('[PBZQuestRouteCompat] ' .. code .. ' ' .. tostring(detail or '') .. '\n')
@@ -18,6 +20,7 @@ function control.stop()
     if selectionModule and selectionModule.create == selectionCreate then selectionModule.create = originalCreate end
     if control.bridge then control.bridge.stop(); control.bridge = nil end
     if control.undoHints then control.undoHints();control.undoHints=nil end
+    if control.surveys then control.surveys.stop();control.surveys=nil end
     rawset(_G, '__PBZQuestRouteHost', nil)
 end
 local function unsupported(code)
@@ -29,6 +32,22 @@ local function restoreRequire()
 end
 wrapped = function(name, ...)
     local value, loader = original(name, ...)
+    if name=='PbzMapCatalog' and build.development and not control.surveys then
+        local ok,result=pcall(function()
+            local survey=assert(loadfile(directory .. '/PBZSurveyCatalog.lua'))()
+            local data=assert(loadfile(directory .. '/PBZSurveyCatalogData.lua'))()
+            local result=survey.apply(value,data)
+            local setup,err=pcall(function()
+                result.presentation(original('PbzNativePresentation'))
+                result.collections(original('PbzCollectibleRules'),original('PbzCollectibleRepository'))
+                if control.bridge then result.setRoot(control.bridge.savedRoot)end
+            end)
+            if not setup then result.stop();error(err)end
+            return result
+        end)
+        if ok then control.surveys=result;report('SURVEY_CATALOG_CONNECTED','94 tracker items')
+        else report('SURVEY_CATALOG_SKIPPED',result)end
+    end
     if name == 'PbzMapSelection' and not selectionModule then
         if not adapter.selectionModule(value) then unsupported('SELECTION_MODULE_CONTRACT_UNSUPPORTED');return value, loader end
         selectionModule, originalCreate = value, value.create
@@ -46,7 +65,8 @@ wrapped = function(name, ...)
     if name == 'PbzMapTarget' and not control.bridge and control.active then
         -- PbzMapTracker requires this service from its game-thread boot before
         -- constructing the live target. Nothing is booted in a second VM.
-        local ok, result = pcall(adapter.install, {target = value, report = report, onUnsupported = unsupported})
+        local ok, result = pcall(adapter.install, {target = value, report = report, onUnsupported = unsupported,
+            onPoll=function()if control.surveys then control.surveys.refresh()end end})
         if ok then
             control.bridge = result
             -- This catalogue is a pure data module, loaded once in this same
@@ -54,11 +74,15 @@ wrapped = function(name, ...)
             local hintsOk,hintsErr=pcall(function()
                 local hints=assert(loadfile(directory .. '/PBZItemHints.lua'))()
                 local data=assert(loadfile(directory .. '/PBZItemHintsData.lua'))()
-                local count,undo=hints.apply(original('PbzMapCatalog'),data)
+                local count,undo=hints.apply(wrapped('PbzMapCatalog'),data)
                 control.undoHints=undo
                 report('ITEM_HINTS_CONNECTED',count)
             end)
             if not hintsOk then report('ITEM_HINTS_SKIPPED',hintsErr) end
+            if control.surveys then
+                local ready,err=pcall(control.surveys.setRoot,result.savedRoot)
+                if not ready then report('SURVEY_PROGRESS_WAITING',err)end
+            end
             if control.pendingSelection then
                 if not result.watchSelection(control.pendingSelection) then unsupported('SELECTION_SERVICE_CONTRACT_UNSUPPORTED');return value,loader end
                 control.pendingSelection=nil

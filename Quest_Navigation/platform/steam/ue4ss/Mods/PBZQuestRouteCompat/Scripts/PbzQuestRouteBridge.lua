@@ -39,7 +39,7 @@ function M.install(options)
         local ok, err = f:write(text); f:close(); assert(ok, err)
     end
     read, write = options.read or read, options.write or write
-    local control = {session = tostring(now()) .. '-' .. tostring({}), revision = 0, selectionRevision = 0, markerRevision = 0, active = true}
+    local control = {session = tostring(now()) .. '-' .. tostring({}), revision = 0, selectionRevision = 0, markerRevision = 0, active = true,savedRoot=root}
     local current, unsubscribe, lastCommand, lastWrite, reason, selection, hover, hoverSignature
     local markers, markerIndex, markerSignature = {}, {}, nil
     local undoSelection = {}
@@ -147,6 +147,11 @@ function M.install(options)
     end
     Target.create = wrappedCreate
     function control.poll()
+        if options.onPoll then
+            local ok,err=pcall(options.onPoll)
+            if not ok and control.sidecarError~=tostring(err)and options.report then options.report('SURVEY_PROGRESS_WAITING',err)end
+            control.sidecarError=not ok and tostring(err)or nil
+        end
         local text = read('PBZQuestRoute-command.json')
         if text and text ~= lastCommand then
             local cmd = json.decode(text)

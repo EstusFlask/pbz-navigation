@@ -1,0 +1,138 @@
+1.8.1 local validation, 2026-11-15 America/Tijuana.
+No game installation, recording, upload or live acceptance.
+Python reader/geometry tests: 9 passed.
+
+Baseline archive regression
+TAP version 13
+# Subtest: a near currency keeps its working local route when optional model data is cold
+not ok 1 - a near currency keeps its working local route when optional model data is cold
+  ---
+  duration_ms: 11.5095
+  location: 'D:\\coding\\git_rep\\pbz-navigation\\tests\\field-180.test.cjs:40:1'
+  failureType: 'testCodeFailure'
+  error: 'cold optional geometry permanently paused a reachable near currency: {"cpu":53,"wall":53,"paused":true}'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (D:\coding\git_rep\pbz-navigation\tests\field-180.test.cjs:43:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:631:25)
+    Test.start (node:internal/test_runner/test:542:17)
+    startSubtest (node:internal/test_runner/harness:216:17)
+  ...
+# Subtest: a cold model-only connector resumes after one outside-planner read without losing the currency request
+ok 2 - a cold model-only connector resumes after one outside-planner read without losing the currency request # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.1407
+  ...
+# Subtest: requesting walking hints does not synchronously parse an optional world model index
+ok 3 - requesting walking hints does not synchronously parse an optional world model index # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.0452
+  ...
+# Subtest: an unsuccessful model connector is tried once per request and physical walking is retried
+ok 4 - an unsuccessful model connector is tried once per request and physical walking is retried # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.0476
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 3
+# todo 0
+# duration_ms 94.9462
+
+
+Full JavaScript
+  ---
+  duration_ms: 0.6438
+  ...
+1..370
+# tests 370
+# suites 0
+# pass 370
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7079.2167
+
+Native
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\UE4SS.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\UE4SS.exp
+QuestRouteCompat.cpp
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\adapter.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\adapter.exp
+native-tests.cpp
+  正在创建库 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\native-tests.lib 和对象 C:\Users\x-ray\AppData\Local\Temp\pbz-navigation-native-sdk\build\native-tests.exp
+PASS: native ABI size, runtime SHA gate, mod filtering, version-independent host dispatch
+D:\coding\git_rep\pbz-navigation\Quest_Navigation\platform\steam\ue4ss\Mods\PBZQuestRouteCompat\dlls\main.dll
+
+
+Lua
+[PBZQuestRouteConfig] REGISTERED PBZQuestRoute navigation and rope settings
+
+PASS: rope ModConfig protocol, picker visibility, save/restart/reset, invalid values, save retry, standalone game-thread boot
+PASS: actual navigation provider exposes reverse search and isolates group resets
+PASS: ModConfig Lua apply -> saved JSON -> JavaScript linear rope color
+PASS: ModConfig Lua reverse-search toggle -> saved JSON -> JavaScript search direction
+Testing real collector: Map_Collectible_Tracker_1.0.14_187_1.0.14_2026-11-12T21-13Z_s0mFcMSDh
+PASS: actual collector selection, cancellation, stale commands, hint mode, heartbeat, cleanup
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] CONNECT_FAILED: ...Mods/PBZQuestRouteCompat/Scripts/PbzQuestRouteBridge.lua:16: ROUTE_TARGET_CONTRACT_UNSUPPORTED collector API changed; navigation adapter disabled
+
+PASS: unsupported contracts disable safely; disk failure and later wrappers preserve collector behavior
+PASS: 170 reviewed hints, real pigeon tooltip, English preserved, idempotence, changed-ID/content guard, cleanup
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] ITEM_HINTS_CONNECTED 170
+
+[PBZQuestRouteCompat] TARGET_CONNECTED Map Tracker target/selection contract v1
+
+PASS: original tracker target/hover APIs, middle-click selection preserves height, stale hover rejected, require restored
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] SURVEY_CATALOG_CONNECTED 94 tracker items
+
+[PBZQuestRouteCompat] ITEM_HINTS_CONNECTED 170
+
+[PBZQuestRouteCompat] TARGET_CONNECTED Map Tracker target/selection contract v1
+
+PASS: real collector target -> saved bridge -> route Tracker -> survey start with exact XYZ/name
+PASS: real collector target -> saved bridge -> route Tracker -> survey end with exact XYZ/name
+[PBZQuestRouteCompat] WAITING_TARGET navigation adapter loaded; collector files unchanged
+
+[PBZQuestRouteCompat] ITEM_HINTS_CONNECTED 170
+
+[PBZQuestRouteCompat] TARGET_CONNECTED Map Tracker target/selection contract v1
+
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.764s
+
+OK
+PASS: Lua hovered item -> JavaScript middle-click -> Lua manual target, height 2333 preserved
+PASS: Lua visible markers -> JavaScript controller focus/confirm -> Lua target without prior hover
+PASS: collector Lua -> real files -> JavaScript route Tracker -> cancel -> collector Lua
+
+
+Package build
+Streamed atlas cache is current: 951 modules
+Packaging complete navigation data and navigation-owned adapter...
+D:\coding\git_rep\pbz-navigation\dist\Quest_and_Exploration_Navigation_Fork_1.8.1.zip (164,308,266 bytes; release)
+D:\coding\git_rep\pbz-navigation\dist\Quest_and_Exploration_Navigation_Fork_1.8.1_Development.zip (164,331,053 bytes; development)
+
+
+Package verification
+PASS: all streamed actor metadata hashes match; 951 modules, largest 524319 bytes
+PASS: all 291 legacy navigation chunk paths retain their exact original string values
+PASS: every streamed column matches original data byte hashes; original source files unchanged
+PASS: release complete archive, 19716 exact file matches, no collector-owned paths
+PASS: archive, runtime, native adapter and documentation versions agree: 1.8.1
+PASS: development complete archive, 19723 exact file matches, no collector-owned paths
+PASS: archive, runtime, native adapter and documentation versions agree: 1.8.1
+

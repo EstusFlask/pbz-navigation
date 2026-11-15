@@ -225,7 +225,10 @@ function placedCurve(actor,kind){
     break;
    }
    case 'swing':result=[location('ASide')||location('BoxA'),location('BSide')||location('BoxB')];break;
-   case 'hook':result=[location('TriggerSphere')||location('TriggerBox'),location('GrabPoint'),location('LandArea')];break;
+   // The sphere is the broad aiming/detection region and may be centred on
+   // the airborne grab mesh. The box is the authored player launch region.
+   // Keep the grab anchor inside the action, separate from its standing entry.
+   case 'hook':result=[location('TriggerBox')||location('TriggerSphere'),location('GrabPoint'),location('LandArea')];break;
    default:result=TraversalGeometry.extract(actor,kind,{location,curve,point:W.plain});
   }
   if(!result||result.length<2||!result.every(R.finite)||R.dist(result[0],result[result.length-1])<36)return null;
@@ -431,7 +434,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
     if(points)return {points,meters:R.extent(points)/100};
     if(!settings.local)return null;
     const distance=R.dist(a,b),vertical=Math.abs(a.z-b.z)>200;
-    const until=Math.min(walkDeadline,clock()+(vertical?2400:1200)),hints=require('./PBZRouteWalkHints').forWorld(g.name);
+    const until=Math.min(walkDeadline,clock()+(vertical?2400:1200)),H=require('./PBZRouteWalkHints'),hints=H.reviewedForWorld(g.name);
     const report=options.report?(phase,data)=>options.report('action '+phase,{...data,goal:b}):undefined;
     // Check the finite author candidates first. Sprouting another offset grid
     // at every hint needlessly multiplies the nodes in a narrow stair corridor.
@@ -444,7 +447,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
      if(hinted)return hinted;
     }
     if(settings.quick||distance>4500||clock()>=until)return null;
-    const local=yield* Local.search(world,a,b,{clock,hints,maxMs:Math.max(1,until-clock()),
+    const local=yield* Local.search(world,a,b,{clock,hints:H.forWorld(g.name),surfaceBudget:options.surfaceBudget,maxMs:Math.max(1,until-clock()),
      maxNodes:vertical?1800:1000,waypoints:samples.waypoints,
      report});
     return local;

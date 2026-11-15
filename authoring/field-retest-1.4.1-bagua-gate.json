@@ -1,0 +1,34 @@
+{
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "testedBuild": "1.4.1",
+  "fixCandidate": "1.4.2",
+  "sourceBell": "Bell_SZ_017",
+  "targetBell": "Bell_XM_015",
+  "world": "pbz_pangzhen_wp",
+  "status": "full route unresolved; single-sided-wall query regression fixed in local candidate; field verification pending",
+  "installation": "build/field-bagua-gate-141/installation.json",
+  "evidence": "build/field-bagua-gate-141-evidence.zip",
+  "evidenceSHA256": "e6af5ccd7bedebb4218aac348a11313aa9e3b36c53085ddf38ae1bfd12414538",
+  "report": "docs/FIELD-FIXES-1.4.2.md",
+  "wallBeforeFeet": [
+    -179999.93,
+    113664.99,
+    -3051.044
+  ],
+  "wallRetestFeet": [
+    -180847.701,
+    113285.93,
+    -3043.545
+  ],
+  "findings": {
+    "offlineComponentsDisconnected": true,
+    "nativeQuery": "invalid path",
+    "originalResult": "64m blocked preview; cancelled at30s",
+    "restartedWallResult": "4m partial frontier; not a complete route",
+    "wallBackfaceCollision": "field double-sided flag false; generic real-module query substitute reproduces miss; exact old segment queries not captured"
+  },
+  "recordingActive": false,
+  "newBuildInstalled": false,
+  "newBuildLiveRetested": false
+}

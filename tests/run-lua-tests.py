@@ -5,7 +5,7 @@ import os
 import sys
 import subprocess
 import tempfile
-from collector_fixture import original_fixture
+from collector_fixture import current_fixture
 
 # Optional isolated test dependency location; nothing is installed in the game.
 sys.path.insert(0, str(Path(os.environ.get('TEMP', '.')) / 'pbz-navigation-test-deps'))
@@ -30,8 +30,9 @@ with tempfile.TemporaryDirectory(prefix='pbz-rope-') as folder:
     lua.globals().config_test_root = Path(folder).as_posix()
     lua.execute("package.path = adapter_scripts .. '/?.lua;' .. package.path")
     lua.execute((root / 'tests/rope-config.lua').read_text(encoding='utf-8'))
+    lua.execute((root / 'tests/navigation-config.lua').read_text(encoding='utf-8'))
     subprocess.run(['node', str(root/'tests/rope-color-roundtrip.cjs'), folder], check=True)
-fixtures=[original_fixture(root),next(root.glob('Map_Collectible_Tracker_1.0.14*'))]
+fixtures=[current_fixture(root)]
 for fixture in fixtures:
     lua = LuaRuntime()
     scripts = fixture / 'platform/steam/ue4ss/Mods/PbzMapTracker/Scripts'
@@ -65,4 +66,5 @@ for fixture in fixtures:
         subprocess.run(['node', str(root / 'tests/bridge-roundtrip.cjs'), folder], check=True)
         lua.execute("roundtrip.poll(); assert(roundtrip_target.read().target == nil); roundtrip.stop()")
         print('PASS: collector Lua -> real files -> JavaScript route Tracker -> cancel -> collector Lua')
+subprocess.run([sys.executable,str(root/'tests/survey-tracker.test.py')],check=True)
 

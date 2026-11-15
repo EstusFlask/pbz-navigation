@@ -1,0 +1,42 @@
+Version:1.4.1 (local full package; not installed or uploaded)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.4.1.zip
+
+Observed installed baseline
+-1.4.0 loaded;1375 runtime files match delivered ZIP.
+- User reports no current-menu search toggle and no tower currency route before
+ grappling. Read-only reflected snapshot captures actual lower TriggerBox,
+ airborne TriggerSphere/GrabPoint and upper LandArea, plus same target identity.
+-1.4.0 logs try to walk from lower platform to upper sphere; connector fails.
+ Player grapples manually; upper walking route then completes.
+- One-shot state snapshots and20s read-only position recording retained and
+ stopped. No game functions called; no process writes, game-file writes or Y listener.
+
+Red/green feedback loops
+- tests/navigation-config.lua: actual PbzModConfig provider lacked ReverseSearch.
+- tests/rope-color.test.cjs: actual settings poll ignored the Lua provider's Saved
+ root and therefore its menu value. Fixture fails before engine Saved-root fix.
+- tests/passages.test.cjs captured tower hook: original coordinate-based callback
+ control fails before changing hook launch selection; complete action chain then
+ passes, exact grab anchor retained, unmet requirement still rejects the route.
+- Evidence:build/menu-141-red.txt,build/hook-141-red.txt,
+ build/settings-path-141-red.txt and corresponding green logs.
+
+Checks
+-322 JS regressions:build/validation-141-js.txt.
+- Real ModConfig1.0.4 discovery/Chinese toggle/apply/reset/restart and saved JSON
+ to JS mode/color; real tracker1.0.9/1.0.14:build/validation-141-lua.txt.
+- Rebuilt native adapter; ABI/SHA/host checks:build/validation-141-native.txt.
+-1385 exact ZIP files,951 streamed modules,291 legacy values, all versions1.4.1:
+ build/validation-141-package.txt.
+- Tracked-source whitespace check passed; no temporary DEBUG instrumentation.
+
+Limit and next test
+- Engine collisions are substituted in coordinate regressions. This is not proof
+ that1.4.1 has been walked in game, nor an FPS/latency measurement.
+- Replace full package, return to the same lower hook platform, select same
+ currency before grappling; expect lower approach -> hook -> upper continuation.
+- Current menu:Settings -> Mods -> Quest & Exploration Navigation -> Route planning.
+ Toggle ReverseSearch and confirm replan. PbzModConfig explicit value takes
+ priority over legacy text settings. No need to repeat the full tower route.
+- Prior A-01/A-02/A-03 acceptances retained; A-04 resumes after this focused case.

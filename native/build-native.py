@@ -87,8 +87,8 @@ def main():
         subprocess.run(test_common+['/DRC_UE4SS_API=','/DRC_LMS_API=',str(ROOT/'native/native-tests.cpp'),
             '/Fo:'+str(out/'test.obj'),'/Fe:'+str(test),'/link','bcrypt.lib'],check=True,env=env,cwd=out)
         sys.path.insert(0, str(ROOT/'tests'))
-        from collector_fixture import original_fixture
-        fixture=original_fixture(ROOT)/'platform/steam/ue4ss/Mods/PbzMapTracker/Scripts/main.lua'
+        from collector_fixture import current_fixture
+        fixture=current_fixture(ROOT)/'platform/steam/ue4ss/Mods/PbzMapTracker/Scripts/main.lua'
         subprocess.run([str(test),str(args.ue4ss),str(fixture)],check=True,env=env,cwd=ROOT)
     print(output)
 

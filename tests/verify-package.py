@@ -7,12 +7,14 @@ import json
 import re
 import subprocess
 import zipfile
-from collector_fixture import original_fixture
+from collector_fixture import current_fixture
+from release_profiles import archive_name, included, build_bytes, lua_build_bytes, BUILD, LUA_BUILD, DEVELOPMENT_FILES
 
 root=Path(__file__).resolve().parents[1]
 nav=root/'Quest_Navigation'
 parser=argparse.ArgumentParser()
 parser.add_argument('--manager-state',type=Path)
+parser.add_argument('--flavor',choices=['release','development','all'],default='all')
 args=parser.parse_args()
 release=json.loads((root/'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))
 lock=json.loads((root/'release/VERSION-LOCK.json').read_text(encoding='utf-8'))
@@ -35,7 +37,9 @@ documents={'INSTALL-README.md':root/'docs/USER-GUIDE.md','CHANGELOG.md':root/'re
     'MOVEMENT-COVERAGE.md':root/'docs/MOVEMENT-COVERAGE.md',
     'MANUAL-ROUTES.md':root/'docs/MANUAL-ROUTES.md',
     'BELL-NETWORK-COVERAGE.md':root/'docs/BELL-NETWORK-COVERAGE.md',
-    'ITEM-DESCRIPTION-AUDIT.md':root/'docs/ITEM-DESCRIPTION-AUDIT.md'}
+    'ITEM-DESCRIPTION-AUDIT.md':root/'docs/ITEM-DESCRIPTION-AUDIT.md',
+    'HEYBOX-MAP-IMPORT.md':root/'docs/HEYBOX-MAP-IMPORT.md',
+    'FIELD-FIXES-1.8.1.md':root/'docs/FIELD-FIXES-1.8.1.md'}
 def module_value(name,prefix):
     text=(streamed/name).read_text(encoding='utf-8')
     assert text.startswith(prefix)
@@ -53,14 +57,23 @@ for world in stream_state['worlds']:
 subprocess.run(['node',str(root/'tests/verify-stream-atlas.cjs')],check=True)
 print('PASS: every streamed column matches original data byte hashes; original source files unchanged')
 assert archive.relative_to(root).as_posix()==release['archive']
-with zipfile.ZipFile(archive) as z:
+for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]:
+ archive=root/archive_name(version,flavor)
+ with zipfile.ZipFile(archive) as z:
+    package_documents={**documents}
+    if flavor=='development':package_documents['DEVELOPMENT-SURVEYS.md']=root/'docs/DEVELOPMENT-SURVEYS.md'
     names=set(z.namelist())
     assert len(names)==len(z.namelist()), 'duplicate archive paths'
-    expected={p.relative_to(nav).as_posix() for p in nav.rglob('*') if p.is_file()}
+    expected={p.relative_to(nav).as_posix() for p in nav.rglob('*') if p.is_file() and included(p.relative_to(nav).as_posix(),flavor)}
     expected.update(scripts+'PBZRouteStreaming/'+name for name in stream_state['files'])
-    assert names==expected|set(documents), 'incomplete navigation package'
+    assert names==expected|set(package_documents), 'incomplete navigation package'
     assert not any('/mods/pbzmaptracker/' in n.lower() for n in names), 'collector file included'
     assert not any('/mods/pbzmodconfig/' in n.lower() for n in names), 'shared settings framework file included'
+    for development_file in DEVELOPMENT_FILES:
+        assert (development_file in names)==(flavor=='development'), 'development flavor boundary broken: '+development_file
+    assert z.read(BUILD)==build_bytes(nav,version,flavor), 'build profile mismatch'
+    assert z.read(LUA_BUILD)==lua_build_bytes(version,flavor), 'tracker VM build profile mismatch'
+    assert not any(n.endswith('PBZRouteSurveyMap.js') for n in names),'superseded survey overlay included'
     assert z.testzip() is None
     version=release['version']
     for name in ['PBZRouteEntry.js','PBZQuestRoute.js']:
@@ -69,12 +82,13 @@ with zipfile.ZipFile(archive) as z:
     assert version.encode('utf-16le') in z.read(adapter), 'native adapter version mismatch'
     assert ("modVersion='"+version+"'") in z.read('platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZRouteConfig.lua').decode('utf-8'), 'settings provider version mismatch'
     assert not any(n.endswith('PBZQuestRoute-settings.json') for n in names), 'player color settings included in update'
-    for name in ['README-en.txt','README-zh.txt',*documents]:
+    for name in ['README-en.txt','README-zh.txt',*package_documents]:
         assert version in z.read(name).decode('utf-8'), 'documentation version mismatch'
     for name in names:
-        source=documents[name] if name in documents else streamed/name[len(scripts+'PBZRouteStreaming/'):] if name.startswith(scripts+'PBZRouteStreaming/') else root/'build/legacy-atlas'/Path(name).name if name.startswith(scripts+'PBZRouteChunks/') else nav/name
+        if name in (BUILD,LUA_BUILD):continue
+        source=package_documents[name] if name in package_documents else streamed/name[len(scripts+'PBZRouteStreaming/'):] if name.startswith(scripts+'PBZRouteStreaming/') else root/'build/legacy-atlas'/Path(name).name if name.startswith(scripts+'PBZRouteChunks/') else nav/name
         assert hashlib.sha256(z.read(name)).digest()==hashlib.sha256(source.read_bytes()).digest(),name
-    print(f'PASS: complete archive, {len(names)} exact file matches, no collector-owned paths')
+    print(f'PASS: {flavor} complete archive, {len(names)} exact file matches, no collector-owned paths')
     print(f'PASS: archive, runtime, native adapter and documentation versions agree: {version}')
     if args.manager_state:
         mods=json.loads(args.manager_state.read_text(encoding='utf-8'))['mods']
@@ -99,8 +113,8 @@ with zipfile.ZipFile(archive) as z:
         print(f"PASS: zero package overlap with all {len(tracker['files'])} installed collector paths")
         # Only certify versions exercised by the real Lua integration suite.
         tracker_version=str(tracker.get('version',''))
-        if tracker_version in ('1.0.9','1.0.14'):
-            fixture=original_fixture(root) if tracker_version=='1.0.9' else next(root.glob('Map_Collectible_Tracker_1.0.14*'))
+        if tracker_version=='1.0.14':
+            fixture=current_fixture(root)
             original=fixture/'platform/steam/ue4ss/Mods'
             for file in tracker['files']:
                 source=original/file['fileName']

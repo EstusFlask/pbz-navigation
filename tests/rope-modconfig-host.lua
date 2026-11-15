@@ -15,9 +15,12 @@ local function pump()for _=1,3 do clock=clock+.1;remote.tick();client.tick()end 
 pump()
 local proxy=assert(records.PBZQuestRoute,'actual ModConfig host rejected navigation')
 assert(require('PbzLocale').resolve(proxy.displayName,'zh-CN')=='任务与探索导航')
-for _,patch in ipairs({{ThreadColor='red'},{ThreadColor='blue'},{ThreadColor='custom'},{ThreadCustomColor='#00FF00'}}) do
+local toggle
+for _,entry in ipairs(proxy.entries) do if entry.key=='ReverseSearch' then toggle=entry end end
+assert(toggle and toggle.type=='toggle' and require('PbzLocale').resolve(toggle.label,'zh-CN')=='候选图反向搜索（实验）')
+for _,patch in ipairs({{ReverseSearch=false},{ReverseSearch=true},{ThreadColor='red'},{ThreadColor='blue'},{ThreadColor='custom'},{ThreadCustomColor='#00FF00'}}) do
     assert(proxy.apply(patch,{baseRevision=proxy.read().revision}).ok);pump()
     for k,v in pairs(patch) do assert(provider.read().values[k]==v and proxy.read().values[k]==v) end
 end
 remote.stop();client.close()
-print('PASS: actual ModConfig remote host discovers navigation, resolves Chinese labels and applies red/blue/custom picker edits')
+print('PASS: actual ModConfig remote host discovers navigation, exposes Chinese reverse-search toggle and applies direction/color edits')

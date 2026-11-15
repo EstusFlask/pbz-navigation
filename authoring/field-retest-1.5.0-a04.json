@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "case": "A-04",
+  "build": "1.5.0-dev",
+  "loadedBuildVerified": true,
+  "installedRuntimeFiles": 1377,
+  "profileMatchesArchive": true,
+  "userStatement": "刚刚走完了A-04，有一些局部是对的你参考路线和保存点吧，然后途中有个梯子我走错了然后又上来了，其他都是正确路线",
+  "reports": 12,
+  "postWindowsComplete": 12,
+  "requestedReverse": false,
+  "manualRouteCompleted": true,
+  "navigationAccepted": false,
+  "reference": "authoring/a04-reference-1.5.0-20261114.json",
+  "figure": "authoring/a04-reference-1.5.0-20261114.svg",
+  "excludedExcursion": {
+    "from": 1794712398537,
+    "to": 1794712431402,
+    "a": {
+      "x": -54124.58255771209,
+      "y": 210274.91111298688,
+      "z": -17014.541520456736
+    },
+    "b": {
+      "x": -54123.27470420842,
+      "y": 210280.80522455688,
+      "z": -17017.316634632112
+    },
+    "anchorDistanceCm": 6.644719006326801,
+    "userConfirmedMistake": true,
+    "observedActorMatch": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98258502_1502607232",
+    "fromLocal": "2026-11-14T19:13:18.537-08:00",
+    "toLocal": "2026-11-14T19:13:51.402-08:00",
+    "reason": "User confirmed this one descend-and-return ladder excursion was a mistake; surrounding top-pad samples rejoin within6.65cm."
+  },
+  "rawUniqueSamples": 1655,
+  "retainedSamples": 1288,
+  "retainedObservedMeters": 801.4494849039328,
+  "samplingGapInsideExcludedExcursion": true,
+  "localControlMarker": "20261115T030942803Z-007",
+  "findings": [
+    {
+      "id": "A04-150-START-NO-ROUTE",
+      "status": "confirmed no active route at markers001-003",
+      "causeEvidence": "offline components disconnected; native query range then invalid path; no captured native candidate"
+    },
+    {
+      "id": "A04-150-IMMEDIATE-RETURN",
+      "status": "captured action cycle; generic regression fixed and included in1.6.0; game retest pending",
+      "evidenceMarkers": [
+        "005",
+        "006"
+      ],
+      "actor": "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98248502_1076387978",
+      "distinctFromUserWrongLadder": true
+    },
+    {
+      "id": "A04-150-END-ARRIVAL",
+      "status": "user completed route; last machine status blocked approach near goal",
+      "lastLoggedRangeCm": 184
+    }
+  ],
+  "evidenceArchive": "build/field-a04-150-evidence.zip",
+  "evidenceSHA256": "f2bb3107a2243d099ece3ba40349227c9de7ba473d7045db4f5ad7f3ae62adc2",
+  "rawReportEncoding": "UTF-16 BOM from engine; parse with json.loads(path.read_bytes())",
+  "captureActive": false,
+  "runtimeCoursesAdded": false,
+  "newBuildLiveRetested": false,
+  "fixPreparedAs": "1.5.1 isolated draft",
+  "integratedFixBuild": "1.6.0",
+  "integrationChecks": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.6.0.zip",
+      "transitionsSHA256": "8eab410c8e1346cd872505787c0ad83b25403a44c75b58244a68104299bcedb2",
+      "actionCycleGuardIncluded": true
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.6.0_Development.zip",
+      "transitionsSHA256": "8eab410c8e1346cd872505787c0ad83b25403a44c75b58244a68104299bcedb2",
+      "actionCycleGuardIncluded": true
+    }
+  ],
+  "newBaseRegressionPassed": 353
+}

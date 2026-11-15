@@ -1,0 +1,64 @@
+Version: 1.7.0 (local standard/development complete packages)
+Client date: 2026-11-14, America/Tijuana
+
+Change and diagnosis
+- Old catalog omitted Xigu worksheet-002 chain and worksheet-004 red-thread
+  weapon cases. Actual Survey.pins returned 3 of 5 unfinished cards in the
+  deterministic node --test tests/survey-catalog.test.cjs feedback loop.
+  Both tests failed before the change and now pass.
+- Current installed 1.6.0 development profile and Saved progress were read-only
+  inspected; completed progress was empty. Exact on-screen count of two was not
+  reproduced in the game. Shared icons/projection were separate display limits;
+  no claim that the three-card cap alone proves the exact two-icon observation.
+- Expanded catalog: 47 directed cards across 8 worlds; Xigu 6. Includes chain,
+  red-thread/flame-lion weapon mechanisms, hooks, zipline, lifts and locked doors.
+- Unresolved geometry and existing candidate verification remain distinct.
+  Captured worksheet014-017, missing identity/anchors, cross-world bindings,
+  extreme-height copies and story transfers remain excluded from this batch.
+- Numbered own virtual map items show full start/end names on hover/focus.
+  Left/middle mouse and D-pad/A preserve exact XYZ/world; shared anchors fan out.
+  No collector files, inventory objects or tracker services are changed.
+- Only explicit light-attack press at the actual grounded start/end starts or
+  completes capture. Position/dwell alone never starts/finishes it. Shared starts
+  require choosing the intended route; holding a button cannot duplicate actions.
+- Map target changes do not stop recording. Context changes and sample jumps
+  still close interrupted observations without synthesizing geometry.
+- Heavy attack is navigation-issue; defense during capture is player-mistake.
+  Both use bounded local case exports with linked survey IDs and before/after
+  data. Mistakes are separate review candidates; no raw trajectory is deleted.
+- Dedicated marker buffer survives planning traffic. Imported reports separate
+  navigation issues and personal mistakes; absence of a queried lock is unknown.
+- Default X/LMB, Y/F (legacy keyboard Y retained), LB/RMB were checked against
+  cooked input mapping records and PlayerMappableKeySettings identity. Hashes in
+  authoring/survey-input-defaults.json. Custom remaps are not followed.
+
+Verification
+- 360 JavaScript regressions: build/validation-170-js.txt.
+- Real map interaction path with engine substitutes: click/confirm exact XYZ,
+  D-pad focus/A, shared anchors, full names and hidden-card cache invalidation.
+- Real development adapter: X starts, LB writes a typed linked personal case;
+  standard initialization has zero development loads or input polling.
+- 3 JS-recorder -> real files -> importer/analysis tests including UTF-16 input,
+  missing/traversal chunk checks and separate personal/navigation classifications:
+  build/validation-170-survey-import.txt.
+- 9 external capture-integrity tests: build/validation-170-field-tools.txt.
+- Real ModConfig1.0.4 and tracker1.0.9/1.0.14: build/validation-170-lua.txt.
+- Native rebuild/ABI/runtime/dispatch: build/validation-170-native.txt.
+- Complete ZIP/source/version/hash checks: build/validation-170-package.txt.
+  Release 1386 / development 1391 exact file matches, same navigation-core hash;
+  standard excludes Diagnostics, Survey, SurveyTasks and SurveyMap. 951 streams
+  and 291 legacy navigation chunks retain original data.
+- Source whitespace check passed; no temporary debug logging was introduced.
+- Package hashes/profiles: release/LOCAL-CANDIDATE-1.7.0.json. Prior 1.6.0 packages
+  archived with hashes; dist contains only current 1.7.0 packages.
+
+Scope
+- Not installed to game or uploaded. No new field capture or navigation pass
+  was recorded. Actual icon appearance, hover/focus and in-game input acceptance
+  await first installation. Engine substitutes do not prove game presentation.
+- Current unlocked save can validate open traversal; unopened/missing/equipped
+  weapon conditions still need suitable states. Worksheet hints are field-test
+  references, not confirmation that every mechanism is present on that route.
+- Navigation gap/acceptance counts were not automatically changed. No game FPS
+  claim; development capture/serialization/map items add work.
+- Player instructions and route list: docs/DEVELOPMENT-SURVEYS.md.

@@ -3,18 +3,23 @@
   "objective": "Complete and validate navigation for the current game version through short field cases, generic fixes, directed coverage and save-state tests",
   "roadmap": "docs/NAVIGATION-TODO.md",
   "timezone": "America/Tijuana",
-  "currentBuild": "1.3.5",
+  "currentBuild": "1.8.1",
   "currentPhase": "A",
-  "activeCase": "A-04",
-  "currentAction": "This field round is ended by the user. A-01/A-02/A-03 accepted on1.3.1/1.3.4/1.3.5 respectively. Next session only: choose A-04 short checkpoints after fresh version/three-way capture checks; do not start now.",
-  "fieldSession": "build/field-live-1.3.5-20261114-34248-A03",
-  "recording": "Stopped: user ended this round; logs,10Hz XYZ and foreground Y listeners all verified inactive; session archived.",
+  "activeCase": "CURRENCY-180",
+  "currentAction": "Prioritize the reported nearby currency regression. 1.8.0 user field result is not accepted. 1.8.1 scheduling/cold-load controls pass; first retest only the same-floor 10-20m approach, then the original floor-changing route. No new recording or game installation by the agent.",
+  "fieldSession": "build/field-1.8.0-no-routes",
+  "recording": "Session ended with game exit;12 reports and completed post windows imported read-only. No external listener or background capture started.",
   "installedAudit": {
-    "build": "1.3.5",
-    "matchedRuntimeFiles": 1374,
-    "missing": [],
+    "build": "1.8.0",
+    "flavor": "development",
+    "matchedRuntimeFiles": 19709,
+    "missing": [
+      "PBZRouteMapData/NOTICE.txt"
+    ],
     "changed": [],
-    "status": "passed"
+    "extraScripts": [],
+    "status": "runtime code and data match delivered archive; only attribution text absent",
+    "evidence": "build/field-1.8.0-no-routes/installed-audit.json"
   },
   "saveProfile": "Current user save: full map unlocked, most collectibles already taken",
   "priorEvidence": [
@@ -317,19 +322,40 @@
     },
     {
       "id": "A-04",
-      "status": "pending_short_checkpoint_selection",
+      "status": "manual_reference_captured_navigation_partial",
       "world": "pbz_xigu_wp",
       "fromBell": "Bell_NLES_007",
       "toBell": "Bell_NLES_006",
-      "name": "大瀑布→远眺龙柱处：短段复核与正确对照",
+      "name": "大瀑布→远眺龙柱处：人工参考已复盘，导航仍待修补",
       "worksheet": "worksheet-017",
       "capturedBuilds": [
-        "1.2.1"
+        "1.2.1",
+        "1.5.0"
       ],
-      "codeFixedBuild": null,
+      "codeFixedBuild": "1.6.0",
       "livePassedBuilds": [],
       "resultEvidence": [],
-      "issues": []
+      "issues": [],
+      "identityClarification": {
+        "source": "authoring/field-session-20261113.json worksheet-017",
+        "fromBell": "Bell_NLES_007",
+        "toBell": "Bell_NLES_006",
+        "differentShortRoute": {
+          "fromBell": "Bell_NLES_004",
+          "toBell": "Bell_NLES_006",
+          "name": "溪谷平原入口→远眺龙柱处"
+        }
+      },
+      "manualCompletedBuilds": [
+        "1.5.0"
+      ],
+      "latestEvidence": "authoring/field-retest-1.5.0-a04.json",
+      "reference": "authoring/a04-reference-1.5.0-20261114.json",
+      "codeFixScope": "same-interaction immediate return; included in both1.6.0 packages; start and arrival gaps unresolved",
+      "userWrongLadderExcluded": true,
+      "navigationAccepted": false,
+      "fixPreparedAs": "1.5.1 isolated draft",
+      "integrationEvidence": "authoring/field-retest-1.5.0-a04.json"
     },
     {
       "id": "C-03-short-hook",
@@ -341,6 +367,47 @@
       "presenceEvidence": "authoring/field-confirmations-20261113.json",
       "livePassedBuilds": [],
       "resultEvidence": []
+    },
+    {
+      "id": "C-03-TOWER-HOOK",
+      "status": "fix_candidate_awaiting_field_retest",
+      "name": "杀气塔顶铃铛附近货币：钩索前无路线",
+      "world": "pbz_xigu_wp",
+      "capturedBuilds": [
+        "1.4.0"
+      ],
+      "fixCandidate": "1.4.1",
+      "evidence": "authoring/field-retest-1.4.0-hook-currency.json",
+      "acceptance": "At original pre-hook position, select the same currency and receive the correct lower approach, hook action and upper continuation before manually grappling; verify current PbzModConfig toggle is visible and replans."
+    },
+    {
+      "id": "B-03-BAGUA-GATE",
+      "name": "八卦阁前路口→戏梦山庄正门：断网及堵门穿墙预览",
+      "status": "partial_fix_awaiting_field_retest; full connection unresolved",
+      "world": "pbz_pangzhen_wp",
+      "fromBell": "Bell_SZ_017",
+      "toBell": "Bell_XM_015",
+      "capturedBuilds": [
+        "1.4.1"
+      ],
+      "fixCandidate": "1.4.2",
+      "evidence": "authoring/field-retest-1.4.1-bagua-gate.json"
+    },
+    {
+      "id": "CURRENCY-180",
+      "status": "failed_user_reported_candidate_pending",
+      "world": "pbz_xigu_wp",
+      "name": "近处货币首次路线与等待",
+      "capturedBuilds": [
+        "1.8.0-dev"
+      ],
+      "livePassedBuilds": [],
+      "candidateBuild": "1.8.1",
+      "checkpoint": "Same currency, first same-floor 10-20m approach; then original ~10m vertical separation",
+      "resultEvidence": [
+        "authoring/field-retest-1.8.0-currency.json",
+        "docs/FIELD-FIXES-1.8.1.md"
+      ]
     }
   ],
   "issues": [
@@ -519,9 +586,9 @@
   "coveragePolicy": "Track capture, authored geometry, automated checks and version-specific live pass independently; directed edges and current save conditions are mandatory",
   "nextSaveNeeded": "Only after movement/road validation reaches collectible or pre-unlock/quest-state cases; retain current save",
   "releaseGate": "Version-specific live validation and unresolved major issue audit; no automatic public upload",
-  "installedBuild": "1.3.5",
-  "localCandidateBuild": "1.3.5",
-  "localCandidateReceipt": "release/LOCAL-CANDIDATE-1.3.5.json",
+  "installedBuild": "1.8.0",
+  "localCandidateBuild": "1.8.1",
+  "localCandidateReceipt": "release/LOCAL-CANDIDATE-1.8.1.json",
   "installedAudit1.2.3": {
     "build": "1.2.3",
     "status": "passed",
@@ -594,5 +661,107 @@
     "path": "build/field-live-1.3.5-20261114-34248-A03-data.zip",
     "bytes": 45574,
     "sha256": "b1df09f8d5652bcd9529a7a47afe075995311a9ab77e0a0f6c59435e1b1d9bb5"
-  }
+  },
+  "searchExperiment": {
+    "version": "1.4.0",
+    "clientDate": "2026-11-14",
+    "defaultDirection": "reverse",
+    "setting": "ReverseSearch",
+    "fieldStatus": "pending",
+    "report": "docs/FIELD-FIXES-1.4.0.md",
+    "priorAcceptedCasesPreserved": true,
+    "recordingStarted": false
+  },
+  "resumeCaseAfterHook": "A-04",
+  "focusedRetest": {
+    "case": "CURRENCY-180",
+    "capturedBuild": "1.8.0-dev",
+    "candidateBuild": "1.8.1",
+    "status": "field failure received; offline controls fixed; live retest pending",
+    "evidence": "authoring/field-retest-1.8.0-currency.json",
+    "recordingActive": false
+  },
+  "priorFocusedRetest": {
+    "case": "C-03-TOWER-HOOK",
+    "build": "1.4.1",
+    "status": "pending",
+    "evidence": "authoring/field-retest-1.4.0-hook-currency.json",
+    "recordingActive": false
+  },
+  "developmentCapture": {
+    "version": "1.5.0",
+    "flavors": [
+      "release",
+      "development"
+    ],
+    "marker": "gamepad heavy-attack Y or keyboard Y during gameplay",
+    "status": "real game file capture verified:12 reports and completed post windows; HUD not independently observed",
+    "reports": "actual Saved/PBZQuestRoute-dev-*.json",
+    "importCommand": "py -3.12 tools/import-development-cases.py",
+    "automaticErrorClassification": false,
+    "evidence": "authoring/field-retest-1.5.0-a04.json"
+  },
+  "priorFocusedRetests": [
+    {
+      "case": "B-03-BAGUA-GATE",
+      "build": "1.4.2",
+      "status": "pending; full route unresolved",
+      "evidence": "authoring/field-retest-1.4.1-bagua-gate.json",
+      "recordingActive": false
+    },
+    {
+      "case": "A-04",
+      "capturedBuild": "1.5.0-dev",
+      "candidateBuild": "1.6.0",
+      "status": "manual reference captured; navigation partial; action-cycle candidate awaits short field check",
+      "evidence": "authoring/field-retest-1.5.0-a04.json",
+      "recordingActive": false
+    }
+  ],
+  "developmentSurvey": {
+    "build": "1.7.1",
+    "plan": "authoring/development-survey-plan.json",
+    "report": "docs/DEVELOPMENT-SURVEYS.md",
+    "status": "real1.0.14 pipeline and packages verified; game presentation pending",
+    "taskCount": 47,
+    "xiguTasks": 6,
+    "coverageCountUnchanged": true,
+    "controls": "light start/end; heavy navigation issue; defense personal wrong turn",
+    "recordingStarted": false,
+    "receipt": "release/LOCAL-CANDIDATE-1.7.1.json",
+    "collector": "1.0.14 only;1.0.9 retired by user",
+    "rendering": "real tracker catalog/repository/tooltip/selection",
+    "legacyFixtureRemoved": true
+  },
+  "offlineMapImport": {
+    "build": "1.8.0",
+    "clientDate": "2026-11-15",
+    "modelChapters": 12,
+    "worlds": 11,
+    "candidatePositions": 7505840,
+    "encodings": [
+      "instanced WKI3/mesh-binary.v2",
+      "base-model.v1 quantized meshes"
+    ],
+    "audit": "authoring/heybox-map-audit.json",
+    "report": "docs/HEYBOX-MAP-IMPORT.md",
+    "originalAtlasChanged": false,
+    "sourceModelsDistributed": false,
+    "fieldRetested": true,
+    "priorFieldVerdictsUnchanged": true,
+    "fieldResult": "1.8.0 user reported missing/delayed currency routes; model import did not establish full connectivity",
+    "candidateFix": "1.8.1"
+  },
+  "resumeCaseAfterCurrency": "A-04",
+  "installedAuditHistory": [
+    {
+      "build": "1.5.0",
+      "flavor": "development",
+      "matchedRuntimeFiles": 1377,
+      "missing": [],
+      "changed": [],
+      "status": "passed",
+      "evidence": "build/field-a04-150/installation.json"
+    }
+  ]
 }

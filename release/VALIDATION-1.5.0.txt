@@ -1,0 +1,64 @@
+Version:1.5.0 (local standard and development full packages; not installed/uploaded)
+Validation date:2026-11-14 (America/Tijuana)
+
+Artifacts
+- Standard:dist/Quest_and_Exploration_Navigation_Fork_1.5.0.zip
+- Development:dist/Quest_and_Exploration_Navigation_Fork_1.5.0_Development.zip
+- Same navigation-core JS sourceSHA256; generated build profile selects flavor.
+- Standard1386 exact files;development1387 exact files. Recorder module is
+ absent from standard. Runtime/native/config/docs versions match1.5.0.
+
+Behavior
+- Development only:controller Y heavy-attack / keyboard Y marks a case without
+ consuming input. Menus, held input and2s debounce gate capture.
+-10Hz bounded pre20s samples;independent planning/probe/guide/native rings.
+- Immediate write plus5s post window;write/readback before saved notice.
+- Save active route, actual visible blue-line input points, attachment state,
+ target identity/origin, physics metadata, requested mode and actual provider /
+ direction. World/context changes and large position jumps are explicit gaps.
+- Cases are unreviewed observations; no automatic bug classification, learned
+ routes, input remapping, screenshot, network, upload or game install.
+- Importer reads Saved reports into workspace; original reports remain untouched.
+
+Reverse-search audit
+- Atlas/hint/action graphs support reverse. Assert actual g(goal)=0 and
+ g(player)=path cost under reverse;opposite initialization under forward.
+- Native UE and live local-grid searches remain forward. Results now explicitly
+ report their own direction rather than inheriting the configured mode.
+- Menu label narrowed to Reverse candidate search (experimental).
+- Player-to-route attachment and displayed near-line remain separate from graph
+ expansion direction; exact capture enables further wall diagnostics.
+
+A-04 identity
+- Original worksheet-017:Bell_NLES_007 large waterfall -> Bell_NLES_006 lookout.
+- Bell_NLES_004 plain entrance -> same lookout is a distinct shorter route.
+- Existing failed/accepted field records are not rewritten as newly validated.
+
+Validation
+-332 JS regressions:build/validation-150-js.txt.
+- Includes real dev initialization/controller-input/capture adapter with mocked
+ engine IO, standard zero recorder loads, exact route/render preservation,
+ menu/held/cooldown, pre/post windows, context/jump gaps and write failures.
+-9 external field-tool integrity tests:build/validation-150-field-tools.txt.
+- Actual Lua ModConfig1.0.4 and tracker1.0.9/1.0.14:build/validation-150-lua.txt.
+- Native rebuild/ABI/SHA/host tests:build/validation-150-native.txt.
+- Both ZIPs:build/validation-150-package.txt;951 streams and291 legacy values.
+- Real filesystem export -> importer control:build/development-import-control/.
+- Source whitespace checks passed.
+
+Limits
+- Real game heavy-attack polling, saved HUD notice and engine IO still await
+ first installed development-package acceptance. Mocks are not an in-game test.
+- Navigation gaps and prior wall/hook candidates retain their pending statuses.
+- Development sampling, serialization and local writes add work; no FPS or
+ latency equivalence with the standard package is claimed.
+- Report location is actual engine Saved/PBZQuestRoute-dev-*.json. Game restart
+ is required when replacing one flavor with the other.
+
+Post-build field update (2026-11-14 America/Tijuana)
+- User installed1.5.0 Development;1377 runtime files match.12 actual reports
+ were imported, with all post windows complete and matching build profiles.
+- Game input -> engine file write/readback -> post-window completion verified.
+ HUD visibility was not independently observed. Raw engine JSON is UTF-16 BOM.
+- User completed A-04 manually; one acknowledged wrong-ladder excursion excluded.
+ Full navigation remains partial; see authoring/field-retest-1.5.0-a04.json.

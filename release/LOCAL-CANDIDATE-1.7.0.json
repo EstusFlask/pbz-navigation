@@ -1,0 +1,60 @@
+{
+  "version": "1.7.0",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "status": "local complete packages verified; first game map/control acceptance pending",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.7.0.zip",
+      "bytes": 120582998,
+      "sha256": "68318b5e393645a5600562b0b0aa0786c5c88a464d8019219c9b718d6fbcfee4",
+      "files": 1386,
+      "runtimeFiles": 1376,
+      "profile": {
+        "version": "1.7.0",
+        "flavor": "release",
+        "label": "1.7.0",
+        "development": false,
+        "sourceSHA256": "0e7eecbbbd5c7e25b643d2b8e0252c20113bd0021be3cc040205ad71fc8fe089",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.7.0_Development.zip",
+      "bytes": 120599509,
+      "sha256": "f822fb5ccefcafcca57b2c3156193f9347ca32b91ae30f57413d4c09f136151d",
+      "files": 1391,
+      "runtimeFiles": 1380,
+      "profile": {
+        "version": "1.7.0",
+        "flavor": "development",
+        "label": "1.7.0-dev",
+        "development": true,
+        "sourceSHA256": "0e7eecbbbd5c7e25b643d2b8e0252c20113bd0021be3cc040205ad71fc8fe089",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "9d65382376d5fca16d7ff6553e2c5e2c5ce98e91bc39e3317f9a6a39143c46a5",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyMap.js": "f025118596dd65c3d7cc143624984345645cc0e8b16201d2ba6a7fcfbc9c6045",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 360,
+  "surveyImporterTests": 3,
+  "fieldToolTests": 9,
+  "nativeChecks": "rebuilt and passed",
+  "luaChecks": "real ModConfig1.0.4, tracker1.0.9/1.0.14 passed",
+  "packageChecks": "release1386 / development1391 exact matches; same core; four dev modules absent from standard",
+  "report": "docs/DEVELOPMENT-SURVEYS.md",
+  "catalog": "authoring/development-survey-plan.json",
+  "defaultInputEvidence": "authoring/survey-input-defaults.json",
+  "installedToGame": false,
+  "uploaded": false,
+  "liveSurveyRetested": false,
+  "newFieldCaptures": 0,
+  "existingGapCountChanged": false
+}

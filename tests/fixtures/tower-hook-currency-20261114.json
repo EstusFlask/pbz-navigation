@@ -1,0 +1,18 @@
+{
+  "source": "User stood before the available hook; read-only current-process reflected component transforms, 2026-11-14 America/Tijuana",
+  "scope": "Positions and component hierarchy are observed. Test floor/step callbacks substitute for game collision; no in-game trace replay is claimed.",
+  "world": "pbz_xigu_wp",
+  "guid": "BP_GapBlocker_C_UAID_60CF84809909E7F802_1690699148",
+  "classPath": "/Game/RenewalContent/Actors/GameplayBlocker/BP_GapBlocker.BP_GapBlocker_C",
+  "targetKey": "pbz:world:pbz_xigu_wp-bp_rubbish_c_uaid_60cf84809909c50b03_1135327191",
+  "start": {"x": -60368.733, "y": 218745.004, "z": -9624.173},
+  "goal": {"x": -60376.4, "y": 220006.92, "z": -9048.435},
+  "root": {"x": -60476.86, "y": 219289.195, "z": -9098.99},
+  "triggerSphere": {"x": -60476.86, "y": 219289.195, "z": -9098.99},
+  "triggerBox": {"x": -60318.258, "y": 218522.513, "z": -9637.046},
+  "grabPoint": {"x": -60476.86, "y": 219289.195, "z": -9098.99},
+  "landArea": {"x": -60476.86, "y": 219424.137, "z": -9108.99},
+  "type": 1,
+  "hanging": false,
+  "rawEvidence": "build/field-hook-141/before-hook-state.json"
+}

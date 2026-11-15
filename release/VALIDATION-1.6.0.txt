@@ -1,0 +1,66 @@
+Version: 1.6.0 (local standard and development full packages)
+Client date: 2026-11-14 (America/Tijuana)
+
+Artifacts
+- dist/Quest_and_Exploration_Navigation_Fork_1.6.0.zip: 1386 exact files.
+- dist/Quest_and_Exploration_Navigation_Fork_1.6.0_Development.zip: 1390 exact files.
+- SHA256/profile receipts: release/LOCAL-CANDIDATE-1.6.0.json.
+- Same navigation-core source hash; standard excludes Diagnostics, Survey and
+  SurveyTasks. Development also includes DEVELOPMENT-SURVEYS.md.
+- Runtime, native adapter, config provider and packaged document versions agree.
+- Prior 1.5.0 packages archived with original hashes; dist has current packages.
+
+Behavior
+- Eleven directed field cards use exact existing bell XYZ/world identities.
+- Worksheet cards match unresolved audit links; already captured 014-017 are
+  excluded. B03 retains the known Bagua-to-manor identity and pending acceptance.
+- Regional map shows up to three pairs per displayed chart, green start/orange
+  end, matched IDs. No invented straight walking connection is drawn.
+- 450cm XY / 150cm Z / 800ms walking/current-floor trigger; menus cannot trigger.
+- Starting selects the exact survey endpoint and disables bell transfer for that
+  request. Existing user controls and Y marker behavior remain available.
+- Entire 10Hz observed trip is saved in five-second chunks, with route/render
+  snapshots, bounded planner/probe events and linked Y marker identities.
+- Context/world changes, large jumps, sampling gaps, unavailable position,
+  unavailable movement, vehicles and changed/cancelled target close as interrupted.
+- Completed progress survives restart; unfinished prior manifest is recovered as
+  interrupted. File/chunk/write limits and event trimming are explicit.
+- Write/readback failure never counts as completed. No automatic learned road,
+  reverse edge, unlock, upload or field-validation success is created.
+- Importer copies original bytes, including engine UTF-16 JSON, hashes manifests
+  and chunks, reports missing chunks and rejects escaped chunk references.
+- Offline report includes actual modes/providers/directions, observed length,
+  markers, rejection reasons and first complete plan comparison when available.
+
+Validation
+- 353 JavaScript tests passed: build/validation-160-js.txt.
+- Includes real dev initialization and map Ink with engine substitutes, full
+  journey, wrong-floor/menu/dwell, gaps, completion/restart and failed writes.
+- 3 real JS recorder -> filesystem -> importer/analysis tests:
+  build/validation-160-survey-import.txt.
+- 9 external capture-integrity tests: build/validation-160-field-tools.txt.
+- Real ModConfig1.0.4 and tracker1.0.9/1.0.14 integration:
+  build/validation-160-lua.txt.
+- Native rebuild/ABI/runtime/dispatch: build/validation-160-native.txt.
+- Complete ZIP/source/hash/version verification: build/validation-160-package.txt.
+  951 streamed modules and 291 legacy chunk values retain original data.
+- Source whitespace check passed.
+
+Limits and next action
+- Not installed into game or uploaded. Game map appearance and automatic
+  start/end/file acceptance need the first installed development-package test.
+- No new survey was recorded during implementation. Existing route-gap counts
+  and earlier field acceptance statuses remain unchanged.
+- Development recording/serialization/writes add overhead; no game FPS measured.
+- Start/end are collection zones; a captured walk is not a shortest-path proof.
+- Review raw footsteps, floor/actions/collision, planned route and rendered input
+  before changing navigation; separately field-test the resulting fix.
+- User guide: docs/DEVELOPMENT-SURVEYS-1.6.0.md.
+
+A-04 integration recheck (2026-11-14 America/Tijuana)
+- Both release/development archives include the immediate opposite-action guard;
+ the transitions module matches current source byte-for-byte.
+-353 JS regressions re-passed:build/validation-a04-on-160-js.txt.
+- Both archives reverified:build/validation-a04-on-160-package.txt.
+- Earlier isolated1.5.1 draft superseded at user request.1.6.0 survey features
+ retained; A-04 start/arrival gaps and full game acceptance remain pending.

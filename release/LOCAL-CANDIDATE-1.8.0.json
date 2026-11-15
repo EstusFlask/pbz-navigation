@@ -1,0 +1,68 @@
+{
+  "version": "1.8.0",
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "status": "complete packages verified; game route acceptance pending",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.0.zip",
+      "bytes": 164303964,
+      "sha256": "3cc55e118a84cacd2a0d7ef8f0573d431b910bf43e623a6b361ff764057d9983",
+      "files": 19715,
+      "runtimeFiles": 19704,
+      "profile": {
+        "version": "1.8.0",
+        "flavor": "release",
+        "label": "1.8.0",
+        "development": false,
+        "sourceSHA256": "ae3e99ffbf410f914bb86507d4d9c3fb251135e1aa1dce23b90f66d230cd04e3",
+        "captureSchema": 1,
+        "surfaceDataSHA256": "e42734d41671533d1f92cc7b8597344fbcb1b8e501b42115739237d092d01721"
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.0_Development.zip",
+      "bytes": 164326750,
+      "sha256": "663be8b1bf13e635d53e048e2d0b06458f541d386a9f92428c83049516307fd8",
+      "files": 19722,
+      "runtimeFiles": 19710,
+      "profile": {
+        "version": "1.8.0",
+        "flavor": "development",
+        "label": "1.8.0-dev",
+        "development": true,
+        "sourceSHA256": "ae3e99ffbf410f914bb86507d4d9c3fb251135e1aa1dce23b90f66d230cd04e3",
+        "captureSchema": 1,
+        "surfaceDataSHA256": "e42734d41671533d1f92cc7b8597344fbcb1b8e501b42115739237d092d01721",
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 364,
+  "pythonReaderAndGeometryPassed": 9,
+  "luaChecks": "full suite passed with maintained collector fixture",
+  "nativeChecks": "rebuild and native ABI/runtime/dispatch tests passed",
+  "packageChecks": "release19715 / development19722 exact matches; original atlas column hashes retained; flavor isolation passed",
+  "modelChapters": 12,
+  "worlds": 11,
+  "candidatePositions": 7505840,
+  "modelEncodings": [
+    "WKI3 instance meshes",
+    "baseModel quantized indexed meshes"
+  ],
+  "report": "docs/HEYBOX-MAP-IMPORT.md",
+  "audit": "authoring/heybox-map-audit.json",
+  "installedToGame": false,
+  "uploaded": false,
+  "liveRetested": false,
+  "newFieldCaptures": 0
+}

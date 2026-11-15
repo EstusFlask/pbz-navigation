@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
+const {LuaTracker}=require(root+'/PBZRouteLuaTracker'),{Tracker}=require(root+'/PBZRouteTracker'),{SurveyTracker}=require(root+'/PBZRouteSurveyTracker');
+const tasks=require(root+'/PBZRouteSurveyTasks').resolve(require(root+'/PBZRouteTables').data),resolver=new SurveyTracker(tasks);
+const api=new LuaTracker({read:()=>fs.readFileSync(path.join(process.argv[2],'PBZQuestRoute-tracker.json'),'utf8'),write:()=>{throw Error('readback must not mutate collector');}});
+let selected=null;const tracker=new Tracker(()=>null,item=>selected=item,()=>{});tracker.api=api;tracker.poll();
+assert.ok(selected,'real collector target did not reach the route Tracker');const found=resolver.match(selected.id);
+assert.equal(found?.task.id,'B03');assert.equal(found?.role,process.argv[3]);assert.equal(selected.p.z,found.endpoint.p.z);assert.equal(selected.p.x,found.endpoint.p.x);
+assert.equal(selected.name,process.argv[3]==='start'?'1号路线开始':'1号路线结束');
+console.log('PASS: real collector target -> saved bridge -> route Tracker -> survey '+found.role+' with exact XYZ/name');

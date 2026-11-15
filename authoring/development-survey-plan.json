@@ -1,0 +1,1767 @@
+{
+  "schema": 1,
+  "build": "1.7.1",
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "status": "real1.0.14 collector pipeline and packages verified; game presentation pending",
+  "sourceAudit": "authoring/roadbook-course-audit.json",
+  "scope": "Directed capture and candidate-validation tasks; no automatic runtime edges or accepted coverage.",
+  "capturedWorksheetExclusions": [
+    "worksheet-014",
+    "worksheet-015",
+    "worksheet-016",
+    "worksheet-017"
+  ],
+  "cards": [
+    {
+      "id": "B03",
+      "from": "Bell_SZ_017",
+      "to": "Bell_XM_015",
+      "issue": "八卦阁至正门缺连接；核对月洞门与实际绕行",
+      "evidence": "authoring/field-retest-1.4.1-bagua-gate.json",
+      "number": 1,
+      "purpose": "缺连接对照",
+      "hints": [
+        "door"
+      ],
+      "sourceStatus": "field failure",
+      "revision": 1,
+      "world": "pbz_pangzhen_wp",
+      "start": {
+        "id": "Bell_SZ_017",
+        "name": "八卦阁前路口",
+        "area": "pangzhen",
+        "p": {
+          "x": -174570,
+          "y": 112368,
+          "z": -3068
+        }
+      },
+      "end": {
+        "id": "Bell_XM_015",
+        "name": "戏梦山庄正门",
+        "area": "pangzhen",
+        "p": {
+          "x": -187916,
+          "y": 114639,
+          "z": -1057
+        }
+      }
+    },
+    {
+      "id": "S012",
+      "worksheet": "worksheet-012",
+      "from": "Bell_NLES_019",
+      "to": "Bell_NLES_005",
+      "issue": "桥与普通道路缺连续几何",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "bridge"
+      ],
+      "mechanisms": [],
+      "number": 2,
+      "revision": 1,
+      "world": "pbz_xigu_wp",
+      "start": {
+        "id": "Bell_NLES_019",
+        "name": "恶弓手营地",
+        "area": "xigu",
+        "p": {
+          "x": -73233,
+          "y": 231409,
+          "z": -16044
+        }
+      },
+      "end": {
+        "id": "Bell_NLES_005",
+        "name": "溪谷杀气塔一层",
+        "area": "xigu",
+        "p": {
+          "x": -61876,
+          "y": 222885,
+          "z": -15848
+        }
+      }
+    },
+    {
+      "id": "S018",
+      "worksheet": "worksheet-018",
+      "from": "Bell_NLES_006",
+      "to": "Bell_NLES_018",
+      "issue": "钩索捷径：入口、动作、落脚和条件现场对照",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "hook-shortcut"
+      ],
+      "mechanisms": [
+        "钩索捷径"
+      ],
+      "number": 3,
+      "revision": 1,
+      "world": "pbz_xigu_wp",
+      "start": {
+        "id": "Bell_NLES_006",
+        "name": "远眺龙柱处",
+        "area": "xigu",
+        "p": {
+          "x": -52359,
+          "y": 227135,
+          "z": -20715
+        }
+      },
+      "end": {
+        "id": "Bell_NLES_018",
+        "name": "瀑布吊桥",
+        "area": "xigu",
+        "p": {
+          "x": -55527,
+          "y": 213608,
+          "z": -15827
+        }
+      }
+    },
+    {
+      "id": "S020",
+      "worksheet": "worksheet-020",
+      "from": "Bell_NLES_018",
+      "to": "Bell_NLES_016",
+      "issue": "返回塔底的真实通路",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "return-to-tower"
+      ],
+      "mechanisms": [],
+      "number": 4,
+      "revision": 1,
+      "world": "pbz_xigu_wp",
+      "start": {
+        "id": "Bell_NLES_018",
+        "name": "瀑布吊桥",
+        "area": "xigu",
+        "p": {
+          "x": -55527,
+          "y": 213608,
+          "z": -15827
+        }
+      },
+      "end": {
+        "id": "Bell_NLES_016",
+        "name": "溪谷杀气塔底",
+        "area": "xigu",
+        "p": {
+          "x": -62272,
+          "y": 221490,
+          "z": -19123
+        }
+      }
+    },
+    {
+      "id": "S030",
+      "worksheet": "worksheet-030",
+      "from": "Bell_LZSJ_006",
+      "to": "Bell_LZSJ_020",
+      "issue": "山舍背侧道路缺连续几何",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "house-rear"
+      ],
+      "mechanisms": [],
+      "number": 5,
+      "revision": 1,
+      "world": "pbz_fujizhilin_wp",
+      "start": {
+        "id": "Bell_LZSJ_006",
+        "name": "人偶思乡之崖",
+        "area": "fujizhilin",
+        "p": {
+          "x": -51458,
+          "y": 136650,
+          "z": 3333
+        }
+      },
+      "end": {
+        "id": "Bell_LZSJ_020",
+        "name": "悬崖山舍",
+        "area": "fujizhilin",
+        "p": {
+          "x": -47835,
+          "y": 152968,
+          "z": 1717
+        }
+      }
+    },
+    {
+      "id": "S037",
+      "worksheet": "worksheet-037",
+      "from": "Bell_LZSJ_017",
+      "to": "Bell_LZSJ_019",
+      "issue": "塔内上行与分层动作连接",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "tower-ascent"
+      ],
+      "mechanisms": [],
+      "number": 6,
+      "revision": 1,
+      "world": "pbz_fujizhilin_wp",
+      "start": {
+        "id": "Bell_LZSJ_017",
+        "name": "血色森林杀气塔大门",
+        "area": "fujizhilin",
+        "p": {
+          "x": -41391,
+          "y": 179640,
+          "z": 2116
+        }
+      },
+      "end": {
+        "id": "Bell_LZSJ_019",
+        "name": "血色森林杀气塔六层",
+        "area": "fujizhilin",
+        "p": {
+          "x": -44879,
+          "y": 176470,
+          "z": 5926
+        }
+      }
+    },
+    {
+      "id": "S040",
+      "worksheet": "worksheet-040",
+      "from": "Bell_LZSJ_011",
+      "to": "Bell_YXZR_018",
+      "issue": "普通道路缺连续几何",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "number": 7,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_LZSJ_011",
+        "name": "岔路口",
+        "area": "lujiacun",
+        "p": {
+          "x": -14954,
+          "y": 139930,
+          "z": -1531
+        }
+      },
+      "end": {
+        "id": "Bell_YXZR_018",
+        "name": "正道大营外门",
+        "area": "lujiacun",
+        "p": {
+          "x": -11067,
+          "y": 128049,
+          "z": -1662
+        }
+      }
+    },
+    {
+      "id": "S062",
+      "worksheet": "worksheet-062",
+      "from": "Bell_SZ_001",
+      "to": "Bell_SZ_002",
+      "issue": "楼梯与桥面楼层连接",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "stairs"
+      ],
+      "mechanisms": [],
+      "number": 8,
+      "revision": 1,
+      "world": "pbz_pangzhen_wp",
+      "start": {
+        "id": "Bell_SZ_001",
+        "name": "废弃酒窖",
+        "area": "pangzhen",
+        "p": {
+          "x": -160727,
+          "y": 128612,
+          "z": -1895
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_002",
+        "name": "南门廊桥",
+        "area": "pangzhen",
+        "p": {
+          "x": -160184,
+          "y": 145382,
+          "z": -8090
+        }
+      }
+    },
+    {
+      "id": "S072",
+      "worksheet": "worksheet-072",
+      "from": "Bell_SZ_006",
+      "to": "Bell_SZ_031",
+      "issue": "民居二楼楼梯与落脚连接",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "stairs",
+        "house-floor"
+      ],
+      "mechanisms": [],
+      "number": 9,
+      "revision": 1,
+      "world": "pbz_houjie_wp",
+      "start": {
+        "id": "Bell_SZ_006",
+        "name": "后街乘凉处",
+        "area": "houjie",
+        "p": {
+          "x": -217748,
+          "y": 120620,
+          "z": -1994
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_031",
+        "name": "窄巷民居二楼",
+        "area": "houjie",
+        "p": {
+          "x": -228350,
+          "y": 110929,
+          "z": 1052
+        }
+      }
+    },
+    {
+      "id": "S116",
+      "worksheet": "worksheet-116",
+      "from": "Bell_YXZR_008",
+      "to": "Bell_YXZR_009",
+      "issue": "校场钥匙、门与台阶状态",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "training-key",
+        "stairs",
+        "door"
+      ],
+      "mechanisms": [],
+      "number": 10,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_YXZR_008",
+        "name": "通往校场的路",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 27862,
+          "y": 64529,
+          "z": 8878
+        }
+      },
+      "end": {
+        "id": "Bell_YXZR_009",
+        "name": "校场",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 32383,
+          "y": 59677,
+          "z": 8171
+        }
+      }
+    },
+    {
+      "id": "S128",
+      "worksheet": "worksheet-128",
+      "from": "Bell_DDSD_002",
+      "to": "Bell_DDSD_003",
+      "issue": "山道台阶缺连续几何",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "stairs"
+      ],
+      "mechanisms": [],
+      "number": 11,
+      "revision": 1,
+      "world": "pbz_dengdingshandao_wp",
+      "start": {
+        "id": "Bell_DDSD_002",
+        "name": "铁杀营地",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -69485,
+          "y": -43900,
+          "z": 14882
+        }
+      },
+      "end": {
+        "id": "Bell_DDSD_003",
+        "name": "囚笼洞口",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -67184,
+          "y": -68173,
+          "z": 15703
+        }
+      }
+    },
+    {
+      "id": "S002",
+      "worksheet": "worksheet-002",
+      "from": "Bell_NLES_014",
+      "to": "Bell_NLES_022",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "chain",
+        "ladder-up"
+      ],
+      "mechanisms": [
+        "锁链"
+      ],
+      "issue": "锁链：入口、动作、落脚和条件现场对照",
+      "number": 12,
+      "revision": 1,
+      "world": "pbz_xigu_wp",
+      "start": {
+        "id": "Bell_NLES_014",
+        "name": "圣母像裂缝",
+        "area": "xigu",
+        "p": {
+          "x": 9443,
+          "y": 288850,
+          "z": -31437
+        }
+      },
+      "end": {
+        "id": "Bell_NLES_022",
+        "name": "初见玉儿处",
+        "area": "xigu",
+        "p": {
+          "x": -4089,
+          "y": 277254,
+          "z": -30487
+        }
+      }
+    },
+    {
+      "id": "S004",
+      "worksheet": "worksheet-004",
+      "from": "Bell_NLES_013",
+      "to": "Bell_NLES_015",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "red-thread-weapon",
+        "river"
+      ],
+      "mechanisms": [
+        "红丝线影武装机关"
+      ],
+      "issue": "红丝线影武装机关：入口、动作、落脚和条件现场对照",
+      "number": 13,
+      "revision": 1,
+      "world": "pbz_xigu_wp",
+      "start": {
+        "id": "Bell_NLES_013",
+        "name": "红丝线障壁",
+        "area": "xigu",
+        "p": {
+          "x": -11137,
+          "y": 282425,
+          "z": -28477
+        }
+      },
+      "end": {
+        "id": "Bell_NLES_015",
+        "name": "残偶谷底",
+        "area": "xigu",
+        "p": {
+          "x": -4124,
+          "y": 294281,
+          "z": -29340
+        }
+      }
+    },
+    {
+      "id": "S013",
+      "worksheet": "worksheet-013",
+      "from": "Bell_NLES_005",
+      "to": "Bell_NLES_017",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "drop",
+        "boss"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 14,
+      "revision": 1,
+      "world": "pbz_xigu_wp",
+      "start": {
+        "id": "Bell_NLES_005",
+        "name": "溪谷杀气塔一层",
+        "area": "xigu",
+        "p": {
+          "x": -61876,
+          "y": 222885,
+          "z": -15848
+        }
+      },
+      "end": {
+        "id": "Bell_NLES_017",
+        "name": "血肉花田",
+        "area": "xigu",
+        "p": {
+          "x": -71223,
+          "y": 210868,
+          "z": -19561
+        }
+      }
+    },
+    {
+      "id": "S024",
+      "worksheet": "worksheet-024",
+      "from": "Bell_LZSJ_002",
+      "to": "Bell_LZSJ_003",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "boss",
+        "bridge"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 15,
+      "revision": 1,
+      "world": "pbz_fujizhilin_wp",
+      "start": {
+        "id": "Bell_LZSJ_002",
+        "name": "荒废官道",
+        "area": "fujizhilin",
+        "p": {
+          "x": -98903,
+          "y": 190396,
+          "z": -548
+        }
+      },
+      "end": {
+        "id": "Bell_LZSJ_003",
+        "name": "远眺庞镇之桥",
+        "area": "fujizhilin",
+        "p": {
+          "x": -128997,
+          "y": 169891,
+          "z": -1464
+        }
+      }
+    },
+    {
+      "id": "S025",
+      "worksheet": "worksheet-025",
+      "from": "Bell_LZSJ_003",
+      "to": "Bell_LZSJ_013",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "cave"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 16,
+      "revision": 1,
+      "world": "pbz_fujizhilin_wp",
+      "start": {
+        "id": "Bell_LZSJ_003",
+        "name": "远眺庞镇之桥",
+        "area": "fujizhilin",
+        "p": {
+          "x": -128997,
+          "y": 169891,
+          "z": -1464
+        }
+      },
+      "end": {
+        "id": "Bell_LZSJ_013",
+        "name": "挂笼小道",
+        "area": "fujizhilin",
+        "p": {
+          "x": -105769,
+          "y": 156472,
+          "z": 6
+        }
+      }
+    },
+    {
+      "id": "S033",
+      "worksheet": "worksheet-033",
+      "from": "Bell_FJZL_GP_002",
+      "to": "Bell_LZSJ_021",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "hook",
+        "poison"
+      ],
+      "mechanisms": [
+        "钩索"
+      ],
+      "issue": "钩索：入口、动作、落脚和条件现场对照",
+      "number": 17,
+      "revision": 1,
+      "world": "pbz_fujizhilin_wp",
+      "start": {
+        "id": "Bell_FJZL_GP_002",
+        "name": "镜林龙柱",
+        "area": "fujizhilin",
+        "p": {
+          "x": -25145,
+          "y": 156265,
+          "z": 2107
+        }
+      },
+      "end": {
+        "id": "Bell_LZSJ_021",
+        "name": "遗冢地",
+        "area": "fujizhilin",
+        "p": {
+          "x": -28236,
+          "y": 172240,
+          "z": 630
+        }
+      }
+    },
+    {
+      "id": "S038",
+      "worksheet": "worksheet-038",
+      "from": "Bell_LZSJ_019",
+      "to": "Bell_LZSJ_018",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "tower-descent"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 18,
+      "revision": 1,
+      "world": "pbz_fujizhilin_wp",
+      "start": {
+        "id": "Bell_LZSJ_019",
+        "name": "血色森林杀气塔六层",
+        "area": "fujizhilin",
+        "p": {
+          "x": -44879,
+          "y": 176470,
+          "z": 5926
+        }
+      },
+      "end": {
+        "id": "Bell_LZSJ_018",
+        "name": "血色森林杀气塔底",
+        "area": "fujizhilin",
+        "p": {
+          "x": -44937,
+          "y": 180481,
+          "z": -2198
+        }
+      }
+    },
+    {
+      "id": "S039",
+      "worksheet": "worksheet-039",
+      "from": "Bell_LZSJ_012",
+      "to": "Bell_LZSJ_011",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "downhill"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 19,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_LZSJ_012",
+        "name": "梦醒之地",
+        "area": "lujiacun",
+        "p": {
+          "x": -2351,
+          "y": 146230,
+          "z": 859
+        }
+      },
+      "end": {
+        "id": "Bell_LZSJ_011",
+        "name": "岔路口",
+        "area": "lujiacun",
+        "p": {
+          "x": -14954,
+          "y": 139930,
+          "z": -1531
+        }
+      }
+    },
+    {
+      "id": "S041",
+      "worksheet": "worksheet-041",
+      "from": "Bell_LZSJ_011",
+      "to": "Bell_SXC_01_08",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "ladder-up"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 20,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_LZSJ_011",
+        "name": "岔路口",
+        "area": "lujiacun",
+        "p": {
+          "x": -14954,
+          "y": 139930,
+          "z": -1531
+        }
+      },
+      "end": {
+        "id": "Bell_SXC_01_08",
+        "name": "老根头藏身处",
+        "area": "lujiacun",
+        "p": {
+          "x": -22625,
+          "y": 125663,
+          "z": -3593
+        }
+      }
+    },
+    {
+      "id": "S047",
+      "worksheet": "worksheet-047",
+      "from": "Bell_LJC_XiaoZhang_002",
+      "to": "Bell_SXC_01_02",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "red-thread-weapon"
+      ],
+      "mechanisms": [
+        "红丝线影武装机关"
+      ],
+      "issue": "红丝线影武装机关：入口、动作、落脚和条件现场对照",
+      "number": 21,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_LJC_XiaoZhang_002",
+        "name": "陆家村小张藏身处",
+        "area": "lujiacun",
+        "p": {
+          "x": -58333,
+          "y": 121767,
+          "z": -1512
+        }
+      },
+      "end": {
+        "id": "Bell_SXC_01_02",
+        "name": "黑蛇屋",
+        "area": "lujiacun",
+        "p": {
+          "x": -60182,
+          "y": 123185,
+          "z": -434
+        }
+      }
+    },
+    {
+      "id": "S055",
+      "worksheet": "worksheet-055",
+      "from": "Bell_SXC_01_13",
+      "to": "Bell_SXC_01_03",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "story-fog",
+        "slide"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 22,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_SXC_01_13",
+        "name": "幸存者小院",
+        "area": "lujiacun",
+        "p": {
+          "x": -41698,
+          "y": 111881,
+          "z": -242
+        }
+      },
+      "end": {
+        "id": "Bell_SXC_01_03",
+        "name": "残偶弃置坑口",
+        "area": "lujiacun",
+        "p": {
+          "x": -27576,
+          "y": 114525,
+          "z": -7536
+        }
+      }
+    },
+    {
+      "id": "S060",
+      "worksheet": "worksheet-060",
+      "from": "Bell_SXC_02_03",
+      "to": "Bell_SXC_02_02",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "eye-puzzle",
+        "elevator"
+      ],
+      "mechanisms": [
+        "眼部机关",
+        "升降梯"
+      ],
+      "issue": "眼部机关、升降梯：入口、动作、落脚和条件现场对照",
+      "number": 23,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_SXC_02_03",
+        "name": "人偶试验场",
+        "area": "lujiacun",
+        "p": {
+          "x": -63714,
+          "y": 86319,
+          "z": -5823
+        }
+      },
+      "end": {
+        "id": "Bell_SXC_02_02",
+        "name": "通向庞镇的密道",
+        "area": "lujiacun",
+        "p": {
+          "x": -64432,
+          "y": 110328,
+          "z": -1430
+        }
+      }
+    },
+    {
+      "id": "S073",
+      "worksheet": "worksheet-073",
+      "from": "Bell_SZ_031",
+      "to": "Bell_SZ_007",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "drop",
+        "zipline"
+      ],
+      "mechanisms": [
+        "滑索"
+      ],
+      "issue": "滑索：入口、动作、落脚和条件现场对照",
+      "number": 24,
+      "revision": 1,
+      "world": "pbz_houjie_wp",
+      "start": {
+        "id": "Bell_SZ_031",
+        "name": "窄巷民居二楼",
+        "area": "houjie",
+        "p": {
+          "x": -228350,
+          "y": 110929,
+          "z": 1052
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_007",
+        "name": "戏声缥缈的水塘",
+        "area": "houjie",
+        "p": {
+          "x": -248837,
+          "y": 103353,
+          "z": -3598
+        }
+      }
+    },
+    {
+      "id": "S075",
+      "worksheet": "worksheet-075",
+      "from": "Bell_SZ_009",
+      "to": "Bell_SZ_010",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "bridge",
+        "locked-doors"
+      ],
+      "mechanisms": [
+        "锁门"
+      ],
+      "issue": "锁门：入口、动作、落脚和条件现场对照",
+      "number": 25,
+      "revision": 1,
+      "world": "pbz_houjie_wp",
+      "start": {
+        "id": "Bell_SZ_009",
+        "name": "三船殉难井底",
+        "area": "houjie",
+        "p": {
+          "x": -243284,
+          "y": 97511,
+          "z": -4172
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_010",
+        "name": "青蛇屋",
+        "area": "houjie",
+        "p": {
+          "x": -257247,
+          "y": 77702,
+          "z": -5766
+        }
+      }
+    },
+    {
+      "id": "S081",
+      "worksheet": "worksheet-081",
+      "from": "Bell_SZ_018",
+      "to": "Bell_SZ_032",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "roof",
+        "chain",
+        "drop"
+      ],
+      "mechanisms": [
+        "锁链"
+      ],
+      "issue": "锁链：入口、动作、落脚和条件现场对照",
+      "number": 26,
+      "revision": 1,
+      "world": "pbz_pangzhen_wp",
+      "start": {
+        "id": "Bell_SZ_018",
+        "name": "正道临时居所",
+        "area": "pangzhen",
+        "p": {
+          "x": -173184,
+          "y": 106134,
+          "z": 1251
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_032",
+        "name": "码头货栈",
+        "area": "pangzhen",
+        "p": {
+          "x": -167052,
+          "y": 102321,
+          "z": 2450
+        }
+      }
+    },
+    {
+      "id": "S083",
+      "worksheet": "worksheet-083",
+      "from": "Bell_SZ_013",
+      "to": "Bell_XM_015",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 27,
+      "revision": 1,
+      "world": "pbz_pangzhen_wp",
+      "start": {
+        "id": "Bell_SZ_013",
+        "name": "庞镇船坞",
+        "area": "pangzhen",
+        "p": {
+          "x": -162549,
+          "y": 96415,
+          "z": 872
+        }
+      },
+      "end": {
+        "id": "Bell_XM_015",
+        "name": "戏梦山庄正门",
+        "area": "pangzhen",
+        "p": {
+          "x": -187916,
+          "y": 114639,
+          "z": -1057
+        }
+      }
+    },
+    {
+      "id": "S084",
+      "worksheet": "worksheet-084",
+      "from": "Bell_SZ_007",
+      "to": "Bell_SZ_014",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "flame-lion-weapon"
+      ],
+      "mechanisms": [
+        "火狮影武装机关"
+      ],
+      "issue": "火狮影武装机关：入口、动作、落脚和条件现场对照",
+      "number": 28,
+      "revision": 1,
+      "world": "pbz_houjie_wp",
+      "start": {
+        "id": "Bell_SZ_007",
+        "name": "戏声缥缈的水塘",
+        "area": "houjie",
+        "p": {
+          "x": -248837,
+          "y": 103353,
+          "z": -3598
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_014",
+        "name": "后山凉亭",
+        "area": "houjie",
+        "p": {
+          "x": -261990,
+          "y": 127983,
+          "z": -5338
+        }
+      }
+    },
+    {
+      "id": "S085",
+      "worksheet": "worksheet-085",
+      "from": "Bell_SZ_014",
+      "to": "Bell_SZ_008",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 29,
+      "revision": 1,
+      "world": "pbz_houjie_wp",
+      "start": {
+        "id": "Bell_SZ_014",
+        "name": "后山凉亭",
+        "area": "houjie",
+        "p": {
+          "x": -261990,
+          "y": 127983,
+          "z": -5338
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_008",
+        "name": "贫民窟",
+        "area": "houjie",
+        "p": {
+          "x": -266717,
+          "y": 102496,
+          "z": -8297
+        }
+      }
+    },
+    {
+      "id": "S087",
+      "worksheet": "worksheet-087",
+      "from": "Bell_SZ_024",
+      "to": "Bell_SZ_010",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "door-shortcut"
+      ],
+      "mechanisms": [
+        "门捷径"
+      ],
+      "issue": "门捷径：入口、动作、落脚和条件现场对照",
+      "number": 30,
+      "revision": 1,
+      "world": "pbz_houjie_wp",
+      "start": {
+        "id": "Bell_SZ_024",
+        "name": "老根头家",
+        "area": "houjie",
+        "p": {
+          "x": -263693,
+          "y": 93501,
+          "z": -4878
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_010",
+        "name": "青蛇屋",
+        "area": "houjie",
+        "p": {
+          "x": -257247,
+          "y": 77702,
+          "z": -5766
+        }
+      }
+    },
+    {
+      "id": "S089",
+      "worksheet": "worksheet-089",
+      "from": "Bell_XM_019",
+      "to": "Bell_XM_016",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 31,
+      "revision": 1,
+      "world": "pbz_ximeng_wp",
+      "start": {
+        "id": "Bell_XM_019",
+        "name": "傩面祭台",
+        "area": "ximeng",
+        "p": {
+          "x": -229874,
+          "y": 67442,
+          "z": 15435
+        }
+      },
+      "end": {
+        "id": "Bell_XM_016",
+        "name": "吹火楼下",
+        "area": "ximeng",
+        "p": {
+          "x": -219380,
+          "y": 73706,
+          "z": 9950
+        }
+      }
+    },
+    {
+      "id": "S092",
+      "worksheet": "worksheet-092",
+      "from": "Bell_XM_017",
+      "to": "Bell_XM_XiaoZhang_005",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "branch"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 32,
+      "revision": 1,
+      "world": "pbz_ximeng_wp",
+      "start": {
+        "id": "Bell_XM_017",
+        "name": "竹影道",
+        "area": "ximeng",
+        "p": {
+          "x": -198776,
+          "y": 62628,
+          "z": 9448
+        }
+      },
+      "end": {
+        "id": "Bell_XM_XiaoZhang_005",
+        "name": "戏梦山庄小张藏身处",
+        "area": "ximeng",
+        "p": {
+          "x": -202734,
+          "y": 69648,
+          "z": 7440
+        }
+      }
+    },
+    {
+      "id": "S093",
+      "worksheet": "worksheet-093",
+      "from": "Bell_XM_017",
+      "to": "Bell_XM_011",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 33,
+      "revision": 1,
+      "world": "pbz_ximeng_wp",
+      "start": {
+        "id": "Bell_XM_017",
+        "name": "竹影道",
+        "area": "ximeng",
+        "p": {
+          "x": -198776,
+          "y": 62628,
+          "z": 9448
+        }
+      },
+      "end": {
+        "id": "Bell_XM_011",
+        "name": "戏园",
+        "area": "ximeng",
+        "p": {
+          "x": -195831,
+          "y": 76381,
+          "z": 6598
+        }
+      }
+    },
+    {
+      "id": "S097",
+      "worksheet": "worksheet-097",
+      "from": "Bell_XM_013",
+      "to": "Bell_XM_DP_005",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "branch"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 34,
+      "revision": 1,
+      "world": "pbz_ximeng_wp",
+      "start": {
+        "id": "Bell_XM_013",
+        "name": "连廊",
+        "area": "ximeng",
+        "p": {
+          "x": -215086,
+          "y": 84699,
+          "z": 6933
+        }
+      },
+      "end": {
+        "id": "Bell_XM_DP_005",
+        "name": "戏梦山庄龙柱",
+        "area": "ximeng",
+        "p": {
+          "x": -230043,
+          "y": 83346,
+          "z": 7126
+        }
+      }
+    },
+    {
+      "id": "S103",
+      "worksheet": "worksheet-103",
+      "from": "Bell_YXZR_002",
+      "to": "Bell_YXZR_013",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "cave",
+        "chain",
+        "elevator"
+      ],
+      "mechanisms": [
+        "锁链",
+        "升降梯"
+      ],
+      "issue": "锁链、升降梯：入口、动作、落脚和条件现场对照",
+      "number": 35,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_YXZR_002",
+        "name": "栈道入口",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 3601,
+          "y": 87142,
+          "z": 4495
+        }
+      },
+      "end": {
+        "id": "Bell_YXZR_013",
+        "name": "栈道眺望台",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 6907,
+          "y": 79331,
+          "z": 7805
+        }
+      }
+    },
+    {
+      "id": "S110",
+      "worksheet": "worksheet-110",
+      "from": "Bell_YXZR_011",
+      "to": "Bell_YXZR_012",
+      "purpose": "验证现有候选",
+      "sourceStatus": "requires-scene-check",
+      "hints": [
+        "locked-shortcut",
+        "stairs",
+        "bridge"
+      ],
+      "mechanisms": [
+        "锁门近路"
+      ],
+      "issue": "锁门近路：入口、动作、落脚和条件现场对照",
+      "number": 36,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_YXZR_011",
+        "name": "鸽舍",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 22216,
+          "y": 79381,
+          "z": 8432
+        }
+      },
+      "end": {
+        "id": "Bell_YXZR_012",
+        "name": "三高塔",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 28841,
+          "y": 77067,
+          "z": 7799
+        }
+      }
+    },
+    {
+      "id": "S113",
+      "worksheet": "worksheet-113",
+      "from": "Bell_YXZR_007",
+      "to": "Bell_YXZR_008",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 37,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_YXZR_007",
+        "name": "大营瀑布后方",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 44597,
+          "y": 68729,
+          "z": 9621
+        }
+      },
+      "end": {
+        "id": "Bell_YXZR_008",
+        "name": "通往校场的路",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 27862,
+          "y": 64529,
+          "z": 8878
+        }
+      }
+    },
+    {
+      "id": "S114",
+      "worksheet": "worksheet-114",
+      "from": "Bell_YXZR_008",
+      "to": "Bell_YXZR_019",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "drop",
+        "stairs",
+        "door"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 38,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_YXZR_008",
+        "name": "通往校场的路",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 27862,
+          "y": 64529,
+          "z": 8878
+        }
+      },
+      "end": {
+        "id": "Bell_YXZR_019",
+        "name": "白山派的覆灭之路",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 57899,
+          "y": 53979,
+          "z": 11342
+        }
+      }
+    },
+    {
+      "id": "S117",
+      "worksheet": "worksheet-117",
+      "from": "Bell_YXZR_009",
+      "to": "Bell_YXZR_017",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "boss",
+        "downhill"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 39,
+      "revision": 1,
+      "world": "pbz_zhengdaodaying_wp",
+      "start": {
+        "id": "Bell_YXZR_009",
+        "name": "校场",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 32383,
+          "y": 59677,
+          "z": 8171
+        }
+      },
+      "end": {
+        "id": "Bell_YXZR_017",
+        "name": "校场深处",
+        "area": "zhengdaodaying",
+        "p": {
+          "x": 20221,
+          "y": 56585,
+          "z": 5904
+        }
+      }
+    },
+    {
+      "id": "S119",
+      "worksheet": "worksheet-119",
+      "from": "Bell_SZ_020",
+      "to": "Bell_SZ_029",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "hook",
+        "tower-ascent"
+      ],
+      "mechanisms": [
+        "钩索"
+      ],
+      "issue": "钩索：入口、动作、落脚和条件现场对照",
+      "number": 40,
+      "revision": 1,
+      "world": "pbz_pangzhen_wp",
+      "start": {
+        "id": "Bell_SZ_020",
+        "name": "庞镇杀气塔上部一层",
+        "area": "meiguhu",
+        "p": {
+          "x": -177756,
+          "y": 85563,
+          "z": 4578
+        }
+      },
+      "end": {
+        "id": "Bell_SZ_029",
+        "name": "庞镇杀气塔顶",
+        "area": "meiguhu",
+        "p": {
+          "x": -175092,
+          "y": 74511,
+          "z": 10035
+        }
+      }
+    },
+    {
+      "id": "S126",
+      "worksheet": "worksheet-126",
+      "from": "Bell_LYZ_013",
+      "to": "Bell_LYZ_014",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "mask-required"
+      ],
+      "mechanisms": [
+        "面具条件"
+      ],
+      "issue": "面具条件：入口、动作、落脚和条件现场对照",
+      "number": 41,
+      "revision": 1,
+      "world": "pbz_pangzhen_wp",
+      "start": {
+        "id": "Bell_LYZ_013",
+        "name": "禁忌之径",
+        "area": "meiguhu",
+        "p": {
+          "x": -172800,
+          "y": -42852,
+          "z": 929
+        }
+      },
+      "end": {
+        "id": "Bell_LYZ_014",
+        "name": "白影陨落之处",
+        "area": "meiguhu",
+        "p": {
+          "x": -153202,
+          "y": -23842,
+          "z": 765
+        }
+      }
+    },
+    {
+      "id": "S129",
+      "worksheet": "worksheet-129",
+      "from": "Bell_DDSD_003",
+      "to": "Bell_DDSD_004",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "cave",
+        "drop",
+        "drop"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 42,
+      "revision": 1,
+      "world": "pbz_dengdingshandao_wp",
+      "start": {
+        "id": "Bell_DDSD_003",
+        "name": "囚笼洞口",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -67184,
+          "y": -68173,
+          "z": 15703
+        }
+      },
+      "end": {
+        "id": "Bell_DDSD_004",
+        "name": "囚笼道",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -65741,
+          "y": -64282,
+          "z": 19270
+        }
+      }
+    },
+    {
+      "id": "S130",
+      "worksheet": "worksheet-130",
+      "from": "Bell_DDSD_004",
+      "to": "Bell_DDSD_005",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "drop",
+        "boss"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 43,
+      "revision": 1,
+      "world": "pbz_dengdingshandao_wp",
+      "start": {
+        "id": "Bell_DDSD_004",
+        "name": "囚笼道",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -65741,
+          "y": -64282,
+          "z": 19270
+        }
+      },
+      "end": {
+        "id": "Bell_DDSD_005",
+        "name": "横刀平台",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -62016,
+          "y": -56023,
+          "z": 18282
+        }
+      }
+    },
+    {
+      "id": "S131",
+      "worksheet": "worksheet-131",
+      "from": "Bell_DDSD_005",
+      "to": "Bell_DDSD_006",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "stairs"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 44,
+      "revision": 1,
+      "world": "pbz_dengdingshandao_wp",
+      "start": {
+        "id": "Bell_DDSD_005",
+        "name": "横刀平台",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -62016,
+          "y": -56023,
+          "z": 18282
+        }
+      },
+      "end": {
+        "id": "Bell_DDSD_006",
+        "name": "宗祠外山门",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -61474,
+          "y": -75381,
+          "z": 25145
+        }
+      }
+    },
+    {
+      "id": "S132",
+      "worksheet": "worksheet-132",
+      "from": "Bell_DDSD_006",
+      "to": "Bell_DDSD_007",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 45,
+      "revision": 1,
+      "world": "pbz_dengdingshandao_wp",
+      "start": {
+        "id": "Bell_DDSD_006",
+        "name": "宗祠外山门",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -61474,
+          "y": -75381,
+          "z": 25145
+        }
+      },
+      "end": {
+        "id": "Bell_DDSD_007",
+        "name": "圣母娘娘宗祠",
+        "area": "dengdingshandao",
+        "p": {
+          "x": -59980,
+          "y": -93090,
+          "z": 29000
+        }
+      }
+    },
+    {
+      "id": "S134",
+      "worksheet": "worksheet-134",
+      "from": "Bell_LYZ_008",
+      "to": "Bell_DH_001",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 46,
+      "revision": 1,
+      "world": "pbz_duanhun_wp",
+      "start": {
+        "id": "Bell_LYZ_008",
+        "name": "山神庙",
+        "area": "duanhunya",
+        "p": {
+          "x": -194690,
+          "y": -42148,
+          "z": 27747
+        }
+      },
+      "end": {
+        "id": "Bell_DH_001",
+        "name": "银白之路",
+        "area": "duanhunya",
+        "p": {
+          "x": -192128,
+          "y": -66153,
+          "z": 30933
+        }
+      }
+    },
+    {
+      "id": "S135",
+      "worksheet": "worksheet-135",
+      "from": "Bell_DH_001",
+      "to": "Bell_DH_002",
+      "purpose": "补连续几何",
+      "sourceStatus": "geometry-unresolved",
+      "hints": [
+        "walk"
+      ],
+      "mechanisms": [],
+      "issue": "补齐真实连续道路与上下层连接",
+      "number": 47,
+      "revision": 1,
+      "world": "pbz_duanhun_wp",
+      "start": {
+        "id": "Bell_DH_001",
+        "name": "银白之路",
+        "area": "duanhunya",
+        "p": {
+          "x": -192128,
+          "y": -66153,
+          "z": 30933
+        }
+      },
+      "end": {
+        "id": "Bell_DH_002",
+        "name": "最后的正道营地",
+        "area": "duanhunya",
+        "p": {
+          "x": -200749,
+          "y": -83232,
+          "z": 36429
+        }
+      }
+    }
+  ],
+  "collector": "1.0.14",
+  "trackerItemCount": 94
+}

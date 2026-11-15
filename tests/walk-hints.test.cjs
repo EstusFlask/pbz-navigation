@@ -162,9 +162,9 @@ test('author hints cannot cross a closed gate or invent a vertical action',()=>{
  const upper={x:0,y:0,z:600},world={floorAt:p=>p,step:(a,b)=>Math.abs(a.z-b.z)>50?{why:'different floor'}:{p:b}};
  for(const hintsOnly of [false,true])assert.equal(run(Local.search(world,{x:0,y:0,z:0},upper,{clock:()=>0,maxNodes:40,hints:{near:()=>[upper]},hintsOnly})),null);
 });
-test('grounded author points stay world-specific and bounded near the current row',()=>{
+test('grounded author points stay bounded and unknown worlds have no candidates',()=>{
  const H=require(root+'/PBZRouteWalkHints'),data=require(root+'/PBZRouteWalkHintData/pbz_xigu_wp').data;
- assert.equal(H.forWorld('pbz_houjie_wp'),null);
+ assert.equal(H.forWorld('unknown_world'),null);
  const index=H.forWorld('pbz_xigu_wp'),raw=data.points[0],p={x:raw[0],y:raw[1],z:raw[2]};
  const nearby=index.near(p,210,12);assert.ok(nearby.length>0&&nearby.length<=12);
  assert.ok(nearby.every(q=>R.dist(p,q)<=210));

@@ -21,7 +21,9 @@ function* suffix(g,world,a,b,native,clock,deadline,banned){
  for(const start of starts)for(const end of ends){
   if(++attempts>3||clock()>=deadline)return null;
   if(!g.sameComponent(start.id,end.id))continue;
-  const job=g.routeJob(a,b,{startNode:start.id,endNode:end.id,banned:forbidden});let row,steps=0;
+  // A cold atlas created outside the streamed loader may not have its incoming
+  // index yet. Keep this bounded topology witness available during preparation.
+  const job=g.routeJob(a,b,{startNode:start.id,endNode:end.id,banned:forbidden,direction:g.incoming?undefined:'forward'});let row,steps=0;
   try{while(clock()<deadline&&steps++<512){row=job.next();if(row.done)break;yield;}}
   finally{if(!row?.done)job.return?.();}
   if(row?.done&&matches(row.value,a,b,world))return {provider:'atlas-ground',end:{...row.value.points.at(-1)}};
@@ -32,7 +34,7 @@ function* preview(g,world,start,goal,native,features,options={}){
  // Nearby routes, including the accepted A-02, retain their existing planner.
  if(R.dist(start,goal)<=12000||!options.onHorizon)return null;
  const clock=options.clock||Date.now,deadline=clock()+250;
- const hints=require('./PBZRouteWalkHints').forWorld(g.name);if(!hints)return null;
+ const hints=require('./PBZRouteWalkHints').reviewedForWorld(g.name);if(!hints)return null;
  const floor=world.floorAt(goal,true);yield;
  if(floor&&Math.abs(floor.z-goal.z)<=125||clock()>=deadline)return null;
  const rows=[];

@@ -159,6 +159,28 @@ test('gap grapples use their authored trigger, grab point and landing area',()=>
  assert.equal(points[0].x,0);assert.equal(points.at(-1).z,700);
 });
 
+test('the captured tower hook reaches its currency from the lower trigger platform before grappling',()=>{
+ const f=require('./fixtures/tower-hook-currency-20261114.json'),h=fixture(),at=q=>({K2_GetComponentLocation:()=>({X:q.x,Y:q.y,Z:q.z})});
+ h.g.name=f.world;h.start=f.start;h.goal=f.goal;h.g.actors=[];
+ const actor={GetName:()=>f.guid,K2_GetActorLocation:()=>({X:f.root.x,Y:f.root.y,Z:f.root.z}),
+  TriggerSphere:at(f.triggerSphere),TriggerBox:at(f.triggerBox),GrabPoint:at(f.grabPoint),LandArea:at(f.landArea),GetInteractRequirementMeet:()=>1};
+ const floor=q=>q.y<219000?f.start.z:q.y>219350?f.landArea.z+(q.y-f.landArea.y)*.1043:null;
+ const world={feet:()=>f.start,normal:.7,rise:50,slope:1,r:45,hit:()=>null,
+  floorAt:q=>{const z=floor(q);return z===null?null:{...q,z};},
+  step:(a,b)=>{const z=floor(b);return z!==null&&Math.abs(z-a.z)<90?{p:{...b,z}}:{why:'grapple gap'};}};
+ h.UE.EInteractRequirementState={NoRequirement:0,RequirementMeet:1,RequirementNotMeet:2};
+ h.UE.Class={Find:name=>name===f.classPath?name:null};
+ h.UE.GameplayStatics={GetAllActorsOfClass:(pawn,cls,out)=>{out.value={Num:()=>1,Get:()=>actor};}};
+ run(h.api.refreshLoadedJob(h.g,world,{},f.start,f.goal));
+ const trip=run(h.api.liveRouteJob(h.g,world,f.start,f.goal,()=>null,{clock:()=>0}));
+ assert.ok(trip&&!trip.legs[0].partial,'no route exists until the player has already used the hook');
+ assert.deepEqual(trip.legs[0].moves.map(m=>m.kind),['hook']);
+ assert.ok(trip.legs[0].moves[0].p.y<219000,'the standing approach still points at the airborne aiming sphere');
+ assert.ok(trip.legs[0].points.some(q=>R.dist(q,f.grabPoint)<1),'the actual hook anchor disappeared from its action path');
+ actor.GetInteractRequirementMeet=()=>2;h.api.refreshStates(h.g,world,{},true);
+ assert.equal(run(h.api.liveRouteJob(h.g,world,f.start,f.goal,()=>null,{clock:()=>0})),null,'correcting the approach bypassed the hook requirement');
+});
+
 test('a resident grapple with an unmet game requirement cannot become a usable route',()=>{
  const h=fixture(),at=(X,Z)=>({K2_GetComponentLocation:()=>({X,Y:0,Z})});
  h.world.feet=()=>h.start;

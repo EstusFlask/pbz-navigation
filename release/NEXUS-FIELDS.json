@@ -9,7 +9,7 @@
   ],
   "draftFileUploaded": true,
   "name": "Quest and Exploration Navigation - Fork",
-  "version": "1.3.5",
+  "version": "1.8.1",
   "upstreamVersion": "0.8.5-beta",
   "localPatchBase": "0.8.5-local-fix5",
   "authorField": "azqwq333 - original - kurosakana - fork",
@@ -17,10 +17,10 @@
   "language": "Any",
   "shortDescription": "Quest, collectible and bell navigation with selectable rope colors, checked detours, transfers and D-pad item focus. Experimental; map coverage is incomplete. / 任务、收集物与铃铛导航：可选绳子颜色、绕行、中转及十字键选物。实验版，全图覆盖未完成。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
-  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.3.5.zip",
-  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.3.5",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.1.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.8.1",
   "fileCategory": "Main Files",
-  "fileDescription": "Improved distant route guidance near bridges and caves. / 改善桥洞附近远距离目标的前段引导。",
+  "fileDescription": "Prioritized nearby collectible routes and reduced delays from model loading and repeated searches. / 优先交付附近收集物路线，减少模型加载与重复搜索带来的等待。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -46,7 +46,7 @@
     {
       "modId": 187,
       "name": "Map Tracker Plus - Minimap and Collectibles (UE4SS)",
-      "version": "1.0.9 / 1.0.14",
+      "version": "1.0.14",
       "required": false,
       "note": "Real Lua target/hover round trips and 170 Chinese hints tested on both versions. Future releases are checked by API contract and item identity; incompatible features disable safely. Legacy minimap/icon/accessory integration remains unported."
     },
@@ -84,12 +84,12 @@
     "verifiedOnPublicPage": true
   },
   "localCandidate": {
-    "version": "1.3.1",
-    "date": "2026-11-14",
+    "version": "1.7.1",
+    "date": "2026-11-15",
     "timezone": "America/Tijuana",
-    "uploaded": true,
-    "basedOnPublishedFileVersion": "1.2.10",
-    "note": "Published by explicit user request. Scan monitoring is not required after upload. UI fix live acceptance remains in development records."
+    "uploaded": false,
+    "basedOnLocalVersion": "1.7.0",
+    "note": "Survey points use real Map Collectible Tracker1.0.14 catalog, repository, tooltip and selection. Retired1.0.9 fixtures and restoration. First game presentation acceptance pending."
   },
   "releasePolicy": "release/README.md",
   "previousDescriptionUpdate": {
@@ -135,5 +135,40 @@
     "verifiedOnPublicPage": true,
     "evidence": "release/NEXUS-CHANGELOG-CLEANUP-20261114.json"
   },
-  "localCandidateVersion": "1.3.5"
+  "localCandidateVersion": "1.7.1",
+  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.7.1_Development.zip",
+  "previousLocalCandidate": {
+    "version": "1.7.0",
+    "date": "2026-11-14",
+    "timezone": "America/Tijuana",
+    "uploaded": false,
+    "basedOnLocalVersion": "1.6.0",
+    "note": "Selectable numbered survey items, explicit light-attack capture control, defense mistake markers; 47 directed cards. First game acceptance pending."
+  },
+  "localCandidateHistory": [
+    {
+      "version": "1.5.1",
+      "date": "2026-11-14",
+      "timezone": "America/Tijuana",
+      "uploaded": false,
+      "basedOnLocalVersion": "1.5.0",
+      "note": "A-04 evidence review and immediate interaction-return cycle guard; full route acceptance still pending."
+    },
+    {
+      "version": "1.6.0",
+      "date": "2026-11-14",
+      "timezone": "America/Tijuana",
+      "uploaded": false,
+      "basedOnLocalVersion": "1.5.1",
+      "note": "Map-based directed surveys and offline comparison; retains A-04 fixes. Field trigger and map presentation acceptance pending."
+    },
+    {
+      "version": "1.7.0",
+      "date": "2026-11-14",
+      "timezone": "America/Tijuana",
+      "uploaded": false,
+      "basedOnLocalVersion": "1.6.0",
+      "note": "Selectable numbered survey items, explicit light-attack capture control, defense mistake markers; 47 directed cards. First game acceptance pending."
+    }
+  ]
 }
