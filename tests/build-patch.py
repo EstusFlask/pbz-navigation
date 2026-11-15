@@ -60,8 +60,6 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     archive.write(root/'docs/MANUAL-ROUTES.md', 'MANUAL-ROUTES.md')
     archive.write(root/'docs/BELL-NETWORK-COVERAGE.md', 'BELL-NETWORK-COVERAGE.md')
     archive.write(root/'docs/ITEM-DESCRIPTION-AUDIT.md', 'ITEM-DESCRIPTION-AUDIT.md')
-    archive.write(root/'docs/HEYBOX-MAP-IMPORT.md', 'HEYBOX-MAP-IMPORT.md')
-    archive.write(root/'docs/FIELD-FIXES-1.8.1.md', 'FIELD-FIXES-1.8.1.md')
     if flavor=='development':
         archive.write(root/'docs/DEVELOPMENT-SURVEYS.md','DEVELOPMENT-SURVEYS.md')
  print(f'{output} ({output.stat().st_size:,} bytes; {flavor})', flush=True)

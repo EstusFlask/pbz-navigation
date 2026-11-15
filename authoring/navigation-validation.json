@@ -3,10 +3,10 @@
   "objective": "Complete and validate navigation for the current game version through short field cases, generic fixes, directed coverage and save-state tests",
   "roadmap": "docs/NAVIGATION-TODO.md",
   "timezone": "America/Tijuana",
-  "currentBuild": "1.8.2",
+  "currentBuild": "1.8.3",
   "currentPhase": "A",
   "activeCase": "ROUTE-001",
-  "currentAction": "User accepted only the route1 suffix after final F. Remove reverse search on main and isolate Heybox planning on codex/heybox-navigation; do not attribute the cause to old maps until a source-isolated comparison.",
+  "currentAction": "Heybox material archived on user request; restore original atlas/native/scene navigation sources while preserving existing fixes. Explain architecture and prior UE/open-source adoption. Existing field acceptance unchanged; no new live pass claimed.",
   "fieldSession": "build/field-1.8.0-no-routes",
   "recording": "Session ended with game exit;12 reports and completed post windows imported read-only. No external listener or background capture started.",
   "installedAudit": {
@@ -795,5 +795,6 @@
     "solverAtMarkers": "reverse",
     "reference": "authoring/route-001-reference-1.8.1-20261115.json",
     "compiledIntoRoutes": false
-  }
+  },
+  "heyboxArchive": "archive/heybox-20261115/manifest.json"
 }

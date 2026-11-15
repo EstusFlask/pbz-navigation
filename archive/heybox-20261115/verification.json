@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "originalCommit": "84145afc",
+  "trackedFilesMatchingOriginalGitBlobs": 18346,
+  "localSourceCopiesVerified": 3,
+  "normalization": "CRLF normalized to LF for Git blob comparison; local source SHA256 is byte-for-byte",
+  "activeRuntimeHasNoModelReferences": true,
+  "packagesHaveNoArchivedModelFiles": true
+}

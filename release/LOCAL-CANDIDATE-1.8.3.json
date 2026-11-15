@@ -1,0 +1,67 @@
+{
+  "version": "1.8.3",
+  "branch": "main",
+  "clientDate": "2026-11-15",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.3.zip",
+      "bytes": 120584149,
+      "sha256": "f1308da82558c7055242b1aa7efec245f6df015bdc0e94452007e167ff054b1a",
+      "files": 1386,
+      "profile": {
+        "version": "1.8.3",
+        "flavor": "release",
+        "label": "1.8.3",
+        "development": false,
+        "sourceSHA256": "e2f8ee6bd71b9e9da7c243eccc1fccc926d45c833817c233fd56dc2e66e5d677",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.8.3_Development.zip",
+      "bytes": 120606936,
+      "sha256": "7d3a79d5599b029c1db48d12e3ff0784b641233617e2e415d047095610138930",
+      "files": 1393,
+      "profile": {
+        "version": "1.8.3",
+        "flavor": "development",
+        "label": "1.8.3-dev",
+        "development": true,
+        "sourceSHA256": "e2f8ee6bd71b9e9da7c243eccc1fccc926d45c833817c233fd56dc2e66e5d677",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 360,
+  "luaChecks": "passed",
+  "nativeChecks": "passed",
+  "completePackageChecks": "passed",
+  "restoredSources": "Original atlas, existing UE native query, reviewed footpoint hints and physically checked scene/action search",
+  "heyboxArchive": "archive/heybox-20261115",
+  "archiveVerification": {
+    "schema": 1,
+    "clientDate": "2026-11-15",
+    "timezone": "America/Tijuana",
+    "originalCommit": "84145afc",
+    "trackedFilesMatchingOriginalGitBlobs": 18346,
+    "localSourceCopiesVerified": 3,
+    "normalization": "CRLF normalized to LF for Git blob comparison; local source SHA256 is byte-for-byte",
+    "activeRuntimeHasNoModelReferences": true,
+    "packagesHaveNoArchivedModelFiles": true
+  },
+  "report": "docs/HEYBOX-ARCHIVE.md",
+  "research": "docs/NAVIGATION-EXPLANATION-20261115.md",
+  "installedToGame": false,
+  "uploaded": false,
+  "liveAcceptance": "Not run; prior field acceptance unchanged"
+}

@@ -23,7 +23,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.8.2';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.8.3';
 const Build=require('./PBZRouteBuild');
 let diagnostics=null,developerAPI=null,developerPC=null,developerPawn=null,developerWorld=null,developerKeys=null,surveyTracker=null;
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
@@ -198,7 +198,7 @@ function* proofJob(leg,lookout,context,options={}){
   while(!physical.ok&&!options.deferRepair&&(context.repairs||0)<2){
    context.repairs=(context.repairs||0)+1;
    const clock=context.clock||Date.now;context.repairDeadline??=clock()+3500;
-   const fixed=yield* Repair.repair(w,candidate,physical,foot,{clock,deadline:context.repairDeadline,surfaceBudget:context.surfaceBudget,
+   const fixed=yield* Repair.repair(w,candidate,physical,foot,{clock,deadline:context.repairDeadline,
     traverse:['atlas','roadbook'].includes(leg.provider)?context.repairTraversal:undefined,report:context.report});if(!fixed)break;
    candidate=fixed.candidate;physical=fixed.verdict;
    if(!physical.ok){rememberCollision(candidate,physical);Blocked.offer(context,Blocked.fromFailure(candidate,physical,previewGoal),context.start,previewGoal);}
@@ -272,7 +272,6 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  if(depth===0&&S.world.refreshRulesJob)yield* S.world.refreshRulesJob();
  const routeWorld=context.world||=Locks.constrain(S.world,lockRows,S.level);
  const clock=context.clock||Date.now;
- context.surfaceBudget||={remainingMs:100,attempted:new Set()};
  context.start||={...start};context.goal||={...dest.p};context.goalWorld||=dest.world;
  safe('ladder state',()=>Passages.refreshLadders(a,S.pawn));if(b!==a)safe('ladder state',()=>Passages.refreshLadders(b,S.pawn,false));
  const starts=(yield* Surface.anchorsJob(a,start)),ends=dest.node!==undefined?[{id:dest.node,q:dest.p}]:(yield* Surface.anchorsJob(b,dest.p,true));
@@ -300,7 +299,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   }
   if(R.dist(start,landing)<=2500&&Math.abs(start.z-landing.z)<=200){
    const local=yield* LocalWalk.search(routeWorld,start,landing,{clock,maxDistance:2500,maxNodes:256,maxMs:80,
-    hints:require('./PBZRouteWalkHints').reviewedForWorld(S.level),...(approachGoals.length?{goals:approachGoals}:{}),
+    hints:require('./PBZRouteWalkHints').forWorld(S.level),...(approachGoals.length?{goals:approachGoals}:{}),
     report:context.report?(phase,data)=>context.report('near item '+phase,data):undefined});
    if(local&&!local.partial&&matchesGoal(local)){
     local.world=S.level;context.report?.('near item complete',{provider:'scene',meters:local.meters});
@@ -311,14 +310,14 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  const legs=new Map(),lookout=Passages.isLookout(S.level,start,dest);
  context.repairTraversal||=function*(from,to,settings){
   if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,from,to,{report:context.report});
-  const trip=yield* Passages.liveRouteJob(a,routeWorld,from,to,nativeWalk,{clock,deadline:settings.deadline,maxConnectors:32,report:context.report,surfaceBudget:context.surfaceBudget});
+  const trip=yield* Passages.liveRouteJob(a,routeWorld,from,to,nativeWalk,{clock,deadline:settings.deadline,maxConnectors:32,report:context.report});
   return trip?.legs[0]||null;
  };
  const actionRoute=function*(landing){
   if(context.actionsTried||a!==b)return null;context.actionsTried=true;
   context.report?.('action search',{start,landing});
   if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,start,landing,{report:context.report});
-  return yield* Passages.liveRouteJob(a,routeWorld,start,landing,nativeWalk,{clock,goals:approachGoals,allowPartial:true,report:context.report,surfaceBudget:context.surfaceBudget,banned:forbidden[a.name],onHorizon:trip=>{
+  return yield* Passages.liveRouteJob(a,routeWorld,start,landing,nativeWalk,{clock,goals:approachGoals,allowPartial:true,report:context.report,banned:forbidden[a.name],onHorizon:trip=>{
    context.topologyPrefix=trip;
    Blocked.offer(context,trip.legs[0],start,dest.p);
   },onPartial:trip=>{
@@ -358,7 +357,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
     }
     return false;
    },native:(p,q)=>nativeWalk(p,q),verify:function*(leg){return (yield* proofJob(leg,false))===null&&!leg.partial;},
-   local:function*(at,goals){return yield* LocalWalk.search(routeWorld,start,at,{clock,goals,hints:require('./PBZRouteWalkHints').forWorld(S.level),surfaceBudget:context.surfaceBudget,maxDistance:6000,maxNodes:1600,maxMs:900});},
+   local:function*(at,goals){return yield* LocalWalk.search(routeWorld,start,at,{clock,goals,hints:require('./PBZRouteWalkHints').forWorld(S.level),maxDistance:6000,maxNodes:1600,maxMs:900});},
    inspectArrival:function*(route,bell){
     if((route.moves||[]).some(m=>m.fold||m.block))return {blocked:true};
     for(let i=1;i<route.points.length;i++){
@@ -457,7 +456,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   // and larger walking fallbacks available, with no unverified preview.
   if((!accepted||accepted.partial)&&!context.nearbyWalkTried&&R.dist(start,landing)<=4500){
    context.nearbyWalkTried=true;
-   const hints=require('./PBZRouteWalkHints').reviewedForWorld(S.level);
+   const hints=require('./PBZRouteWalkHints').forWorld(S.level);
    const limits=hints?{maxGraphNodes:768,maxChecks:64}:{maxNodes:192};
    context.report?.('nearby walking search',{start,goal:landing,...limits,maxMs:200});
    const nearby=yield* LocalWalk.search(routeWorld,start,landing,{clock,maxDistance:4500,...limits,maxMs:200,
@@ -495,7 +494,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   if(!context.sceneTried&&R.dist(start,landing)<=20000){context.sceneTried=true;
    const broad=R.dist(start,landing)>12000;
    context.report?.('scene walking search',{broad,spacing:broad?140:70});
-   const local=yield* LocalWalk.search(routeWorld,start,landing,{clock,hints:require('./PBZRouteWalkHints').forWorld(S.level),surfaceBudget:context.surfaceBudget,report:context.report,waypoints:seeds,allowDrops:true,onProgress:progress=>{
+   const local=yield* LocalWalk.search(routeWorld,start,landing,{clock,hints:require('./PBZRouteWalkHints').forWorld(S.level),report:context.report,waypoints:seeds,allowDrops:true,onProgress:progress=>{
     progress.world=S.level;progress.provider='scene';
     Blocked.offer(context,Blocked.fromFailure(progress,{prefix:progress.points,prefixLeg:progress,segment:progress.points.length-1,
      p:progress.points[progress.points.length-1],unknown:true,why:'scene search continues'}),start,dest.p);
@@ -789,8 +788,6 @@ function tick(){settings();const sampleTime=Date.now();diagnostics?.advance(samp
  if(!W.alive(S.pawn)){diagnostics?.survey?.finish('player unavailable',sampleTime);planning.cancel('no player');clearRouteStatus();threads.hide();return;}if(!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread){diagnostics?.survey?.finish('navigation disabled',sampleTime);planning.cancel('disabled');clearRouteStatus();threads.hide();return;}
  if(!S.world)S.world=new W.Ground(S.pawn);const now=Date.now();safe('atlas slice',()=>atlas.pump());
  if(now-lastPoll>=105){lastPoll=now;safe('tracking',observe);safe('tracker',()=>{tracker?.poll();if(waitingTracker){const item=waitingTracker;waitingTracker=null;trackerChanged(item,'restore');}});const router=T.getlocalPlayerSubsystem(S.pawn,UE.PBZUIActionRouterBase.StaticClass());menu=!!router&&router.GetActiveInputMode()===UE.ECommonInputMode.Menu;}
- if(graphs.has(S.level))safe('surface data slice',()=>require('./PBZRouteMapHints').warm(S.level,[S.world.feet(),
-  planning.job?.request.world===S.level?planning.job.request.p:previous?.p]));
  safe('planning slice',()=>planning.pump());
  safe('route status',()=>updateRouteStatus());
  if(S.trip)safe('route clearance',()=>guardRoute(now));

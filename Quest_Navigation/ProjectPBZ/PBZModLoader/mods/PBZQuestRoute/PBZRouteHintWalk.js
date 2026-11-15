@@ -75,13 +75,7 @@ function* searchOne(world,start,goal,options={}){
  };
  for(let attempt=0;attempt<16&&clock()-began<limit;attempt++){
   const chain=yield* proposal();
-  if(!chain){
-   if(hints.pending?.size&&stats.expanded<graphLimit&&clock()-began<limit){
-    while(hints.pending.size&&clock()-began<limit)yield;
-    adjacency.clear();continue;
-   }
-   return finish(null,clock()-began>=limit?'time budget':graphReason);
-  }
+  if(!chain)return finish(null,clock()-began>=limit?'time budget':graphReason);
   stats.proposals++;const points=[first],walks=[],moves=[],checks=[];let failed=false;
   for(let i=1;i<chain.length;i++){
    if(clock()-began>=limit)return finish(null,'time budget');
@@ -127,27 +121,4 @@ function* searchOne(world,start,goal,options={}){
  }
  return finish(null,clock()-began>=limit?'time budget':'candidate repair budget');
 }
-function* search(world,start,goal,options={}){
- const hints=options.hints;
- if(!hints?.observed){
-  const source=hints?.surfaceCandidates&&'surface'in hints?hints.surface:hints;
-  return yield* searchOne(world,start,goal,{...options,hints:source});
- }
- // Keep a reviewed trajectory's finite graph intact. Mixing a broad surface
- // cloud into each neighbour list can crowd out its chain or multiply search
- // work. Try the surface proposal only if that graph cannot finish, sharing
- // the original time, graph and physical-check allowance.
- const clock=options.clock||Date.now,began=clock();let used={probes:0,expanded:0};
- const primary=yield* searchOne(world,start,goal,{...options,hints:hints.observed,
-  report:(phase,data)=>{used=data;options.report?.(phase,data);}});
- if(primary&&!primary.partial)return primary;
- const source=hints.surface;if(!source)return primary;
- const remaining=(options.maxMs||200)-(clock()-began),checks=(options.maxChecks||64)-used.probes,
-  nodes=(options.maxGraphNodes||768)-used.expanded;
- if(remaining<=0||checks<=0||nodes<=0)return primary;
- const surface=yield* searchOne(world,start,goal,{...options,hints:source,maxMs:remaining,maxChecks:checks,maxGraphNodes:nodes,
-  report:(phase,data)=>options.report?.(phase,{...data,surfaceFallback:true})});
- if(!surface)return primary;if(!primary||!surface.partial)return surface;
- return R.dist(surface.points.at(-1),goal)<R.dist(primary.points.at(-1),goal)?surface:primary;
-}
-exports.search=search;
+exports.search=searchOne;

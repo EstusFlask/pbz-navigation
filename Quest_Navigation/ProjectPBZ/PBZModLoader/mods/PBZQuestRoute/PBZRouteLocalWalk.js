@@ -103,23 +103,6 @@ function* searchGrid(world,start,goal,options={}){
 }
 function* search(world,start,goal,options={}){
  if(options.hintsOnly)return yield* require('./PBZRouteHintWalk').search(world,start,goal,options);
- const hasSurface=options.hints?.surfaceCandidates||options.hints?.observed&&'surface'in options.hints;
- if(!hasSurface)return yield* searchGrid(world,start,goal,options);
- // Keep the surface graph separate from the live lattice. Adding every
- // surface's XY phase to that lattice multiplies otherwise identical rows and
- // can exhaust the node budget on a previously working short walk.
- const clock=options.clock||Date.now,began=clock(),budget=options.maxMs||7000;
- const reserve=Math.min(100,budget/4),grid=yield* searchGrid(world,start,goal,{...options,hints:options.hints?.observed||null,maxMs:Math.max(1,budget-reserve)});
- if(grid)return grid;
- const shared=options.surfaceBudget,stamp=[options.hints?.world||'',start.x,start.y,start.z,goal.x,goal.y,goal.z].join(',');
- if(shared&&(shared.remainingMs<=0||shared.attempted?.has(stamp)))return null;
- const remaining=Math.min(reserve,budget-(clock()-began),shared?.remainingMs??Infinity);if(remaining<=0)return null;
- shared?.attempted?.add(stamp);
- const surface=options.hints?.surface||options.hints;if(!surface)return null;
- const at=clock(),proposed=yield* require('./PBZRouteHintWalk').search(world,start,goal,{...options,hints:surface,
-  maxMs:remaining,maxGraphNodes:Math.min(384,options.maxGraphNodes||384),maxChecks:Math.min(32,options.maxChecks||32),allowFrontier:false,
-  report:(phase,data)=>options.report?.(phase,{...data,surfaceFallback:true})});
- if(shared)shared.remainingMs=Math.max(0,shared.remainingMs-(clock()-at));
- return proposed;
+ return yield* searchGrid(world,start,goal,options);
 }
 exports.search=search;

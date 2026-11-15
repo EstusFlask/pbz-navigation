@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "sourceCommit": "84145afc",
+  "experimentalBranch": "codex/heybox-navigation",
+  "entries": [
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+      "archivedPath": "integration-before-removal/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZQuestRoute.js",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 87368.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWalkHints.js",
+      "archivedPath": "integration-before-removal/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteWalkHints.js",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 2405.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteLocalWalk.js",
+      "archivedPath": "integration-before-removal/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteLocalWalk.js",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 9006.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteHintWalk.js",
+      "archivedPath": "integration-before-removal/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteHintWalk.js",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 9771.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePassages.js",
+      "archivedPath": "integration-before-removal/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRoutePassages.js",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 30022.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteRepair.js",
+      "archivedPath": "integration-before-removal/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteRepair.js",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 4946.0
+    },
+    {
+      "originalPath": "tests/build-patch.py",
+      "archivedPath": "integration-before-removal/tests/build-patch.py",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 3964.0
+    },
+    {
+      "originalPath": "tests/verify-package.py",
+      "archivedPath": "integration-before-removal/tests/verify-package.py",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 8563.0
+    },
+    {
+      "originalPath": "tests/release_profiles.py",
+      "archivedPath": "integration-before-removal/tests/release_profiles.py",
+      "operation": "copy",
+      "files": 1,
+      "bytes": 2188.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteMapData",
+      "archivedPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteMapData",
+      "operation": "move",
+      "files": 18326,
+      "bytes": 124322722.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteMapHints.js",
+      "archivedPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteMapHints.js",
+      "operation": "move",
+      "files": 1,
+      "bytes": 3856.0
+    },
+    {
+      "originalPath": "tools/pbz_heybox_pack.py",
+      "archivedPath": "tools/pbz_heybox_pack.py",
+      "operation": "move",
+      "files": 1,
+      "bytes": 9909.0
+    },
+    {
+      "originalPath": "tools/build-heybox-map.py",
+      "archivedPath": "tools/build-heybox-map.py",
+      "operation": "move",
+      "files": 1,
+      "bytes": 17387.0
+    },
+    {
+      "originalPath": "tools/benchmark-map-hints.cjs",
+      "archivedPath": "tools/benchmark-map-hints.cjs",
+      "operation": "move",
+      "files": 1,
+      "bytes": 1606.0
+    },
+    {
+      "originalPath": "tests/heybox-map.test.py",
+      "archivedPath": "tests/heybox-map.test.py",
+      "operation": "move",
+      "files": 1,
+      "bytes": 8023.0
+    },
+    {
+      "originalPath": "tests/heybox-map.test.cjs",
+      "archivedPath": "tests/heybox-map.test.cjs",
+      "operation": "move",
+      "files": 1,
+      "bytes": 6012.0
+    },
+    {
+      "originalPath": "tests/field-180.test.cjs",
+      "archivedPath": "tests/field-180.test.cjs",
+      "operation": "move",
+      "files": 1,
+      "bytes": 5156.0
+    },
+    {
+      "originalPath": "authoring/heybox-map-audit.json",
+      "archivedPath": "authoring/heybox-map-audit.json",
+      "operation": "move",
+      "files": 1,
+      "bytes": 6452.0
+    },
+    {
+      "originalPath": "docs/HEYBOX-MAP-IMPORT.md",
+      "archivedPath": "docs/HEYBOX-MAP-IMPORT.md",
+      "operation": "move",
+      "files": 1,
+      "bytes": 6118.0
+    },
+    {
+      "originalPath": "docs/HEYBOX-BRANCH.md",
+      "archivedPath": "docs/HEYBOX-BRANCH.md",
+      "operation": "move",
+      "files": 1,
+      "bytes": 1681.0
+    },
+    {
+      "originalPath": "build/heybox-inspect",
+      "archivedPath": "local/build/heybox-inspect",
+      "operation": "move",
+      "files": 32,
+      "bytes": 233363305.0
+    },
+    {
+      "originalPath": "build/heybox-map",
+      "archivedPath": "local/build/heybox-map",
+      "operation": "move",
+      "files": 6830,
+      "bytes": 61929665.0
+    },
+    {
+      "originalPath": "build/heybox-dock-test.txt",
+      "archivedPath": "local/build/heybox-dock-test.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 28754.0
+    },
+    {
+      "originalPath": "build/heybox-js-tests.txt",
+      "archivedPath": "local/build/heybox-js-tests.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 82243.0
+    },
+    {
+      "originalPath": "build/heybox-lua-tests.txt",
+      "archivedPath": "local/build/heybox-lua-tests.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 2594.0
+    },
+    {
+      "originalPath": "build/heybox-map-benchmark.json",
+      "archivedPath": "local/build/heybox-map-benchmark.json",
+      "operation": "move",
+      "files": 1,
+      "bytes": 1971.0
+    },
+    {
+      "originalPath": "build/heybox-map-benchmark.txt",
+      "archivedPath": "local/build/heybox-map-benchmark.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 2065.0
+    },
+    {
+      "originalPath": "build/heybox-map-build.txt",
+      "archivedPath": "local/build/heybox-map-build.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 1435.0
+    },
+    {
+      "originalPath": "build/heybox-native-tests.txt",
+      "archivedPath": "local/build/heybox-native-tests.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 803.0
+    },
+    {
+      "originalPath": "build/heybox-package-build.txt",
+      "archivedPath": "local/build/heybox-package-build.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 362.0
+    },
+    {
+      "originalPath": "build/heybox-package-checks.txt",
+      "archivedPath": "local/build/heybox-package-checks.txt",
+      "operation": "move",
+      "files": 1,
+      "bytes": 598.0
+    },
+    {
+      "originalPath": "build/tools/heybox-reader",
+      "archivedPath": "local/build/tools/heybox-reader",
+      "operation": "move",
+      "files": 395,
+      "bytes": 22376739.0
+    },
+    {
+      "originalPath": "tools/__pycache__/build-heybox-map.cpython-312.pyc",
+      "archivedPath": "local/tools/__pycache__/build-heybox-map.cpython-312.pyc",
+      "operation": "move",
+      "files": 1,
+      "bytes": 32236.0
+    },
+    {
+      "originalPath": "tools/__pycache__/pbz_heybox_pack.cpython-312.pyc",
+      "archivedPath": "local/tools/__pycache__/pbz_heybox_pack.cpython-312.pyc",
+      "operation": "move",
+      "files": 1,
+      "bytes": 17519.0
+    },
+    {
+      "originalPath": "Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteHorizon.js",
+      "archivedPath": "integration-before-removal/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteHorizon.js",
+      "operation": "copy from HEAD",
+      "files": 1,
+      "bytes": 4109
+    }
+  ],
+  "localSourceCopies": [
+    {
+      "name": "pbz-nav-1.4.0.wkpack",
+      "bytes": 5844483,
+      "sha256": "ccec21b4a8b1b55ab74efb4fa3b0691957458eb18f323425ba2745bd9fa8734a",
+      "archivedPath": "local/source-packs/pbz-nav-1.4.0.wkpack",
+      "operation": "copy; original app file retained"
+    },
+    {
+      "name": "pbz-model-1.4.0.wkpack",
+      "bytes": 216074325,
+      "sha256": "ba872263b6ff885254f832d91571f3296ae312d977105600855c42308c7772bb",
+      "archivedPath": "local/source-packs/pbz-model-1.4.0.wkpack",
+      "operation": "copy; original app file retained"
+    },
+    {
+      "name": "map-codec.exe",
+      "bytes": 418264,
+      "sha256": "83d97bc6c7c662ef199d1b0f76fd558aa083373bc017b41092e8b66d8f0147cf",
+      "archivedPath": "local/source-packs/map-codec.exe",
+      "operation": "copy; original app file retained"
+    }
+  ]
+}

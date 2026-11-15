@@ -1,0 +1,33 @@
+1.8.3 — Restore navigation sources before Heybox integration.
+Client date: 2026-11-15; timezone: America/Tijuana.
+
+PASS: node --test tests/*.test.cjs — 360 passed, 0 failed.
+      Includes original atlas/directed shortest paths, physics, single-sided walls,
+      scene search, actions, route2, unloaded frontiers, controls and development capture.
+PASS: py -3.12 tests/run-lua-tests.py — actual maintained collector 1.0.14 modules,
+      target/selection/name/cancel bridges, configuration and survey round trips.
+PASS: py -3.12 native/build-native.py --ue4ss <existing game UE4SS.dll> --test
+      Native adapter rebuilt at 1.8.3; ABI/runtime SHA/host dispatch checks passed.
+      Existing game UE4SS.dll was read only.
+PASS: py -3.12 tests/build-patch.py — complete standard and development packages.
+PASS: py -3.12 tests/verify-package.py — exact source/package matches, streamed
+      source column hashes, 291 legacy chunk values, version agreement and profile boundaries.
+      Standard: 1,386 files; development: 1,393 files.
+PASS: build/verify-heybox-archive.py — 18,346 archived tracked files match original
+      Git blobs at 84145afc, normalizing CRLF to LF; all 3 local original-source
+      copies match their byte SHA256. Archive counts and byte totals preserved.
+PASS: active runtime has no MapHints/MapData import, model fallback, model budget
+      or warm-up; both packages exclude archived model modules/data/documents/profile fields.
+PASS: git diff --check.
+
+Standard: dist/Quest_and_Exploration_Navigation_Fork_1.8.3.zip
+120584149 bytes; SHA256 f1308da82558c7055242b1aa7efec245f6df015bdc0e94452007e167ff054b1a
+Development: dist/Quest_and_Exploration_Navigation_Fork_1.8.3_Development.zip
+120606936 bytes; SHA256 7d3a79d5599b029c1db48d12e3ff0784b641233617e2e415d047095610138930
+
+Logs: build/validation-183-{js,lua,native,build,package,archive}.txt
+Archive: archive/heybox-20261115/{README.md,manifest.json,verification.json}
+Scope: original atlas/native query/reviewed observations restored; unrelated fixes retained.
+No game installation, manager registration, save change or upload performed.
+No new in-game route/collision/performance acceptance; previous field conclusions unchanged.
+Recorded physics tests and static checks are not a reconstruction of the full game collision world.

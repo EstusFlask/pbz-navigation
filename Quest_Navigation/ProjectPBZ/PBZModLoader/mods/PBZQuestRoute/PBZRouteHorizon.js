@@ -32,7 +32,7 @@ function* preview(g,world,start,goal,native,features,options={}){
  // Nearby routes, including the accepted A-02, retain their existing planner.
  if(R.dist(start,goal)<=12000||!options.onHorizon)return null;
  const clock=options.clock||Date.now,deadline=clock()+250;
- const hints=require('./PBZRouteWalkHints').reviewedForWorld(g.name);if(!hints)return null;
+ const hints=require('./PBZRouteWalkHints').forWorld(g.name);if(!hints)return null;
  const floor=world.floorAt(goal,true);yield;
  if(floor&&Math.abs(floor.z-goal.z)<=125||clock()>=deadline)return null;
  const rows=[];

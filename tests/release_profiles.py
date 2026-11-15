@@ -30,9 +30,6 @@ def build_bytes(nav, version, flavor):
         digest.update(file.read_bytes())
     profile = dict(version=version, flavor=flavor, label=version+('-dev' if flavor == 'development' else ''),
                    development=flavor == 'development', sourceSHA256=digest.hexdigest(), captureSchema=1)
-    surfaces = nav/SCRIPTS/'PBZRouteMapData/manifest.json'
-    if surfaces.is_file():
-        profile['surfaceDataSHA256'] = hashlib.sha256(surfaces.read_bytes()).hexdigest()
     if flavor == 'development':
         profile['diagnosticsSHA256']=hashlib.sha256((nav/DIAGNOSTICS).read_bytes()).hexdigest()
         profile['surveySHA256']={name:hashlib.sha256((nav/name).read_bytes()).hexdigest() for name in sorted(DEVELOPMENT_FILES) if name!=DIAGNOSTICS}

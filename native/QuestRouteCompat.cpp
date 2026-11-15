@@ -74,7 +74,7 @@ class QuestRouteCompat final : public RC::CppUserModBase {
     }
 public:
     QuestRouteCompat() {
-        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"1.8.2";
+        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"1.8.3";
         ModDescription=L"Navigation-owned collectible bridge and settings UI compatibility";
         ModAuthors=L"kurosakana (fork); original navigation by azqwq333";
         register_on_lua_start(&lua_started);

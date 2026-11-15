@@ -37,9 +37,7 @@ documents={'INSTALL-README.md':root/'docs/USER-GUIDE.md','CHANGELOG.md':root/'re
     'MOVEMENT-COVERAGE.md':root/'docs/MOVEMENT-COVERAGE.md',
     'MANUAL-ROUTES.md':root/'docs/MANUAL-ROUTES.md',
     'BELL-NETWORK-COVERAGE.md':root/'docs/BELL-NETWORK-COVERAGE.md',
-    'ITEM-DESCRIPTION-AUDIT.md':root/'docs/ITEM-DESCRIPTION-AUDIT.md',
-    'HEYBOX-MAP-IMPORT.md':root/'docs/HEYBOX-MAP-IMPORT.md',
-    'FIELD-FIXES-1.8.1.md':root/'docs/FIELD-FIXES-1.8.1.md'}
+    'ITEM-DESCRIPTION-AUDIT.md':root/'docs/ITEM-DESCRIPTION-AUDIT.md'}
 def module_value(name,prefix):
     text=(streamed/name).read_text(encoding='utf-8')
     assert text.startswith(prefix)
@@ -69,6 +67,8 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     assert names==expected|set(package_documents), 'incomplete navigation package'
     assert not any('/mods/pbzmaptracker/' in n.lower() for n in names), 'collector file included'
     assert not any('/mods/pbzmodconfig/' in n.lower() for n in names), 'shared settings framework file included'
+    assert not any('PBZRouteMapData/' in n or n.endswith('PBZRouteMapHints.js') or 'HEYBOX' in n.upper() for n in names), 'archived model material included'
+    assert 'surfaceDataSHA256' not in json.loads(z.read(BUILD).decode().split('module.exports=',1)[1].strip().removesuffix(';')), 'retired model profile included'
     for development_file in DEVELOPMENT_FILES:
         assert (development_file in names)==(flavor=='development'), 'development flavor boundary broken: '+development_file
     assert z.read(BUILD)==build_bytes(nav,version,flavor), 'build profile mismatch'
@@ -82,7 +82,7 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     assert version.encode('utf-16le') in z.read(adapter), 'native adapter version mismatch'
     assert ("modVersion='"+version+"'") in z.read('platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZRouteConfig.lua').decode('utf-8'), 'settings provider version mismatch'
     assert not any(n.endswith('PBZQuestRoute-settings.json') for n in names), 'player color settings included in update'
-    for name in ['README-en.txt','README-zh.txt','INSTALL-README.md','CHANGELOG.md','HEYBOX-MAP-IMPORT.md']:
+    for name in ['README-en.txt','README-zh.txt','INSTALL-README.md','CHANGELOG.md']:
         assert version in z.read(name).decode('utf-8'), 'documentation version mismatch'
     for name in names:
         if name in (BUILD,LUA_BUILD):continue

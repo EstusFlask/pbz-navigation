@@ -1,3 +1,8 @@
+### Version 1.8.3
+
+- Restored the original navigation data source and removed experimental model candidates.
+- 恢复原有导航数据来源，移除实验模型候选。
+
 ### Version 1.8.2
 
 - Removed the experimental reverse-search option.
