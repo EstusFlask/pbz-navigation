@@ -1,0 +1,35 @@
+Version:1.3.3 (local complete package; not installed or uploaded at build time)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.3.3.zip
+
+Problem and evidence
+-1.3.2 user accepted the plank-to-first-ladder walking segment, then reported
+ inaccurate descent guidance. Screenshot and native component reads are under
+ build/field-live-1.3.2-20261114-42804-A02/ladder-entry-user.jpg and
+ first-ladder-native-components.json.
+- TopCollision local(200,0,4175) differs from TopLadder(0,0,4075): the previous
+ guide used the interaction-volume centre, producing a platform spike and offset
+ descent. The checked upper standing pad lies about104cm below that centre.
+
+Reproduction and fix
+- Live-discovery-to-routing regression fails before the fix:
+ build/ladder-guide-red.txt (guidance climbs into the elevated interaction box).
+- It passes afterward:build/ladder-guide-green.txt. Drawing follows the native
+ mesh axis, endpoints align with standing height, checked interaction pad retained.
+- Runtime caches same-actor mesh geometry beside the interaction path. Endpoint
+ consistency bounds apply; absent/mismatched geometry falls back. Direction,
+ mechanism availability and entry/exit safety checks are unchanged.
+
+Validation
+-300 JavaScript regressions:build/validation-133-js.txt.
+- Real Lua tracker1.0.9/1.0.14 and ModConfig1.0.4:build/validation-133-lua.txt.
+- Native ABI/SHA/host dispatch:build/validation-133-native.txt.
+- Complete ZIP:1383 exact files;951 streams and291 original legacy values;
+ version1.3.3 agrees across native/config/runtime/docs:build/validation-133-package.txt.
+- Changed tracked source diff passes whitespace checks; no temporary DEBUG logs.
+
+Limits
+- Regression models captured geometry with substituted physics; no claim of
+ actual corrected game rendering until the original ladder entrance is retested.
+- Continuous post-climb rooftop handoff remains unresolved. The stationary plank
+ reselect and plank-to-ladder walk are separately accepted on1.3.2; full A-02 is not.

@@ -1,6 +1,6 @@
 {
   "version": "1.3.2",
-  "status": "installed by user; original-origin live retest active, acceptance pending",
+  "status": "installed and live retested; partial improvement, original rooftop failure remains",
   "clientDate": "2026-11-14",
   "timezone": "America/Tijuana",
   "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.3.2.zip",
@@ -24,9 +24,11 @@
   ],
   "report": "docs/FIELD-FIXES-1.3.2.md",
   "validation": "release/VALIDATION-1.3.2.txt",
-  "fieldEvidence": "build/field-live-1.3.1-20261114-48148-A02/result.json",
-  "liveRetested": false,
+  "fieldEvidence": "authoring/field-retest-1.3.2.json",
+  "liveRetested": true,
   "installedToGame": true,
   "uploaded": false,
-  "installedAudit": "build/field-live-1.3.2-20261114-42804-A02/installation.json"
+  "installedAudit": "build/field-live-1.3.2-20261114-42804-A02/installation.json",
+  "livePassed": false,
+  "fieldResult": "Original rooftop guidance still missing; correct route after small plank drop; full A-02 not accepted"
 }

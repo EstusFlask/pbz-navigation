@@ -210,6 +210,20 @@ function placedCurve(actor,kind){
    case 'mantle':result=[location('FrontCollision')||root,...curve('FrontEdgeSpline',true),...curve('BackEdgeSpline',true)];break;
    case 'drop':{const top=location('TopCollision');result=[...(top?[top]:[]),...curve('EdgeSpline',true),...curve('EndEdgeSpline',true)];break;}
    case 'ladder':result=[location('BottomCollision'),location('TopCollision')];break;
+   case 'ladder-guide':{
+    const bottom=location('BottomMeshComponent')||location('BottomLadder'),top=location('TopMeshComponent')||location('TopLadder');
+    if(bottom&&top)result=[bottom,top];
+    else {
+     // Cooked ladders may have baked meshes and null runtime mesh components.
+     // The native vertical ladder's base still defines its axis; never use
+     // the two-metre upper interaction-box offset as the descent column.
+     const base=location('BottomCollision'),upper=location('TopCollision');let up;
+     try{if(typeof actor.GetActorUpVector==='function')up=W.plain(actor.GetActorUpVector());}catch(_){}
+     if(base&&upper&&up?.z>.995&&upper.z-base.z>36&&R.xy(base,upper)<=600)
+      result=[base,{x:base.x,y:base.y,z:upper.z}];
+    }
+    break;
+   }
    case 'swing':result=[location('ASide')||location('BoxA'),location('BSide')||location('BoxB')];break;
    case 'hook':result=[location('TriggerSphere')||location('TriggerBox'),location('GrabPoint'),location('LandArea')];break;
    default:result=TraversalGeometry.extract(actor,kind,{location,curve,point:W.plain});
@@ -307,7 +321,7 @@ function* refreshLoadedJob(g,world,pawn,start,goal,options={}){
     item={...definition,guid,fold:folded,conditional:true,path:path.map(p=>[p.x,p.y,p.z])};
     if(g.observedPassages.size>=240)continue;g.observedPassages.set(key,item);
    }
-   cache.paths.set(item.guid,{path,at:now});items.set(key,item);yield;
+   cache.paths.set(item.guid,{path,guidePath:definition.kind==='ladder'?placedCurve(actor,'ladder-guide'):null,at:now});items.set(key,item);yield;
    readState(g,cache,actor,item,pawn,world);retainPlacedObservation(g,item,path);
    if(item.fold){
     g.foldedPassages?.add(key);
@@ -359,7 +373,7 @@ function updateLoaded(g,world,pawn,nativeWalk) {
      if(g.observedPassages.size>=240)continue;g.observedPassages.set(key,item);
     }
     if(!cache.paths.has(item.guid))g.passageRevision=(g.passageRevision||0)+1;
-    cache.paths.set(item.guid,{path,at:now});
+    cache.paths.set(item.guid,{path,guidePath:definition.kind==='ladder'?placedCurve(actor,'ladder-guide'):null,at:now});
     readState(g,cache,actor,item,pawn,world);retainPlacedObservation(g,item,path);
     // Attachment runs in liveRouteJob after standing-pad and action checks;
     // a timer discovery must not install an unchecked movement arc.
@@ -386,9 +400,14 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
     if(path.length<2||!path.every(R.finite))continue;
     const forward=R.dist(start,path[0])+R.dist(goal,path[path.length-1]);
     const backward=feature.both?R.dist(start,path[path.length-1])+R.dist(goal,path[0]):Infinity;
-    const score=Math.min(forward,backward);if(score<26000)candidates.push({...feature,state:g.passageStates?.get(String(feature.guid).toLowerCase()),runtimePath:path,score});
+    const score=Math.min(forward,backward);if(score<26000)candidates.push({...feature,state:g.passageStates?.get(String(feature.guid).toLowerCase()),runtimePath:path,
+     runtimeGuidePath:live&&Date.now()-live.at<30000?live.guidePath:null,score});
   }
   options.report?.('action candidates',{count:candidates.length,start,goal});
+  if(options.onHorizon){
+   const horizon=yield* require('./PBZRouteHorizon').preview(g,world,start,goal,nativeWalk,candidates,options);
+   if(horizon)options.onHorizon(horizon);
+  }
   return yield* Transitions.route({name:g.name,world,start,goal,goals:options.goals,clock,deadline:options.deadline,maxConnectors:options.maxConnectors,
    allowPartial:options.allowPartial,onPartial:options.onPartial,stagedWalk:true,
    onAction:function*(action,settings){

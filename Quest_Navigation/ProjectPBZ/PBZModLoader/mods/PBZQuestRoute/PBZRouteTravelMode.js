@@ -19,9 +19,14 @@ function read(pawn,UE,T){
    const next=parent.GetAttachParentActor?.();if(next===parent)break;parent=next;
   }
  }catch(_){}
+ try{
+  const custom=UE.EMovementMode?.MOVE_Custom;
+  if(custom!==undefined&&pawn.CharacterMovement?.MovementMode===custom)return {kind:'traversal'};
+ }catch(_){}
  return null;
 }
 function message(phase,english=false){
+ if(phase?.kind==='traversal')return english?'Traversal in progress · target retained; resume after landing':'特殊动作中 · 已保留目标，落地后继续导航';
  if(phase?.kind==='boat')return english?'Sailing · target retained; resume after disembarking':'乘船中 · 已保留目标，靠岸下船后继续导航';
  if(phase?.kind==='ride')return english?'Scripted ride · target retained; resume afterwards':'剧情骑乘中 · 已保留目标，结束后继续导航';
  return '';

@@ -1,0 +1,71 @@
+{
+  "build": "1.3.2",
+  "case": "A-02",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "session": "build/field-live-1.3.2-20261114-42804-A02",
+  "installedAudit": "build/field-live-1.3.2-20261114-42804-A02/installation.json",
+  "userReport": "两次爬墙上到屋顶时没有路线我按了y，往前走了一小段从木板上下来（一小段下落），现在有正确路线",
+  "result": "partial improvement; original roof origin still has no guidance; correct guidance observed after the small plank drop; full A-02 not accepted",
+  "markerMeaning": "First Y marks missing route after the two climbs",
+  "observedCompletePlannerResult": {
+    "utc": "2026-11-14T23:54:55.655Z",
+    "start": {
+      "x": -63404.92928565323,
+      "y": 217551.07436947728,
+      "z": -10407.044023264667
+    },
+    "cpuMs": 324,
+    "wallMs": 4954,
+    "meters": 185,
+    "actions": [
+      "ladder",
+      "ladder"
+    ],
+    "scope": "Completed planner result after the small drop, not original rooftop origin or full walk-through acceptance"
+  },
+  "originFloorObservation": {
+    "start": {
+      "x": -63534.01210149813,
+      "y": 217553.82077733634,
+      "z": -10246.499675077419
+    },
+    "searchFloor": {
+      "x": -63534.01172396874,
+      "y": 217553.8281310482,
+      "z": -10361.749206049219
+    },
+    "deltaCm": -115.2495309718,
+    "scope": "Observed during moving-origin replans; cause and relation to first stationary query remain unconfirmed"
+  },
+  "next": "Install verified1.3.3 full candidate after exiting; rebind fresh collectors and retest only the first ladder entrance. Keep continuous post-climb guidance issue open.",
+  "livePassed": false,
+  "stationaryReselect": {
+    "userReport": "已原地重选，10秒内路线正确",
+    "start": {
+      "x": -63649.74716518158,
+      "y": 217554.18045157808,
+      "z": -10228.076192658315
+    },
+    "selectedLocal": "16:00:09.867",
+    "completedLocal": "16:00:16.031",
+    "plannerCpuMs": 477,
+    "plannerWallMs": 6150,
+    "routeMeters": 190,
+    "actions": [
+      "fall",
+      "ladder",
+      "ladder"
+    ],
+    "acceptedScope": "Stationary original-roof reselect guidance only; continuous post-climb handoff and whole traversal still pending"
+  },
+  "roofToFirstLadder": {
+    "userReport": "已到第一处下梯入口，这段正确，不过看起来现在线没有准确指出下梯",
+    "status": "walking segment accepted; ladder action geometry failed",
+    "screenshot": "build/field-live-1.3.2-20261114-42804-A02/ladder-entry-user.jpg",
+    "nativeComponents": "build/field-live-1.3.2-20261114-42804-A02/first-ladder-native-components.json",
+    "marker": "case-20261115T000551.657+0000-Y",
+    "visualFinding": "Line rises into the upper interaction-box centre and descends through the platform, offset from the visible ladder",
+    "candidateFix": "1.3.3"
+  }
+}

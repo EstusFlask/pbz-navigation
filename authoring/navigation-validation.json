@@ -3,15 +3,15 @@
   "objective": "Complete and validate navigation for the current game version through short field cases, generic fixes, directed coverage and save-state tests",
   "roadmap": "docs/NAVIGATION-TODO.md",
   "timezone": "America/Tijuana",
-  "currentBuild": "1.3.2",
+  "currentBuild": "1.3.5",
   "currentPhase": "A",
-  "activeCase": "A-02",
-  "currentAction": "Live1.3.2 original-origin A-02 retest: select Waterfall Suspension Bridge at summit; retain two climbs as controls; stop at second rooftop and report initial guidance/latency, then mark any wrong direction. Do not count local correctness as complete-route pass.",
-  "fieldSession": "build/field-live-1.3.2-20261114-42804-A02",
-  "recording": "Active1.3.2 session: fresh registry, read-only logs,10Hz feet/CurrentFloor and foreground Y markers verified",
+  "activeCase": "A-04",
+  "currentAction": "This field round is ended by the user. A-01/A-02/A-03 accepted on1.3.1/1.3.4/1.3.5 respectively. Next session only: choose A-04 short checkpoints after fresh version/three-way capture checks; do not start now.",
+  "fieldSession": "build/field-live-1.3.5-20261114-34248-A03",
+  "recording": "Stopped: user ended this round; logs,10Hz XYZ and foreground Y listeners all verified inactive; session archived.",
   "installedAudit": {
-    "build": "1.3.2",
-    "matchedRuntimeFiles": 1373,
+    "build": "1.3.5",
+    "matchedRuntimeFiles": 1374,
     "missing": [],
     "changed": [],
     "status": "passed"
@@ -199,7 +199,7 @@
     },
     {
       "id": "A-02",
-      "status": "live_retesting_1.3.2; acceptance_pending",
+      "status": "passed_user_confirmed",
       "world": "pbz_xigu_wp",
       "fromBell": "Bell_NLES_012",
       "toBell": "Bell_NLES_018",
@@ -209,11 +209,16 @@
         "1.2.1"
       ],
       "codeFixedBuild": null,
-      "livePassedBuilds": [],
+      "livePassedBuilds": [
+        "1.3.4"
+      ],
       "resultEvidence": [
         "authoring/field-retest-1.3.1-a02.json",
         "build/field-live-1.3.1-20261114-48148-A02/result.json",
-        "docs/FIELD-FIXES-1.3.2.md"
+        "docs/FIELD-FIXES-1.3.2.md",
+        "authoring/field-retest-1.3.2.json",
+        "authoring/field-retest-1.3.3-a02.json",
+        "authoring/field-retest-1.3.4-a02.json"
       ],
       "checkpointObservations1.3.1": [
         {
@@ -230,15 +235,45 @@
         "FIELD-02",
         "FIELD-03",
         "FIELD-20",
-        "FIELD-21"
+        "FIELD-21",
+        "FIELD-23"
       ],
-      "liveSession": "build/field-live-1.3.2-20261114-42804-A02",
+      "liveSession": "build/field-live-1.3.4-20261114-48712-A02",
       "markerAnnotations": "build/field-live-1.3.1-20261114-48148-A02/marker-annotations.json",
-      "candidateFixBuild": "1.3.2"
+      "candidateFixBuild": "1.3.4",
+      "stationaryRoofReselect": {
+        "userReport": "已原地重选，10秒内路线正确",
+        "start": {
+          "x": -63649.74716518158,
+          "y": 217554.18045157808,
+          "z": -10228.076192658315
+        },
+        "selectedLocal": "16:00:09.867",
+        "completedLocal": "16:00:16.031",
+        "plannerCpuMs": 477,
+        "plannerWallMs": 6150,
+        "routeMeters": 190,
+        "actions": [
+          "fall",
+          "ladder",
+          "ladder"
+        ],
+        "acceptedScope": "Stationary original-roof reselect guidance only; continuous post-climb handoff and whole traversal still pending"
+      },
+      "acceptance": {
+        "case": "A-02",
+        "build": "1.3.4",
+        "clientDate": "2026-11-14",
+        "timezone": "America/Tijuana",
+        "status": "passed_user_confirmed",
+        "userStatement": "A-02全程正确",
+        "session": "build/field-live-1.3.4-20261114-48712-A02",
+        "scope": "User accepted the whole A-02 run; includes initial direction, rooftop progression and both ladders. Engine bridge arrival also logged00:40:06Z. Other routes/performance metrics not implied."
+      }
     },
     {
       "id": "A-03",
-      "status": "pending",
+      "status": "passed_user_confirmed",
       "world": "pbz_xigu_wp",
       "fromBell": "Bell_NLES_018",
       "toBell": "Bell_NLES_007",
@@ -247,14 +282,38 @@
       "capturedBuilds": [
         "1.2.1"
       ],
-      "codeFixedBuild": null,
-      "livePassedBuilds": [],
-      "resultEvidence": [],
+      "codeFixedBuild": "1.3.5",
+      "livePassedBuilds": [
+        "1.3.5"
+      ],
+      "resultEvidence": [
+        "authoring/field-retest-1.3.3-a03.json",
+        "authoring/field-retest-1.3.4-a03.json",
+        "authoring/field-retest-1.3.5-a03.json",
+        "build/field-live-1.3.5-20261114-34248-A03/result.json"
+      ],
       "issues": [
         "FIELD-04",
         "FIELD-05",
         "FIELD-06"
-      ]
+      ],
+      "liveSession": "build/field-live-1.3.5-20261114-34248-A03",
+      "candidateFixBuild": "1.3.5",
+      "acceptance": {
+        "case": "A-03",
+        "build": "1.3.5",
+        "clientDate": "2026-11-14",
+        "timezone": "America/Tijuana",
+        "status": "passed_user_confirmed",
+        "userStatement": "A3已经成功，记录下即可，今天先这样",
+        "session": "build/field-live-1.3.5-20261114-34248-A03",
+        "installedAudit": "build/field-live-1.3.5-20261114-34248-A03/installation.json",
+        "scope": "A-03 accepted from user live confirmation on installed/loaded1.3.5. No claim of full-map coverage, all save-state conditions or performance acceptance.",
+        "selections": [
+          "2026-11-15T01:16:00.076Z selection {\"source\":\"bell icon\",\"bell\":\"Bell_NLES_007\",\"world\":\"pbz_xigu_wp\",\"goal\":{\"x\":-58421,\"y\":196992,\"z\":-17597},\"pixels\":1.7340774323821961}"
+        ],
+        "loggedArrivals": []
+      }
     },
     {
       "id": "A-04",
@@ -288,14 +347,14 @@
     {
       "id": "FIELD-20",
       "symptom": "A-02两次正确上墙后，屋顶后续缺线并长时间等待；后续位置出现两次约30秒搜索超时",
-      "state": "reproduced_on_1.3.1; root_cause_unconfirmed",
+      "state": "resolved_for_A02_by_user_full_run_on1.3.4",
       "severity": "high",
       "evidence": "authoring/field-retest-1.3.1-a02.json"
     },
     {
       "id": "FIELD-21",
       "symptom": "A-02屋顶久等后引导穿屋顶或从不该跳的位置下去；日志出现fall受阻前段，没有完整路线",
-      "state": "user_confirmed_on_1.3.1; exact_rendered_segment_and_collision_replay_missing",
+      "state": "resolved_for_A02_by_user_full_run_on1.3.4",
       "severity": "high",
       "evidence": "authoring/field-retest-1.3.1-a02.json"
     },
@@ -329,19 +388,19 @@
     {
       "id": "FIELD-04",
       "symptom": "吊桥和山洞段未给出路线",
-      "state": "unresolved",
+      "state": "resolved_for_A03_by_user_confirmation_on1.3.5",
       "severity": "high"
     },
     {
       "id": "FIELD-05",
       "symptom": "出洞跑墙起初入口拒绝，稍后才接入",
-      "state": "unresolved",
+      "state": "resolved_for_A03_by_user_confirmation_on1.3.5",
       "severity": "high"
     },
     {
       "id": "FIELD-06",
       "symptom": "人工到大瀑布附近时仍有blocked preview",
-      "state": "needs_goal_access_and_arrival_confirmation",
+      "state": "resolved_for_A03_by_user_confirmation_on1.3.5",
       "cause": "unconfirmed",
       "severity": "unconfirmed"
     },
@@ -440,6 +499,13 @@
       "severity": "high",
       "state": "code_fixed1.2.10; live delivery and original-pose physics pending",
       "evidence": "authoring/field-retest-1.2.9.json"
+    },
+    {
+      "id": "FIELD-23",
+      "symptom": "第一处下梯入口动作线升入偏离梯子本体约2米且高约1米的上交互框，再在平台内向下；截图与只读原生组件一致",
+      "state": "resolved_for_A02_by_user_full_run_on1.3.4",
+      "severity": "high",
+      "evidence": "docs/FIELD-FIXES-1.3.3.md"
     }
   ],
   "correctControls": [
@@ -453,9 +519,9 @@
   "coveragePolicy": "Track capture, authored geometry, automated checks and version-specific live pass independently; directed edges and current save conditions are mandatory",
   "nextSaveNeeded": "Only after movement/road validation reaches collectible or pre-unlock/quest-state cases; retain current save",
   "releaseGate": "Version-specific live validation and unresolved major issue audit; no automatic public upload",
-  "installedBuild": "1.3.2",
-  "localCandidateBuild": "1.3.2",
-  "localCandidateReceipt": "release/LOCAL-CANDIDATE-1.3.2.json",
+  "installedBuild": "1.3.5",
+  "localCandidateBuild": "1.3.5",
+  "localCandidateReceipt": "release/LOCAL-CANDIDATE-1.3.5.json",
   "installedAudit1.2.3": {
     "build": "1.2.3",
     "status": "passed",
@@ -521,5 +587,12 @@
   },
   "publishedBuild": "1.3.1",
   "publicationEvidence": "release/NEXUS-PUBLISH-RECORD-1.3.1-20261114.json",
-  "publicationDoesNotImplyFieldPass": true
+  "publicationDoesNotImplyFieldPass": true,
+  "pendingFixCases": [],
+  "sessionStatus": "ended_by_user",
+  "lastSessionArchive": {
+    "path": "build/field-live-1.3.5-20261114-34248-A03-data.zip",
+    "bytes": 45574,
+    "sha256": "b1df09f8d5652bcd9529a7a47afe075995311a9ab77e0a0f6c59435e1b1d9bb5"
+  }
 }

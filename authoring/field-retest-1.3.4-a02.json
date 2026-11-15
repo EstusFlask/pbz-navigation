@@ -1,0 +1,10 @@
+{
+  "case": "A-02",
+  "build": "1.3.4",
+  "clientDate": "2026-11-14",
+  "timezone": "America/Tijuana",
+  "status": "passed_user_confirmed",
+  "userStatement": "A-02全程正确",
+  "session": "build/field-live-1.3.4-20261114-48712-A02",
+  "scope": "User accepted the whole A-02 run; includes initial direction, rooftop progression and both ladders. Engine bridge arrival also logged00:40:06Z. Other routes/performance metrics not implied."
+}

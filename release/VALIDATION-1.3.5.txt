@@ -1,0 +1,50 @@
+Version:1.3.5 (local full package; not installed/uploaded at build time)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.3.5.zip
+
+Field conclusion
+- A-02 accepted by user on1.3.4: whole route correct. Do not reopen it or require
+ another full tower run merely because A-03 has remaining defects.
+- A-03 two1.3.4 Y marks: bridge bell and bridge approach, wrong descent ladder.
+ Both target Bell_NLES_007. Later selection Bell_NLES_018 is a separate query.
+- Correct bridge/cave approach completed44 live edge checks, but far-goal floor
+ was missing. Complete-route delivery failed and arbitrary action prefixes won.
+
+Change
+- Opt-in finite ground frontier keeps only checked edges. A far action approach
+ also needs a complete native or same-floor ordinary-atlas suffix to this goal;
+ partial, wrong-floor and known-locked suffixes are rejected.
+- Actual native/atlas topology is not scene-collision proof: only the checked
+ approach is drawn, pending action/suffix never included. partial/diagnostic flags
+ prevent arrival/full-route claims. Context fallback keeps this goal-backed prefix.
+- Only beyond the existing120m scene range with missing goal floor; A-02 near
+ range explicitly has no new preview pass.250ms preview budget,12 directions,
+4 suffix attempts; existing graph/physics limits and slow-native guard retained.
+
+Regression evidence
+- goal-frontier-red.txt -> goal-frontier-green.txt: unloaded endpoint and locks.
+- bridge-horizon-red.txt -> bridge-horizon-green.txt: public action-planner seam.
+- horizon-final-fallback-red.txt -> horizon-final-fallback-green.txt: installed
+ original1.3.4 fails the final pending-corridor fallback; corrected source passes.
+- horizon-guards-green.txt: partial/wrong-floor/locked suffixes and A-02 range.
+- bridge-horizon-atlas-audit.json and real-atlas regression: actual Xigu topology
+ witnesses the correct wallrun-to-goal ordinary suffix; scene callbacks substituted.
+
+Checks
+-312 JS regressions:build/validation-135-js.txt.
+- Real Lua tracker1.0.9/1.0.14 and ModConfig1.0.4:build/validation-135-lua.txt.
+- Native ABI/SHA/host dispatch:build/validation-135-native.txt.
+- ZIP:1384 exact files,951 streams,291 original legacy values; all runtime/native/
+ config/docs versions agree:build/validation-135-package.txt.
+- Changed tracked source whitespace checks passed; no temporary DEBUG logs.
+
+Limit
+-1.3.5 awaits the original A-03 bell-origin field retest. No claim that synthetic
+ physics, topology checks or regression counts prove in-game route correctness,
+ streaming latency, collision or performance. A-01/A-02 stay independently accepted.
+
+Post-build field acceptance (2026-11-14 America/Tijuana)
+- User confirmed A-03 succeeded on installed/loaded1.3.5, then ended the round.
+-1374 runtime files match the full package. All3 capture workers verified inactive;
+ raw session archived. See authoring/field-retest-1.3.5-a03.json.
+- A-01/A-02 remain accepted on their recorded builds. Next A-04 was not started.

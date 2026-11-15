@@ -20,6 +20,81 @@ function fixture(conditional=false){
 }
 function run(job){let row,n=0;do{row=job.next();assert.ok(++n<100000);}while(!row.done);return row.value;}
 
+test('a far unloaded goal retains its checked bridge approach when the future action has a complete ground suffix',()=>{
+ const h=fixture(),start={x:-55647.689,y:213461.674,z:-15829.203},goal={x:-58421,y:196992,z:-17597};
+ const entry={x:-55948.917986480876,y:201820.23439632863,z:-17400.56270589963},exit={x:-56943.91015098129,y:200708.03124155325,z:-17346.24937185971};
+ h.g.name='pbz_xigu_wp';h.g.actors=[{guid:'bridge-wallrun',kind:'wallrun',path:[entry,exit].map(p=>[p.x,p.y,p.z])}];
+ const loaded=p=>R.dist(p,start)<7000;
+ const world={r:45,rise:50,slope:1.43,normal:.573576,floorAt:p=>loaded(p)?p:null,hit:()=>null,
+  step:(a,b)=>loaded(b)?{p:b}:{why:'no supporting floor'}};
+ const native=(a,b)=>R.dist(a,exit)<1&&R.dist(b,goal)<1?{provider:'native',points:[a,b],meters:R.dist(a,b)/100}:null;
+ let preview;run(h.api.liveRouteJob(h.g,world,start,goal,native,{clock:()=>0,allowPartial:true,onHorizon:r=>preview=r}));
+ assert.ok(preview?.legs[0].goalTopology,'the verified bridge approach vanished because the far bell collision was not loaded');
+ const leg=preview.legs[0];assert.ok(leg.partial&&leg.diagnostic);
+ assert.ok(leg.points.every(loaded),'a pending wallrun or unloaded tail was painted as safe walking');
+ assert.ok(leg.points.at(-1).y<start.y-1000,'the published prefix does not follow the bridge/cave corridor');
+ preview=null;
+ run(h.api.liveRouteJob(h.g,world,start,goal,(a,b)=>{const p=native(a,b);return p?{...p,partial:true}:null;},
+  {clock:()=>0,allowPartial:true,onHorizon:r=>preview=r}));
+ assert.equal(preview,null,'a partial native suffix was used as proof that this action connects to the selected bell');
+ run(h.api.liveRouteJob(h.g,world,start,goal,(a,b)=>{const p=native(a,b);return p?{...p,points:[a,{...b,z:b.z-600}]}:null;},
+  {clock:()=>0,allowPartial:true,onHorizon:r=>preview=r}));
+ assert.equal(preview,null,'an unrelated floor at the far bell certified a bridge corridor');
+ const locked={...world,blockAt:()=>({locked:true})};
+ run(h.api.liveRouteJob(h.g,locked,start,goal,native,{clock:()=>0,allowPartial:true,onHorizon:r=>preview=r}));
+ assert.equal(preview,null,'a known locked suffix certified the pending corridor');
+});
+
+test('far-goal lookahead leaves the accepted tower route inside its existing scene range',()=>{
+ const H=require(root+'/PBZRouteHorizon'),start={x:-64783.269,y:219681.222,z:-11388.424},goal={x:-55527,y:213608,z:-15827};
+ let reads=0;
+ const result=run(H.preview({name:'pbz_xigu_wp'},{floorAt:()=>{reads++;return null;}},start,goal,()=>{throw Error('unexpected topology query');},[],{onHorizon(){}}));
+ assert.equal(result,null);assert.equal(reads,0,'A-02 acquired a new far-goal search before its existing planner');
+});
+
+test('the real Xigu atlas supplies only the pending ground suffix after the bridge wallrun',()=>{
+ const H=require(root+'/PBZRouteHorizon');
+ const g=new R.Graph(require(root+'/PBZRouteWorlds/pbz_xigu_wp').data,require(root+'/PBZRouteFaces/pbz_xigu_wp').faces);
+ const raw=require('../authoring/placed-passage-facts.json').rows.find(f=>f.guid.endsWith('_1997136039'));
+ const start={x:-55647.689,y:213461.674,z:-15829.203},goal={x:-58421,y:196992,z:-17597};
+ // Real atlas topology, with a substituted loaded-scene boundary and actor
+ // availability. This does not reconstruct the game's collision or timing.
+ const world={r:45,rise:50,slope:1.43,normal:.573576,floorAt:p=>R.dist(p,start)<7000?p:null,hit:()=>null,
+  step:(a,b)=>R.dist(b,start)<7000?{p:b}:{why:'no supporting floor'}};
+ const feature={...raw,conditional:false,requiresLoaded:false,runtimePath:raw.path.map(p=>({x:p[0],y:p[1],z:p[2]}))};
+ const trip=run(H.preview(g,world,start,goal,()=>null,[feature],{clock:()=>0,onHorizon(){}}));
+ assert.ok(trip?.legs[0].partial&&trip.legs[0].goalTopology?.provider==='atlas-ground','the real ordinary suffix cannot witness the pending bridge corridor');
+ assert.ok(trip.legs[0].points.every(p=>R.dist(p,start)<7000),'offline geometry escaped the simulated loaded/collision frontier');
+ assert.equal(trip.legs[0].goalTopology.action,raw.guid);
+});
+
+for(const baked of [false,true])test('a descending ladder follows its visible axis instead of the raised interaction-box centre ('+(baked?'baked':'runtime mesh')+')',()=>{
+ const h=fixture(false);h.g.actors=[];
+ const v=(x,z)=>({X:x,Y:0,Z:z}),component=(x,z)=>({K2_GetComponentLocation:()=>v(x,z)});
+ // Captured ladder: upper interaction centre is 200cm behind the mesh and
+ // about104cm above the platform. Physics below models the two standing decks.
+ const actor={GetName:()=> 'offset-ladder',K2_GetActorLocation:()=>v(500,0),bFold:false,
+  BottomCollision:component(500,0),TopCollision:component(300,704),
+  BottomMeshComponent:baked?null:component(500,0),TopMeshComponent:baked?null:component(500,600),
+  GetActorUpVector:()=>v(0,1)};
+ h.UE.Class={Find:path=>path.includes('ClimLadder')?path:null};
+ h.UE.GameplayStatics={GetAllActorsOfClass:(pawn,cls,out)=>{out.value={Num:()=>1,Get:()=>actor};}};
+ const floor=p=>({...p,z:p.z>300?600:0});
+ const world={normal:.7,rise:50,slope:1,r:35,floorAt:floor,hit:()=>null,
+  step:(a,b)=>Math.abs(floor(b).z-a.z)<80?{p:floor(b)}:{why:'different floor'}};
+ const start={x:0,y:0,z:600},goal={x:900,y:0,z:0};
+ const native=(a,b)=>Math.abs(a.z-b.z)<25?{points:[a,b],meters:R.dist(a,b)/100}:null;
+ run(h.api.refreshLoadedJob(h.g,world,{},start,goal));
+ const trip=run(h.api.liveRouteJob(h.g,world,start,goal,native,{clock:()=>0}));
+ assert.ok(trip,'the native ladder lost its checked standing pads');
+ const leg=trip.legs[0],move=leg.moves.find(m=>m.kind==='ladder');assert.ok(move&&move.end.z<move.p.z);
+ const action=leg.points.slice(move.from,move.to+1);
+ assert.ok(Math.max(...action.map(p=>p.z))<=600.01,'guidance climbs into the elevated interaction box before descending');
+ assert.ok(action.some(p=>Math.abs(p.x-500)<.01&&Math.abs(p.z-600)<.01),'the upper mesh endpoint is absent from the ladder guide');
+ assert.ok(action.slice(1,-1).every(p=>Math.abs(p.x-500)<.01),'descent follows the interaction volume through the platform instead of the visible ladder');
+ assert.equal(move.p.x,300,'drawing correction changed the checked interaction standing pad');
+});
+
 test('the captured first-floor bell can join its long author-backed climb approach with full live checks',()=>{
  const h=fixture(),field=require('./fixtures/tower-bell-approach-20261114.json');
  const ascent=field.ascent,start=field.start;

@@ -1,3 +1,20 @@
+### Version 1.3.5
+
+- Improved distant route guidance near bridges and caves.
+- 改善桥洞附近远距离目标的前段引导。
+
+### Version 1.3.4
+
+- Improved route stability through climbs and ladder transitions.
+- 改善攀爬和梯子衔接时的路线稳定性。
+- Improved bridge and cave route connections.
+- 改善桥梁与山洞的路线连接。
+
+### Version 1.3.3
+
+- Corrected ladder approach and descent guidance.
+- 修正梯子入口和下梯路线的指向。
+
 ### Version 1.3.2
 
 - Improved rooftop route connections after climbing.

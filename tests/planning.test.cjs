@@ -44,6 +44,81 @@ function planner(world,options={}){
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
 
+test('a same-target search keeps a still-valid complete route while publishing a speculative action prefix',()=>{
+ let offered=false;
+ const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},liveRouteJob:function*(g,w,a,b,native,options){
+  const points=[a,{x:200,y:0,z:600}];
+  options.onPartial?.({legs:[{world:'test',provider:'scene',points,partial:true,moves:[{kind:'ascent',from:0,to:1}],walks:[],checks:[],gates:[],meters:7}],transfer:null});
+  offered=true;while(true)yield;
+ }};
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,passages,localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,{x:1000,y:0,z:600});h.api.arm(h.dest);
+ const leg={world:'test',provider:'scene',physicalVerified:true,points:[{...h.pose},{...h.goal}],partial:false,moves:[],walks:[],checks:[],gates:[],obstacles:[],meters:12};
+ const good={legs:[leg],transfer:null};h.api.setTrip(good,h.dest,h.pose,'checked');h.api.solve(h.dest,'player context changed');
+ for(let n=0;n<300&&!offered;n++)h.api.planning.job.iterator.next();
+ assert.ok(offered,'replay never published the provisional action chain');
+ assert.equal(h.api.S.trip,good,'a provisional search result replaced still-valid complete guidance');
+ h.api.planning.clear('test cleanup');
+});
+
+test('a rejected direct chord is not flashed as 3D guidance while the action search is pending',()=>{
+ const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},liveRouteJob:function*(){while(true)yield;}};
+ const h=planner({floorAt:p=>p,step:(a,b)=>b.x>=300?{why:'no supporting floor'}:{p:b}},
+  {quiet:true,passages,UE:{NavigationSystemV1:{}}});
+ Object.assign(h.goal,{x:1000,y:0,z:600});h.api.arm(h.dest);h.api.solve(h.dest,'selection');
+ for(let n=0;n<250;n++)h.api.planning.job.iterator.next();
+ assert.equal(h.api.S.line.length,0,'a known incomplete straight chord was presented as the direction to the goal');
+ h.api.planning.clear('test cleanup');
+});
+
+test('native custom traversal retains the target and resumes ground planning only after landing',()=>{
+ const movement={MovementMode:5},h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,
+  UE:{EMovementMode:{MOVE_Custom:5,MOVE_Walking:1,MOVE_Falling:3}}});
+ h.api.S.pawn.CharacterMovement=movement;h.api.arm(h.dest);
+ h.api.planning.request(h.api.routeRequest(h.dest),function*(){while(true)yield;},()=>{});
+ h.api.observe();
+ assert.equal(h.api.planning.pending,false,'ordinary ground planning continued during the native ladder/climb mode');
+ assert.equal(h.api.S.manual,h.dest,'traversal discarded the selected destination');
+ assert.equal(h.api.S.travelPhase?.kind,'traversal');
+ movement.MovementMode=3;h.pose.z=150;h.api.observe();
+ assert.equal(h.api.planning.pending,false,'ground planning resumed before the traversal had landed');
+ movement.MovementMode=1;h.pose.z=0;h.api.observe();h.api.observe();
+ assert.ok(h.api.planning.pending,'ground planning did not resume from the actual landing');
+ assert.equal(h.api.S.manual,h.dest);h.api.planning.clear('test cleanup');
+});
+
+test('keeping complete guidance still rejects new walls, lost floor joins and partial routes',()=>{
+ const B=require(root+'/PBZRouteBlocked'),p=(x,y=0,z=0)=>({x,y,z}),leg={physicalVerified:true,points:[p(0),p(1000)],obstacles:[]};
+ const world={step:(a,b)=>({p:b})};assert.equal(B.keepComplete(leg,world,p(0),null),true);
+ assert.equal(B.keepComplete(leg,world,p(0),{obstacles:[{p:p(500),unknown:false}]}),false,'a new collision on the retained corridor was ignored');
+ assert.equal(B.keepComplete(leg,{step:()=>({why:'locked passage'})},p(0,30),null),false,'an invalidated floor/lock join was reused');
+ assert.equal(B.keepComplete({...leg,partial:true},world,p(0),null),false,'an incomplete route was treated as the complete fallback');
+ assert.equal(B.keepComplete(leg,world,p(0,0,600),null),false,'another floor inherited old guidance');
+});
+
+test('a goal-backed pending corridor survives a longer unrelated action prefix',()=>{
+ const B=require(root+'/PBZRouteBlocked'),start={x:0,y:0,z:0},goal={x:10000,y:0,z:0},context={};
+ const make=(points,extra={})=>({world:'test',provider:'scene',points,diagnostic:true,partial:true,verifiedEndIndex:points.length-1,moves:[],obstacles:[],...extra});
+ const bridge=make([start,{x:1000,y:0,z:0}],{goalTopology:{provider:'native'}});
+ B.offer(context,bridge,start,goal);
+ B.offer(context,make([start,{x:-2000,y:500,z:0}],{moves:[{kind:'ladder',from:0,to:1}]}),start,goal);
+ assert.equal(context.best.legs[0],bridge,'an arbitrary reached ladder displaced the corridor with a checked goal-topology suffix');
+});
+
+test('makePlan returns the goal-backed safe corridor when other action results remain partial',()=>{
+ let horizon;const passages={isLookout:()=>false,refreshLadders(){},resetLadders(){},liveRouteJob:function*(g,w,a,b,native,options){
+  horizon={legs:[{world:'test',provider:'scene',points:[a,{x:800,y:300,z:0}],moves:[],walks:[],checks:[],gates:[],obstacles:[],
+   physicalVerified:true,partial:true,diagnostic:true,verifiedEndIndex:1,goalTopology:{provider:'native'},meters:9}],transfer:null};
+  options.onHorizon?.(horizon);
+  return {legs:[{world:'test',provider:'scene',points:[a,{x:-1000,y:0,z:600}],moves:[],walks:[],checks:[],gates:[],obstacles:[],partial:true,meters:12}],transfer:null};
+ }};
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,passages,localWalk:{search:function*(){return null;}}});
+ Object.assign(h.goal,{x:16000,y:0,z:600});
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(trip?.legs[0].goalTopology,'the final partial-result fallback discarded the bridge corridor');
+ assert.equal(trip,horizon);assert.ok(trip.legs[0].partial,'a pending corridor became a complete route');
+});
+
 test('a proved complete action chain reaches the caller before optional scene walking optimization',()=>{
  const field=require('./fixtures/tower-chain-completion-20261114.json'),good=field.features.find(f=>f.guid===field.goodAscent);
  let wall=0,expensiveSearches=0,result,metrics;

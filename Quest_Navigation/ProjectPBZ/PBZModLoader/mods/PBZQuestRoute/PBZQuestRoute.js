@@ -23,7 +23,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.3.2';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.3.5';
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
 const atlas=new (require('./PBZRouteAtlas').AtlasCache)(id=>require(id),(data,faces,read)=>R.graphJob(data,faces,read),log);
 const graphs=atlas.graphs,maps=new WeakMap(),forbidden={},passed={},notes=[],history=new Map();
@@ -222,7 +222,7 @@ function setTrip(trip,dest,start,why,requestContext){
  else if(trip?.legs.some(l=>l.partial))why+=' [partial]';else if(trip)why+=' [complete]';
  S.arrival.select(dest);deviationSince=0;corridor=null;guardRetry=0;
  if(S.targetKey!==dest.key){guardBudget=null;nativeRepairKey='';blockedTrip=null;}auditor.reset();guardedLeg=null;S.threadEnd=null;
- S.trip=trip;S.targetKey=dest.key;S.active=0;S.line=trip?.legs[0].points||[];S.version++;
+ S.trip=trip;S.targetKey=dest.key;S.active=0;S.line=Blocked.canGuide(trip?.legs[0])?trip.legs[0].points:[];S.version++;
  const snapshot=requestContext||routeRequest(dest,start);
  previous={key:dest.key,p:dest.p,site:start,level:S.level,revision:snapshot.revision,originRevision:snapshot.originRevision};lastSolve=Date.now();
  if(!trip){threads.hide();retry=Math.min(retry+1,4);log('route status',why+' '+dest.key+' from '+[start.x,start.y,start.z].map(Math.round).join(','));return;}
@@ -281,7 +281,10 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   if(context.actionsTried||a!==b)return null;context.actionsTried=true;
   context.report?.('action search',{start,landing});
   if(typeof Passages.refreshLoadedJob==='function')yield* Passages.refreshLoadedJob(a,S.world,S.pawn,start,landing,{report:context.report});
-  return yield* Passages.liveRouteJob(a,routeWorld,start,landing,nativeWalk,{clock,goals:approachGoals,allowPartial:true,report:context.report,onPartial:trip=>{
+  return yield* Passages.liveRouteJob(a,routeWorld,start,landing,nativeWalk,{clock,goals:approachGoals,allowPartial:true,report:context.report,banned:forbidden[a.name],onHorizon:trip=>{
+   context.topologyPrefix=trip;
+   Blocked.offer(context,trip.legs[0],start,dest.p);
+  },onPartial:trip=>{
    context.partial=trip;context.actionPartial=trip;const leg=trip.legs[0];
    Blocked.offer(context,Blocked.fromFailure(leg,{prefix:leg.points,prefixLeg:leg,segment:leg.points.length-1,unknown:true,
     p:leg.points[leg.points.length-1],why:'traversal chain continues'},dest.p),start,dest.p);
@@ -476,7 +479,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   yield* Obstacles.installSeamsJob(a);if(b!==a)yield* Obstacles.installSeamsJob(b);a.allowSeams=b.allowSeams=true;
   try{const repaired=yield* makePlan(dest,walkOnly,true,drops,context,depth+1);if(repaired)return repaired;}finally{a.allowSeams=b.allowSeams=false;a.allowBlockedTraverse=b.allowBlockedTraverse=false;}
  }
- return depth===0?context.partial||Blocked.finish(context):null;
+ return depth===0?context.topologyPrefix||context.partial||Blocked.finish(context):null;
 }
 function routeRequest(dest,start=S.world.feet()){
  return {key:dest.key,world:dest.world,level:S.level,p:dest.p,start,revision:(graphs.get(S.level)?.passageRevision||0)+'/'+S.lockVersion+'/'+atlas.revision,
@@ -510,11 +513,17 @@ function solve(dest,reason){
  if(!S.world||!R.finite(dest.p)||!S.cfg.MapRoute&&!S.cfg.MinimapRoute&&!S.cfg.WorldThread)return;
  if(!atArrivalBell(dest))S.bellArrival=null;
  const start=S.world.feet(),request=routeRequest(dest,start),force=!previous||reason==='blocked approach changed'||reason==='loaded frontier'||reason==='player context changed'||reason==='destination bell reached';
+ const retained={trip:S.trip,key:S.targetKey,active:S.active,request:previous};
+ const keepExisting=(now,candidate)=>retained.trip&&S.trip===retained.trip&&retained.key===dest.key&&
+  retained.request?.revision===now.revision&&retained.trip.legs.every(l=>!l.partial&&!l.diagnostic)&&
+  Blocked.keepComplete(retained.trip.legs[retained.active],S.world,now.start,candidate?.legs[0]);
  S.lookoutHint=Passages.isLookout(S.level,start,dest);
  const context={report:(phase,detail)=>log('route search',phase+' '+JSON.stringify(detail)),onDiagnostic:trip=>{
+  if(!Blocked.canGuide(trip?.legs[0]))return;
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(current?.key===dest.key&&S.level===request.level&&R.dist(current.p,dest.p)<190){
-   const now=routeRequest(current);if(originChanged(request,now,trip)&&standingAt(now.start)&&poseReady)return;
+   const now=routeRequest(current);if(keepExisting(now,trip))return;
+   if(originChanged(request,now,trip)&&standingAt(now.start)&&poseReady)return;
    setTrip(trip,dest,now.start,reason+(trip.transfer?' bell candidate':' blocked; searching detour'),now);
   }
  }};
@@ -522,6 +531,9 @@ function solve(dest,reason){
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(!current||current.key!==selected.key||S.level!==selected.level||R.dist(current.p,selected.p)>190)return;
   const now=routeRequest(current);
+  if((!trip||trip.legs.some(l=>l.partial||l.diagnostic))&&keepExisting(now,trip)){
+   S.routeWork=null;updateRouteStatus(true);return;
+  }
   if(originChanged(selected,now,trip||S.trip)){
    if(standingAt(now.start)&&poseReady)solve(current,'player context changed');
    return;
@@ -583,7 +595,10 @@ function observe(){
   S.travelPhase={...travel,key:target.key};S.routeWork={key:target.key,level:S.level,world:target.world,started:now};
   updateRouteStatus(true);return;
  }
- if(S.travelPhase){S.travelPhase=null;previous=null;solve(target,'vehicle movement ended');return;}
+ if(S.travelPhase){
+  if(S.travelPhase.kind==='traversal'&&(!groundedNow||!poseReady)){updateRouteStatus(true);return;}
+  S.travelPhase=null;previous=null;solve(target,'controlled movement ended');return;
+ }
  if(!atArrivalBell(target))S.bellArrival=null;
  const transfer=S.targetKey===target.key?S.trip?.transfer:null;
  // Consume the arrival before origin/revision checks can restart the old

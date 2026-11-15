@@ -1,0 +1,10 @@
+{
+  "world": "pbz_xigu_wp",
+  "source": "User1.3.3 A-03 Y1/Y3 plus existing worksheet-016 grounded observations",
+  "sourceTrace": "build/field-live-20261113-20828/run-worksheet-016.player.jsonl",
+  "sourceSHA256": "b70cee032d4cf054d5743f47699d354ce87ae08671ca931cdb56d69f454f8678",
+  "start": {"x": -55192.642, "y": 210389.468, "z": -17013.436},
+  "bridge": {"x": -54811.802, "y": 208474.414, "z": -17083.544},
+  "goal": {"x": -54416.991, "y": 205283.168, "z": -16950.038},
+  "scope": "Finite candidate connectivity and live-check contract control; collision callbacks are substituted, not game physics"
+}

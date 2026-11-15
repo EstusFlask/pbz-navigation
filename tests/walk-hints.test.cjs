@@ -4,6 +4,31 @@ const root=process.env.PBZ_TEST_SOURCE||path.resolve(__dirname,'../Quest_Navigat
 const Local=require(root+'/PBZRouteLocalWalk'),R=require(root+'/PBZRouteCore');
 function run(job){let r,n=0;do{r=job.next();assert.ok(++n<100000);}while(!r.done);return r.value;}
 
+test('an explicitly requested frontier retains checked ground when the candidate endpoint is not loaded',()=>{
+ const {Index}=require(root+'/PBZRouteWalkHints');let locked=false;
+ const start={x:0,y:0,z:0},goal={x:2000,y:0,z:0},hints=new Index(Array.from({length:21},(_,i)=>[i*100,0,0]));
+ const world={floorAt:p=>p.x<=1000?p:null,step:(a,b)=>locked&&b.x>=500?{why:'locked bridge',locked:true}:b.x<=1000?{p:b}:{why:'no supporting floor'}};
+ const options={hints,hintsOnly:true,allowFrontier:true,clock:()=>0};
+ const route=run(Local.search(world,start,goal,options));
+ assert.ok(route?.partial&&route.physicalVerified,'an unloaded final footpoint discarded the checked corridor before it');
+ assert.ok(route.points.at(-1).x>=700&&route.points.every(p=>p.x<=1000),'unchecked endpoint geometry entered the safe frontier');
+ locked=true;assert.equal(run(Local.search(world,start,goal,options)),null,'a frontier bypassed a newly locked bridge');
+});
+
+test('the captured bridge approach reaches the cave mouth with checked finite candidates',()=>{
+ const f=require('./fixtures/bridge-cave-20261114.json'),hints=require(root+'/PBZRouteWalkHints').forWorld(f.world);
+ let blocked=false,checks=0;const world={rise:50,slope:1.43,floorAt:p=>p,step:(a,b)=>{
+  checks++;return blocked&&Math.min(a.y,b.y)<208000&&Math.max(a.y,b.y)>=208000?
+   {why:'locked bridge',locked:true}:{p:b};
+ }};
+ const options={hints,hintsOnly:true,clock:()=>0};
+ const route=run(Local.search(world,f.start,f.goal,options));
+ assert.ok(route&&!route.partial,'existing bridge/cave observations are unavailable to the finite candidate search');
+ assert.ok(checks>0&&checks<=64,'candidate geometry bypassed or exhausted the live edge checks');
+ assert.ok(R.dist(route.points.at(-1),f.goal)<1);
+ blocked=true;assert.equal(run(Local.search(world,f.start,f.goal,options)),null,'the bridge reused an open edge after its lock changed');
+});
+
 test('the captured tower roof reaches its forward ladder through a checked directed short drop',()=>{
  const f=require('./fixtures/tower-rooftop-20261114.json'),hints=require(root+'/PBZRouteWalkHints').forWorld(f.world);
  let blocked=false,locked=false,sweeps=0;

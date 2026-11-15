@@ -1,6 +1,6 @@
 # 任务与探索导航 / Quest and Exploration Navigation
 
-版本 / Version **1.3.2** · 实验版 / Experimental
+版本 / Version **1.3.5** · 实验版 / Experimental
 
 ## 安装与更新
 

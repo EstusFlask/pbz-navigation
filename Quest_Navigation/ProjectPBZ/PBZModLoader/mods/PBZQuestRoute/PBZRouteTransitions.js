@@ -1,8 +1,12 @@
 'use strict';
 const R=require('./PBZRouteCore');
 function guidePath(feature,path,entry,exit){
- const length=R.extent(path)||1,upA=Math.max(0,entry.z-path[0].z),upB=Math.max(0,exit.z-path[path.length-1].z);
+ const ladder=feature.kind==='ladder',length=R.extent(path)||1;
+ const upA=ladder?entry.z-path[0].z:Math.max(0,entry.z-path[0].z),upB=ladder?exit.z-path[path.length-1].z:Math.max(0,exit.z-path[path.length-1].z);
  let distance=0;const result=path.map((p,i)=>{if(i)distance+=R.dist(path[i-1],p);return {...p,z:p.z+upA+(upB-upA)*distance/length};});
+ // Native ladder interaction boxes can stand two metres behind the rungs.
+ // Keep the mesh axis; assembly separately joins the checked standing pads.
+ if(ladder)return result;
  if(['ascent','mantle'].includes(feature.kind)||path[0].z<entry.z)result[0]={...entry};
  if(['ascent','mantle'].includes(feature.kind)||path[path.length-1].z<exit.z)result[result.length-1]={...exit};
  return result;
@@ -58,7 +62,11 @@ function* route(options){
    const action={feature,path,entry,exit};
    if(!canTraverse(feature)){closed.push(action);continue;}
    if(validate&&!(yield* validate(action))){rejected.push({guid:feature.guid,kind:feature.kind,why:'action approach'});continue;}
-   action.path=guidePath(feature,path,entry,exit);
+   const mesh=feature.kind==='ladder'?feature.runtimeGuidePath:null;
+   const nativeMesh=Array.isArray(mesh)&&mesh.length>=2&&mesh.every(R.finite)&&
+    R.dist(mesh[0],feature.runtimePath[0])<=600&&R.dist(mesh.at(-1),feature.runtimePath.at(-1))<=600;
+   const guide=nativeMesh?(reverse?mesh.slice().reverse():mesh):path;
+   action.path=guidePath(feature,guide,entry,exit);
    action.id='action:'+actions.length;
    action.cost=R.dist(entry,action.path[0])+R.extent(action.path)+R.dist(action.path[action.path.length-1],exit);
    actions.push(action);

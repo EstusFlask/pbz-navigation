@@ -15,11 +15,14 @@ function* search(world,start,goal,options={}){
  const began=clock(),limit=options.maxMs||200,span=350;
  const graphLimit=Math.max(1,Math.min(1024,options.maxGraphNodes||768)),checkLimit=Math.max(1,Math.min(128,options.maxChecks||64));
  const stats={hintsOnly:true,lazy:true,graphLimit,checkLimit,expanded:0,probes:0,proposals:0,rejected:[]};
- const finish=(route,reason)=>{options.report?.('scene walking result',{...stats,reason,start,goal});return route;};
+ let frontier=null,frontierDistance=Infinity,goalSupported=false;
+ const finish=(route,reason)=>{options.report?.('scene walking result',{...stats,reason,start,goal,goalSupported});return route||frontier;};
  const first=world.floorAt(start,true);yield;
  if(!first||Math.abs(first.z-start.z)>200)return finish(null,'start floor missing');
  let goals=options.goals?.filter(R.finite).slice(0,16);
  if(!goals?.length){const last=world.floorAt(goal,true);yield;goals=last&&Math.abs(last.z-goal.z)<=125?[last]:[];}
+ goalSupported=!!goals.length;
+ if(!goals.length&&options.allowFrontier&&hints.near(goal,span,16).length)goals=[{...goal}];
  if(!goals.length)return finish(null,'goal floor missing');
  const key=p=>[p.x,p.y,p.z].join(','),nodes=new Map(),adjacency=new Map(),banned=new Set(),checked=new Map();
  const add=(p,id=key(p))=>{if(!nodes.has(id))nodes.set(id,{id,p:{...p}});return nodes.get(id);};
@@ -59,6 +62,15 @@ function* search(world,start,goal,options={}){
   }
   graphReason=open.rows.length?'graph node budget':'no candidate chain';return null;
  };
+ const offerFrontier=(points,walks,moves,checks,failure={})=>{
+  if(!options.allowFrontier||points.length<2||R.extent(points)<280||failure.locked)return;
+  const end=points.at(-1),distance=heuristic(end);
+  if(goalSupported&&distance>span||distance>frontierDistance+.1)return;
+  frontierDistance=distance;
+  frontier={provider:'hint-roadmap',points:points.map(p=>({...p})),walks:walks.slice(),moves:moves.slice(),checks:checks.slice(),gates:[],
+   partial:true,scenePartial:true,localWalk:true,physicalVerified:true,meters:R.extent(points)/100,
+   frontierFailure:{why:failure.why||'endpoint awaiting scene verification',p:failure.hit||end,unknown:!failure.hit}};
+ };
  for(let attempt=0;attempt<16&&clock()-began<limit;attempt++){
   const chain=yield* proposal();if(!chain)return finish(null,clock()-began>=limit?'time budget':graphReason);
   stats.proposals++;const points=[first],walks=[],moves=[],checks=[];let failed=false;
@@ -75,6 +87,8 @@ function* search(world,start,goal,options={}){
     }
     const p=result?.p;
     if(!R.finite(p)||R.xy(p,target)>10||Math.abs(p.z-target.z)>(chain[i].id.startsWith('@goal')?25:125)){
+     if(result?.locked){frontier=null;frontierDistance=Infinity;}
+     else offerFrontier(points,walks,moves,checks,result||{});
      banned.add(id);failed=true;
      if(stats.rejected.length<8){
       const rejection={from,target,why:result?.why||'candidate endpoint is on another floor',
@@ -93,6 +107,7 @@ function* search(world,start,goal,options={}){
     moves.push({kind:'fall',drop:true,p:points[fromIndex],end:points[to],from:fromIndex,to,edge:-1});
     checks.push({kind:12,a:points[fromIndex],b:points[to],from:fromIndex,to,edge:-1,verified:true});
    }
+   if(!goalSupported)offerFrontier(points,walks,moves,checks);
   }
   if(!failed){
    const last=points.at(-1);

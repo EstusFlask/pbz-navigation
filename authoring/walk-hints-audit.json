@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "world": "pbz_xigu_wp",
-  "points": 822,
+  "points": 1153,
   "sourceSHA256": "66ae421b37cc5c25e1ab47d1273086cb9c18e68d21b47e275f39c35c2255e3df",
   "sourceFileSHA256": "225d23ce09aa1a4152f1b7ef0b8a873aec0a149fb8359f0ef845e0b96678d7a9",
   "canonicalLFSHA256": "66ae421b37cc5c25e1ab47d1273086cb9c18e68d21b47e275f39c35c2255e3df",
@@ -31,8 +31,15 @@
       "sourceFileSHA256": "88ddd084d42803598e9e8a9be2322bebe7ca3e15853716d451e5ad8ed9394f09",
       "canonicalLFSHA256": "1c14c9d797a4a263e9351b70b076945745a93befe1e8f94c50d82c918a7fa039",
       "addedCandidates": 276
+    },
+    {
+      "trace": "build/field-live-20261113-20828/run-worksheet-016.player.jsonl",
+      "sourceSHA256": "b70cee032d4cf054d5743f47699d354ce87ae08671ca931cdb56d69f454f8678",
+      "sourceFileSHA256": "f09eb5caa0328003876a6e54776a6d467f52663d063cb077ce9473714fae0c51",
+      "canonicalLFSHA256": "b70cee032d4cf054d5743f47699d354ce87ae08671ca931cdb56d69f454f8678",
+      "addedCandidates": 331
     }
   ],
-  "candidateBuild": "1.3.2",
-  "scope": "Grounded points from worksheet-014 and015 only; no authored edges, action arcs or runtime learning added"
+  "candidateBuild": "1.3.4",
+  "scope": "Grounded position candidates from worksheet014/015/016; no authored edges or physical certification"
 }

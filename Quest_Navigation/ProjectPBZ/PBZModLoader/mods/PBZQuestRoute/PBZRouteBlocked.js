@@ -51,6 +51,7 @@ function offer(context,leg,start,goal){
  if(!leg||context.bellTransfer)return;
  const rank=l=>l.provider==='atlas'?2:l.provider==='native'||l.provider==='direct'?0:1;
  const priority=rank(leg),previous=context.best?.legs[0];
+ if(previous?.goalTopology&&!leg.goalTopology)return;
  if(regressesFromActions(previous,leg,goal))return;
  const safe=leg.points[leg.verifiedEndIndex],score=R.extent(leg.points.slice(0,leg.verifiedEndIndex+1));
  if(previous&&priority<rank(previous)&&(priority===0||score<context.bestScore+50))return;
@@ -66,4 +67,19 @@ function finish(context){
  for(const leg of context.best?.legs||[])for(const b of leg.obstacles||[])if(!b.unknown&&!b.locked)b.label='此处受阻，暂未找到绕行路线';
  return context.best||null;
 }
+// A prefix of a rejected straight/native candidate is collision evidence,
+// not a discovered connection towards the destination. Keep its map marker.
+function canGuide(leg){
+ return !!leg&&!(leg.diagnostic&&['native','direct'].includes(leg.provider)&&
+  !(leg.moves||[]).some(m=>!m.pending&&m.to<=leg.verifiedEndIndex));
+}
+function keepComplete(leg,world,foot,pending){
+ if(!leg?.physicalVerified||leg.partial||leg.diagnostic||(leg.obstacles||[]).length||!world?.step)return false;
+ const near=R.nearestOnLine(foot,leg.points);
+ if(!near.p||near.d>260||Math.abs(near.p.z-foot.z)>75)return false;
+ if((pending?.obstacles||[]).some(b=>!b.unknown&&(!R.finite(b.p)||R.nearestOnLine(b.p,leg.points).d<200)))return false;
+ const join=world.step(foot,near.p,true);
+ return !!join.p&&R.dist(join.p,near.p)<50;
+}
 exports.fromFailure=fromFailure;exports.auditLeg=auditLeg;exports.offer=offer;exports.finish=finish;exports.regressesFromActions=regressesFromActions;
+exports.canGuide=canGuide;exports.keepComplete=keepComplete;

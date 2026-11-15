@@ -1,0 +1,41 @@
+Version:1.3.4 (local complete package; not installed/uploaded at build time)
+Validation date:2026-11-14 (America/Tijuana)
+Archive:dist/Quest_and_Exploration_Navigation_Fork_1.3.4.zip
+
+Field scope
+-1.3.3 A-02 failed: initial wrong route then correction; rooftop correct/wrong/
+ correct changes; second ladder still misaligned, despite reaching bridge bell.
+- A-03 failed before bridge, on bridge and cave entrance; later direction correct
+ by user. Three Y meanings are preserved in the session marker annotations.
+- Session:build/field-live-1.3.3-20261114-48180-A02. XYZ begins on rooftop
+ midsection; initial selection/climbs have logs only. All three workers stopped
+ automatically at game exit; raw read gaps retained. Full archive has A02-A03 name.
+
+Reproduction and changes
+- Actual solve/makePlan/onDiagnostic regression reproduces temporary partial
+ guidance replacing a valid complete route:build/route-retention-red.txt.
+- Failed direct chord flashes and Custom traversal not suspending planning:
+ build/route-stability-red.txt. All three pass:build/route-stability-green.txt.
+- Retention rejects new walls, invalid floor/lock joins, another floor and partial
+ routes; geometry/lock revisions also release the old route.
+- Baked second ladder has null mesh pointers. Same-class native vertical base
+ supplies its guide axis, while original interaction/safety checks remain.
+ Before/after:build/ladder-baked-red.txt and ladder-baked-green.txt.
+-331 existing worksheet016 ground candidates added after fingerprint/filter
+ review, total1153; no recorded air arcs or unchecked edges. Bridge/cave finite
+ connectivity and changed-lock rejection:bridge-cave-red.txt/bridge-cave-green.txt.
+
+Verification
+-306 JS regressions:build/validation-134-js.txt.
+- Real Lua tracker1.0.9/1.0.14 and ModConfig1.0.4:build/validation-134-lua.txt.
+- Native ABI/SHA/host dispatch:build/validation-134-native.txt.
+- ZIP:1383 exact files;951 streams;291 unchanged legacy values; runtime/config/
+ native/docs version1.3.4 agree:build/validation-134-package.txt.
+- Tracked changed source whitespace checks passed. No temporary DEBUG logs.
+
+Limits
+- Physics callbacks in regressions are substituted models, not game collision or
+ frame-time measurements. Rendering, seamless handoff and actual route latency
+ still require the original field checkpoints on1.3.4.
+- A-02 and A-03 remain unaccepted. First retest A-02 initial bell/roof/ladder
+ behaviour, then independently revisit the three A-03 points; do not expand toA-04.
