@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "version": "1.9.1-dev",
+  "reported": [
+    "No route throughout route 001, including the finish approach",
+    "Loading progress and timeout feedback were not visible"
+  ],
+  "confirmedError": "initialize: CompileError: WebAssembly.Module(): Wasm code generation disallowed by embedder",
+  "keyInstalledModulesMatchPackage": {
+    "PBZQuestRoute.js": true,
+    "PBZRouteRecast.js": true,
+    "PBZRecastRuntime.js": true,
+    "PBZRouteStatus.js": true,
+    "PBZRecastData/route-001/index.js": true
+  },
+  "nearFinishOrigin": {
+    "x": -187581,
+    "y": 114190,
+    "z": -1047
+  },
+  "target": {
+    "x": -187916,
+    "y": 114639,
+    "z": -1057
+  },
+  "evidence": {
+    "loader.log": {
+      "localFile": "build/field-recast-191-no-route/loader.log",
+      "sha256": "230693e8622987d550e5d88b0e50b1935b078e54831980e68c2b1ac8be6fe6bb"
+    },
+    "route-log.txt": {
+      "localFile": "build/field-recast-191-no-route/route-log.txt",
+      "sha256": "c4e809681f7910b00d14c9c9eebc47bc3589968e9988a0b5bea9f248b63ffdad"
+    },
+    "UE4SS.log": {
+      "localFile": "build/field-recast-191-no-route/UE4SS.log",
+      "sha256": "9c52511205987b1dabb96cb5f371887d08b8e6e47c3b5da9309d4dedcab7b495"
+    }
+  }
+}

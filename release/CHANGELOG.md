@@ -1,3 +1,18 @@
+### Version 1.9.2
+
+- Added a JavaScript navigation runtime compatible with the game host and improved loading message visibility.
+- 导航运行端适配游戏宿主，改善加载提示显示。
+
+### Version 1.9.1
+
+- Improved regional navigation startup and added loading progress and failure feedback.
+- 改善区域导航启动，补充加载进度与失败反馈。
+
+### Version 1.9.0
+
+- Added collision-based walking navigation for the first Pangzhen region, including conditional doors and cleared vines. No additional EXE is required.
+- 旁镇首个区域接入碰撞重建步行导航，支持门与已清除藤蔓的状态，无需额外 EXE。
+
 ### Version 1.8.3
 
 - Restored the original navigation data source and removed experimental model candidates.

@@ -1,0 +1,5 @@
+# Development-only collision partitioning and convex-hull fallback.
+numpy==2.5.4
+scipy==1.18.1
+# Optional offline figures; not distributed with the Mod.
+matplotlib==3.10.7

@@ -1,0 +1,105 @@
+{
+  "version": "1.9.0",
+  "branch": "codex/offline-recast-navigation",
+  "clientDate": "2026-11-15",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.0.zip",
+      "bytes": 129059953,
+      "sha256": "d2f5032a18f73cff3d55af5b47380770cc5ba19648432ad9ba486b0721d63020",
+      "files": 1496,
+      "forbiddenExecutableFiles": [],
+      "privateArtifacts": [],
+      "profile": {
+        "version": "1.9.0",
+        "flavor": "release",
+        "label": "1.9.0",
+        "development": false,
+        "sourceSHA256": "4bb2bdbe66200904228cc91602232e948fc1dfccbe20c06600abe797d993b9fa",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.0_Development.zip",
+      "bytes": 129082736,
+      "sha256": "0fee90ffb72107fe6a77a5b927704cd291b6435d3e68cc584ca24c8cbc39acbf",
+      "files": 1503,
+      "forbiddenExecutableFiles": [],
+      "privateArtifacts": [],
+      "profile": {
+        "version": "1.9.0",
+        "flavor": "development",
+        "label": "1.9.0-dev",
+        "development": true,
+        "sourceSHA256": "4bb2bdbe66200904228cc91602232e948fc1dfccbe20c06600abe797d993b9fa",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 368,
+  "offlinePythonPassed": 16,
+  "luaChecks": "passed",
+  "nativeChecks": "Existing adapter rebuilt for version only; compilation passed. ABI suite not rerun.",
+  "completePackageChecks": "passed",
+  "noAdditionalExecutable": true,
+  "newNavigationDLL": false,
+  "installed": false,
+  "uploaded": false,
+  "gameStarted": false,
+  "saveWritten": false,
+  "scope": "First Pangzhen walking region; whole game not rebuilt; live Puerts startup and route acceptance pending",
+  "collision": {
+    "vertices": 7528008,
+    "triangles": 13681353,
+    "cells": 877,
+    "includesPersistentLevel": true,
+    "unresolvedDecodedColliders": 0,
+    "unaccountedCells": 0,
+    "completeCollisionClaim": false,
+    "sha256": "d003b869e8e341fff062ea199b1311e70993cc0ef384bd0bdafdb66f1623b036"
+  },
+  "navigation": {
+    "engine": "recast-navigation@0.44.0",
+    "slots": 480,
+    "conditionalActors": 6,
+    "variants": 506,
+    "distinctTiles": 501,
+    "rawTileBytes": 26893268
+  },
+  "offlineExplorationScenario": {
+    "name": "exploration",
+    "complete": true,
+    "reason": "complete",
+    "corners": 60,
+    "points": 955,
+    "meters": 316.97227478462764
+  },
+  "referenceCoverage": {
+    "samples": 346,
+    "covered": 346,
+    "disconnectedAdjacent": 0
+  },
+  "independentGeometry": {
+    "schema": 1,
+    "method": "Independent NumPy point/segment/triangle distances and vertical support; no Detour queries",
+    "scope": "Standing capsule radius45 height192 above50cm step allowance; not full CharacterMovement or live gameplay acceptance",
+    "sourceCollisionSHA256": "d003b869e8e341fff062ea199b1311e70993cc0ef384bd0bdafdb66f1623b036",
+    "samples": 1633,
+    "sampleSpacingCm": 25,
+    "minBodyClearanceCm": 60.930734121767486,
+    "maxNavSurfaceOffsetCm": 60.845890740635696,
+    "supportDiscontinuities": 0,
+    "failures": []
+  },
+  "report": "docs/OFFLINE-RECAST-IMPLEMENTATION-20261115.md"
+}

@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "maxSimplificationErrorVoxels": 0.25,
+  "voxelBoundaryReserveVoxels": 0.7071067811865476,
+  "description": "Reserve contour deviation and half-voxel diagonal in erosion; preserve the supplied physical capsule radius. Smaller cells improve narrow-passage fidelity."
+}

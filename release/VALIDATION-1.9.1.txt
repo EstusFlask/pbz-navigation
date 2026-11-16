@@ -1,0 +1,24 @@
+1.9.1 — embedded-host initialization candidate, 2026-11-15.
+
+USER RESULT: 1.9.0 produced no route for route 001 or Bell_SZ_016.
+Evidence: tests/fixtures/recast-190-selections-20261115.json
+
+RED/GREEN: Original distributed core remains pending when native asynchronous
+WASM tasks are unserviced. New synchronous instantiation completes both captured
+endpoints in that same isolated host with explicitly open condition fixtures.
+This is not a measurement of the game's internal task queue or live acceptance.
+
+PASS: 372 JavaScript tests, zero skips/failures.
+PASS: 9 real Recast/WASM controls; existing Lua/file bridge suite.
+PASS: initialization timeout and compile-error propagation.
+PASS: original upstream WASM binary unchanged; all regional data files unchanged.
+PASS: existing native adapter version-only compilation; ABI suite not rerun.
+PASS: release ZIP 1496 exact file matches; development ZIP 1503 exact matches.
+PASS: versions match; no EXE/COM/SCR/MSI or private save/key artifacts.
+PASS: original 1.9.0 ZIPs archived with matching hashes.
+
+Not installed or uploaded. Game not started. Saves not written.
+Actual game result for 1.9.1 remains unverified.
+Persistent objective/progress: docs/OFFLINE-NAVIGATION-STATE.md, linked by AGENTS.md.
+Report: docs/FIELD-FIX-1.9.1.md
+Hashes: release/LOCAL-CANDIDATE-1.9.1.json

@@ -1,0 +1,26 @@
+1.9.2 — game-host-compatible JavaScript core and status UI, 2026-11-15.
+
+CONFIRMED FIELD FAILURE: 1.9.1 aborts initialization with
+WebAssembly.Module(): Wasm code generation disallowed by embedder.
+Installed key modules match original package. No query can run after this error.
+Evidence: tests/fixtures/recast-191-codegen-20261115.json
+
+RED/GREEN: Original 1.9.1 core reproduces the exact error in a real V8 context
+with WASM generation disabled. Binaryen-translated JS core initializes and plans
+captured route-one, Huang-house and near-finish requests under the same flag.
+Also works with string dynamic-code generation disabled and with no WASM API.
+
+PASS: 378 JS tests, zero skips/failures; 9 Recast/WASM controls; Lua/file bridge.
+PASS: JS/upstream-WASM corridor and point counts match; coordinate delta <0.01cm.
+PASS: status persistence, visibility restoration, viewport/DPI layout, cooked
+      localized-label reuse and SetPBZFormatText dispatch controls.
+PASS: existing native adapter version-only compile. ABI suite not rerun.
+PASS: standard ZIP 1496 files; development ZIP 1503 exact file matches.
+PASS: no EXE/COM/SCR/MSI, no .wasm files, no private saves/keys or extraction tools.
+PASS: regional JS tile data unchanged; old 1.9.1 ZIPs preserved by matching hash.
+
+Actual new-game route and HUD rendering remain unverified.
+Not installed, game not started, not uploaded, saves not written.
+Report: docs/FIELD-FIX-1.9.2.md
+State: docs/OFFLINE-NAVIGATION-STATE.md
+Package/provenance hashes: release/LOCAL-CANDIDATE-1.9.2.json

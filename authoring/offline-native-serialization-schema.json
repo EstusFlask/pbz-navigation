@@ -1,0 +1,3589 @@
+{
+  "schema": 1,
+  "staticMesh": [
+    {
+      "name": "ForcedLodModel",
+      "kind": 3
+    },
+    {
+      "name": "MinLOD",
+      "kind": 3
+    },
+    {
+      "name": "SubDivisionStepSize",
+      "kind": 3
+    },
+    {
+      "name": "WireframeColorOverride",
+      "kind": 25
+    },
+    {
+      "name": "StaticMesh",
+      "kind": 82
+    },
+    {
+      "name": "WorldPositionOffsetDisableDistance",
+      "kind": 3
+    },
+    {
+      "name": "bForceNaniteForMasked",
+      "kind": 12
+    },
+    {
+      "name": "bDisallowNanite",
+      "kind": 12
+    },
+    {
+      "name": "bForceDisableNanite",
+      "kind": 12
+    },
+    {
+      "name": "bForceVoxel",
+      "kind": 12
+    },
+    {
+      "name": "bForceNonVoxel",
+      "kind": 12
+    },
+    {
+      "name": "bEvaluateWorldPositionOffset",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_HasWPOInteraction",
+      "kind": 12
+    },
+    {
+      "name": "bHasWPOInteraction",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AllowShadowScreenSizeCulling",
+      "kind": 12
+    },
+    {
+      "name": "bAllowShadowScreenSizeCulling",
+      "kind": 12
+    },
+    {
+      "name": "bWorldPositionOffsetWritesVelocity",
+      "kind": 12
+    },
+    {
+      "name": "bEvaluateWorldPositionOffsetInRayTracing",
+      "kind": 12
+    },
+    {
+      "name": "bEnableDensityScaling",
+      "kind": 12
+    },
+    {
+      "name": "MinDensityScale",
+      "kind": 10
+    },
+    {
+      "name": "MaxDensityScale",
+      "kind": 10
+    },
+    {
+      "name": "HLODLoadingRange",
+      "kind": 30
+    },
+    {
+      "name": "bForceUseReversedIndexBuffer",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideWireframeColor",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideMinLOD",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideNavigationExport",
+      "kind": 12
+    },
+    {
+      "name": "bForceNavigationObstacle",
+      "kind": 12
+    },
+    {
+      "name": "bDisallowMeshPaintPerInstance",
+      "kind": 12
+    },
+    {
+      "name": "bIgnoreInstanceForTextureStreaming",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideLightMapRes",
+      "kind": 12
+    },
+    {
+      "name": "bCastDistanceFieldIndirectShadow",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideDistanceFieldSelfShadowBias",
+      "kind": 12
+    },
+    {
+      "name": "bUseSubDivisions",
+      "kind": 12
+    },
+    {
+      "name": "bUseDefaultCollision",
+      "kind": 12
+    },
+    {
+      "name": "bSortTriangles",
+      "kind": 12
+    },
+    {
+      "name": "bReverseCulling",
+      "kind": 12
+    },
+    {
+      "name": "bEnableVertexColorMeshPainting",
+      "kind": 12
+    },
+    {
+      "name": "bEnableTextureColorMeshPainting",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideMeshPaintTextureCoordinateIndex",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideMeshPaintTextureResolution",
+      "kind": 12
+    },
+    {
+      "name": "OverriddenMeshPaintTextureCoordinateIndex",
+      "kind": 3
+    },
+    {
+      "name": "OverriddenMeshPaintTextureResolution",
+      "kind": 3
+    },
+    {
+      "name": "OverriddenLightMapRes",
+      "kind": 3
+    },
+    {
+      "name": "MeshPaintTextureCooked",
+      "kind": 82
+    },
+    {
+      "name": "MeshPaintTextureOverride",
+      "kind": 82
+    },
+    {
+      "name": "MaterialCacheTileCount",
+      "kind": 25
+    },
+    {
+      "name": "MaterialCacheTextures",
+      "kind": 22
+    },
+    {
+      "name": "DistanceFieldIndirectShadowMinVisibility",
+      "kind": 10
+    },
+    {
+      "name": "DistanceFieldSelfShadowBias",
+      "kind": 10
+    },
+    {
+      "name": "StreamingDistanceMultiplier",
+      "kind": 10
+    },
+    {
+      "name": "NanitePixelProgrammableDistance",
+      "kind": 10
+    },
+    {
+      "name": "LODData",
+      "kind": 22
+    },
+    {
+      "name": "StreamingTextureData",
+      "kind": 22
+    },
+    {
+      "name": "LightmassSettings",
+      "kind": 25
+    }
+  ],
+  "bodySetup": [
+    {
+      "name": "AggGeom",
+      "kind": 25
+    },
+    {
+      "name": "bAlwaysFullAnimWeight",
+      "kind": 12
+    },
+    {
+      "name": "bConsiderForBounds",
+      "kind": 12
+    },
+    {
+      "name": "bMeshCollideAll",
+      "kind": 12
+    },
+    {
+      "name": "bDoubleSidedGeometry",
+      "kind": 12
+    },
+    {
+      "name": "bGenerateNonMirroredCollision",
+      "kind": 12
+    },
+    {
+      "name": "bSharedCookedData",
+      "kind": 12
+    },
+    {
+      "name": "bGenerateMirroredCollision",
+      "kind": 12
+    },
+    {
+      "name": "bSupportUVsAndFaceRemap",
+      "kind": 12
+    },
+    {
+      "name": "bNeverNeedsCookedCollisionData",
+      "kind": 12
+    },
+    {
+      "name": "PhysMaterial",
+      "kind": 82
+    },
+    {
+      "name": "WalkableSlopeOverride",
+      "kind": 25
+    },
+    {
+      "name": "DefaultInstance",
+      "kind": 25
+    },
+    {
+      "name": "BuildScale3D",
+      "kind": 25
+    }
+  ],
+  "bodySetupCore": [
+    {
+      "name": "BoneName",
+      "kind": 20
+    },
+    {
+      "name": "PhysicsType",
+      "kind": 0
+    },
+    {
+      "name": "CollisionTraceFlag",
+      "kind": 0
+    },
+    {
+      "name": "CollisionReponse",
+      "kind": 0
+    }
+  ],
+  "scene": [
+    {
+      "name": "PhysicsVolume",
+      "kind": 14
+    },
+    {
+      "name": "AttachParent",
+      "kind": 82
+    },
+    {
+      "name": "AttachSocketName",
+      "kind": 20
+    },
+    {
+      "name": "AttachChildren",
+      "kind": 22
+    },
+    {
+      "name": "ClientAttachedChildren",
+      "kind": 22
+    },
+    {
+      "name": "RelativeLocation",
+      "kind": 25
+    },
+    {
+      "name": "RelativeRotation",
+      "kind": 25
+    },
+    {
+      "name": "RelativeScale3D",
+      "kind": 25
+    },
+    {
+      "name": "ComponentVelocity",
+      "kind": 25
+    },
+    {
+      "name": "bComponentToWorldUpdated",
+      "kind": 12
+    },
+    {
+      "name": "bAbsoluteLocation",
+      "kind": 12
+    },
+    {
+      "name": "bAbsoluteRotation",
+      "kind": 12
+    },
+    {
+      "name": "bAbsoluteScale",
+      "kind": 12
+    },
+    {
+      "name": "bVisible",
+      "kind": 12
+    },
+    {
+      "name": "bShouldBeAttached",
+      "kind": 12
+    },
+    {
+      "name": "bShouldSnapLocationWhenAttached",
+      "kind": 12
+    },
+    {
+      "name": "bShouldSnapRotationWhenAttached",
+      "kind": 12
+    },
+    {
+      "name": "bShouldSnapScaleWhenAttached",
+      "kind": 12
+    },
+    {
+      "name": "bShouldUpdatePhysicsVolume",
+      "kind": 12
+    },
+    {
+      "name": "bHiddenInGame",
+      "kind": 12
+    },
+    {
+      "name": "bBoundsChangeTriggersStreamingDataRebuild",
+      "kind": 12
+    },
+    {
+      "name": "bUseAttachParentBound",
+      "kind": 12
+    },
+    {
+      "name": "bComputeFastLocalBounds",
+      "kind": 12
+    },
+    {
+      "name": "bComputeBoundsOnceForGame",
+      "kind": 12
+    },
+    {
+      "name": "bComputedBoundsOnceForGame",
+      "kind": 12
+    },
+    {
+      "name": "bIsNotRenderAttachmentRoot",
+      "kind": 12
+    },
+    {
+      "name": "Mobility",
+      "kind": 0
+    },
+    {
+      "name": "DetailMode",
+      "kind": 0
+    },
+    {
+      "name": "PhysicsVolumeChangedDelegate",
+      "kind": 28
+    }
+  ],
+  "actorComponent": [
+    {
+      "name": "PrimaryComponentTick",
+      "kind": 25
+    },
+    {
+      "name": "ComponentTags",
+      "kind": 22
+    },
+    {
+      "name": "AssetUserData",
+      "kind": 22
+    },
+    {
+      "name": "UCSSerializationIndex",
+      "kind": 3
+    },
+    {
+      "name": "bNetAddressable",
+      "kind": 12
+    },
+    {
+      "name": "bReplicateUsingRegisteredSubObjectList",
+      "kind": 12
+    },
+    {
+      "name": "bReplicates",
+      "kind": 12
+    },
+    {
+      "name": "bAutoActivate",
+      "kind": 12
+    },
+    {
+      "name": "bIsActive",
+      "kind": 12
+    },
+    {
+      "name": "bEditableWhenInherited",
+      "kind": 12
+    },
+    {
+      "name": "bCanEverAffectNavigation",
+      "kind": 12
+    },
+    {
+      "name": "bIsEditorOnly",
+      "kind": 12
+    },
+    {
+      "name": "CreationMethod",
+      "kind": 30
+    },
+    {
+      "name": "OnComponentActivated",
+      "kind": 28
+    },
+    {
+      "name": "OnComponentDeactivated",
+      "kind": 28
+    }
+  ],
+  "sourceBinarySHA256": "4415933ce33476f14c837abb61a1b60af8b78cd81783896501913a7aac69e423",
+  "source": "Read-only UHT metadata from installed game; frozen to this binary; no executable distribution",
+  "budgetedSkeletal": [
+    {
+      "name": "bAutoRegisterWithBudgetAllocator",
+      "kind": 12
+    },
+    {
+      "name": "bAutoCalculateSignificance",
+      "kind": 12
+    },
+    {
+      "name": "bShouldUseActorRenderedFlag",
+      "kind": 12
+    },
+    {
+      "name": "AnimClass",
+      "kind": 17
+    },
+    {
+      "name": "AnimScriptInstance",
+      "kind": 82
+    },
+    {
+      "name": "OverridePostProcessAnimBP",
+      "kind": 17
+    },
+    {
+      "name": "PostProcessAnimInstance",
+      "kind": 82
+    },
+    {
+      "name": "AnimationData",
+      "kind": 25
+    },
+    {
+      "name": "RootBoneTranslation",
+      "kind": 25
+    },
+    {
+      "name": "LineCheckBoundsScale",
+      "kind": 25
+    },
+    {
+      "name": "LinkedInstances",
+      "kind": 22
+    },
+    {
+      "name": "CachedBoneSpaceTransforms",
+      "kind": 22
+    },
+    {
+      "name": "CachedComponentSpaceTransforms",
+      "kind": 22
+    },
+    {
+      "name": "GlobalAnimRateScale",
+      "kind": 10
+    },
+    {
+      "name": "KinematicBonesUpdateType",
+      "kind": 0
+    },
+    {
+      "name": "PhysicsTransformUpdateMode",
+      "kind": 0
+    },
+    {
+      "name": "ClothTeleportMode",
+      "kind": 30
+    },
+    {
+      "name": "AnimationMode",
+      "kind": 0
+    },
+    {
+      "name": "bDisablePostProcessBlueprint",
+      "kind": 12
+    },
+    {
+      "name": "bUpdateOverlapsOnAnimationFinalize",
+      "kind": 12
+    },
+    {
+      "name": "bOnlyUpdateChildTransformsOncePerFrame",
+      "kind": 12
+    },
+    {
+      "name": "bHasValidBodies",
+      "kind": 12
+    },
+    {
+      "name": "bBlendPhysics",
+      "kind": 12
+    },
+    {
+      "name": "bEnablePhysicsOnDedicatedServer",
+      "kind": 12
+    },
+    {
+      "name": "bUpdateMeshWhenKinematic",
+      "kind": 12
+    },
+    {
+      "name": "bUpdateJointsFromAnimation",
+      "kind": 12
+    },
+    {
+      "name": "bAllowClothActors",
+      "kind": 12
+    },
+    {
+      "name": "bDisableClothSimulation",
+      "kind": 12
+    },
+    {
+      "name": "bDisableRigidBodyAnimNode",
+      "kind": 12
+    },
+    {
+      "name": "bAllowAnimCurveEvaluation",
+      "kind": 12
+    },
+    {
+      "name": "bCollideWithEnvironment",
+      "kind": 12
+    },
+    {
+      "name": "bCollideWithAttachedChildren",
+      "kind": 12
+    },
+    {
+      "name": "bForceCollisionUpdate",
+      "kind": 12
+    },
+    {
+      "name": "ClothVelocityScale",
+      "kind": 10
+    },
+    {
+      "name": "bResetAfterTeleport",
+      "kind": 12
+    },
+    {
+      "name": "bDeferKinematicBoneUpdate",
+      "kind": 12
+    },
+    {
+      "name": "bNoSkeletonUpdate",
+      "kind": 12
+    },
+    {
+      "name": "bPauseAnims",
+      "kind": 12
+    },
+    {
+      "name": "bEnableAnimation",
+      "kind": 12
+    },
+    {
+      "name": "bUseRefPoseOnInitAnim",
+      "kind": 12
+    },
+    {
+      "name": "bEnablePerPolyCollision",
+      "kind": 12
+    },
+    {
+      "name": "bForceRefpose",
+      "kind": 12
+    },
+    {
+      "name": "bOnlyAllowAutonomousTickPose",
+      "kind": 12
+    },
+    {
+      "name": "bIsAutonomousTickPose",
+      "kind": 12
+    },
+    {
+      "name": "bOldForceRefPose",
+      "kind": 12
+    },
+    {
+      "name": "bShowPrePhysBones",
+      "kind": 12
+    },
+    {
+      "name": "bRequiredBonesUpToDate",
+      "kind": 12
+    },
+    {
+      "name": "bAnimTreeInitialised",
+      "kind": 12
+    },
+    {
+      "name": "bEnableLineCheckWithBounds",
+      "kind": 12
+    },
+    {
+      "name": "bPropagateCurvesToFollowers",
+      "kind": 12
+    },
+    {
+      "name": "bSkipKinematicUpdateWhenInterpolating",
+      "kind": 12
+    },
+    {
+      "name": "bSkipBoundsUpdateWhenInterpolating",
+      "kind": 12
+    },
+    {
+      "name": "BonesToRemove",
+      "kind": 22
+    },
+    {
+      "name": "bNeedsQueuedAnimEventsDispatched",
+      "kind": 12
+    },
+    {
+      "name": "CachedAnimCurveUidVersion",
+      "kind": 5
+    },
+    {
+      "name": "ClothBlendWeight",
+      "kind": 10
+    },
+    {
+      "name": "bWaitForParallelClothTask",
+      "kind": 76
+    },
+    {
+      "name": "bFilteredAnimCurvesIsAllowList",
+      "kind": 76
+    },
+    {
+      "name": "CachedMeshCurveMetaDataVersion",
+      "kind": 5
+    },
+    {
+      "name": "FilteredAnimCurves",
+      "kind": 22
+    },
+    {
+      "name": "BodySetup",
+      "kind": 82
+    },
+    {
+      "name": "ClothMaxDistanceScale",
+      "kind": 10
+    },
+    {
+      "name": "ClothGeometryScale",
+      "kind": 10
+    },
+    {
+      "name": "PostProcessAnimBPLODThreshold",
+      "kind": 3
+    },
+    {
+      "name": "OnConstraintBroken",
+      "kind": 27
+    },
+    {
+      "name": "OnPlasticDeformation",
+      "kind": 27
+    },
+    {
+      "name": "ClothingSimulationFactory",
+      "kind": 17
+    },
+    {
+      "name": "TeleportDistanceThreshold",
+      "kind": 10
+    },
+    {
+      "name": "TeleportRotationThreshold",
+      "kind": 10
+    },
+    {
+      "name": "ClothingSimulationInstances",
+      "kind": 22
+    },
+    {
+      "name": "MorphTargetCurves",
+      "kind": 23
+    },
+    {
+      "name": "OnAnimInitialized",
+      "kind": 27
+    },
+    {
+      "name": "LastPoseTickFrame",
+      "kind": 6
+    },
+    {
+      "name": "SkeletalMesh",
+      "kind": 82
+    },
+    {
+      "name": "SkinnedAsset",
+      "kind": 82
+    },
+    {
+      "name": "LeaderPoseComponent",
+      "kind": 14
+    },
+    {
+      "name": "SkinCacheUsage",
+      "kind": 22
+    },
+    {
+      "name": "bSetMeshDeformer",
+      "kind": 76
+    },
+    {
+      "name": "MeshDeformer",
+      "kind": 82
+    },
+    {
+      "name": "bAlwaysUseMeshDeformer",
+      "kind": 76
+    },
+    {
+      "name": "MeshDeformerInstanceSettings",
+      "kind": 82
+    },
+    {
+      "name": "MeshDeformerInstances",
+      "kind": 25
+    },
+    {
+      "name": "PhysicsAssetOverride",
+      "kind": 82
+    },
+    {
+      "name": "ForcedLodModel",
+      "kind": 3
+    },
+    {
+      "name": "MinLodModel",
+      "kind": 3
+    },
+    {
+      "name": "StreamingDistanceMultiplier",
+      "kind": 10
+    },
+    {
+      "name": "NanitePixelProgrammableDistance",
+      "kind": 10
+    },
+    {
+      "name": "WorldPositionOffsetDisableDistance",
+      "kind": 3
+    },
+    {
+      "name": "bEvaluateWorldPositionOffset",
+      "kind": 12
+    },
+    {
+      "name": "bInfluencedByMainHairMode",
+      "kind": 12
+    },
+    {
+      "name": "LODInfo",
+      "kind": 22
+    },
+    {
+      "name": "VisibilityBasedAnimTickOption",
+      "kind": 30
+    },
+    {
+      "name": "bOverrideMinLod",
+      "kind": 12
+    },
+    {
+      "name": "bUseBoundsFromLeaderPoseComponent",
+      "kind": 12
+    },
+    {
+      "name": "bIncludeComponentLocationIntoBounds",
+      "kind": 12
+    },
+    {
+      "name": "bForceWireframe",
+      "kind": 12
+    },
+    {
+      "name": "bDisableMorphTarget",
+      "kind": 12
+    },
+    {
+      "name": "bHideSkin",
+      "kind": 12
+    },
+    {
+      "name": "bPerBoneMotionBlur",
+      "kind": 12
+    },
+    {
+      "name": "bComponentUseFixedSkelBounds",
+      "kind": 12
+    },
+    {
+      "name": "bConsiderAllBodiesForBounds",
+      "kind": 12
+    },
+    {
+      "name": "bSyncAttachParentLOD",
+      "kind": 12
+    },
+    {
+      "name": "bCanHighlightSelectedSections",
+      "kind": 12
+    },
+    {
+      "name": "bRecentlyRendered",
+      "kind": 12
+    },
+    {
+      "name": "bCastCapsuleDirectShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCastCapsuleIndirectShadow",
+      "kind": 12
+    },
+    {
+      "name": "bCPUSkinning",
+      "kind": 12
+    },
+    {
+      "name": "bUseScreenRenderStateForUpdate",
+      "kind": 12
+    },
+    {
+      "name": "bEnableUpdateRateOptimizations",
+      "kind": 12
+    },
+    {
+      "name": "bDisplayDebugUpdateRateOptimizations",
+      "kind": 12
+    },
+    {
+      "name": "bRenderStatic",
+      "kind": 12
+    },
+    {
+      "name": "bIgnoreLeaderPoseComponentLOD",
+      "kind": 12
+    },
+    {
+      "name": "bSortTriangles",
+      "kind": 12
+    },
+    {
+      "name": "bCachedLocalBoundsUpToDate",
+      "kind": 12
+    },
+    {
+      "name": "bCachedWorldSpaceBoundsUpToDate",
+      "kind": 12
+    },
+    {
+      "name": "bForceMeshObjectUpdate",
+      "kind": 12
+    },
+    {
+      "name": "bFollowerShouldTickPose",
+      "kind": 12
+    },
+    {
+      "name": "CapsuleIndirectShadowMinVisibility",
+      "kind": 10
+    },
+    {
+      "name": "CachedWorldOrLocalSpaceBounds",
+      "kind": 25
+    },
+    {
+      "name": "CachedWorldToLocalTransform",
+      "kind": 25
+    }
+  ],
+  "cineCamera": [
+    {
+      "name": "FilmbackSettings",
+      "kind": 25
+    },
+    {
+      "name": "Filmback",
+      "kind": 25
+    },
+    {
+      "name": "LensSettings",
+      "kind": 25
+    },
+    {
+      "name": "FocusSettings",
+      "kind": 25
+    },
+    {
+      "name": "CropSettings",
+      "kind": 25
+    },
+    {
+      "name": "CurrentFocalLength",
+      "kind": 10
+    },
+    {
+      "name": "CurrentAperture",
+      "kind": 10
+    },
+    {
+      "name": "CurrentFocusDistance",
+      "kind": 10
+    },
+    {
+      "name": "OnFreeDOFStateChanged",
+      "kind": 27
+    },
+    {
+      "name": "ExposureMethod",
+      "kind": 30
+    },
+    {
+      "name": "bOverride_CustomNearClippingPlane",
+      "kind": 12
+    },
+    {
+      "name": "CustomNearClippingPlane",
+      "kind": 10
+    },
+    {
+      "name": "FilmbackPresets",
+      "kind": 22
+    },
+    {
+      "name": "LensPresets",
+      "kind": 22
+    },
+    {
+      "name": "DefaultFilmbackPresetName",
+      "kind": 21
+    },
+    {
+      "name": "DefaultFilmbackPreset",
+      "kind": 21
+    },
+    {
+      "name": "DefaultLensPresetName",
+      "kind": 21
+    },
+    {
+      "name": "DefaultLensFocalLength",
+      "kind": 10
+    },
+    {
+      "name": "DefaultLensFStop",
+      "kind": 10
+    },
+    {
+      "name": "FieldOfView",
+      "kind": 10
+    },
+    {
+      "name": "FirstPersonFieldOfView",
+      "kind": 10
+    },
+    {
+      "name": "FirstPersonScale",
+      "kind": 10
+    },
+    {
+      "name": "OrthoWidth",
+      "kind": 10
+    },
+    {
+      "name": "bAutoCalculateOrthoPlanes",
+      "kind": 76
+    },
+    {
+      "name": "AutoPlaneShift",
+      "kind": 10
+    },
+    {
+      "name": "OrthoNearClipPlane",
+      "kind": 10
+    },
+    {
+      "name": "OrthoFarClipPlane",
+      "kind": 10
+    },
+    {
+      "name": "bUpdateOrthoPlanes",
+      "kind": 76
+    },
+    {
+      "name": "bUseCameraHeightAsViewTarget",
+      "kind": 76
+    },
+    {
+      "name": "AspectRatio",
+      "kind": 10
+    },
+    {
+      "name": "AspectRatioAxisConstraint",
+      "kind": 0
+    },
+    {
+      "name": "bConstrainAspectRatio",
+      "kind": 12
+    },
+    {
+      "name": "bOverrideAspectRatioAxisConstraint",
+      "kind": 12
+    },
+    {
+      "name": "bUseFieldOfViewForLOD",
+      "kind": 12
+    },
+    {
+      "name": "Overscan",
+      "kind": 10
+    },
+    {
+      "name": "AsymmetricOverscan",
+      "kind": 25
+    },
+    {
+      "name": "bScaleResolutionWithOverscan",
+      "kind": 76
+    },
+    {
+      "name": "bCropOverscan",
+      "kind": 76
+    },
+    {
+      "name": "bLockToHmd",
+      "kind": 12
+    },
+    {
+      "name": "bUsePawnControlRotation",
+      "kind": 12
+    },
+    {
+      "name": "bEnableFirstPersonFieldOfView",
+      "kind": 12
+    },
+    {
+      "name": "bEnableFirstPersonScale",
+      "kind": 12
+    },
+    {
+      "name": "ProjectionMode",
+      "kind": 0
+    },
+    {
+      "name": "PostProcessBlendWeight",
+      "kind": 10
+    },
+    {
+      "name": "PostProcessSettings",
+      "kind": 25
+    }
+  ],
+  "cameraPostProcess": [
+    {
+      "name": "bOverride_TemperatureType",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_WhiteTemp",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_WhiteTint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorSaturation",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorContrast",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGamma",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGain",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorOffset",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorSaturationShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorContrastShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGammaShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGainShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorOffsetShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorSaturationMidtones",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorContrastMidtones",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGammaMidtones",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGainMidtones",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorOffsetMidtones",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorSaturationHighlights",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorContrastHighlights",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGammaHighlights",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGainHighlights",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorOffsetHighlights",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorCorrectionShadowsMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorCorrectionHighlightsMin",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorCorrectionHighlightsMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BlueCorrection",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ExpandGamut",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ToneCurveAmount",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmSlope",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmToe",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmShoulder",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmBlackClip",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmWhiteClip",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SceneColorTint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SceneFringeIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ChromaticAberrationStartOffset",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_bMegaLights",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientCubemapTint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientCubemapIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomMethod",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomGaussianIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomThreshold",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom1Tint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom1Size",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom2Size",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom2Tint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom3Tint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom3Size",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom4Tint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom4Size",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom5Tint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom5Size",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom6Tint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Bloom6Size",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomSizeScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionTexture",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionScatterDispersion",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionCenterUV",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionPreFilter",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionPreFilterMin",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionPreFilterMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionPreFilterMult",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomConvolutionBufferScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomDirtMaskIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomDirtMaskTint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_BloomDirtMask",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_CameraShutterSpeed",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_CameraISO",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureMethod",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureLowPercent",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureHighPercent",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureMinBrightness",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureMaxBrightness",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureCalibrationConstant",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureSpeedUp",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureSpeedDown",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureBias",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureBiasCurve",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureMeterMask",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AutoExposureApplyPhysicalCameraExposure",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_HistogramLogMin",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_HistogramLogMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureMethod",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureContrastScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureHighlightContrastScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureShadowContrastScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureHighlightContrastCurve",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureShadowContrastCurve",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureHighlightThreshold",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureShadowThreshold",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureDetailStrength",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureBlurredLuminanceBlend",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureBlurredLuminanceKernelSizePercent",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureHighlightThresholdStrength",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureShadowThresholdStrength",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LocalExposureMiddleGreyBias",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LensFlareIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LensFlareTint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LensFlareTints",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LensFlareBokehSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LensFlareBokehShape",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LensFlareThreshold",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_VignetteIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_Sharpen",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_GrainIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_GrainJitter",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainIntensityShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainIntensityMidtones",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainIntensityHighlights",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainShadowsMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainHighlightsMin",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainHighlightsMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainTexelSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_FilmGrainTexture",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionStaticFraction",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionRadius",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionFadeDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionFadeRadius",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionRadiusInWS",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionPower",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionBias",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionQuality",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionMipBlend",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionMipScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionMipThreshold",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_AmbientOcclusionTemporalBlendWeight",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingAO",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingAOSamplesPerPixel",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingAOIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingAORadius",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingGeneralFaceCull",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingGeneralBoilingFilterStrength",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingGeneralMaxHistoryLength",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingGeneralSelfIntersectionDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingDirectInitialLocalCandidates",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingDirectInitialDirectionalCandidates",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingDirectTemporalVisibility",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingDirectSpatialVisibility",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingDirectSpatialSamples",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectMaxBounces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectSampleLumen",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectInitialCandidates",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectMaxReservoirAge",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectSpatialSamples",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectTemporalVisibility",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectSpatialVisibility",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingIndirectFinalVisibility",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingReGIRCellSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingReGIRCellCount",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingReGIRLevels",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingLumenSurfaceCache",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingLumenCacheLocalIterations",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingLumenCacheLocalCandidates",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingLumenReflections",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingLumenReflectionsLocalIterations",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_SampledLightingLumenReflectionsLocalCandidates",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVDirectionalOcclusionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVDirectionalOcclusionRadius",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVDiffuseOcclusionExponent",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVSpecularOcclusionExponent",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVDiffuseOcclusionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVSpecularOcclusionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVSecondaryOcclusionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVSecondaryBounceIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVGeometryVolumeBias",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVVplInjectionBias",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVEmissiveInjectionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVFadeRange",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LPVDirectionalOcclusionFadeRange",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_IndirectLightingColor",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_IndirectLightingIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGradingIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ColorGradingLUT",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldFocalDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldFstop",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldMinFstop",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldBladeCount",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldSensorWidth",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldSqueezeFactor",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldDepthBlurRadius",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldUseHairDepth",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldPetzvalBokeh",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldPetzvalBokehFalloff",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldPetzvalExclusionBoxExtents",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldPetzvalExclusionBoxRadius",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldAspectRatioScalar",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldMatteBoxFlags",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldBarrelRadius",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldBarrelLength",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldDepthBlurAmount",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldFocalRegion",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldNearTransitionRegion",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldFarTransitionRegion",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldNearBlurSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldFarBlurSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_MobileHQGaussian",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldOcclusion",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldSkyFocusDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DepthOfFieldVignetteSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_MotionBlurAmount",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_MotionBlurMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_MotionBlurTargetFPS",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_MotionBlurPerObjectSize",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ScreenPercentage",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ReflectionMethod",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenReflectionQuality",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ScreenSpaceReflectionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ScreenSpaceReflectionQuality",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ScreenSpaceReflectionMaxRoughness",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ScreenSpaceReflectionRoughnessScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_UserFlags",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_ReflectionsType",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingReflectionsMaxRoughness",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingReflectionsMaxBounces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingReflectionsSamplesPerPixel",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingReflectionsShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingReflectionsTranslucency",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_TranslucencyType",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencyMaxRoughness",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencyRefractionRays",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencySamplesPerPixel",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencyShadows",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencyRefraction",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencyMaxPrimaryHitEvents",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencyMaxSecondaryHitEvents",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingTranslucencyUseRayTracedRefraction",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_DynamicGlobalIlluminationMethod",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSceneLightingQuality",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSceneDetail",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSceneViewDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSceneLightingUpdateSpeed",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenFinalGatherQuality",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenFinalGatherLightingUpdateSpeed",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenFinalGatherScreenTraces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenMaxTraceDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenDiffuseColorBoost",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSkylightLeaking",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSkylightLeakingTint",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenFullSkylightLeakingDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSkyDistanceFalloffStrength",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSkyDistanceFalloffEndDistance",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSkyDistanceFalloffMinScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_HairSkyLightingIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenWithRTXDIIndirect",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenRayLightingMode",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenReflectionsScreenTraces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenFrontLayerTranslucencyReflections",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenMaxRoughnessToTraceReflections",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenMaxReflectionBounces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenMaxRefractionBounces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_LumenSurfaceCacheResolution",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingGI",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingGIMaxBounces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingGISamplesPerPixel",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingMaxBounces",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingSamplesPerPixel",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingMaxPathIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingEnableEmissiveMaterials",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingEnableReferenceDOF",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingEnableReferenceAtmosphere",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingEnableDenoiser",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingIncludeEmissive",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingIncludeDiffuse",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingIncludeIndirectDiffuse",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingIncludeSpecular",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingIncludeIndirectSpecular",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingIncludeVolume",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PathTracingIncludeIndirectVolume",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsType",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsBufferScale",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsFollowCamera",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsLookAt",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsRange",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsColor",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsNumDenoisePasses",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsDispersionIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsDispersionOffset",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsReflectiveIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsReflectedRayTMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsReflectedRayTMin",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsRefractiveIntensity",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsRefractedRayTMax",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsRefractedRayTMin",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsFresnelBaseReflectFraction",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsReflectBackFaceCullingThreshold",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_RayTracingWaterCausticsRefractBackFaceCullingThreshold",
+      "kind": 12
+    },
+    {
+      "name": "bOverride_PostCompensationForCharacter",
+      "kind": 12
+    },
+    {
+      "name": "bMobileHQGaussian",
+      "kind": 12
+    },
+    {
+      "name": "BloomMethod",
+      "kind": 0
+    },
+    {
+      "name": "AutoExposureMethod",
+      "kind": 0
+    },
+    {
+      "name": "TemperatureType",
+      "kind": 0
+    },
+    {
+      "name": "WhiteTemp",
+      "kind": 10
+    },
+    {
+      "name": "WhiteTint",
+      "kind": 10
+    },
+    {
+      "name": "ColorSaturation",
+      "kind": 25
+    },
+    {
+      "name": "ColorContrast",
+      "kind": 25
+    },
+    {
+      "name": "ColorGamma",
+      "kind": 25
+    },
+    {
+      "name": "ColorGain",
+      "kind": 25
+    },
+    {
+      "name": "ColorOffset",
+      "kind": 25
+    },
+    {
+      "name": "ColorSaturationShadows",
+      "kind": 25
+    },
+    {
+      "name": "ColorContrastShadows",
+      "kind": 25
+    },
+    {
+      "name": "ColorGammaShadows",
+      "kind": 25
+    },
+    {
+      "name": "ColorGainShadows",
+      "kind": 25
+    },
+    {
+      "name": "ColorOffsetShadows",
+      "kind": 25
+    },
+    {
+      "name": "ColorSaturationMidtones",
+      "kind": 25
+    },
+    {
+      "name": "ColorContrastMidtones",
+      "kind": 25
+    },
+    {
+      "name": "ColorGammaMidtones",
+      "kind": 25
+    },
+    {
+      "name": "ColorGainMidtones",
+      "kind": 25
+    },
+    {
+      "name": "ColorOffsetMidtones",
+      "kind": 25
+    },
+    {
+      "name": "ColorSaturationHighlights",
+      "kind": 25
+    },
+    {
+      "name": "ColorContrastHighlights",
+      "kind": 25
+    },
+    {
+      "name": "ColorGammaHighlights",
+      "kind": 25
+    },
+    {
+      "name": "ColorGainHighlights",
+      "kind": 25
+    },
+    {
+      "name": "ColorOffsetHighlights",
+      "kind": 25
+    },
+    {
+      "name": "ColorCorrectionHighlightsMin",
+      "kind": 10
+    },
+    {
+      "name": "ColorCorrectionHighlightsMax",
+      "kind": 10
+    },
+    {
+      "name": "ColorCorrectionShadowsMax",
+      "kind": 10
+    },
+    {
+      "name": "BlueCorrection",
+      "kind": 10
+    },
+    {
+      "name": "ExpandGamut",
+      "kind": 10
+    },
+    {
+      "name": "ToneCurveAmount",
+      "kind": 10
+    },
+    {
+      "name": "FilmSlope",
+      "kind": 10
+    },
+    {
+      "name": "FilmToe",
+      "kind": 10
+    },
+    {
+      "name": "FilmShoulder",
+      "kind": 10
+    },
+    {
+      "name": "FilmBlackClip",
+      "kind": 10
+    },
+    {
+      "name": "FilmWhiteClip",
+      "kind": 10
+    },
+    {
+      "name": "SceneColorTint",
+      "kind": 25
+    },
+    {
+      "name": "SceneFringeIntensity",
+      "kind": 10
+    },
+    {
+      "name": "ChromaticAberrationStartOffset",
+      "kind": 10
+    },
+    {
+      "name": "BloomIntensity",
+      "kind": 10
+    },
+    {
+      "name": "BloomGaussianIntensity",
+      "kind": 10
+    },
+    {
+      "name": "BloomThreshold",
+      "kind": 10
+    },
+    {
+      "name": "BloomSizeScale",
+      "kind": 10
+    },
+    {
+      "name": "Bloom1Size",
+      "kind": 10
+    },
+    {
+      "name": "Bloom2Size",
+      "kind": 10
+    },
+    {
+      "name": "Bloom3Size",
+      "kind": 10
+    },
+    {
+      "name": "Bloom4Size",
+      "kind": 10
+    },
+    {
+      "name": "Bloom5Size",
+      "kind": 10
+    },
+    {
+      "name": "Bloom6Size",
+      "kind": 10
+    },
+    {
+      "name": "Bloom1Tint",
+      "kind": 25
+    },
+    {
+      "name": "Bloom2Tint",
+      "kind": 25
+    },
+    {
+      "name": "Bloom3Tint",
+      "kind": 25
+    },
+    {
+      "name": "Bloom4Tint",
+      "kind": 25
+    },
+    {
+      "name": "Bloom5Tint",
+      "kind": 25
+    },
+    {
+      "name": "Bloom6Tint",
+      "kind": 25
+    },
+    {
+      "name": "BloomConvolutionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "BloomConvolutionScatterDispersion",
+      "kind": 10
+    },
+    {
+      "name": "BloomConvolutionSize",
+      "kind": 10
+    },
+    {
+      "name": "BloomConvolutionTexture",
+      "kind": 82
+    },
+    {
+      "name": "BloomConvolutionCenterUV",
+      "kind": 25
+    },
+    {
+      "name": "BloomConvolutionPreFilterMin",
+      "kind": 10
+    },
+    {
+      "name": "BloomConvolutionPreFilterMax",
+      "kind": 10
+    },
+    {
+      "name": "BloomConvolutionPreFilterMult",
+      "kind": 10
+    },
+    {
+      "name": "BloomConvolutionBufferScale",
+      "kind": 10
+    },
+    {
+      "name": "BloomDirtMask",
+      "kind": 82
+    },
+    {
+      "name": "BloomDirtMaskIntensity",
+      "kind": 10
+    },
+    {
+      "name": "BloomDirtMaskTint",
+      "kind": 25
+    },
+    {
+      "name": "DynamicGlobalIlluminationMethod",
+      "kind": 0
+    },
+    {
+      "name": "IndirectLightingColor",
+      "kind": 25
+    },
+    {
+      "name": "IndirectLightingIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LumenRayLightingMode",
+      "kind": 30
+    },
+    {
+      "name": "LumenSceneLightingQuality",
+      "kind": 10
+    },
+    {
+      "name": "LumenSceneDetail",
+      "kind": 10
+    },
+    {
+      "name": "LumenSceneViewDistance",
+      "kind": 10
+    },
+    {
+      "name": "LumenSceneLightingUpdateSpeed",
+      "kind": 10
+    },
+    {
+      "name": "LumenFinalGatherQuality",
+      "kind": 10
+    },
+    {
+      "name": "LumenFinalGatherLightingUpdateSpeed",
+      "kind": 10
+    },
+    {
+      "name": "LumenFinalGatherScreenTraces",
+      "kind": 12
+    },
+    {
+      "name": "LumenMaxTraceDistance",
+      "kind": 10
+    },
+    {
+      "name": "LumenDiffuseColorBoost",
+      "kind": 10
+    },
+    {
+      "name": "LumenSkylightLeaking",
+      "kind": 10
+    },
+    {
+      "name": "LumenSkylightLeakingTint",
+      "kind": 25
+    },
+    {
+      "name": "LumenFullSkylightLeakingDistance",
+      "kind": 10
+    },
+    {
+      "name": "LumenSkyDistanceFalloffStrength",
+      "kind": 10
+    },
+    {
+      "name": "LumenSkyDistanceFalloffEndDistance",
+      "kind": 10
+    },
+    {
+      "name": "LumenSkyDistanceFalloffMinScale",
+      "kind": 10
+    },
+    {
+      "name": "HairSkyLightingIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LumenWithRTXDIIndirect",
+      "kind": 12
+    },
+    {
+      "name": "LumenSurfaceCacheResolution",
+      "kind": 10
+    },
+    {
+      "name": "ReflectionMethod",
+      "kind": 0
+    },
+    {
+      "name": "ReflectionsType",
+      "kind": 30
+    },
+    {
+      "name": "LumenReflectionQuality",
+      "kind": 10
+    },
+    {
+      "name": "LumenReflectionsScreenTraces",
+      "kind": 12
+    },
+    {
+      "name": "LumenFrontLayerTranslucencyReflections",
+      "kind": 12
+    },
+    {
+      "name": "LumenMaxRoughnessToTraceReflections",
+      "kind": 10
+    },
+    {
+      "name": "LumenMaxReflectionBounces",
+      "kind": 3
+    },
+    {
+      "name": "LumenMaxRefractionBounces",
+      "kind": 3
+    },
+    {
+      "name": "ScreenSpaceReflectionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "ScreenSpaceReflectionQuality",
+      "kind": 10
+    },
+    {
+      "name": "ScreenSpaceReflectionMaxRoughness",
+      "kind": 10
+    },
+    {
+      "name": "bMegaLights",
+      "kind": 12
+    },
+    {
+      "name": "AmbientCubemapTint",
+      "kind": 25
+    },
+    {
+      "name": "AmbientCubemapIntensity",
+      "kind": 10
+    },
+    {
+      "name": "AmbientCubemap",
+      "kind": 82
+    },
+    {
+      "name": "CameraShutterSpeed",
+      "kind": 10
+    },
+    {
+      "name": "CameraISO",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldFstop",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldMinFstop",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldBladeCount",
+      "kind": 3
+    },
+    {
+      "name": "AutoExposureBias",
+      "kind": 10
+    },
+    {
+      "name": "AutoExposureBiasBackup",
+      "kind": 10
+    },
+    {
+      "name": "bOverride_AutoExposureBiasBackup",
+      "kind": 12
+    },
+    {
+      "name": "AutoExposureApplyPhysicalCameraExposure",
+      "kind": 12
+    },
+    {
+      "name": "AutoExposureBiasCurve",
+      "kind": 82
+    },
+    {
+      "name": "AutoExposureMeterMask",
+      "kind": 82
+    },
+    {
+      "name": "AutoExposureLowPercent",
+      "kind": 10
+    },
+    {
+      "name": "AutoExposureHighPercent",
+      "kind": 10
+    },
+    {
+      "name": "AutoExposureMinBrightness",
+      "kind": 10
+    },
+    {
+      "name": "AutoExposureMaxBrightness",
+      "kind": 10
+    },
+    {
+      "name": "AutoExposureSpeedUp",
+      "kind": 10
+    },
+    {
+      "name": "AutoExposureSpeedDown",
+      "kind": 10
+    },
+    {
+      "name": "HistogramLogMin",
+      "kind": 10
+    },
+    {
+      "name": "HistogramLogMax",
+      "kind": 10
+    },
+    {
+      "name": "AutoExposureCalibrationConstant",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureMethod",
+      "kind": 30
+    },
+    {
+      "name": "LocalExposureContrastScale",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureHighlightContrastScale",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureShadowContrastScale",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureHighlightContrastCurve",
+      "kind": 82
+    },
+    {
+      "name": "LocalExposureShadowContrastCurve",
+      "kind": 82
+    },
+    {
+      "name": "LocalExposureHighlightThreshold",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureShadowThreshold",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureDetailStrength",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureBlurredLuminanceBlend",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureBlurredLuminanceKernelSizePercent",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureHighlightThresholdStrength",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureShadowThresholdStrength",
+      "kind": 10
+    },
+    {
+      "name": "LocalExposureMiddleGreyBias",
+      "kind": 10
+    },
+    {
+      "name": "LensFlareIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LensFlareTint",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareBokehSize",
+      "kind": 10
+    },
+    {
+      "name": "LensFlareThreshold",
+      "kind": 10
+    },
+    {
+      "name": "LensFlareBokehShape",
+      "kind": 82
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "LensFlareTints",
+      "kind": 25
+    },
+    {
+      "name": "VignetteIntensity",
+      "kind": 10
+    },
+    {
+      "name": "Sharpen",
+      "kind": 10
+    },
+    {
+      "name": "GrainJitter",
+      "kind": 10
+    },
+    {
+      "name": "GrainIntensity",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainIntensity",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainIntensityShadows",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainIntensityMidtones",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainIntensityHighlights",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainShadowsMax",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainHighlightsMin",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainHighlightsMax",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainTexelSize",
+      "kind": 10
+    },
+    {
+      "name": "FilmGrainTexture",
+      "kind": 82
+    },
+    {
+      "name": "AmbientOcclusionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionStaticFraction",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionRadius",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionRadiusInWS",
+      "kind": 12
+    },
+    {
+      "name": "AmbientOcclusionFadeDistance",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionFadeRadius",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionDistance",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionPower",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionBias",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionQuality",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionMipBlend",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionMipScale",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionMipThreshold",
+      "kind": 10
+    },
+    {
+      "name": "AmbientOcclusionTemporalBlendWeight",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingAO",
+      "kind": 12
+    },
+    {
+      "name": "RayTracingAOSamplesPerPixel",
+      "kind": 3
+    },
+    {
+      "name": "RayTracingAOIntensity",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingAORadius",
+      "kind": 10
+    },
+    {
+      "name": "SampledLightingGeneralFaceCull",
+      "kind": 30
+    },
+    {
+      "name": "SampledLightingGeneralBoilingFilterStrength",
+      "kind": 10
+    },
+    {
+      "name": "SampledLightingGeneralMaxHistoryLength",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingGeneralSelfIntersectionDistance",
+      "kind": 10
+    },
+    {
+      "name": "SampledLightingDirectInitialLocalCandidates",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingDirectInitialDirectionalCandidates",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingDirectTemporalVisibility",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingDirectSpatialVisibility",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingDirectSpatialSamples",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingIndirectMaxBounces",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingIndirectSampleLumen",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingIndirectInitialCandidates",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingIndirectMaxReservoirAge",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingIndirectSpatialSamples",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingIndirectTemporalVisibility",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingIndirectSpatialVisibility",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingIndirectFinalVisibility",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingReGIRCellSize",
+      "kind": 10
+    },
+    {
+      "name": "SampledLightingReGIRCellCount",
+      "kind": 25
+    },
+    {
+      "name": "SampledLightingReGIRLevels",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingLumenSurfaceCache",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingLumenCacheLocalIterations",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingLumenCacheLocalCandidates",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingLumenReflections",
+      "kind": 12
+    },
+    {
+      "name": "SampledLightingLumenReflectionsLocalIterations",
+      "kind": 3
+    },
+    {
+      "name": "SampledLightingLumenReflectionsLocalCandidates",
+      "kind": 3
+    },
+    {
+      "name": "RayTracingWaterCausticsType",
+      "kind": 30
+    },
+    {
+      "name": "RayTracingWaterCausticsBufferScale",
+      "kind": 30
+    },
+    {
+      "name": "RayTracingWaterCausticsFollowCamera",
+      "kind": 12
+    },
+    {
+      "name": "RayTracingWaterCausticsLookAt",
+      "kind": 25
+    },
+    {
+      "name": "RayTracingWaterCausticsRange",
+      "kind": 25
+    },
+    {
+      "name": "RayTracingWaterCausticsColor",
+      "kind": 25
+    },
+    {
+      "name": "RayTracingWaterCausticsNumDenoisePasses",
+      "kind": 3
+    },
+    {
+      "name": "RayTracingWaterCausticsDispersionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsDispersionOffset",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsReflectiveIntensity",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsReflectedRayTMax",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsReflectedRayTMin",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsRefractiveIntensity",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsRefractedRayTMax",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsRefractedRayTMin",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsFresnelBaseReflectFraction",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsReflectBackFaceCullingThreshold",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingWaterCausticsRefractBackFaceCullingThreshold",
+      "kind": 10
+    },
+    {
+      "name": "ColorGradingIntensity",
+      "kind": 10
+    },
+    {
+      "name": "ColorGradingLUT",
+      "kind": 82
+    },
+    {
+      "name": "DepthOfFieldSensorWidth",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldSqueezeFactor",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldFocalDistance",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldDepthBlurAmount",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldDepthBlurRadius",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldUseHairDepth",
+      "kind": 12
+    },
+    {
+      "name": "DepthOfFieldPetzvalBokeh",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldPetzvalBokehFalloff",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldPetzvalExclusionBoxExtents",
+      "kind": 25
+    },
+    {
+      "name": "DepthOfFieldPetzvalExclusionBoxRadius",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldAspectRatioScalar",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldBarrelRadius",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldBarrelLength",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldMatteBoxFlags",
+      "kind": 25
+    },
+    {
+      "name": "DepthOfFieldMatteBoxFlags",
+      "kind": 25
+    },
+    {
+      "name": "DepthOfFieldMatteBoxFlags",
+      "kind": 25
+    },
+    {
+      "name": "DepthOfFieldFocalRegion",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldNearTransitionRegion",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldFarTransitionRegion",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldScale",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldNearBlurSize",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldFarBlurSize",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldOcclusion",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldSkyFocusDistance",
+      "kind": 10
+    },
+    {
+      "name": "DepthOfFieldVignetteSize",
+      "kind": 10
+    },
+    {
+      "name": "MotionBlurAmount",
+      "kind": 10
+    },
+    {
+      "name": "MotionBlurMax",
+      "kind": 10
+    },
+    {
+      "name": "MotionBlurTargetFPS",
+      "kind": 3
+    },
+    {
+      "name": "MotionBlurPerObjectSize",
+      "kind": 10
+    },
+    {
+      "name": "LPVIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LPVVplInjectionBias",
+      "kind": 10
+    },
+    {
+      "name": "LPVSize",
+      "kind": 10
+    },
+    {
+      "name": "LPVSecondaryOcclusionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LPVSecondaryBounceIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LPVGeometryVolumeBias",
+      "kind": 10
+    },
+    {
+      "name": "LPVEmissiveInjectionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LPVDirectionalOcclusionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LPVDirectionalOcclusionRadius",
+      "kind": 10
+    },
+    {
+      "name": "LPVDiffuseOcclusionExponent",
+      "kind": 10
+    },
+    {
+      "name": "LPVSpecularOcclusionExponent",
+      "kind": 10
+    },
+    {
+      "name": "LPVDiffuseOcclusionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "LPVSpecularOcclusionIntensity",
+      "kind": 10
+    },
+    {
+      "name": "TranslucencyType",
+      "kind": 30
+    },
+    {
+      "name": "RayTracingTranslucencyMaxRoughness",
+      "kind": 10
+    },
+    {
+      "name": "RayTracingTranslucencyRefractionRays",
+      "kind": 3
+    },
+    {
+      "name": "RayTracingTranslucencySamplesPerPixel",
+      "kind": 3
+    },
+    {
+      "name": "RayTracingTranslucencyMaxPrimaryHitEvents",
+      "kind": 3
+    },
+    {
+      "name": "RayTracingTranslucencyMaxSecondaryHitEvents",
+      "kind": 3
+    },
+    {
+      "name": "RayTracingTranslucencyShadows",
+      "kind": 30
+    },
+    {
+      "name": "RayTracingTranslucencyRefraction",
+      "kind": 12
+    },
+    {
+      "name": "RayTracingTranslucencyUseRayTracedRefraction",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingMaxBounces",
+      "kind": 3
+    },
+    {
+      "name": "PathTracingSamplesPerPixel",
+      "kind": 3
+    },
+    {
+      "name": "PathTracingMaxPathIntensity",
+      "kind": 10
+    },
+    {
+      "name": "PathTracingEnableEmissiveMaterials",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingEnableReferenceDOF",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingEnableReferenceAtmosphere",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingEnableDenoiser",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingIncludeEmissive",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingIncludeDiffuse",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingIncludeIndirectDiffuse",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingIncludeSpecular",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingIncludeIndirectSpecular",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingIncludeVolume",
+      "kind": 12
+    },
+    {
+      "name": "PathTracingIncludeIndirectVolume",
+      "kind": 12
+    },
+    {
+      "name": "LPVFadeRange",
+      "kind": 10
+    },
+    {
+      "name": "LPVDirectionalOcclusionFadeRange",
+      "kind": 10
+    },
+    {
+      "name": "ScreenPercentage",
+      "kind": 10
+    },
+    {
+      "name": "PostCompensationForCharacter",
+      "kind": 25
+    },
+    {
+      "name": "UserFlags",
+      "kind": 3
+    },
+    {
+      "name": "WeightedBlendables",
+      "kind": 25
+    }
+  ],
+  "cameraLens": [
+    {
+      "name": "MinFocalLength",
+      "kind": 10
+    },
+    {
+      "name": "MaxFocalLength",
+      "kind": 10
+    },
+    {
+      "name": "MinFStop",
+      "kind": 10
+    },
+    {
+      "name": "MaxFStop",
+      "kind": 10
+    },
+    {
+      "name": "MinimumFocusDistance",
+      "kind": 10
+    },
+    {
+      "name": "SqueezeFactor",
+      "kind": 10
+    },
+    {
+      "name": "DiaphragmBladeCount",
+      "kind": 3
+    }
+  ],
+  "cameraFocus": [
+    {
+      "name": "FocusMethod",
+      "kind": 30
+    },
+    {
+      "name": "ManualFocusDistance",
+      "kind": 10
+    },
+    {
+      "name": "TrackingFocusSettings",
+      "kind": 25
+    },
+    {
+      "name": "bSmoothFocusChanges",
+      "kind": 12
+    },
+    {
+      "name": "FocusSmoothingInterpSpeed",
+      "kind": 10
+    },
+    {
+      "name": "FocusOffset",
+      "kind": 10
+    }
+  ]
+}

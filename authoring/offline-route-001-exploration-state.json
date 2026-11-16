@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "role": "Explicit controlled exploration-state test, not an assertion about current live combat state or a missing save record",
+  "world": "PBZ_Pangzhen_WP",
+  "actors": {
+    "PBZ_Pangzhen_WP-BP_FogDoor_C_UAID_60CF848217CA978002_1366641873": {
+      "Passable": true
+    },
+    "PBZ_Pangzhen_WP-BP_FogDoor_C_UAID_BCFCE704F7253AD802_1288819916": {
+      "Passable": true
+    }
+  },
+  "context": "Prior grounded walking samples cross these gates. The second gate was found only after adding unbounded cells: crossings near (-182064,119355,-4134) and (-183827,117408,-4109). This controlled scenario explicitly supplies passable states; it does not infer current states from missing save records. Runtime must read effective collision."
+}

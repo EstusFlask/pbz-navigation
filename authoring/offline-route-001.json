@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "world": "pbz_pangzhen_wp",
+  "worldPackage": "/Game/Maps/B08_09_10/PBZ_Pangzhen_WP",
+  "rootCache": "build/roadbook-11/roots/PBZ_Pangzhen_WP.bin",
+  "sourceBell": "Bell_SZ_017",
+  "targetBell": "Bell_XM_015",
+  "boundsUE": [-196000, 105000, -12000, -166000, 130000, 10000],
+  "boundsPurpose": "Region plus alternate approaches; does not prescribe or encode the user's travelled path",
+  "movement": "walking-only",
+  "agent": {"radiusCm":45,"heightCm":192,"climbCm":50,"slopeDegrees":55},
+  "collisionSource": "Installed game packages; no Heybox or old atlas geometry",
+  "acceptance": "Requires complete relevant collision decoding, ordinary walking connectivity and independent geometry validation; no live acceptance implied"
+}

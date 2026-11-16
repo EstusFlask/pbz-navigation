@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "version": "1.9.0-dev",
+  "world": "pbz_pangzhen_wp",
+  "origin": {
+    "x": -174522.19983567303,
+    "y": 112570.49016589088,
+    "z": -3042.0138888362712
+  },
+  "destinations": [
+    {
+      "bell": "Bell_XM_015",
+      "label": "一号路线终点／戏梦山庄正门",
+      "p": {
+        "x": -187916,
+        "y": 114639,
+        "z": -1057
+      }
+    },
+    {
+      "bell": "Bell_SZ_016",
+      "label": "黄家宅邸前路口",
+      "p": {
+        "x": -171921,
+        "y": 120932,
+        "z": -4137
+      }
+    }
+  ],
+  "reported": "Both selections produced no route",
+  "observed": {
+    "startupReady": true,
+    "keyModulesMatchDistributedPackage": true,
+    "recastReadyLogged": false,
+    "recastQueryLogged": false,
+    "recastErrorLogged": false
+  },
+  "hostAsyncWasmBehavior": "Not captured; queued async task behavior is an isolated regression environment, not a direct measurement of the game host",
+  "evidence": {
+    "loader.log": {
+      "localFile": "build/field-recast-190-no-route/loader.log",
+      "sha256": "5024abc8e1bd3304a750a156bed96744758598206486d27272408f0f0fdab6f6"
+    },
+    "route-log.txt": {
+      "localFile": "build/field-recast-190-no-route/route-log.txt",
+      "sha256": "90e39dffae68b34566655cbb03d4b08e33540c1e708250a213aacd7d2f0db9fe"
+    },
+    "UE4SS.log": {
+      "localFile": "build/field-recast-190-no-route/UE4SS.log",
+      "sha256": "471283a3ce7e31236d7249aa2bb40907aec6f7443d896b308f7b922d6dfbdace"
+    }
+  }
+}

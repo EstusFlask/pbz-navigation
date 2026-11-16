@@ -1,0 +1,39 @@
+1.9.0 — first regional collision -> Recast/Detour JS/WASM candidate.
+Branch: codex/offline-recast-navigation
+Date: 2026-11-15
+
+PASS: 368 JavaScript tests; no skips or failures.
+PASS: 9 real WASM/Recast analytic and cooked-floor controls.
+PASS: 5 authenticated read-only state and rule-isolation controls.
+PASS: 2 independent sphere/triangle and wall-distance analytic controls.
+PASS: existing Lua / real-file JavaScript tracker integration suite.
+PASS: Python tools/tests compile.
+PASS: existing native adapter version-only rebuild. No new navigation DLL.
+      Native ABI suite was not rerun for this version-only change.
+
+DATA: 877 streamed cells plus PersistentLevel. 4 always-loaded cells accounted
+      for by PersistentLevel; no unaccounted cell packages. 0 parsing failures
+      in handled collision types. Whole-game collision completeness not claimed.
+DATA: 7,528,008 vertices; 13,681,353 triangles; 480 tile slots;
+      506 conditional combinations / 501 unique Detour tile blobs.
+PASS: explicit exploration scenario (two relevant fog doors open, saved vines)
+      gives a complete route: 60 funnel corners, 955 surface points, 316.97m.
+PASS: closed/unknown conditions return incomplete results.
+PASS: 346/346 previous grounded samples covered; 0 adjacent disconnections.
+PASS: independent support + capsule contact/body checks at 1,633 samples,
+      spacing <=25cm; 0 failures; not a full CharacterMovement simulation.
+PASS: real packaged tiles load without Node/DOM/fetch. Mocked reflected UE state
+      changes cancel old queries, close/reopen doors and reset across worlds.
+
+PASS: complete release ZIP, 1496 exact file matches.
+PASS: complete development ZIP, 1503 exact file matches.
+PASS: runtime, native adapter, README and archive versions agree.
+PASS: no EXE/COM/SCR/MSI, archived Heybox runtime, private game save/key,
+      extraction tools, node_modules or native schema in either archive.
+PASS: old 1.8.3 archives preserved with matching hashes in build/release-archive.
+
+Not installed or uploaded. Game not launched. Saves not written.
+Scope: first Pangzhen walking region, not full-world/full-game completion.
+Live Puerts startup and actual whole-route movement acceptance remain pending.
+Details: docs/OFFLINE-RECAST-IMPLEMENTATION-20261115.md
+Package hashes and provenance: release/LOCAL-CANDIDATE-1.9.0.json

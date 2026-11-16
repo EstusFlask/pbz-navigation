@@ -43,8 +43,36 @@ test('status recreates a lost viewport and backs off after a missing widget clas
  h.hud.update({},'正在计算路线…',100);assert.equal(h.created.length,2);
  h.hud.clear();let loads=0;h.UE.Class.Load=()=>{loads++;return null;};
  for(let i=0;i<300;i++)h.hud.update({},'正在计算路线…',200+i*16);
- assert.equal(loads,1);assert.equal(h.reports.length,1);
+ assert.equal(loads,1);assert.equal(h.reports.filter(([,text])=>text.includes('unavailable')).length,1);
  h.hud.update({},'正在计算路线…',5300);assert.equal(loads,2);
+});
+
+test('status restores visibility when the game hides a reused widget between equal updates',()=>{
+ const h=widgets();h.hud.update({},'该区域导航暂不可用',0);
+ h.hud.host.SetVisibility(h.UE.ESlateVisibility.Collapsed);h.hud.host.SetRenderOpacity(0);
+ h.hud.update({},'该区域导航暂不可用',200);
+ assert.equal(h.hud.host.visibility,h.UE.ESlateVisibility.HitTestInvisible);
+ assert.equal(h.hud.host.opacity,1);
+});
+
+test('status uses the cooked game font and a DPI-correct viewport instead of zero intrinsic canvas size',()=>{
+ const h=widgets(),create=h.UE.WidgetBlueprintLibrary.Create,gameFont={FontObject:{name:'cooked-CJK-font'},Size:24};
+ let width=1920,scale=1.5;
+ h.UE.WidgetBlueprintLibrary.Create=()=>{const host=create();host.DistanceText={Font:{...gameFont}};host.SetDesiredSizeInViewport=v=>{host.desired=v;};return host;};
+ h.UE.WidgetLayoutLibrary={GetViewportSize:()=>({X:width,Y:1080}),GetViewportScale:()=>scale};
+ h.hud.update({},'正在加载导航… 3/105',0);
+ assert.equal(h.hud.label.Font.FontObject,gameFont.FontObject);assert.equal(h.hud.host.desired.X,1280);assert.equal(h.hud.host.desired.Y,720);assert.equal(h.hud.host.viewport,10050);
+ width=2560;h.hud.update({},'正在加载导航… 3/105',200);assert.equal(h.hud.host.desired.X,2560/scale);
+ h.hud.clear();h.hud.update({},'该区域导航暂不可用',400);assert.equal(h.hud.host.desired.X,2560/scale,'new host skipped layout because old geometry was cached');
+});
+
+test('status reuses the cooked localized label and its PBZ text setter',()=>{
+ const h=widgets(),create=h.UE.WidgetBlueprintLibrary.Create,label=new h.Widget('cooked-PBZCommonLocText');
+ label.RemoveFromParent=()=>{label.detached=true;};label.SetText=()=>{throw Error('SetText is ignored when a PBZ localization key is present');};
+ label.SetPBZFormatText=text=>{label.formatted=text;};
+ h.UE.WidgetBlueprintLibrary.Create=()=>{const host=create();host.DistanceText=label;return host;};
+ h.hud.update({},'正在加载导航…',0);
+ assert.equal(h.hud.label,label);assert.equal(label.formatted,'正在加载导航…');assert.equal(label.detached,true);
 });
 
 test('loading status uses wall time, relevant atlas jobs and English without inventing a percentage',()=>{

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "rules": [
+    {
+      "id": "broken-thorny-vine",
+      "classAsset": "/game/renewalcontent/actors/gameplayblocker/bp_thornyvine",
+      "savedField": "Broken",
+      "components": ["Vine", "Plane"],
+      "omitWhen": true,
+      "proofFunction": "RefreshVisual",
+      "proofFunctionSHA256": "d994ab67328b2bb0a457952d419e538aa8f92518529b58ed8c090ed9bbbdc075",
+      "loadBindingClassAsset": "/advancedspecialmove/bp/actor/specialmovevolume/bp_gameplayblocker_base",
+      "loadBindingFunctions": {
+        "OnLoadedActorData": "57d6be6474534663e290c78e52edc9034ab6feeddc85314bf7816c722117a2ae",
+        "ExecuteUbergraph_BP_GameplayBlocker_Base": "90d5ee8fcfc9539e4cc37227eb391574a9a9c52d462eba0e7aa91d80df3e5794"
+      },
+      "proof": "Broken=true branch calls Vine.SetCollisionEnabled(0) and Plane.SetCollisionEnabled(0); 0 is NoCollision. Save restoration binding is recorded separately in the format notes."
+    },
+    {
+      "id": "fogdoor-passability",
+      "classAsset": "/game/pbzcontent/blueprint/item/bp_fogdoor",
+      "componentClass": "SplineMeshComponent",
+      "savedField": "Open",
+      "runtimePredicate": "all selected components have query collision disabled or do not block Pawn",
+      "omitWhen": true,
+      "proofFunction": "ExecuteUbergraph_BP_FogDoor",
+      "proofFunctionSHA256": "0aaa6d776a612a4780ea722d776023922e45565a532e1c366631e67dcff08a74",
+      "loadBindingClassAsset": "/game/pbzcontent/blueprint/item/bp_fogdoor",
+      "loadBindingFunctions": {
+        "OnLoadedActorData": "dde896457b4bdc64b49ad9a9aab0bd71afa2421e644db53053d3ca8a4038227d",
+        "UpdateAfterOpen": "312312f308e1d643f8a0070e341e7fcbdd00862a43a2c8f48209d6d65881a10c",
+        "FogDisappearAnim__FinishedFunc": "eb58c5008af61ac8c5dd901a0fd8005402d7f9dd93eae5dcefce3ae5a8b1618c"
+      },
+      "proof": "Saved Open=true restores the disappearing timeline; its bound completion disables all SplineMesh collision. This is a far-side planning state only. Loaded components override it during combat, restoration and animation. Missing records remain unknown/closed."
+    }
+  ]
+}

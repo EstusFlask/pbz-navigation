@@ -23,6 +23,7 @@ function planner(world,options={}){
     if(options.ship)UE.ShipNavigationSystem={StaticClass:()=> 'ship'};
     const mocks={ue:UE,puerts:{},'Library/TsHelper':{default:{getWorldSubsystem:(p,t)=>t==='map'?map:t==='ship'?options.ship:{}}},'Library/MapAreaGroups':{},
         './PBZRouteTables':{data:{worlds:[level],bells:Object.fromEntries((options.bells||[]).map(b=>[b.id.toLowerCase(),b])),areas:options.areas||{}}},
+        './PBZRouteRecast':options.recast||{RecastCache:class{covers(){return false;}}},
         './PBZRouteWorld':W,'./PBZRoutePassages':options.passages||{refreshLadders(){},resetLadders(){},isLookout:()=>false,liveRouteJob:empty},
         './PBZRouteDrops':{installJob:empty},'./PBZRouteObstacles':{...require(root+'/PBZRouteObstacles'),installSeamsJob:empty},
         './PBZRouteSurface':{...require(root+'/PBZRouteSurface'),anchorsJob:function*(g,q,goal){return [{id:goal?1:0,q:{...q},r:0,dz:0}];}},
@@ -30,6 +31,7 @@ function planner(world,options={}){
     if(options.localWalk)mocks['./PBZRouteLocalWalk']=options.localWalk;
     if(options.repair)mocks['./PBZRouteRepair']=options.repair;
     if(options.roadbook)mocks['./PBZRouteRoadbook']=options.roadbook;
+    if(options.guides)mocks['./PBZRouteGuides']=options.guides;
     if(options.bells){const array=xs=>({Num:()=>xs.length,Get:i=>xs[i]});const bellService={ActivateBellIDs:array(options.activeBellIDs||options.bells.map(b=>b.id)),DisableTeleportBellIDs:array([])};
         mocks['Library/TsHelper'].default.getWorldSubsystem=(p,t)=>t==='map'?map:t==='ship'?options.ship:bellService;}
     if(options.surface)mocks['./PBZRouteSurface']=options.surface;
@@ -43,6 +45,22 @@ function planner(world,options={}){
     return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:level}};
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
+
+test('a covered Recast request bypasses old guides and keeps live physics checks',()=>{
+ const world={floorAt:p=>p,step:(a,b)=>({p:b})},recast={RecastCache:class{constructor(){this.revision=1;}covers(){return true;}*route(world,a,b){yield;return {world,provider:'recast',points:[a,b],checks:[],gates:[],moves:[],walks:[],meters:10,partial:false};}}};
+ const h=planner(world,{recast,guides:{plan(){throw Error('old guide consulted for a covered Recast request');}}});
+ h.goal.z=0;const trip=run(h.api.makePlan(h.dest));assert.equal(trip.legs[0].provider,'recast');assert.equal(trip.legs[0].physicalVerified,true);
+ world.step=()=>({why:'closed wall',hit:{x:50,y:0,z:0}});
+ const blocked=planner(world,{recast,guides:{plan(){throw Error('old guide consulted');}}});blocked.goal.z=0;
+ const rejected=run(blocked.api.makePlan(blocked.dest));assert.ok(!rejected||rejected.legs[0].diagnostic||rejected.legs[0].partial);
+});
+
+test('a failed regional bootstrap remains visible in the route status after a null result',()=>{
+ const recast={RecastCache:class{constructor(){this.revision=1;this.error='initialize: CompileError: Wasm code generation disallowed by embedder';this.ready=false;}covers(){return true;}*route(){return null;}}};
+ let now=1000;const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,recast,now:()=>now});h.goal.z=0;
+ h.api.arm(h.dest);h.api.solve(h.dest,'selection');h.api.planning.pump();h.api.pollStatus();
+ assert.match(h.api.S.routeStatus,/导航暂不可用/);now+=1000;h.api.pollStatus();assert.match(h.api.S.routeStatus,/导航暂不可用/);
+});
 
 test('the reported near currency delivers a checked loaded route before optional bell estimates',()=>{
  const field=require('./fixtures/currency-180-20261115.json');let optional=0;

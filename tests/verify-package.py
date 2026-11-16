@@ -62,6 +62,7 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     if flavor=='development':package_documents['DEVELOPMENT-SURVEYS.md']=root/'docs/DEVELOPMENT-SURVEYS.md'
     names=set(z.namelist())
     assert len(names)==len(z.namelist()), 'duplicate archive paths'
+    assert not any(Path(n).suffix.lower() in {'.exe','.com','.scr','.msi'} for n in names), 'executable included in Mod package'
     expected={p.relative_to(nav).as_posix() for p in nav.rglob('*') if p.is_file() and included(p.relative_to(nav).as_posix(),flavor)}
     expected.update(scripts+'PBZRouteStreaming/'+name for name in stream_state['files'])
     assert names==expected|set(package_documents), 'incomplete navigation package'

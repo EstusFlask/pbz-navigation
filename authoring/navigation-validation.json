@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "objective": "Complete and validate navigation for the current game version through short field cases, generic fixes, directed coverage and save-state tests",
+  "objective": "Reconstruct full-world walking navigation from installed-game collision through Recast/Detour, then integrate verified special actions, conditions and live guidance; validate offline, host integration and field acceptance separately",
   "roadmap": "docs/NAVIGATION-TODO.md",
   "timezone": "America/Tijuana",
-  "currentBuild": "1.8.3",
+  "currentBuild": "1.9.2",
   "currentPhase": "A",
   "activeCase": "ROUTE-001",
-  "currentAction": "Heybox material archived on user request; restore original atlas/native/scene navigation sources while preserving existing fixes. Explain architecture and prior UE/open-source adoption. Existing field acceptance unchanged; no new live pass claimed.",
+  "currentAction": "Fix confirmed 1.9.1 game-host WASM code-generation prohibition with Binaryen-translated JavaScript runtime; reproduce under the same V8 restriction, retain upstream Detour and regional data. Restore visible status with explicit viewport layout, cooked font and visibility refresh. Persistent full-world state: docs/OFFLINE-NAVIGATION-STATE.md. Actual 1.9.2 field acceptance pending.",
   "fieldSession": "build/field-1.8.0-no-routes",
   "recording": "Session ended with game exit;12 reports and completed post windows imported read-only. No external listener or background capture started.",
   "installedAudit": {
@@ -796,5 +796,6 @@
     "reference": "authoring/route-001-reference-1.8.1-20261115.json",
     "compiledIntoRoutes": false
   },
-  "heyboxArchive": "archive/heybox-20261115/manifest.json"
+  "heyboxArchive": "archive/heybox-20261115/manifest.json",
+  "persistentState": "docs/OFFLINE-NAVIGATION-STATE.md"
 }

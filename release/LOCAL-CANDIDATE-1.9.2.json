@@ -1,0 +1,105 @@
+{
+  "version": "1.9.2",
+  "branch": "codex/offline-recast-navigation",
+  "clientDate": "2026-11-15",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.2.zip",
+      "bytes": 129179738,
+      "sha256": "19eec4775df53f5114938d6032d64988c3060d1b1011974b8cfd4ae68cd28c49",
+      "files": 1496,
+      "forbiddenExecutables": [],
+      "wasmFiles": [],
+      "privateArtifacts": [],
+      "tileDataIdenticalTo191": true,
+      "profile": {
+        "version": "1.9.2",
+        "flavor": "release",
+        "label": "1.9.2",
+        "development": false,
+        "sourceSHA256": "d42681de1eb6179af877c0736ba6066cd37dcbc354740a3269a681bbd6f5df7d",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.2_Development.zip",
+      "bytes": 129202521,
+      "sha256": "884f6a685e0fc8a97c7f561b0b063f412f49a194a7506a271c9b55e08e864091",
+      "files": 1503,
+      "forbiddenExecutables": [],
+      "wasmFiles": [],
+      "privateArtifacts": [],
+      "tileDataIdenticalTo191": true,
+      "profile": {
+        "version": "1.9.2",
+        "flavor": "development",
+        "label": "1.9.2-dev",
+        "development": true,
+        "sourceSHA256": "d42681de1eb6179af877c0736ba6066cd37dcbc354740a3269a681bbd6f5df7d",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 378,
+  "wasmCoreControlsPassed": 9,
+  "luaChecks": "passed",
+  "nativeChecks": "Existing adapter version-only compile passed; ABI suite not rerun",
+  "completePackageChecks": "passed",
+  "confirmedGameFailure": "WebAssembly.Module(): Wasm code generation disallowed by embedder",
+  "runtimeBuild": {
+    "schema": 1,
+    "engine": "recast-navigation@0.44.0",
+    "format": "CommonJS + translated JavaScript",
+    "backend": "javascript-wasm2js",
+    "requiresWebAssembly": false,
+    "bootstrap": "Emscripten instantiateWasm hook backed by ordinary JS",
+    "binaryen": "132.0.0",
+    "upstreamWasmSHA256": "00bafffb2048740b76ca3ec865f49338af65335f6e55b968f8d98b92e8ec92dc",
+    "translation": {
+      "signature": "{\"coreHash\":\"00bafffb2048740b76ca3ec865f49338af65335f6e55b968f8d98b92e8ec92dc\",\"binaryen\":\"132.0.0\",\"options\":[\"--all-features\",\"--emscripten\",\"--deterministic\",\"-O2\"]}",
+      "bytes": 2073137,
+      "sha256": "85a50be852f2ea7981cfa17dc947c67f2417866e198cd27ad31e9812fd5f69a6"
+    },
+    "customExecutable": false,
+    "newNativeLibrary": false,
+    "bytes": 3496807,
+    "sha256": "e58e68118aa2f17b4606e03846ace4faa7abbf5fa9efcdb66cf188d1ccced9bd"
+  },
+  "restrictedV8Regression": {
+    "stringsCodeGeneration": false,
+    "wasmCodeGeneration": false,
+    "old191CoreReproducesSameError": true,
+    "newCoreInitializesAndPlansCapturedTargets": true,
+    "nearFinishWithDistantClosedDoor": true,
+    "worksWithoutAnyWasmAPI": true
+  },
+  "queryParity": {
+    "reference": "Pinned upstream WASM on identical real regional data",
+    "corridorCountsAndPointCountsMatch": true,
+    "maxCoordinateDifferenceBoundCm": 0.01
+  },
+  "uiChanges": [
+    "Cooked PBZCommonLocText reuse with SetPBZFormatText",
+    "Explicit viewport/DPI size and high noninteractive layer",
+    "Restore visibility/opacity/attachment when text is unchanged"
+  ],
+  "actualUIVisualAcceptance": false,
+  "fieldInput": "tests/fixtures/recast-191-codegen-20261115.json",
+  "installed": false,
+  "uploaded": false,
+  "gameStarted": false,
+  "saveWritten": false,
+  "actualGameAcceptance": "Pending; latest actual result is the user-confirmed 1.9.1 failure",
+  "persistentState": "docs/OFFLINE-NAVIGATION-STATE.md",
+  "report": "docs/FIELD-FIX-1.9.2.md"
+}

@@ -36,6 +36,9 @@ streamed=root/'build/streamed-atlas'
 stream_state=json.loads((streamed/'manifest.json').read_text(encoding='utf-8'))
 scripts='ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/'
 print('Packaging complete navigation data and navigation-owned adapter...', flush=True)
+for file in nav.rglob('*'):
+    if file.is_file() and file.suffix.lower() in {'.exe', '.com', '.scr', '.msi'}:
+        raise SystemExit('Executable distributions are prohibited: '+str(file.relative_to(nav)))
 for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]:
  output=root/archive_name(version,flavor)
  with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:

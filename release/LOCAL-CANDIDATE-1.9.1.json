@@ -1,0 +1,87 @@
+{
+  "version": "1.9.1",
+  "branch": "codex/offline-recast-navigation",
+  "clientDate": "2026-11-15",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.1.zip",
+      "bytes": 129060337,
+      "sha256": "2fc29f6f74b3f6e797db334313a2af2ddddafa0e5072da0886e039d79f3bba6e",
+      "files": 1496,
+      "forbiddenExecutableFiles": [],
+      "privateArtifacts": [],
+      "recastDataIdenticalTo190": true,
+      "profile": {
+        "version": "1.9.1",
+        "flavor": "release",
+        "label": "1.9.1",
+        "development": false,
+        "sourceSHA256": "5fc0177dba5887f0254b7b6002cb08655137ed16c91da45d0b709d703392f877",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.1_Development.zip",
+      "bytes": 129083122,
+      "sha256": "98a4b9135393874351a25d7958ad03d831ff1e3873f147a7a90a173fecee14c5",
+      "files": 1503,
+      "forbiddenExecutableFiles": [],
+      "privateArtifacts": [],
+      "recastDataIdenticalTo190": true,
+      "profile": {
+        "version": "1.9.1",
+        "flavor": "development",
+        "label": "1.9.1-dev",
+        "development": true,
+        "sourceSHA256": "5fc0177dba5887f0254b7b6002cb08655137ed16c91da45d0b709d703392f877",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 372,
+  "wasmCoreControlsPassed": 9,
+  "luaChecks": "passed",
+  "nativeChecks": "Existing adapter version-only build passed; ABI suite not rerun",
+  "completePackageChecks": "passed",
+  "runtimeBuild": {
+    "schema": 1,
+    "engine": "recast-navigation@0.44.0",
+    "format": "CommonJS + embedded WebAssembly",
+    "bootstrap": "synchronous WebAssembly.Module/Instance through Emscripten instantiateWasm",
+    "wasmSHA256": "00bafffb2048740b76ca3ec865f49338af65335f6e55b968f8d98b92e8ec92dc",
+    "customExecutable": false,
+    "newNativeLibrary": false,
+    "bytes": 1196281,
+    "sha256": "d61db050f822ec1b83be6a41f4e6c111d6a4626cd18de629e0b031a289de9983"
+  },
+  "upstreamCoreIdentity": {
+    "bytes": 340097,
+    "sha256": "00bafffb2048740b76ca3ec865f49338af65335f6e55b968f8d98b92e8ec92dc",
+    "upstreamCoreUnchanged": true
+  },
+  "fieldInput": "tests/fixtures/recast-190-selections-20261115.json",
+  "reproduction": "Original 1.9.0 core stalls with asynchronous WebAssembly tasks unserviced; new core completes captured endpoints in the same isolated host. Actual game host scheduling was not captured.",
+  "fixes": [
+    "Synchronous WebAssembly.Module/Instance via supported Emscripten instantiateWasm hook",
+    "Initialization phase/progress and 10s timeout",
+    "Propagate synchronous compile errors",
+    "Bounded per-frame tile loading"
+  ],
+  "installed": false,
+  "uploaded": false,
+  "gameStarted": false,
+  "saveWritten": false,
+  "actualGameAcceptance": "Pending; 1.9.0 user failure remains the last actual-host result",
+  "persistentState": "docs/OFFLINE-NAVIGATION-STATE.md",
+  "report": "docs/FIELD-FIX-1.9.1.md"
+}
