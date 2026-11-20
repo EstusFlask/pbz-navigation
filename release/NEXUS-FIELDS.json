@@ -22,7 +22,7 @@
   "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2.zip",
   "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.2",
   "fileCategory": "Main Files",
-  "fileDescription": "Improved guidance across wall runs, automatic slides and changing mechanisms. / 改善连续跑墙、自动滑坡和机关状态变化时的导航。",
+  "fileDescription": "Experimental navigation across 11 worlds with improved wall runs, automatic slides, grapples and changing mechanisms. / 11 个世界的实验性导航，改善连续跑墙、自动滑坡、钩索和机关通路引导。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -68,9 +68,14 @@
       "url": "https://www.nexusmods.com/phantombladezero/mods/173"
     }
   ],
-  "permissionEvidence": null,
+  "permissionEvidence": {
+    "status": "confirmed-by-user",
+    "date": "2026-11-20",
+    "scope": "Publication of the requested 1.11.2 and 1.9.4 builds on Nexus Mods #994",
+    "source": "User confirmed that permission from the original author had already been obtained."
+  },
   "published": true,
-  "lastVerifiedNexusVersion": "1.3.5",
+  "lastVerifiedNexusVersion": "1.11.2",
   "modUrl": "https://www.nexusmods.com/phantombladezero/mods/994",
   "latestTextUpdate": {
     "date": "2026-11-14",
@@ -112,15 +117,18 @@
     "verifiedOnPublicPage": true
   },
   "latestFileUpdate": {
-    "date": "2026-11-14",
-    "version": "1.3.1",
-    "fileId": 4025,
-    "replacesFileId": 4023,
+    "date": "2026-11-20",
+    "version": "1.11.2",
+    "fileId": 4697,
+    "replacesFileId": 4030,
     "previousFileArchived": true,
-    "scanStatus": "not_monitored",
-    "publicFileDescriptionVerified": true,
-    "lastObservedScanStatus": "pending",
-    "scanMonitoring": false
+    "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2.zip",
+    "optionalFileId": 4696,
+    "optionalFileVersion": "1.9.4",
+    "publicFilesUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
+    "publicFilesVerified": true,
+    "scanMonitoring": false,
+    "evidence": "release/LOCAL-CANDIDATE-1.11.2.json"
   },
   "publishingPreferences": {
     "monitorVirusScanAfterUpload": false,
@@ -173,5 +181,5 @@
     }
   ],
   "localCandidateInstalled": false,
-  "localCandidateUploaded": false
+  "localCandidateUploaded": true
 }

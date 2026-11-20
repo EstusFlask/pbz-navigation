@@ -43,9 +43,46 @@
   },
   "installed": false,
   "nexus": {
-    "uploaded": false,
+    "uploaded": true,
     "modId": 994,
-    "confirmedExistingPrimaryVersion": "1.3.5",
-    "originalAuthorPermissionRecordPending": true
+    "confirmedExistingPrimaryVersion": "1.11.2",
+    "originalAuthorPermission": "confirmed-by-user",
+    "uploadedFiles": [
+      {
+        "fileId": 4697,
+        "version": "1.11.2",
+        "name": "Quest and Exploration Navigation - Fork 1.11.2",
+        "category": "Main",
+        "primary": true,
+        "publishedListingVerified": true,
+        "description": "Experimental navigation across 11 worlds with improved wall runs, automatic slides, grapples and changing mechanisms. / 11 个世界的实验性导航，改善连续跑墙、自动滑坡、钩索和机关通路引导。",
+        "changelog": [
+          "Expanded collision-based navigation to 11 worlds. / 碰撞重建导航扩展到 11 个世界。",
+          "Improved wall-run, automatic-slide, grapple and collapsed-bridge guidance. / 改善连续跑墙、自动滑坡、钩索和塌桥引导。",
+          "Routes recalculate as mechanisms or movement options change. / 随机关和移动能力变化重新规划路线。",
+          "Reduced repeated route loading and spread checks across frames. / 减少重复加载，将路线检查分散到多个画面帧。"
+        ],
+        "changelogVerifiedOnPublicPage": true
+      },
+      {
+        "fileId": 4696,
+        "version": "1.9.4",
+        "name": "Quest and Exploration Navigation 1.9.4 Lite",
+        "category": "Optional",
+        "publishedListingVerified": true,
+        "description": "Smaller standalone edition with the earlier regional navigation data. Install one edition. / 独立安装的小体积版，保留早期区域导航数据。两版选装其一。",
+        "changelog": [
+          "Improved line continuity while walking and floor checks across narrow seams. / 改善行走时的引导线连续性和窄接缝地面检查。"
+        ],
+        "changelogVerifiedOnPublicPage": true
+      }
+    ],
+    "publicFilesUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
+    "archivedPreviousPrimary": {
+      "fileId": 4030,
+      "version": "1.3.5"
+    },
+    "scanMonitoring": false,
+    "evidence": "build/nexus-release-1.11.2/nexus-files.jpg"
   }
 }
