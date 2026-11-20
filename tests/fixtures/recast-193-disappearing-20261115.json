@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "version": "1.9.3-dev",
+  "userReport": "A previously visible line disappears while walking; user pressed heavy attack when it happened",
+  "cases": [
+    {
+      "caseId": "20261116T030445274Z-001",
+      "markerAt": "2026-11-16T03:07:12.091Z",
+      "target": "item:pangzhen/pbz:world:pbz-survey:b03:end",
+      "lastFeet": {
+        "x": -175550.92904292778,
+        "y": 119003.34480796102,
+        "z": -4069.1422914678315
+      },
+      "routeVersion": 63,
+      "linePoints": 220,
+      "renderedRows": 1,
+      "cachedRenderedPoints": 28,
+      "threadEnd": {
+        "x": -176465.5937499999,
+        "y": 119162.73437499984,
+        "z": -4075.046594862912
+      },
+      "branchOK": true,
+      "physicalMode": 1,
+      "displayMode": "Always",
+      "guideProbes": 128,
+      "guideHits": 0,
+      "nativeVisibilityCaptured": false,
+      "leg": {
+        "partial": true,
+        "diagnostic": true,
+        "scenePartial": false,
+        "physicalVerified": false,
+        "verifiedEndIndex": 219
+      },
+      "file": "build/field-recast-193-disappearing/PBZQuestRoute-dev-20261116T030445274Z-001.json",
+      "sha256": "7ddbaa7286dd549017a0ba362cab5e44353e439f745961cc75b1507452e99377"
+    },
+    {
+      "caseId": "20261116T030445274Z-002",
+      "markerAt": "2026-11-16T03:07:17.359Z",
+      "target": "item:pangzhen/pbz:world:pbz-survey:b03:end",
+      "lastFeet": {
+        "x": -178297.53971250638,
+        "y": 119228.510683504,
+        "z": -4116.600936209792
+      },
+      "routeVersion": 65,
+      "linePoints": 846,
+      "renderedRows": 4,
+      "cachedRenderedPoints": 115,
+      "threadEnd": {
+        "x": -180913.4218697582,
+        "y": 119446.36720295224,
+        "z": -4136.9353564124885
+      },
+      "branchOK": true,
+      "physicalMode": 1,
+      "displayMode": "Always",
+      "guideProbes": 128,
+      "guideHits": 0,
+      "nativeVisibilityCaptured": false,
+      "leg": {
+        "partial": true,
+        "diagnostic": null,
+        "scenePartial": true,
+        "physicalVerified": true,
+        "verifiedEndIndex": null
+      },
+      "file": "build/field-recast-193-disappearing/PBZQuestRoute-dev-20261116T030445274Z-002.json",
+      "sha256": "4ec12eed19102fc5d630afb0e8d94743aac5ecc56dc24becdd0cd4550e373df3"
+    }
+  ],
+  "installedMatches": {
+    "PBZQuestRoute.js": true,
+    "PBZPrivateRibbon.js": true,
+    "PBZRouteWorld.js": true,
+    "PBZRouteObstacles.js": true,
+    "PBZRecastRuntime.js": true
+  },
+  "evidence": {
+    "loader.log": {
+      "file": "build/field-recast-193-disappearing/loader.log",
+      "sha256": "cb94bb6f873a24ccf20de6c468c24b47d4343af8916eb9e8033d22650c86ebd7"
+    },
+    "route-log.txt": {
+      "file": "build/field-recast-193-disappearing/route-log.txt",
+      "sha256": "c7271f7e47109e432e9ff497204e6ce9a56afb11d2d46f92648e8cc81ac40aca"
+    }
+  }
+}

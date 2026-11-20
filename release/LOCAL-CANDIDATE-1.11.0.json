@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "version": "1.11.0",
+  "branch": "codex/recast-routing-193",
+  "clientDate": "2026-11-16",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.0.zip",
+      "bytes": 2499727511,
+      "installedBytes": 3650543028,
+      "files": 5182,
+      "worldFiles": 3643,
+      "profile": {
+        "version": "1.11.0",
+        "flavor": "release",
+        "label": "1.11.0",
+        "development": false,
+        "sourceSHA256": "78f6edbd293d2638c15c10184c7e102e46273c8a531b8c227bb4f5fb52fae3ab",
+        "captureSchema": 1
+      },
+      "runtimeSHA256": "01da696746f3c8fd72a4e7b41265c639b8975e95059d94eb4d2b56cf718df133",
+      "adapterSHA256": "52aa985e27443fcf39085b73f853415fc750a83ac3823d149cc860371b8ff97e",
+      "sha256": "0c017298a720cb4af4e07ce39a80d15c85e3c0165bd541555e76492055c0982a",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sourceSHA256Passed": true
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.0_Development.zip",
+      "bytes": 2499750639,
+      "installedBytes": 3650647900,
+      "files": 5189,
+      "worldFiles": 3643,
+      "profile": {
+        "version": "1.11.0",
+        "flavor": "development",
+        "label": "1.11.0-dev",
+        "development": true,
+        "sourceSHA256": "78f6edbd293d2638c15c10184c7e102e46273c8a531b8c227bb4f5fb52fae3ab",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "5b157e3a8d814685953cdfaedc7412e3d2ce4f1a75e215aaa9db93c5f386faf1",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      },
+      "runtimeSHA256": "01da696746f3c8fd72a4e7b41265c639b8975e95059d94eb4d2b56cf718df133",
+      "adapterSHA256": "52aa985e27443fcf39085b73f853415fc750a83ac3823d149cc860371b8ff97e",
+      "sha256": "4560882f3248c4c233a062e1cbd75590a3d53c071328da441a4f2379638837bc",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sourceSHA256Passed": true
+    }
+  ],
+  "gameAcceptance": false,
+  "installed": true,
+  "storage": {
+    "kind": "deflate-text-v1",
+    "worldDataFiles": 3643,
+    "worldDataBytes": 3169926559,
+    "unchangedFrom": "1.10.1"
+  },
+  "movementProposals": {
+    "worlds": 11,
+    "rows": 12872,
+    "pages": 28,
+    "independentCollisionSamples": 1206,
+    "independentCollisionFailures": 0,
+    "source": "cooked collision/Detour/placed interactions; no player observations"
+  },
+  "validation": {
+    "jsPassed": 413,
+    "worldPipelinePassed": 11,
+    "componentPassed": 7,
+    "luaPassed": true,
+    "nativeABIPassed": true,
+    "installationTransactionPassed": 2,
+    "knownLimitations": [
+      "No new game acceptance",
+      "Proposals require current live conditions and physics",
+      "Five dense proposal windows exceed unchanged resident budget; bounded runtime discovery remains available",
+      "Multi-grid geometry remains isolated"
+    ]
+  },
+  "installationReceipt": "release/INSTALLATION-1.11.0.json",
+  "finalMechanismReloadRefreshPending": false
+}

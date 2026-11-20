@@ -29,7 +29,7 @@ function* repair(world,source,failure,origin,options={}){
    from:prefix[from],to:p,rejoinDistance:distance,budgetMs:Math.max(0,Math.round(deadline-clock()))});
   let detour=null,localResult;
   if(options.traverse&&Math.abs(prefix[from].z-p.z)>120)detour=yield* options.traverse(prefix[from],p,{deadline});
-  if(!detour&&clock()<deadline)detour=yield* Local.search(world,prefix[from],p,{hints:require('./PBZRouteWalkHints').forWorld(source.world),maxNodes:700,maxMs:Math.max(1,Math.min(1200,deadline-clock())),clock,
+  if(!detour&&clock()<deadline)detour=yield* Local.search(world,prefix[from],p,{hints:options.hints===undefined?require('./PBZRouteWalkHints').forWorld(source.world):options.hints,maxNodes:700,maxMs:Math.max(1,Math.min(1200,deadline-clock())),clock,
    report:(phase,result)=>{if(phase==='scene walking result')localResult=result;}});
   if(!detour&&options.traverse&&clock()<deadline)detour=yield* options.traverse(prefix[from],p,{deadline});
   options.report?.('local detour result',{world:source.world,found:!!detour,reason:detour?'checked connector':localResult?.reason||(clock()>=deadline?'time budget':'no checked connector'),
@@ -44,11 +44,17 @@ function* repair(world,source,failure,origin,options={}){
   for(const m of source.moves||[])if(indices.has(m.from)&&indices.has(m.to))moves.push({...m,from:indices.get(m.from),to:indices.get(m.to)});
   const known=[...(meta.walks||[]).filter(w=>w.to<=from),...(detour.walks||[]).map(w=>({...w,from:ds[w.from],to:ds[w.to]})),
    ...(source.walks||[]).filter(w=>indices.has(w.from)&&indices.has(w.to)).map(w=>({...w,from:indices.get(w.from),to:indices.get(w.to)}))];
-  for(let i=0;i+1<points.length;i++)if(!moves.some(m=>m.from<=i&&m.to>i))walks.push({a:points[i],b:points[i+1],from:i,to:i+1,
-   edge:known.find(w=>w.from<=i&&w.to>i)?.edge??(i===tailStart?failure.edge:-1)});
+  for(let i=0;i+1<points.length;i++)if(!moves.some(m=>m.from<=i&&m.to>i)){
+   const walk=known.find(w=>w.from<=i&&w.to>i);
+   walks.push({a:points[i],b:points[i+1],from:i,to:i+1,edge:walk?.edge??(i===tailStart?failure.edge:-1),
+    ...(walk?.movement?{movement:walk.movement}:{})});
+  }
   const checks=[...(meta.checks||[]).filter(c=>c.to<=from),...(detour.checks||[]).map(c=>({...c,from:ds[c.from],to:ds[c.to]})),
    ...(source.checks||[]).filter(c=>indices.has(c.from)&&indices.has(c.to)).map(c=>({...c,from:indices.get(c.from),to:indices.get(c.to)}))];
-  const candidate={...source,points,moves,checks,obstacles:[],partial:false,scenePartial:false,repaired:true,walks,meters:R.extent(points)/100};
+  // A local bypass proves only this connector. It cannot complete the
+  // provider's disconnected corridor or erase its unresolved destination.
+  const obstacles=(source.obstacles||[]).filter(o=>!/^route:(?:audit:|blocked)/.test(String(o.id||'')));
+  const candidate={...source,points,moves,checks,obstacles,partial:!!source.partial||source.topologyComplete===false,scenePartial:false,repaired:true,walks,meters:R.extent(points)/100};
   const verdict=yield* Feasible.check(world,candidate,origin);
   options.report?.('local detour validation',{world:source.world,ok:verdict.ok,partial:!!verdict.leg?.partial,reason:verdict.why||'checked',edge:verdict.edge});
   const result={candidate,verdict};

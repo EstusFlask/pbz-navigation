@@ -36,11 +36,11 @@ class Planner {
    do{result=job.iterator.next();steps++;if(result.done)break;}while(steps<192&&this.clock()-t<2);
   }catch(error){
    job.budget.active=null;
-   this.cancel('planner error');this.failed=job.request;this.report('planner error',String(error));job.done(null,job.request,{error:String(error)});return true;
+   this.cancel('planner error');this.failed={...job.request,failureCause:'error'};this.report('planner error',String(error));job.done(null,job.request,{error:String(error)});return true;
   }
   const elapsed=this.clock()-t;job.budget.cpu+=elapsed;job.budget.active=null;job.cpu+=elapsed;job.pumps++;job.maxSlice=Math.max(job.maxSlice,elapsed);this.stats.pumps++;this.stats.steps+=steps;this.stats.maxSlice=Math.max(this.stats.maxSlice,elapsed);
   if(elapsed>50){
-   this.cancel('slow native or setup step');this.failed=job.request;
+   this.cancel('slow native or setup step');this.failed={...job.request,failureCause:'paused'};
    this.report('planner paused',job.request.key+' step='+Math.round(elapsed)+'ms; explicit retry required');
    job.done(null,job.request,{cpu:Math.round(job.cpu),wall:Math.round(this.clock()-job.started),paused:true});return true;
   }
@@ -49,7 +49,7 @@ class Planner {
    const metrics={cpu:Math.round(job.cpu),wall:Math.round(this.clock()-job.started),pumps:job.pumps,maxSlice:+job.maxSlice.toFixed(2)};
    this.report('planner finished',job.request.key+' '+JSON.stringify(metrics)+' found='+!!result.value);job.done(result.value,job.request,metrics);
   }else if(this.clock()-job.started>30000){
-   this.cancel('planning time limit');this.failed=job.request;job.done(null,job.request,{timeout:true,cpu:Math.round(job.cpu),wall:Math.round(this.clock()-job.started)});
+   this.cancel('planning time limit');this.failed={...job.request,failureCause:'timeout'};job.done(null,job.request,{timeout:true,cpu:Math.round(job.cpu),wall:Math.round(this.clock()-job.started)});
   }
   return true;
  }

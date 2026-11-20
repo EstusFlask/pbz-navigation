@@ -10,8 +10,14 @@ function componentPassable(component,UE){
  const response=Number(component.GetCollisionResponseToChannel(UE.ECollisionChannel?.ECC_Pawn??2));
  return [0,1,2].includes(response)?response!==2:undefined;
 }
-function read(pawn,index,api,classCache=new Map()){
- const {UE,P,T,alive}=api,states={},wanted=new Map(index.actors.map(a=>[a.name.toLowerCase(),a]));
+const enumerated=Symbol('actor enumeration');
+function* readJob(pawn,index,api,classCache=new Map()){
+ const {UE,P,T,alive}=api,states={},groups=new Map();
+ for(const item of index.actors){
+  const key=JSON.stringify([item.classAsset,item.nativeActorClass,item.actorTag]);
+  if(!groups.has(key))groups.set(key,new Map());
+  groups.get(key).set(item.name.toLowerCase(),item);
+ }
  let manager;
  if(UE.PBZLevelActorManager?.StaticClass&&UE.JsonObjectWrapper&&UE.JSONUtility?.TryGetBoolField)
   manager=T.getWorldSubsystem(pawn,UE.PBZLevelActorManager.StaticClass());
@@ -22,14 +28,30 @@ function read(pawn,index,api,classCache=new Map()){
    manager.GetSaveData(item.id,out);UE.JSONUtility.TryGetBoolField(P.$unref(out),item.savedField,value,success);
    if(P.$unref(success)===true&&typeof P.$unref(value)==='boolean')states[item.id]=P.$unref(value);
   }catch(_){/* missing save fields retain closed collision */}
+  yield;
  }
- for(const asset of new Set(index.actors.map(a=>a.classAsset))){
+ for(const wanted of groups.values()){
+  const {classAsset:asset,nativeActorClass,actorTag}=wanted.values().next().value;
   try{
-   if(!classCache.has(asset)){const name=asset.slice(asset.lastIndexOf('/')+1);classCache.set(asset,UE.Class.Load(asset+'.'+name+'_C'));}
+   if(nativeActorClass&&!actorTag)throw Error('Native collision actor lacks a lookup tag');
+   if(!classCache.has(asset)){
+    const name=asset.slice(asset.lastIndexOf('/')+1);
+    const qualified=asset+'.'+name+'_C';
+    const cls=nativeActorClass?UE[nativeActorClass]?.StaticClass?.():
+     typeof UE.Class.Find==='function'?UE.Class.Find(qualified):UE.Class.Load(qualified);
+    if(cls)classCache.set(asset,cls);
+    yield;
+   }
+   // A class absent from memory may appear when its level streams in.
    const cls=classCache.get(asset);if(!cls)throw Error('Collision class unavailable');
-   const out=P.$ref(undefined);UE.GameplayStatics.GetAllActorsOfClass(pawn,cls,out);const actors=P.$unref(out);
+   const out=P.$ref(undefined);
+   if(actorTag)UE.GameplayStatics.GetAllActorsOfClassWithTag(pawn,cls,actorTag,out);
+   else UE.GameplayStatics.GetAllActorsOfClass(pawn,cls,out);
+   yield enumerated;
+   const actors=P.$unref(out);
    if(!actors||typeof actors.Num!=='function'||actors.Num()>4096)throw Error('Incomplete actor enumeration');
    for(let i=0;i<Math.min(4096,actors?.Num()||0);i++){
+    if(i&&(i&7)===0)yield;
     const actor=actors.Get(i);if(!alive(actor))continue;const item=wanted.get(String(actor.GetName()).toLowerCase());
     if(!item||item.classAsset!==asset)continue;
     // A partially loaded actor must not inherit a far-side saved-open guess.
@@ -41,6 +63,7 @@ function read(pawn,index,api,classCache=new Map()){
      if(!read||!componentClass)continue;const list=read.call(actor,componentClass),selected=[];
      if(!list||typeof list.Num!=='function'||list.Num()>1024)continue;
      for(let j=0;j<Math.min(1024,list?.Num()||0);j++){
+      if(j&&(j&7)===0)yield;
       const c=list.Get(j);if(!alive(c))continue;const name=String(c.GetName()).replace(/_GEN_VARIABLE(?:_\d+)?$/,'');
       if(item.components&&!item.components.includes(name))continue;selected.push(c);
      }
@@ -50,8 +73,29 @@ function read(pawn,index,api,classCache=new Map()){
      else if(values.every(v=>v===true))states[item.id]=true;
     }catch(_){/* state unknown -> closed */}
    }
-  }catch(_){for(const item of index.actors)if(item.classAsset===asset)delete states[item.id];}
+  }catch(_){for(const item of wanted.values())delete states[item.id];}
+  yield;
  }
  return states;
 }
-exports.read=read;exports.componentPassable=componentPassable;
+function read(...args){
+ const job=readJob(...args);let row;
+ do{row=job.next();}while(!row.done);
+ return row.value;
+}
+class Poll {
+ constructor(){this.reset();}
+ reset(){this.job?.return();this.job=null;this.next=0;this.classes=new Map();}
+ step(pawn,index,api,now,clock){
+  if(!this.job){
+   if(now<this.next)return;
+   this.job=readJob(pawn,index,api,this.classes);
+  }
+  for(let i=0;i<4;i++){
+   const row=this.job.next();
+   if(row.done){this.job=null;this.next=clock()+450;return row.value;}
+   if(row.value===enumerated||clock()-now>=2)return;
+  }
+ }
+}
+exports.read=read;exports.componentPassable=componentPassable;exports.Poll=Poll;

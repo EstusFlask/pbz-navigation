@@ -4,6 +4,14 @@ function message(planner,atlas,request,now,english=false){
  const job=planner.job,selected=job?.request||request;
  if(!selected)return '';
  const loading=[...new Set([selected.level,selected.world])].map(id=>atlas.pending.get(id)).find(Boolean);
+ if(!job&&!loading&&planner.failed?.failureCause&&planner.blocked?.(selected)){
+  const reason=planner.failed.failureCause;
+  if(reason==='mechanism')return planner.failed.detail||(english?'The required interaction is unavailable':'所需机关当前不可用');
+  if(reason==='connection')return english?'No verified walking or movement connection to this target':'尚未找到连通目标的步行或动作通路';
+  return reason==='timeout'?(english?'Route calculation timed out; select the target to retry':'路线计算超时，请重新选择目标重试'):
+   reason==='paused'?(english?'Route calculation stopped after a slow step; select the target to retry':'路线计算因耗时过长中断，请重新选择目标重试'):
+   (english?'Route calculation failed; select the target to retry':'路线计算失败，请重新选择目标重试');
+ }
  if(!job&&!loading)return '';
  const started=request?.key===selected.key?request.started:loading?.started??now;
  const seconds=Math.max(0,Math.floor((now-started)/1000));

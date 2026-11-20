@@ -7,7 +7,8 @@ function* check(world,leg,origin,radius=12000){
  const first=world.floorAt(raw[0],true);yield;
  if(!first||Math.abs(first.z-raw[0].z)>200)return {ok:false,edge:-1,why:'start has no matching floor',p:raw[0],unknown:true};
  const points=[first],walks=[],indices=[0];let previous=first,afterAction=false;
- const finish=partial=>({ok:true,leg:{...leg,points,walks,checks:(leg.checks||[]).filter(c=>c.from===undefined||indices[c.from]!==undefined).map(c=>({...c,
+ const included=c=>c.from===undefined||indices[c.from]!==undefined&&(c.kind!==12||indices[c.to??c.from+1]!==undefined);
+ const finish=partial=>({ok:true,leg:{...leg,points,walks,checks:(leg.checks||[]).filter(included).map(c=>({...c,
   ...(c.from===undefined?{}:{from:indices[c.from],to:indices[c.to??c.from+1]??points.length-1})})),
   moves:(leg.moves||[]).filter(m=>indices[m.from]!==undefined&&indices[m.to]!==undefined).map(m=>({...m,from:indices[m.from],to:indices[m.to]})),
   obstacles:partial?[...(leg.obstacles||[]),{id:'scene-frontier',world:leg.world,p:points[points.length-1],unknown:true,icon:'mechanism',label:'前方路线待确认'}]:(leg.obstacles||[]),
@@ -24,10 +25,11 @@ function* check(world,leg,origin,radius=12000){
    segment:action.from,prefix:points.slice(0,n+1),prefixLeg:{...meta,points:points.slice(0,n+1),
     walks:meta.walks.filter(w=>w.to<=n),moves:meta.moves.filter(m=>m.to<=n)}};
  };
+ const walkAt=yield* R.segmentLookup(leg.walks,raw.length-1),moveAt=yield* R.segmentLookup(leg.moves,raw.length-1);
  for(let i=0;i<raw.length-1;i++){
-  const a=raw[i],b=raw[i+1],edge=(leg.walks||[]).find(c=>c.from<=i&&c.to>=i+1)?.edge??-1;
-  const action=(leg.moves||[]).find(m=>m.from!==undefined&&m.to!==undefined&&m.from<=i&&m.to>=i+1);
-  if(action&&!(leg.walks||[]).some(w=>w.from<=i&&w.to>=i+1)){
+  const a=raw[i],b=raw[i+1],walk=walkAt(i),edge=walk?.edge??-1,movement=walk?.movement;
+  const action=moveAt(i);
+  if(action&&!walk){
    const lock=world.blockAt?.(a,b);
    if(lock)return {ok:false,edge:action.edge??-1,why:'locked passage',p:lock.p,a,b,locked:true,block:lock,
     segment:i,prefix:points.slice(),prefixLeg:finish(false).leg};
@@ -48,8 +50,8 @@ function* check(world,leg,origin,radius=12000){
    // Follow the connected physical floor, not the height of a straight chord
    // between sparse navmesh endpoints. Keep the endpoint's floor constraint.
    if(!row.p||j===n&&Math.abs(row.p.z-b.z)>200)return {ok:false,edge,why:row.why||'destination is on another floor',p:row.hit||previous,a,b,
-    unknown:!row.hit,locked:row.locked,block:row.block,collision:row.collision,segment:i,fraction:(j-1)/n,prefix:points.slice(),prefixLeg:finish(false).leg};
-   for(const p of row.points||[row.p])if(R.dist(previous,p)>.1){const from=points.length-1;points.push(p);walks.push({a:previous,b:p,from,to:from+1,edge});previous=p;}
+    unknown:!row.hit,locked:row.locked,block:row.block,collision:row.collision,movement,probeA:{...previous},probeB:{...q},segment:i,fraction:(j-1)/n,prefix:points.slice(),prefixLeg:finish(false).leg};
+   for(const p of row.points||[row.p])if(R.dist(previous,p)>.1){const from=points.length-1;points.push(p);walks.push({a:previous,b:p,from,to:from+1,edge,...(movement?{movement}:{})});previous=p;}
   }
   indices[i+1]=points.length-1;
  }

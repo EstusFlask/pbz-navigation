@@ -47,6 +47,23 @@ test('duplicate timer callbacks do not rebuild a moving ribbon twice within 16 m
     assert.equal(r.drawn.length, before);
 });
 
+test('cached ribbon visibility repairs an externally hidden actor and mesh',()=>{
+ let now=1000,hidden=true,visible=false,meshHidden=true;
+ const {Threads}=load('PBZPrivateRibbon',{ue:{},'./PBZRouteWorld':{alive:o=>!!o},'./PBZRouteFiber':{},Date:{now:()=>now}});
+ const t=new Threads(()=>{}),row={on:false,meshN:1,a:{IsHidden:()=>hidden,SetActorHiddenInGame:value=>{hidden=value;}},fiber:{IsVisible:()=>visible,SetVisibility:value=>{visible=value;},SetHiddenInGame:value=>{meshHidden=value;}}};
+ t.vis(row,true);assert.equal(hidden,false);hidden=true;visible=false;meshHidden=true;now+=300;
+ t.vis(row,true);assert.equal(hidden,false,'cached on=true prevented restoring the actual hidden actor');assert.equal(visible,true);assert.equal(meshHidden,false);
+});
+
+test('a cached ribbon section is rebuilt after its native mesh sections are cleared',()=>{
+ const {Threads}=load('PBZPrivateRibbon',{ue:{},'./PBZRouteWorld':{alive:o=>!!o},'./PBZRouteFiber':{}});
+ const t=new Threads(()=>{});let built=0;
+ const row={on:true,particles:false,meshOn:true,meshN:5,tag:'blue|same',a:{IsHidden:()=>false,SetActorHiddenInGame(){}},fiber:{GetNumSections:()=>0,IsVisible:()=>true,SetVisibility(){},SetHiddenInGame(){}}};
+ t.pool=[row];t.color={key:'blue'};t.make=()=>row;t.shape=()=>{built++;};
+ t.section(0,{pawn:{}},null,0,100,'same',{ps:[{x:0,y:0,z:0},{x:100,y:0,z:0}]});
+ assert.equal(built,1,'the cached geometry tag kept an empty native section invisible');assert.equal(row.meshN,undefined);
+});
+
 test('throttled ribbon callbacks do not re-read capsule feet',t=>{
     const r=ribbon();let reads=0;
     r.state.world.feet=()=>{reads++;return {x:0,y:0,z:0};};
@@ -290,4 +307,63 @@ test('capsule feet follow resized interaction/crouch dimensions instead of a sta
     const ground={h:90,r:40,cap:{GetScaledCapsuleHalfHeight:()=>45,GetScaledCapsuleRadius:()=>30,
         K2_GetComponentLocation:()=>({X:0,Y:0,Z:145})}};
     assert.equal(Ground.prototype.feet.call(ground).z,100);assert.equal(ground.h,45);assert.equal(ground.r,30);
+});
+
+
+test('ribbon preserves a validated jump path across floor adjustment and redraw',()=>{
+ const r=ribbon(),p=(x,z)=>({x,y:0,z});
+ r.state.line=[p(0,0),p(150,0),p(230,80),p(320,100),p(410,0),p(620,0)];
+ r.state.trip.legs[0].points=r.state.line;
+ r.state.trip.legs[0].checks=[{kind:12,from:1,to:4,trajectory:{points:r.state.line.slice(1,5),walkIn:0,launch:'jump'}}];
+ r.state.threadEnd=r.state.line.at(-1);
+ r.state.world.hit=(a,b)=>({point:{...b,z:b.z+105},nz:1});
+ const check=()=>{
+  const {points,offset}=r.threads.route;
+  for(const knot of r.state.line.slice(1,5)){
+   assert.ok(points.some(q=>q.x===knot.x&&q.z===knot.z),'a checked action knot was rounded away');
+   assert.ok(r.threads.pool[0].ps.some(q=>Math.hypot(q.x-knot.x,q.y-knot.y,q.z-knot.z-105)<1e-6),'the drawn head displaced a checked action knot');
+  }
+  for(let i=0;i<points.length;i++)if(points[i].x>=150&&points[i].x<=410)assert.equal(offset[i],0,'floor correction shifted the checked trajectory');
+  assert.ok(points.some((q,i)=>q.x<150&&offset[i]>0),'ordinary approach stopped following the floor');
+ };
+ for(let i=0;i<24;i++){r.threads.show(r.state);r.advance(35);}
+ check();r.state.version++;
+ for(let i=0;i<7;i++){r.threads.show(r.state);r.advance(35);}
+ check();
+});
+
+
+test('a distant action knot uses the same arc to check and clip the drawn ribbon',()=>{
+ const B=require(path.join(root,'PBZRibbonMath')),{RibbonGuard}=require(path.join(root,'PBZRibbonGuard'));
+ const p=(x,z)=>({x,y:0,z});
+ const route=B.road([p(0,0),p(1230,0),p(1268,50),p(1307,80),p(1423,0),p(1900,0)],
+  [{kind:12,from:1,to:4,trajectory:{}}]);
+ const guard=new RibbonGuard(),probes=[];
+ const world={threadHit:(a,b)=>{probes.push([a,b]);return a.x>=1268&&b.x>1268?{point:b}:null;}};
+ let safe=1000;
+ for(let i=0;i<10;i++)safe=guard.check(route,world,1,[],1000,route.length,1000,()=>0);
+ const knot=route.actionKnots[1];
+ assert.equal(safe,knot-12);
+ assert.ok(probes.some(([,b])=>b.x===1268&&b.z===155),'the action knot was absent from the collision probes');
+ const segment=guard.section(1,1100,safe);
+ assert.ok(segment);
+ assert.ok(segment.ps.some(q=>q.x===1230&&q.z===105));
+ assert.ok(segment.ps.every(q=>q.x<1268),'a clipped static section went beyond its last clear segment');
+});
+
+test('static and moving ribbon slices reuse the checked action segments',()=>{
+ const B=require(path.join(root,'PBZRibbonMath')),p=(x,z=0)=>({x,y:0,z});
+ const points=[p(0),p(300),p(355,100),p(420,170),p(500,200),p(565,120),p(620),p(950)];
+ const route=B.road(points,[{kind:12,from:1,to:6,trajectory:{}}]);
+ const frame=B.frame(route,{arc:0},p(0,105),{vx:0,vy:0});
+ const [entry,exit]=route.actionSpans[0];
+ for(const f of [null,frame]){
+  const span=B.section(route,f,0,route.length);
+  assert.deepEqual(span.arcs.filter(s=>s>=entry&&s<=exit),route.actionKnots,
+   'extra samples split the same straight swept segments inside the fixed action');
+  assert.deepEqual(span.ps.filter((_,i)=>span.arcs[i]>=entry&&span.arcs[i]<=exit),
+   points.slice(1,7).map(q=>({...q,z:q.z+105})));
+  const inside=B.section(route,f,entry+3,exit-3);
+  assert.deepEqual(inside.arcs,[entry+3,...route.actionKnots.slice(1,-1),exit-3]);
+ }
 });

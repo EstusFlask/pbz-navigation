@@ -2,7 +2,7 @@
 const R=require('./PBZRouteCore');
 // Read only authored components/vectors. An actor origin, direction arrow or
 // decoration spline alone cannot establish the opposite side of a movement.
-function extract(actor,kind,{location,curve,point}){
+function extract(actor,kind,{location,point}){
  const read=name=>{
   try{
    const value=actor[name],p=location(name)||point(value?.Translation||value);

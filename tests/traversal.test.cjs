@@ -4,9 +4,13 @@ const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/m
 function fixture(){
  const module={exports:{}},UE={ESplineCoordinateSpace:{World:0}},W={alive:o=>!!o,plain:p=>p?{x:p.X,y:p.Y,z:p.Z}:null};
  const mocks={ue:UE,puerts:{$ref:value=>({value}),$unref:ref=>ref.value},'./PBZRouteWorld':W};
- vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRoutePassages.js','utf8')+'\nexports.placedCurve=placedCurve;})',{Date,console})
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRoutePassages.js','utf8')+'\nexports.placedCurveJob=placedCurveJob;})',{Date,console})
   (id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id)),module,module.exports);
- return {...module.exports,UE};
+ return {...module.exports,UE,placedCurve(actor,kind){
+  const job=module.exports.placedCurveJob(actor,kind);
+  let result;do{result=job.next();}while(!result.done);
+  return result.value;
+ }};
 }
 const v=(X,Y=0,Z=0)=>({X,Y,Z}),at=(...args)=>({K2_GetComponentLocation:()=>v(...args)}),actor=props=>({K2_GetActorLocation:()=>v(0),...props});
 const plain=x=>JSON.parse(JSON.stringify(x));

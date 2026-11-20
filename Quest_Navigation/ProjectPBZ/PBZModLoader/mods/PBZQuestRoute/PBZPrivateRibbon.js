@@ -11,13 +11,25 @@ class Threads{
   // Use one owned mesh, never a history of stock bell particles. Updating
   // vertices replaces the old strand even while the player turns in place.
   const particles=false,mesh=!!on&&!!r.fiber&&!r.fiberOff&&r.meshN!==undefined;
-  if(r.on===on&&r.particles===particles&&r.meshOn===mesh)return;
+  const now=Date.now();
+  if(r.on===on&&r.particles===particles&&r.meshOn===mesh){
+   if(now<(r.visibilityProbeAt||0))return true;r.visibilityProbeAt=now+250;
+   if(typeof W.alive==='function'&&!W.alive(r.a)){r.on=false;r.meshOn=false;return false;}
+   let drift=false;try{
+    if(mesh&&typeof r.fiber.GetNumSections==='function'&&r.fiber.GetNumSections()===0){r.meshN=undefined;r.on=false;r.meshOn=false;return false;}
+    const hidden=typeof r.a.IsHidden==='function'?r.a.IsHidden():r.a.bHidden;
+    const visible=r.fiber?.IsVisible?.(),hiddenMesh=r.fiber?.bHiddenInGame;
+    drift=typeof hidden==='boolean'&&hidden!==(!particles&&!mesh)||typeof visible==='boolean'&&visible!==mesh||typeof hiddenMesh==='boolean'&&hiddenMesh!==!mesh;
+   }catch(_){drift=true;}
+   if(!drift&&now<(r.visibilityRefreshAt||0))return true;
+   if(drift)r.visibilityRepairs=(r.visibilityRepairs||0)+1;
+  }
   r.a.SetActorHiddenInGame(!particles&&!mesh);
   r.n?.SetVisibility?.(false,false);r.n?.SetHiddenInGame?.(true,false);
   r.fiber?.SetVisibility?.(mesh,true);r.fiber?.SetHiddenInGame?.(!mesh,true);
   if(r.n?.DeactivateImmediate)r.n.DeactivateImmediate();else r.n?.Deactivate?.();r.lit=false;
-  r.on=on;r.particles=particles;r.meshOn=mesh;}
- hide(){for(const r of this.pool)this.vis(r,false);this.lastDraw=null;}
+  r.on=on;r.particles=particles;r.meshOn=mesh;r.visibilityProbeAt=now+250;r.visibilityRefreshAt=now+1000;return true;}
+ hide(reason='not requested'){this.lastHiddenReason=reason;for(const r of this.pool)this.vis(r,false);this.lastDraw=null;}
  make(i,pawn,at){let row=this.pool[i];if(row&&W.alive(row.a))return row;
   const hd=i===0;let sys;
   // A private stock NiagaraActor: no Bell blueprint, checkpoint component,
@@ -43,11 +55,11 @@ class Threads{
   const r=this.route;let probes=0;
   const sample=(s,terminal=false)=>{
    const i=terminal?r.points.length-1:B.index(r,s),key=i;
-   if(this.seenFloor.has(key)||probes>=7)return;probes++;const p=r.points[i];
+   if(r.fixed[i]||this.seenFloor.has(key)||probes>=7)return;probes++;const p=r.points[i];
    const hit=w.hit({...p,z:p.z+79},{...p,z:p.z-80});if(!hit||hit.penetrating||hit.nz<w.normal-.03)return;
    this.seenFloor.add(key);const dz=hit.point.z-p.z;if(Math.abs(dz)>78)return;
    const center=r.arc[i],lo=B.index(r,Math.max(0,center-165)),hi=Math.min(r.points.length-1,B.index(r,Math.min(r.length,center+165))+1);
-   for(let j=lo;j<=hi;j++){const gap=Math.abs(r.arc[j]-center),old=this.floorDistance[j];if(gap>=old||gap>160)continue;
+   for(let j=lo;j<=hi;j++){const gap=Math.abs(r.arc[j]-center),old=this.floorDistance[j];if(r.fixed[j]||gap>=old||gap>160)continue;
     this.floorDistance[j]=gap;this.floorGoal[j]=dz;if(Math.abs(r.offset[j]-dz)>.5)this.adjusting.add(j);}
   };
   if(r.length-m.arc<2000)sample(r.length,true);
@@ -56,12 +68,12 @@ class Threads{
  }
  section(i,S,f,a,b,shapeKey,checkedSlice){
   if(shapeKey!==null)shapeKey=this.color.key+'|'+shapeKey;
-  const present=this.pool[i];if(present?.on&&shapeKey!==null&&present.tag===shapeKey)return;
+  const present=this.pool[i];if(present?.on&&shapeKey!==null&&present.tag===shapeKey&&this.vis(present,true)!==false)return;
   const slice=checkedSlice||(!f&&this.guarded?this.guard.section(i-1,a,b):B.section(this.route,f,a,b));if(!slice){this.vis(present,false);return;}
   const row=this.make(i,S.pawn,slice.ps[0]);this.shape(row,slice.ps,slice.before,slice.after);row.tag=shapeKey;
  }
  show(S){
-  if(S.line.length<2){this.hide();return;}
+  if(S.line.length<2){this.hide('route empty');return;}
   const now=Date.now(),w=S.world;
   if(this.lastDraw!==null&&this.lastDraw!==undefined&&this.version===S.version&&now-this.lastDraw<34)return;
   this.lastDraw=now;this.color=Color.resolve(S.cfg);const feet=w.feet();
@@ -69,28 +81,29 @@ class Threads{
    const newKey=(S.trip?.legs[S.active]?.world||'')+'/'+(S.targetKey||'')+'/'+S.active;
    const same=this.routeKey===newKey,old=this.route;
    if(!same){this.motion=null;this.attachment=null;}this.routeKey=newKey;this.version=S.version;
-   this.route=B.road(S.line);
+   const leg=S.trip?.legs[S.active];
+   this.route=B.road(S.line,leg?.points===S.line?leg.checks:undefined);
    // A necessary replan may keep the same corridor. Carry the already applied
    // near-floor correction across it instead of dropping the rope then raising it.
    if(same&&old&&this.route.points.length>1){const m=B.match(old,this.route.points[0],this.hint);
     if(m?.d<100)for(let i=0;i<this.route.points.length&&this.route.arc[i]<1600;i++){
      const p=this.route.points[i],q=B.floor(old,Math.min(old.length,m.arc+this.route.arc[i]));
-     if(R.xy(p,q)<55&&Math.abs(q.z-p.z)<78)this.route.offset[i]=q.z-p.z;
+     if(!this.route.fixed[i]&&R.xy(p,q)<55&&Math.abs(q.z-p.z)<78)this.route.offset[i]=q.z-p.z;
     }}
    this.hint=0;this.nextFloor=0;this.seenFloor=new Set();this.adjusting=new Set();
    this.floorDistance=new Float64Array(this.route.points.length).fill(Infinity);this.floorGoal=new Float64Array(this.route.points.length);
    this.tileVersion=[];this.headProof=null;this.guard.reset();for(const r of this.pool){if(r){r.tag=null;this.vis(r,false);}}
   }
-  const r=this.route;if(r.points.length<2){this.hide();return;}
+  const r=this.route;if(r.points.length<2){this.hide('route geometry empty');return;}
   const arrival=S.arrival||=new Arrival();
   if(arrival.check(S,feet,B.floor(r,r.length),now)){
    if(this.arrivalLog!==arrival.key(S)){this.arrivalLog=arrival.key(S);this.log('arrived',this.arrivalLog+'; owned emitters stopped');}
-   this.hide();return;
+   this.hide('arrived');return;
   }
   const end=B.floor(r,r.length),wait=arrival.key(S)+'/'+arrival.status;
   if(R.xy(feet,end)<250&&Math.abs(feet.z-end.z)<450&&this.waitLog!==wait){
    this.waitLog=wait;this.log('arrival wait',arrival.status+' xy='+Math.round(R.xy(feet,end))+'cm z='+Math.round(feet.z-end.z)+'cm');}
-  const m=B.match(r,feet,this.hint);if(!m||m.d>950){this.hide();return;}
+  const m=B.match(r,feet,this.hint);if(!m||m.d>950){this.hide('outside corridor');return;}
   if(m.d>32){
    if(!this.branch||this.branchVer!==S.version||R.dist(feet,this.branch)>40||this.branchAt!==m.i){
     const leg=S.trip?.legs[S.active];
@@ -101,10 +114,10 @@ class Threads{
     }
     this.branch=feet;this.branchVer=S.version;this.branchAt=m.i;
    }
-   if(!this.branchOK){this.hide();return;}
+   if(!this.branchOK){this.hide('no checked route join');return;}
   }
   const limit=S.threadEnd?B.match(r,S.threadEnd,m.i)?.arc:0;
-  if(limit===undefined||limit<=m.arc+8){this.hide();return;}
+  if(limit===undefined||limit<=m.arc+8){this.hide('no verified forward corridor');return;}
   let drawEnd=Math.min(r.length,limit);
   this.hint=m.i;if(!S.trip?.legs[S.active]?.guide)this.maintainFloor(w,m,now);
   const dt=this.motion?Math.min(.1,Math.max(.001,(now-this.motion.now)/1000)):.03;
@@ -116,18 +129,17 @@ class Threads{
   this.motion=B.animate(this.motion,feet,now);this.attachment=B.attachment(this.attachment,w.anchor(),feet,now);
   const anchor=this.attachment.p,f=B.frame(r,m,anchor,this.motion);
   let front=Math.min(drawEnd,m.arc+B.influence);
-  let head=B.section(r,f,m.arc,front);if(!head){this.hide();return;}
+  let head=B.section(r,f,m.arc,front);if(!head){this.hide('head span empty');return;}
   const proofKey=JSON.stringify(head.ps),proof=this.headProof;
   if(typeof w.threadHit==='function'){
    if(proof&&proof.key===proofKey&&now<proof.until){head=proof.head;front=proof.front;drawEnd=Math.min(drawEnd,proof.end);}
    else{
-    const n=head.ps.length-1;
-    for(let i=1;i<=n;i++)if(w.threadHit(head.ps[i-1],head.ps[i])){
-     front=m.arc+(front-m.arc)*(i-1)/n;drawEnd=front;head.ps.length=i;head.after=null;break;
+    for(let i=1;i<head.ps.length;i++)if(w.threadHit(head.ps[i-1],head.ps[i])){
+     front=head.arcs[i-1];drawEnd=front;head.ps.length=i;head.arcs.length=i;head.after=null;break;
     }
     this.headProof={key:proofKey,until:now+250,head,front,end:drawEnd};
    }
-   if(head.ps.length<2){this.hide();return;}
+   if(head.ps.length<2){this.hide('head blocked');return;}
   }
   this.guarded=typeof w.threadHit==='function';
   if(this.guarded&&drawEnd>front)drawEnd=this.guard.check(r,w,S.version,this.tileVersion,front,drawEnd,now);
@@ -145,6 +157,7 @@ class Threads{
    this.section(k+1,S,null,a,b,shapeKey);
   }
   const ann=this.version+'/'+this.color.key;
+  this.lastHiddenReason=null;
   if(this.ann!==ann){this.ann=ann;this.log('thread',this.color.key+' mesh; height='+Math.round(anchor.z-feet.z)+'cm path='+Math.round(r.length/100)+'m');}
  }
 }

@@ -29,3 +29,33 @@ for(const direction of ['forward','reverse']){
   assert.deepEqual(trip.legs[0].moves.map(m=>m.guid),['valid-other-ascent']);
  });
 }
+
+test('opposite native wallrun views cannot make an immediate return between their distinct pads',()=>{
+ const p=x=>({x,y:0,z:0}),start=p(-100),goal=p(50),a=p(0),b=p(900),back=p(1000),end=p(100);
+ const first={guid:'native-wall',kind:'wallrun',both:false,launchBox:{},runtimePath:[a,b]};
+ const reverse={...first,wallrunReverse:true,runtimePath:[back,end]};
+ const close=(a,b)=>R.dist(a,b)<1,edges=[];
+ const trip=run(T.route({name:'fixture',start,goal,features:[first,reverse],clock:()=>0,lazyActions:true,
+  maxConnectors:8,canTraverse:()=>true,landing:function*(feature,p){return p;},validate:function*(){return true;},
+  walk:function*(a,b,settings){
+   edges.push([a.x,b.x]);
+   if(close(a,start)&&close(b,first.runtimePath[0])||close(a,first.runtimePath[1])&&close(b,back)||close(a,end)&&close(b,goal)&&settings.local)
+    return{points:[a,b],meters:R.dist(a,b)/100};
+   return null;
+  }}));
+ assert.equal(trip,null,'using the same wall in both directions manufactured a checked route');
+ assert.ok(!edges.some(([a,b])=>a===900&&b===1000),'the immediate return spent walking-connector budget');
+});
+
+
+test('equal-cost seam candidates retain their original order after a collision',()=>{
+ const point=(x,z)=>({x,y:0,z}),start=point(0,0),goal=point(1000,100),checked=[];
+ const features=['earliest','second','third','fourth'].map(guid=>({guid,kind:'surface',source:'recast-boundary',
+  runtimePath:[point(400,0),point(600,100)]}));
+ const result=run(T.route({name:'test',clock:()=>0,start,goal,lazyActions:true,features,component:p=>p.z,componentConnectors:true,
+  canTraverse:()=>true,landing:function*(f,p){return p;},validate:function*(action){checked.push(action.feature.guid);return checked.length>2;},
+  walk:function*(a,b){return{points:[a,b],meters:R.dist(a,b)/100};}}));
+ assert.ok(result);
+ assert.deepEqual(checked,['earliest','second','third']);
+ assert.equal(result.legs[0].moves[0].guid,'third');
+});

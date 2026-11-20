@@ -1,0 +1,17 @@
+{
+  "reason": "Preserve 1.9.4 before complete 1.10.0 candidate packaging",
+  "packages": [
+    {
+      "original": "dist/Quest_and_Exploration_Navigation_Fork_1.9.4.zip",
+      "archive": "build/release-archive/20261116-before-1.10.0/Quest_and_Exploration_Navigation_Fork_1.9.4.zip",
+      "sha256": "06ca17ed15dfddd51951cd59c65a0c538b7aabf78efc240ac2aadd8516bdc776",
+      "bytes": 129183960
+    },
+    {
+      "original": "dist/Quest_and_Exploration_Navigation_Fork_1.9.4_Development.zip",
+      "archive": "build/release-archive/20261116-before-1.10.0/Quest_and_Exploration_Navigation_Fork_1.9.4_Development.zip",
+      "sha256": "f504b90e70384bf4edf1669429ebc2c6572b6cbb18880b33e6c528d158fb4e98",
+      "bytes": 129207076
+    }
+  ]
+}

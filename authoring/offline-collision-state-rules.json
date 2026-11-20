@@ -32,6 +32,67 @@
         "FogDisappearAnim__FinishedFunc": "eb58c5008af61ac8c5dd901a0fd8005402d7f9dd93eae5dcefce3ae5a8b1618c"
       },
       "proof": "Saved Open=true restores the disappearing timeline; its bound completion disables all SplineMesh collision. This is a far-side planning state only. Loaded components override it during combat, restoration and animation. Missing records remain unknown/closed."
+    },
+    {
+      "id": "flow-barrier-live-collision",
+      "classAsset": "/game/pbzcontent/blueprint/flowgraph/flowactor/bp_flowinteractactor",
+      "components": ["StaticMesh"],
+      "savedField": null,
+      "runtimePredicate": "loaded actor collision disabled or selected component does not block Pawn",
+      "omitWhen": true,
+      "proofClassAsset": "/game/pbzcontent/blueprint/flowgraph/flowgraphnode/setcollision",
+      "proofFunction": "ExecuteUbergraph_SetCollision",
+      "proofFunctionSHA256": "e1f8029ac664d6c36eefde96384d8aaa8ce68552bf527c65886a001382d3198d",
+      "placement": {
+        "world": "PBZ_Zhengdaodaying_WP",
+        "actor": "BP_FlowInteractActor_C_UAID_74563C6BC2BDB3C502_1344786547",
+        "packageSHA256": "29f7956f2e4a208dacbf9c650234e122426c69a90c7826a1419363d5dd99b2ee",
+        "flowAsset": "/game/pbzcontent/blueprint/flowgraph/questflowgraph/lujiacun/bpf_lujiacun_yincangsixian_midao_1",
+        "flowSHA256": "92152b61f093b5e78997e2dcbb06467df50dce58dce23ead083c5e738d8fbcbf"
+      },
+      "proof": "The placed Flow component references the secret passage graph with a SetCollision node. The node calls SetActorEnableCollision(Enable) on its owner. Route passability comes from the loaded actor, independently of quest and save fields. Only the identified barrier mesh is varied."
+    },
+    {
+      "id": "flow-story-box-live-collision",
+      "classAsset": "/game/pbzcontent/blueprint/flowgraph/flowactor/bp_flowinteract_huanshupingzhang",
+      "componentClass": "BoxComponent",
+      "components": ["Box"],
+      "savedField": null,
+      "runtimePredicate": "loaded actor collision disabled or the selected Box does not block Pawn",
+      "omitWhen": true,
+      "proofFunction": "ExecuteUbergraph_BP_FlowInteract_HuanShuPingZhang",
+      "proofFunctionSHA256": "02aa779c38c9b07b460436b620b01c58f122c28929dda3cef9927601799d5aa2",
+      "placement": {
+        "world": "PBZ_Zhengdaodaying_WP",
+        "actor": "BP_FlowInteract_HuanShuPingZhang_C_UAID_74563C6BC2BDFD9E02_1663502731",
+        "packageSHA256": "29f7956f2e4a208dacbf9c650234e122426c69a90c7826a1419363d5dd99b2ee",
+        "actorClassSHA256": "3dd7da242d954a5825ad49cbf116d1ba1e5fd3a4abceda78fbebf7c096d6c5ee",
+        "flowAsset": "/game/pbzcontent/blueprint/flowgraph/questflowgraph/huxinmimi/bpf_huangshupinzhang_qskd",
+        "flowSHA256": "3c777df15fd4250800f8363cbc3ba7e9790c7bfd00419f6e3478a459d2821e31"
+      },
+      "proof": "The placed Flow graph binds CallOwnerFunction to OpenGate, which runs the branch that disables both Niagara effects and calls Box.SetCollisionEnabled(0). Only the named Box is varied. The live query collision decides passability; the quest prerequisites and saved fields are not assumed."
+    },
+    {
+      "id": "flow-bridge-deck-live-collision",
+      "classAsset": "/Script/Engine.StaticMeshActor",
+      "nativeActorClass": "StaticMeshActor",
+      "actorTag": "CellTransformer_IgnoreActor",
+      "componentClass": "StaticMeshComponent",
+      "components": ["Cube"],
+      "savedField": null,
+      "runtimePredicate": "loaded actor collision disabled or the selected Cube does not block Pawn",
+      "omitWhen": true,
+      "proofClassAsset": "/game/pbzcontent/blueprint/flowgraph/flowgraphnode/setcollision",
+      "proofFunction": "ExecuteUbergraph_SetCollision",
+      "proofFunctionSHA256": "e1f8029ac664d6c36eefde96384d8aaa8ce68552bf527c65886a001382d3198d",
+      "placement": {
+        "world": "PBZ_Fujizhilin_WP",
+        "actor": "StaticMeshActor_UAID_74563C70CE080DA202_1969818561",
+        "packageSHA256": "4a281a663165714a9eba87f12d97ac62df05d3328116f15ee26b415c215c79c5",
+        "flowAsset": "/game/pbzcontent/blueprint/flowgraph/questflowgraph/fujizhilin/bpf_qiaoposui",
+        "flowSHA256": "4950cd92463c680b811ce97f69e20a749eadc2da604b93fca9a39ae6c23d2c11"
+      },
+      "proof": "The placed BP_PBZFlow on the animated bridge actor references BPF_QiaoPoSui. The sequence-start output invokes SetCollision, which calls SetActorEnableCollision(false) on that actor. Its Cube floor is the indexed collision source. Query the resident actor and Cube to choose the mesh variant."
     }
   ]
 }

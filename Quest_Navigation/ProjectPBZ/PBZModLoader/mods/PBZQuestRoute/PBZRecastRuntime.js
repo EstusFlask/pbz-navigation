@@ -1,10 +1,11 @@
 // Recast/Detour translated to ordinary JavaScript by Binaryen wasm2js. No WASM code generation. See THIRD-PARTY-LICENSES.txt.
+(function(){
 var performance = globalThis.performance || {now: function(){return Date.now();}};
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp = (obj, key2, value) => key2 in obj ? __defProp(obj, key2, { enumerable: true, configurable: true, writable: true, value }) : obj[key2] = value;
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -14,14 +15,14 @@ var __export = (target, all) => {
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    for (let key2 of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key2) && key2 !== except)
+        __defProp(to, key2, { get: () => from[key2], enumerable: !(desc = __getOwnPropDesc(from, key2)) || desc.enumerable });
   }
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __publicField = (obj, key2, value) => __defNormalProp(obj, typeof key2 !== "symbol" ? key2 + "" : key2, value);
 
 // offline-navigation/node_modules/@recast-navigation/wasm/dist/recast-navigation.wasm.js
 var recast_navigation_wasm_exports = {};
@@ -69,7 +70,7 @@ var init_recast_navigation_wasm = __esm({
         } else {
         }
         var out = console.log.bind(console);
-        var err = console.error.bind(console);
+        var err2 = console.error.bind(console);
         var wasmBinary;
         var ABORT = false;
         var EXITSTATUS;
@@ -136,7 +137,7 @@ var init_recast_navigation_wasm = __esm({
         function abort(what) {
           Module["onAbort"]?.(what);
           what = "Aborted(" + what + ")";
-          err(what);
+          err2(what);
           ABORT = true;
           what += ". Build with -sASSERTIONS for more info.";
           var e = new WebAssembly.RuntimeError(what);
@@ -175,7 +176,7 @@ var init_recast_navigation_wasm = __esm({
             var instance = await WebAssembly.instantiate(binary, imports);
             return instance;
           } catch (reason) {
-            err(`failed to asynchronously prepare wasm: ${reason}`);
+            err2(`failed to asynchronously prepare wasm: ${reason}`);
             abort(reason);
           }
         }
@@ -186,8 +187,8 @@ var init_recast_navigation_wasm = __esm({
               var instantiationResult = await WebAssembly.instantiateStreaming(response, imports);
               return instantiationResult;
             } catch (reason) {
-              err(`wasm streaming compile failed: ${reason}`);
-              err("falling back to ArrayBuffer instantiation");
+              err2(`wasm streaming compile failed: ${reason}`);
+              err2("falling back to ArrayBuffer instantiation");
             }
           }
           return instantiateArrayBuffer(binaryFile, imports);
@@ -519,9 +520,9 @@ var init_recast_navigation_wasm = __esm({
           }
           try {
             wasmTable.grow(1);
-          } catch (err2) {
-            if (!(err2 instanceof RangeError)) {
-              throw err2;
+          } catch (err3) {
+            if (!(err3 instanceof RangeError)) {
+              throw err3;
             }
             throw "Unable to grow wasm table. Set ALLOW_TABLE_GROWTH.";
           }
@@ -539,9 +540,9 @@ var init_recast_navigation_wasm = __esm({
           var ret = getEmptyTableSlot();
           try {
             setWasmTableEntry(ret, func);
-          } catch (err2) {
-            if (!(err2 instanceof TypeError)) {
-              throw err2;
+          } catch (err3) {
+            if (!(err3 instanceof TypeError)) {
+              throw err3;
             }
             var wrapped = convertJsFunctionToWasm(func, sig);
             setWasmTableEntry(ret, wrapped);
@@ -552,7 +553,7 @@ var init_recast_navigation_wasm = __esm({
         {
           if (Module["noExitRuntime"]) noExitRuntime = Module["noExitRuntime"];
           if (Module["print"]) out = Module["print"];
-          if (Module["printErr"]) err = Module["printErr"];
+          if (Module["printErr"]) err2 = Module["printErr"];
           if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
           if (Module["arguments"]) arguments_ = Module["arguments"];
           if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
@@ -8748,10 +8749,15 @@ var init_recast_navigation_wasm = __esm({
 // offline-navigation/runtime.mjs
 var runtime_exports = {};
 __export(runtime_exports, {
+  PackedStore: () => PackedStore,
+  PagedWorld: () => PagedWorld,
   Planner: () => Planner,
+  WorldSet: () => WorldSet,
+  WorldWindow: () => WorldWindow,
   assembleNavSet: () => assembleNavSet,
   backend: () => backend,
   capabilities: () => capabilities2,
+  createWorld: () => createWorld,
   decodeBase64: () => decodeBase64,
   initialize: () => initialize2,
   navHeader: () => navHeader,
@@ -10260,24 +10266,24 @@ function selectVariants(index, states = {}) {
   const values = new Map(Object.entries(states).map(([id, value]) => [id.toLowerCase(), value])), missing = /* @__PURE__ */ new Set(), tiles = [];
   let signature = "";
   for (const tile of index.tiles) {
-    let key = "";
+    let key2 = "";
     for (const id of tile.conditions) {
       const value = values.get(id.toLowerCase());
       if (value !== true && value !== false) missing.add(id);
-      key += value === true ? "0" : "1";
+      key2 += value === true ? "0" : "1";
     }
-    need(Object.prototype.hasOwnProperty.call(tile.variants, key), "Missing navigation state variant");
-    const blob = tile.variants[key];
+    need(Object.prototype.hasOwnProperty.call(tile.variants, key2), "Missing navigation state variant");
+    const blob = tile.variants[key2];
     tiles.push({ slot: tile.slot, blob, x: tile.x, y: tile.y });
-    signature += key + ";";
+    signature += key2 + ";";
   }
   return { tiles, signature, unknownActors: [...missing] };
 }
 function decodeBase64(text) {
   need(typeof text === "string" && text.length <= 1024 * 1024 && text.length % 4 === 0, "Invalid navigation payload size");
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", table = new Int16Array(128);
+  const alphabet2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", table = new Int16Array(128);
   table.fill(-1);
-  for (let i = 0; i < 64; i++) table[alphabet.charCodeAt(i)] = i;
+  for (let i = 0; i < 64; i++) table[alphabet2.charCodeAt(i)] = i;
   const padding = text.endsWith("==") ? 2 : text.endsWith("=") ? 1 : 0, out = new Uint8Array(text.length / 4 * 3 - padding);
   let at = 0;
   for (let i = 0; i < text.length; i += 4) {
@@ -10291,6 +10297,700 @@ function decodeBase64(text) {
     for (let shift = 16; shift >= 0 && at < out.length; shift -= 8) out[at++] = n >>> shift & 255;
   }
   return out;
+}
+
+// offline-navigation/movement-links.mjs
+var distance = (a, b) => Math.hypot(...a.map((v, k) => v - b[k]));
+var sameCoordinate = (a, b) => a === b || a !== a && b !== b;
+var roundCoordinate = Math.round;
+var hashMultiply = Math.imul;
+function coverEdge(data, edge, side, min, max2) {
+  if (data.linked.has(edge)) return;
+  if (side === 255 || min === 0 && max2 === 255) {
+    data.linked.add(edge);
+    data.partial?.delete(edge);
+    return;
+  }
+  if (min > max2) throw Error("Invalid movement portal interval");
+  const partial = data.partial ?? (data.partial = /* @__PURE__ */ new Map());
+  if (!partial.has(edge)) partial.set(edge, []);
+  partial.get(edge).push([min, max2]);
+}
+var fullEdge = [[0, 1]];
+function exposedEdge(intervals) {
+  if (!intervals?.length) return fullEdge;
+  const result = [];
+  let boundary = 0;
+  for (const [min, max2] of intervals.slice().sort((a, b) => a[0] - b[0])) {
+    if (min > boundary) result.push([boundary / 255, min / 255]);
+    boundary = Math.max(boundary, max2);
+  }
+  if (boundary < 255) result.push([boundary / 255, 1]);
+  return result;
+}
+function polyData(planner, ref) {
+  const h = planner.header, slot = Math.floor((ref >>> 0) / h.maxPolys) % h.maxTiles, index = (ref >>> 0) % h.maxPolys, data = planner.tileBuffers.get(slot);
+  if (!data) return null;
+  const bytes2 = data.getHeapView(), v = new DataView(bytes2.buffer, bytes2.byteOffset, bytes2.byteLength), np = v.getInt32(24, true), nv = v.getInt32(28, true), links = v.getInt32(32, true), at = 100 + nv * 12 + index * 32, linkAt = 100 + nv * 12 + np * 32;
+  if (v.getUint32(0, true) !== 1145979222 || v.getInt32(4, true) !== 7 || index >= np || linkAt + links * 12 > bytes2.length) throw Error("Unsupported resident movement tile layout");
+  const vertices = [], neighbors = [], result = { vertices, neighbors, linked: /* @__PURE__ */ new Set() };
+  for (let j = 0; j < v.getUint8(at + 30); j++) {
+    const i = 100 + v.getUint16(at + 4 + j * 2, true) * 12;
+    vertices.push({ x: v.getFloat32(i, true), y: v.getFloat32(i + 4, true), z: v.getFloat32(i + 8, true) });
+  }
+  let link = v.getUint32(at, true), count = 0;
+  while (link !== 4294967295 && ++count <= links) {
+    if (link >= links) throw Error("Invalid resident movement link");
+    const p = linkAt + link * 12, to = v.getUint32(p, true);
+    link = v.getUint32(p + 4, true);
+    if (to) {
+      coverEdge(result, v.getUint8(p + 8), v.getUint8(p + 9), v.getUint8(p + 10), v.getUint8(p + 11));
+      neighbors.push(to);
+    }
+  }
+  return result;
+}
+function rayPolygon(vertices, p, nx, nz, maximum) {
+  let area = 0;
+  for (let i = 0; i < vertices.length; i++) {
+    const a = vertices[i], b = vertices[(i + 1) % vertices.length];
+    area += a.x * b.z - a.z * b.x;
+  }
+  const sign = area >= 0 ? 1 : -1;
+  let low = 1e-3, high = maximum;
+  for (let i = 0; i < vertices.length; i++) {
+    const a = vertices[i], b = vertices[(i + 1) % vertices.length], dx = b.x - a.x, dz = b.z - a.z, c = sign * (dx * (p.z - a.z) - dz * (p.x - a.x)), s = sign * (dx * nz - dz * nx);
+    if (Math.abs(s) < 1e-9) {
+      if (c < 0) return null;
+      continue;
+    }
+    const t = -c / s;
+    if (s > 0) low = Math.max(low, t);
+    else high = Math.min(high, t);
+    if (low > high) return null;
+  }
+  return low + Math.min(0.25, (high - low) / 2);
+}
+function* movementProposalsJob(group, options, resolve, limited = () => false) {
+  const ordered = group.slice().sort((a, b) => a.score - b.score), selected = [];
+  let work = 0;
+  for (const item of ordered) {
+    if ((++work & 63) === 0) yield;
+    if (selected.some((p) => Math.hypot(p.a[0] - item.a[0], p.a[1] - item.a[1]) < 150 && Math.hypot(p.b[0] - item.b[0], p.b[1] - item.b[1]) < 150)) continue;
+    const verified = resolve ? yield* resolve(item) : item;
+    if (verified) selected.push(verified);
+    if (selected.length >= 24 || limited()) break;
+  }
+  if (options.envelopeBands && !limited()) {
+    const band = (p) => Math.floor((p.a[2] - p.b[2]) / 50) + "/" + Math.floor(p.span / 100), seen = new Set(selected.map(band));
+    for (const item of ordered) {
+      if ((++work & 63) === 0) yield;
+      if (seen.has(band(item))) continue;
+      const verified = resolve ? yield* resolve(item) : item;
+      if (limited()) break;
+      if (!verified) continue;
+      const id = band(verified);
+      if (seen.has(id)) continue;
+      seen.add(id);
+      selected.push(verified);
+      if (selected.length >= 96) break;
+    }
+  }
+  return selected;
+}
+function* rankFeatures(features, scores, chain, pruneGeometry = false, maximum, representatives) {
+  const getScore = (f, i) => {
+    const value = scores instanceof Map ? scores.get(f) : scores?.[i];
+    return Number.isNaN(value) || value === void 0 ? Infinity : value;
+  };
+  const hasScore = (f, i) => scores instanceof Map ? scores.has(f) : !!scores && !Number.isNaN(scores[i]);
+  const priority = (feature, score) => chain.has(feature.guid) ? 2 : feature.source === "game-placement" && !feature.topologyClosed && Number.isFinite(score) ? 1 : 0;
+  const limit = Number.isSafeInteger(maximum) && maximum > 0 ? maximum : Infinity;
+  let irrelevantGeometry = 0, availableFeatures = 0;
+  if (limit !== Infinity) {
+    const chainFlags = new Uint8Array(features.length);
+    const scoreAt = (i) => getScore(features[i], i);
+    const compare2 = (a, b) => {
+      const priority2 = chainFlags[b] - chainFlags[a];
+      if (priority2) return priority2;
+      const first = scoreAt(a), last = scoreAt(b);
+      return first < last ? -1 : first > last ? 1 : a - b;
+    };
+    const boundedHeap = (capacity) => {
+      const values = new Int32Array(capacity);
+      let size = 0;
+      return {
+        offer(i) {
+          if (size < capacity) {
+            let at2 = size++;
+            while (at2) {
+              const parent = at2 - 1 >> 1;
+              if (compare2(values[parent], i) >= 0) break;
+              values[at2] = values[parent];
+              at2 = parent;
+            }
+            values[at2] = i;
+            return;
+          }
+          if (compare2(i, values[0]) >= 0) return;
+          let at = 0;
+          while (at * 2 + 1 < size) {
+            let child = at * 2 + 1;
+            if (child + 1 < size && compare2(values[child + 1], values[child]) > 0) child++;
+            if (compare2(i, values[child]) >= 0) break;
+            values[at] = values[child];
+            at = child;
+          }
+          values[at] = i;
+        },
+        entries: () => values.subarray(0, size)
+      };
+    };
+    const normal = boundedHeap(limit), reserve = representatives && limit >= 4 ? boundedHeap(Math.floor(limit / 4)) : null;
+    for (let i = 0; i < features.length; i++) {
+      const f = features[i], score = scoreAt(i);
+      if (pruneGeometry && f.source === "recast-boundary" && hasScore(f, i) && !Number.isFinite(score)) irrelevantGeometry++;
+      else {
+        availableFeatures++;
+        chainFlags[i] = priority(f, score);
+        normal.offer(i);
+        if (reserve && representatives.has(i)) reserve.offer(i);
+      }
+      if ((i & 63) === 63) yield;
+    }
+    let source2 = Array.from(normal.entries()), target2 = new Array(source2.length);
+    for (let at = 0; at < source2.length; at += 256) {
+      const part = source2.slice(at, at + 256).sort(compare2);
+      for (let i = 0; i < part.length; i++) source2[at + i] = part[i];
+      yield;
+    }
+    let work2 = 0;
+    for (let width = 256; width < source2.length; width *= 2) {
+      for (let at = 0; at < source2.length; at += 2 * width) {
+        let a = at, b = Math.min(source2.length, at + width);
+        const endA = b, endB = Math.min(source2.length, at + width * 2);
+        for (let out = at; out < endB; out++) {
+          target2[out] = a < endA && (b >= endB || compare2(source2[a], source2[b]) <= 0) ? source2[a++] : source2[b++];
+          if ((++work2 & 255) === 0) yield;
+        }
+      }
+      [source2, target2] = [target2, source2];
+    }
+    const chosen = [];
+    if (reserve) {
+      const placed = source2.findIndex((i) => chainFlags[i] === 0), prefix = placed < 0 ? source2.length : placed;
+      const pinned = new Set(source2.slice(0, prefix));
+      const diverse = Array.from(reserve.entries()).sort(compare2).filter((i) => !pinned.has(i)).slice(0, limit - prefix);
+      const promoted = new Set(diverse);
+      chosen.push(...source2.slice(0, prefix), ...diverse);
+      for (let i = prefix; i < source2.length && chosen.length < limit; i++) if (!promoted.has(source2[i])) chosen.push(source2[i]);
+    } else chosen.push(...source2);
+    const ranked2 = [];
+    for (let i = 0; i < chosen.length; i++) {
+      ranked2.push(features[chosen[i]]);
+      if ((i & 63) === 63) yield;
+    }
+    return { ranked: ranked2, irrelevantGeometry, availableFeatures, rankingHeapSlots: normal.entries().length, rankingCandidateObjects: 0 };
+  }
+  const compare = (a, b) => b.chain - a.chain || (a.score < b.score ? -1 : a.score > b.score ? 1 : a.i - b.i);
+  let source = [];
+  for (let i = 0; i < features.length; i++) {
+    const f = features[i], score = getScore(f, i);
+    if (pruneGeometry && f.source === "recast-boundary" && hasScore(f, i) && !Number.isFinite(score)) irrelevantGeometry++;
+    else {
+      availableFeatures++;
+      source.push({ f, i, score, chain: priority(f, score) });
+    }
+    if ((i & 63) === 63) yield;
+  }
+  for (let at = 0; at < source.length; at += 256) {
+    const part = source.slice(at, at + 256).sort(compare);
+    for (let i = 0; i < part.length; i++) source[at + i] = part[i];
+    yield;
+  }
+  let target = new Array(source.length), work = 0;
+  for (let width = 256; width < source.length; width *= 2) {
+    for (let at = 0; at < source.length; at += 2 * width) {
+      let a = at, b = Math.min(source.length, at + width);
+      const endA = b, endB = Math.min(source.length, at + width * 2);
+      for (let out = at; out < endB; out++) {
+        target[out] = a < endA && (b >= endB || compare(source[a], source[b]) <= 0) ? source[a++] : source[b++];
+        if ((++work & 255) === 0) yield;
+      }
+    }
+    [source, target] = [target, source];
+  }
+  const ranked = [];
+  for (let i = 0; i < source.length; i++) {
+    ranked.push(source[i].f);
+    if ((i & 63) === 63) yield;
+  }
+  return { ranked, irrelevantGeometry, availableFeatures, rankingHeapSlots: 0, rankingCandidateObjects: availableFeatures };
+}
+function* actionTopology(planner, start, goal, features, options = {}) {
+  const origin = planner.origin ?? [0, 0, 0], q = planner.query, n = planner.navMesh, state = planner.movementTopology || (planner.movementTopology = { labels: /* @__PURE__ */ new Map(), points: /* @__PURE__ */ new Map(), polygons: /* @__PURE__ */ new Map(), visited: 0, island: 0 }), { labels, points } = state;
+  let { visited, island } = state;
+  let completed = false;
+  try {
+    let projections = 0;
+    const locate = (p) => {
+      const x = roundCoordinate(p[0] * 10), y = roundCoordinate(p[1] * 10), z = roundCoordinate(p[2] * 10), k = hashMultiply(x, 73856093) ^ hashMultiply(y, 19349663) ^ hashMultiply(z, 83492791), head = points.get(k);
+      for (let entry = head; entry; entry = entry.next) if (sameCoordinate(entry.x, x) && sameCoordinate(entry.y, y) && sameCoordinate(entry.z, z)) return entry.ref;
+      projections++;
+      const row = q.findNearestPoly({ x: (p[0] - origin[0]) / 100, y: (p[2] - origin[2]) / 100, z: -(p[1] - origin[1]) / 100 }, { halfExtents: { x: 1, y: 0.9, z: 1 } });
+      const ref = row.success ? row.nearestRef : 0;
+      points.set(k, { x, y, z, ref, next: head });
+      return ref;
+    };
+    const extra = [];
+    let totalPolygons;
+    if (options.allComponents) {
+      totalPolygons = 0;
+      for (let slot = 0; slot < (n.getMaxTiles?.() ?? 0); slot++) {
+        const tile = n.getTile(slot), header = tile?.header();
+        if (!header) continue;
+        const count2 = header.polyCount(), base = n.getPolyRefBase(tile) >>> 0;
+        totalPolygons += count2;
+        for (let i = 0; i < count2 && extra.length < 66e3; i++) extra.push(base + i >>> 0);
+        yield;
+      }
+    }
+    const goals = [goal, ...options.additionalGoals || []];
+    const featureRefs = new Uint32Array(features.length * 2), endpoints = function* () {
+      yield start;
+      yield* goals;
+      for (const f of features) {
+        yield f.path[0];
+        yield f.path.at(-1);
+      }
+      yield* extra;
+    };
+    let pointWork = 0, endpointIndex = -2 - goals.length;
+    for (const p of endpoints()) {
+      endpointIndex++;
+      const ref = typeof p === "number" ? p : locate(p);
+      if (endpointIndex >= 0 && endpointIndex < featureRefs.length) featureRefs[endpointIndex] = ref;
+      if (++pointWork >= 128 || projections >= 4) {
+        pointWork = 0;
+        projections = 0;
+        yield;
+      }
+      if (!ref || labels.has(ref)) continue;
+      if (visited >= 65536) continue;
+      const todo = [ref], id = island++;
+      for (let i = 0; i < todo.length; i++) {
+        const ref2 = todo[i];
+        if (labels.has(ref2)) continue;
+        if (visited >= 65536) break;
+        let data = polyData(planner, ref2);
+        if (!data) {
+          const row = n.getTileAndPolyByRef(ref2);
+          if (!row.success) continue;
+          const vertices2 = [], neighbors = [];
+          data = { vertices: vertices2, neighbors, linked: /* @__PURE__ */ new Set() };
+          let link = row.poly.firstLink() >>> 0, count2 = 0;
+          while (link !== 4294967295 && ++count2 <= row.tile.header().maxLinkCount()) {
+            const edge = row.tile.links(link), to = edge.ref() >>> 0;
+            link = edge.next() >>> 0;
+            if (to) {
+              coverEdge(data, edge.edge(), edge.side(), edge.bmin(), edge.bmax());
+              neighbors.push(to);
+            }
+          }
+          for (let j = 0; j < row.poly.vertCount(); j++) {
+            const i2 = row.poly.verts(j) * 3;
+            vertices2.push({ x: row.tile.verts(i2), y: row.tile.verts(i2 + 1), z: row.tile.verts(i2 + 2) });
+          }
+        }
+        labels.set(ref2, id);
+        visited++;
+        for (const to of data.neighbors) if (!labels.has(to)) todo.push(to);
+        const { vertices, linked, partial } = data;
+        state.polygons.set(ref2, { ref: ref2, component: id, vertices, linked, ...partial?.size ? { partial } : {} });
+        if ((visited & 15) === 0) yield;
+      }
+      yield;
+    }
+    state.visited = visited;
+    state.island = island;
+    const component = (p) => labels.get(locate(p)), from = component(start), targets = /* @__PURE__ */ new Set(), count = features.length, nodeCount = island;
+    for (const p of goals) {
+      const target = component(p);
+      if (target !== void 0) targets.add(target);
+    }
+    const componentA = new Int32Array(count), componentB = new Int32Array(count), featureClass = new Uint8Array(count);
+    const outCount = new Uint32Array(nodeCount), inCount = new Uint32Array(nodeCount);
+    let directedEdges = 0, pendingEdges = 0, featureWork = 0, sameComponentCount = 0, pendingAction;
+    for (let i = 0; i < count; i++) {
+      const f = features[i];
+      if ((++featureWork & 63) === 0) yield;
+      const a = labels.get(featureRefs[i * 2]), b = labels.get(featureRefs[i * 2 + 1]);
+      if (a === void 0 || b === void 0) continue;
+      componentA[i] = a;
+      componentB[i] = b;
+      if (a === b) {
+        featureClass[i] = 1;
+        sameComponentCount++;
+        continue;
+      }
+      featureClass[i] = f.topologyClosed ? 3 : 2;
+      if (f.topologyClosed && !options.pendingMechanisms) continue;
+      const directions = Number(!f.noForward) + Number(!!f.both && !f.noReverse);
+      if (f.topologyClosed) pendingEdges += directions;
+      else directedEdges += directions;
+      if (!f.noForward) {
+        outCount[a]++;
+        inCount[b]++;
+      }
+      if (f.both && !f.noReverse) {
+        outCount[b]++;
+        inCount[a]++;
+      }
+    }
+    const baseScratch = featureRefs.byteLength + componentA.byteLength + componentB.byteLength + featureClass.byteLength + outCount.byteLength + inCount.byteLength;
+    const finish = (selected, chain2, reachableTargetComponents, topologyScratchBytes2, ranking2) => {
+      completed = true;
+      return {
+        features: selected,
+        component,
+        componentConnectors: true,
+        refComponent: (ref) => labels.get(ref),
+        ...pendingAction ? { pendingAction } : {},
+        canConnect: (a, b) => {
+          const x = component(a), y = component(b);
+          return x !== void 0 && y !== void 0 && x === y;
+        },
+        stats: {
+          islands: island,
+          polygons: visited,
+          totalPolygons,
+          allComponents: totalPolygons === void 0 ? void 0 : visited === totalPolygons,
+          topologyEdges: directedEdges,
+          topologyEdgeObjects: 0,
+          sameComponentFeatures: sameComponentCount,
+          topologyScratchBytes: topologyScratchBytes2,
+          rankingHeapSlots: ranking2.rankingHeapSlots,
+          rankingCandidateObjects: ranking2.rankingCandidateObjects,
+          chain: chain2,
+          ...options.additionalGoals?.length ? { targetComponents: targets.size, reachableTargetComponents } : {},
+          ...options.relevantOnly ? { irrelevantGeometry: ranking2.irrelevantGeometry } : {},
+          ...options.maxRankedFeatures ? { rankedFeatures: selected.length, availableFeatures: ranking2.availableFeatures } : {}
+        }
+      };
+    };
+    const hasTerminal = from !== void 0 && (targets.has(from) || outCount[from] > 0 && [...targets].some((target) => inCount[target] > 0));
+    if (!hasTerminal) {
+      const limit = Number.isSafeInteger(options.maxRankedFeatures) && options.maxRankedFeatures > 0 ? Math.min(count, options.maxRankedFeatures) : count;
+      const selected = [];
+      for (let i = 0; i < limit; i++) {
+        selected.push(features[i].sourceFeature || features[i]);
+        if ((i & 63) === 63) yield;
+      }
+      return finish(selected, [], 0, baseScratch, { irrelevantGeometry: 0, availableFeatures: count, rankingHeapSlots: 0, rankingCandidateObjects: 0 });
+    }
+    const edgeCost = new Float64Array(count), scores = new Float64Array(count);
+    scores.fill(NaN);
+    const outOffsets = new Uint32Array(nodeCount + 1), inOffsets = new Uint32Array(nodeCount + 1);
+    let adjacencyWork = 0;
+    for (let node = 0; node < nodeCount; node++) {
+      outOffsets[node + 1] = outOffsets[node] + outCount[node];
+      inOffsets[node + 1] = inOffsets[node] + inCount[node];
+      if ((++adjacencyWork & 255) === 0) yield;
+    }
+    const outEdges = new Int32Array(directedEdges + pendingEdges), inEdges = new Int32Array(directedEdges + pendingEdges);
+    let outCursor = new Uint32Array(outOffsets), inCursor = new Uint32Array(inOffsets), longest = 1;
+    for (let i = 0; i < count; i++) {
+      const type = featureClass[i], feature = features[i];
+      if (type) {
+        scores[i] = Infinity;
+        edgeCost[i] = Math.max(1, distance(feature.path[0], feature.path.at(-1)));
+        if (pendingEdges) longest = Math.max(longest, edgeCost[i]);
+      }
+      if (type === 2 || type === 3 && pendingEdges) {
+        const a = componentA[i], b = componentB[i], forward2 = i + 1;
+        if (!feature.noForward) {
+          outEdges[outCursor[a]++] = forward2;
+          inEdges[inCursor[b]++] = forward2;
+        }
+        if (feature.both && !feature.noReverse) {
+          outEdges[outCursor[b]++] = -forward2;
+          inEdges[inCursor[a]++] = -forward2;
+        }
+      }
+      if ((++adjacencyWork & 63) === 0) yield;
+    }
+    outCursor = null;
+    inCursor = null;
+    const pendingPenalty = longest * nodeCount + 1;
+    const shortest = function* (sources, reverse = false, allowPending = false) {
+      const costs = /* @__PURE__ */ new Map(), prev = /* @__PURE__ */ new Map(), todo = [...sources], offsets2 = reverse ? inOffsets : outOffsets, adjacent = reverse ? inEdges : outEdges;
+      for (const source of todo) costs.set(source, 0);
+      while (todo.length) {
+        todo.sort((a2, b) => costs.get(a2) - costs.get(b));
+        const a = todo.shift();
+        let work = 0;
+        for (let at = offsets2[a]; at < offsets2[a + 1]; at++) {
+          if ((++work & 31) === 0) yield;
+          const code = adjacent[at], index = Math.abs(code) - 1, closed = featureClass[index] === 3;
+          if (closed && !allowPending) continue;
+          const edgeFrom = code < 0 ? componentB[index] : componentA[index], edgeTo = code < 0 ? componentA[index] : componentB[index], b = reverse ? edgeFrom : edgeTo;
+          const c = costs.get(a) + edgeCost[index] + (closed ? pendingPenalty : 0);
+          if (c < (costs.get(b) ?? Infinity)) {
+            costs.set(b, c);
+            prev.set(b, code);
+            if (!todo.includes(b)) todo.push(b);
+          }
+        }
+        yield;
+      }
+      return { costs, prev };
+    };
+    const forward = yield* shortest([from]), chain = /* @__PURE__ */ new Set();
+    const reachableTargets = [...targets].filter((target) => forward.costs.has(target)), preferred = reachableTargets[0];
+    if (preferred !== void 0) {
+      let at = preferred, work = 0;
+      while (at !== from) {
+        const code = forward.prev.get(at);
+        if (!code) break;
+        const index = Math.abs(code) - 1;
+        chain.add(features[index].guid);
+        at = code < 0 ? componentB[index] : componentA[index];
+        if ((++work & 63) === 0) yield;
+      }
+    }
+    let preferredFeatures = chain, rankingTargets = targets;
+    if (preferred === void 0 && pendingEdges) {
+      const pending = yield* shortest(targets, true, true), prefix = /* @__PURE__ */ new Set();
+      let at = from, work = 0;
+      while (pending.prev.has(at)) {
+        const code = pending.prev.get(at), index = Math.abs(code) - 1, guid = features[index].guid;
+        prefix.add(guid);
+        if (featureClass[index] === 3) {
+          pendingAction = { guid, reverse: code < 0 };
+          preferredFeatures = prefix;
+          rankingTargets = [at];
+          break;
+        }
+        at = code < 0 ? componentA[index] : componentB[index];
+        if ((++work & 63) === 0) yield;
+      }
+    }
+    const back = yield* shortest(rankingTargets, true);
+    yield;
+    const byPair = options.diverseRecovery && reachableTargets.length && options.maxRankedFeatures >= 4 ? /* @__PURE__ */ new Map() : null;
+    const offerPair = (from2, to, index, score) => {
+      if (!Number.isFinite(score)) return;
+      const pair = from2 * 65536 + to;
+      const previous = byPair.get(pair);
+      if (!previous || score < previous.score) byPair.set(pair, { index, score });
+    };
+    let scoreWork = 0;
+    for (let i = 0; i < count; i++) {
+      if (featureClass[i] === 1 || featureClass[i] === 2) {
+        const a = componentA[i], b = componentB[i], cost = edgeCost[i], feature = features[i];
+        const forwardScore = feature.noForward ? Infinity : (forward.costs.get(a) ?? Infinity) + cost + (back.costs.get(b) ?? Infinity);
+        const reverseScore = featureClass[i] === 2 && feature.both && !feature.noReverse ? (forward.costs.get(b) ?? Infinity) + cost + (back.costs.get(a) ?? Infinity) : Infinity;
+        scores[i] = Math.min(forwardScore, reverseScore);
+        if (byPair && featureClass[i] === 2 && feature.source === "recast-boundary") {
+          offerPair(a, b, i, forwardScore);
+          offerPair(b, a, i, reverseScore);
+        }
+      }
+      if ((++scoreWork & 63) === 0) yield;
+    }
+    const pruneGeometry = !!options.relevantOnly && reachableTargets.length > 0;
+    let representatives;
+    if (byPair) {
+      representatives = /* @__PURE__ */ new Set();
+      let work = 0;
+      for (const { index } of byPair.values()) {
+        representatives.add(index);
+        if ((++work & 63) === 0) yield;
+      }
+    }
+    const ranking = yield* rankFeatures(features, scores, preferredFeatures, pruneGeometry, options.maxRankedFeatures, representatives);
+    const topologyScratchBytes = baseScratch + edgeCost.byteLength + scores.byteLength + outOffsets.byteLength + inOffsets.byteLength + outEdges.byteLength + inEdges.byteLength;
+    return finish(ranking.ranked.map((f) => f.sourceFeature || f), [...chain], reachableTargets.length, topologyScratchBytes, ranking);
+  } finally {
+    if (!completed && planner.movementTopology === state) planner.movementTopology = null;
+  }
+}
+function* discoverFalls(planner, seeds, options = {}) {
+  const height = Number(options.maxHeightCm), run = Number(options.maxRunCm);
+  if (!(height >= 100 && height <= 2e3 && run >= 100 && run <= 2e3)) return [];
+  const origin = planner.origin ?? [0, 0, 0], ue = (p) => [origin[0] + p.x * 100, origin[1] - p.z * 100, origin[2] + p.y * 100], q = planner.query;
+  if (options.sourceBoundsUE && (!Array.isArray(options.sourceBoundsUE) || options.sourceBoundsUE.length !== 4 || !options.sourceBoundsUE.every(Number.isFinite) || options.sourceBoundsUE[0] > options.sourceBoundsUE[2] || options.sourceBoundsUE[1] > options.sourceBoundsUE[3])) throw Error("Invalid movement field source bounds");
+  const topology = yield* actionTopology(planner, seeds[0], options.goal || seeds[0], seeds.slice(0, 48).map((p, i) => ({ guid: "seed" + i, path: [p, p] })), options);
+  const polygons = [...planner.movementTopology.polygons.values()], size = Math.max(2, run / 100), bins = /* @__PURE__ */ new Map(), tips = /* @__PURE__ */ new Map();
+  let work = 0;
+  for (const poly of polygons) {
+    const v = poly.vertices, center = { x: v.reduce((s, p) => s + p.x, 0) / v.length, z: v.reduce((s, p) => s + p.z, 0) / v.length };
+    const a = v[0];
+    let plane = null;
+    for (let j = 1; j < v.length - 1; j++) {
+      const b = v[j], c = v[j + 1], nx = (b.y - a.y) * (c.z - a.z) - (b.z - a.z) * (c.y - a.y), ny = (b.z - a.z) * (c.x - a.x) - (b.x - a.x) * (c.z - a.z), nz = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+      if (Math.abs(ny) > 1e-9) {
+        plane = { a, nx, ny, nz };
+        break;
+      }
+    }
+    poly.plane = plane;
+    poly.minY = Math.min(...v.map((p) => p.y));
+    poly.maxY = Math.max(...v.map((p) => p.y));
+    const xmin = Math.floor(Math.min(...v.map((p) => p.x)) / size), xmax = Math.floor(Math.max(...v.map((p) => p.x)) / size), zmin = Math.floor(Math.min(...v.map((p) => p.z)) / size), zmax = Math.floor(Math.max(...v.map((p) => p.z)) / size);
+    if ((xmax - xmin + 1) * (zmax - zmin + 1) > 256) continue;
+    for (let x = xmin; x <= xmax; x++) for (let z = zmin; z <= zmax; z++) {
+      const id = x + "," + z;
+      if (!bins.has(id)) bins.set(id, []);
+      bins.get(id).push(poly);
+    }
+    for (let i = 0; i < v.length; i++) if (!poly.linked.has(i)) for (const [lo, hi] of exposedEdge(poly.partial?.get(i))) {
+      const a2 = v[i], b = v[(i + 1) % v.length], dx = b.x - a2.x, dz = b.z - a2.z, length = Math.hypot(dx, dz);
+      if (length < 1e-3) continue;
+      let nx = dz / length, nz = -dx / length;
+      if (nx * ((a2.x + b.x) / 2 - center.x) + nz * ((a2.z + b.z) / 2 - center.z) < 0) {
+        nx = -nx;
+        nz = -nz;
+      }
+      const count = Math.min(16, Math.max(1, Math.ceil(length * (hi - lo) / 1.5)));
+      for (let j = 0; j < count; j++) {
+        const t = lo + (hi - lo) * (j + 0.5) / count, p = { x: a2.x + dx * t, y: a2.y + (b.y - a2.y) * t, z: a2.z + dz * t }, d = Math.hypot(center.x - p.x, center.z - p.z) || 1, inset = Math.min(0.15, d * 0.25);
+        p.x += (center.x - p.x) * inset / d;
+        p.z += (center.z - p.z) * inset / d;
+        const id = poly.component + "/" + Math.round(p.x / 0.75) + "," + Math.round(p.z / 0.75) + "," + Math.round(p.y / 0.5);
+        if (!tips.has(id)) tips.set(id, { p, nx, nz, ref: poly.ref, component: poly.component });
+      }
+    }
+    if ((++work & 15) === 0) yield;
+  }
+  const groups = /* @__PURE__ */ new Map();
+  let probes = 0;
+  for (const edge of tips.values()) {
+    const targets = /* @__PURE__ */ new Set(), x = Math.floor(edge.p.x / size), z = Math.floor(edge.p.z / size);
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) for (const p of bins.get(x + dx + "," + (z + dz)) || []) if (p.component !== edge.component && edge.p.y - p.minY <= height / 100 + 1 && p.minY - edge.p.y <= 2) targets.add(p);
+    for (const poly of targets) {
+      let closest = null, distance22 = Infinity;
+      for (let i = 0; i < poly.vertices.length; i++) {
+        const a = poly.vertices[i], b = poly.vertices[(i + 1) % poly.vertices.length], dx = b.x - a.x, dz = b.z - a.z, t = Math.max(0, Math.min(1, ((edge.p.x - a.x) * dx + (edge.p.z - a.z) * dz) / (dx * dx + dz * dz || 1))), p = { x: a.x + dx * t, z: a.z + dz * t }, d2 = (p.x - edge.p.x) ** 2 + (p.z - edge.p.z) ** 2;
+        if (d2 < distance22) {
+          distance22 = d2;
+          closest = p;
+        }
+      }
+      if (!closest || distance22 > (run / 100) ** 2) continue;
+      const d = Math.sqrt(distance22) || 1, nx = (closest.x - edge.p.x) / d, nz = (closest.z - edge.p.z) / d;
+      const overlapRecovery = nx * edge.nx + nz * edge.nz < -0.15;
+      const rays = overlapRecovery ? [[edge.nx, edge.nz]] : [[edge.nx, edge.nz], [nx, nz]];
+      for (const [dx, dz] of rays) {
+        const r = rayPolygon(poly.vertices, edge.p, dx, dz, run / 100);
+        if (r === null) continue;
+        const p = { x: edge.p.x + dx * r, z: edge.p.z + dz * r, y: edge.p.y }, cx = poly.vertices.reduce((s, v) => s + v.x, 0) / poly.vertices.length, cz = poly.vertices.reduce((s, v) => s + v.z, 0) / poly.vertices.length, cd = Math.hypot(cx - p.x, cz - p.z) || 1, inset = Math.min(0.15, cd * 0.25);
+        p.x += (cx - p.x) * inset / cd;
+        p.z += (cz - p.z) * inset / cd;
+        const plane = poly.plane;
+        if (!plane) continue;
+        p.y = plane.a.y - (plane.nx * (p.x - plane.a.x) + plane.nz * (p.z - plane.a.z)) / plane.ny;
+        const a = ue(edge.p), b = ue(p), drop = a[2] - b[2], span = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        if (options.sourceBoundsUE && (a[0] < options.sourceBoundsUE[0] || a[1] < options.sourceBoundsUE[1] || a[0] > options.sourceBoundsUE[2] || a[1] > options.sourceBoundsUE[3])) continue;
+        if (drop < -Math.min(200, options.maxRiseCm ?? 200) || drop > height || span > run + 1) continue;
+        if (overlapRecovery && (drop < 100 || (p.x - edge.p.x) * edge.nx + (p.z - edge.p.z) * edge.nz <= 0)) continue;
+        const id = edge.component + ">" + poly.component;
+        if (!groups.has(id)) groups.set(id, []);
+        groups.get(id).push({ a, b, ref: edge.ref, target: poly.ref, kind: drop < 100 ? "surface" : "fall", source: "recast-boundary", overlapRecovery, span, score: span + distance(a, seeds[0]) * 0.05 });
+      }
+      if ((++probes & 31) === 0) yield;
+    }
+    yield;
+  }
+  const answer = [];
+  let reachable, approaches, heightProbes = 0, heightLimitedGroups = 0;
+  if (options.allComponents) {
+    const roots = new Set(seeds.map((p) => topology.component(p)).filter((id) => id !== void 0)), outgoing = /* @__PURE__ */ new Map(), incoming = options.inboundRoots ? /* @__PURE__ */ new Map() : null;
+    const add = (map, from, to) => {
+      if (!map.has(from)) map.set(from, []);
+      map.get(from).push(to);
+    };
+    const link = (from, to) => {
+      add(outgoing, from, to);
+      if (incoming) add(incoming, to, from);
+    };
+    for (const [id, items] of groups) {
+      const [from, to] = id.split(">").map(Number);
+      link(from, to);
+      if (items.some((item) => item.kind === "surface")) link(to, from);
+      yield;
+    }
+    const expand = function* (edges) {
+      const seen = new Set(roots), queue = [...roots];
+      let steps = 0;
+      for (let i = 0; i < queue.length; i++) {
+        for (const to of edges.get(queue[i]) || []) {
+          if (!seen.has(to)) {
+            seen.add(to);
+            queue.push(to);
+          }
+          if ((++steps & 63) === 0) yield;
+        }
+        if ((i & 31) === 0) yield;
+      }
+      return seen;
+    };
+    reachable = yield* expand(outgoing);
+    if (incoming) approaches = yield* expand(incoming);
+  }
+  for (const [id, group] of groups) {
+    let candidates = group, reverseOnly = false;
+    if (reachable) {
+      const [from, to] = id.split(">").map(Number), direct = reachable.has(from) || approaches?.has(to);
+      if (!direct) {
+        if (!reachable.has(to) && !approaches?.has(from)) continue;
+        reverseOnly = true;
+        candidates = group.filter((item) => item.kind === "surface");
+      }
+    }
+    const project = (p) => ({ x: (p[0] - origin[0]) / 100, y: (p[2] - origin[2]) / 100, z: -(p[1] - origin[1]) / 100 });
+    const checked = /* @__PURE__ */ new Map(), movementLimit = options.envelopeBands ? 96 : 24, probeLimit = movementLimit * 4;
+    let limited = false;
+    function* measure(item) {
+      if (checked.has(item)) return checked.get(item);
+      if (checked.size >= probeLimit) {
+        limited = true;
+        return null;
+      }
+      const first = q.getPolyHeight(item.ref, project(item.a)), last = q.getPolyHeight(item.target, project(item.b));
+      let verified = null;
+      if (first.success && last.success && Number.isFinite(first.height) && Number.isFinite(last.height)) {
+        const a = [item.a[0], item.a[1], origin[2] + first.height * 100], b = [item.b[0], item.b[1], origin[2] + last.height * 100], drop = a[2] - b[2];
+        if (drop <= height && drop >= -Math.min(200, options.maxRiseCm ?? 200) && (!reverseOnly || drop < 100) && (!item.overlapRecovery || drop >= 100)) verified = { ...item, a, b, kind: drop < 100 ? "surface" : "fall" };
+      }
+      checked.set(item, verified);
+      yield;
+      return verified;
+    }
+    const ordinary = candidates.filter((item) => !item.overlapRecovery);
+    const primary = yield* movementProposalsJob(ordinary, options), kept = /* @__PURE__ */ new Set();
+    for (const item of primary) {
+      const verified = yield* measure(item);
+      if (verified) {
+        answer.push(verified);
+        kept.add(verified);
+      }
+    }
+    if (kept.size < primary.length || kept.size < movementLimit && ordinary.length < candidates.length) {
+      const measured = yield* movementProposalsJob(candidates, options, measure, () => limited);
+      for (const item of measured) {
+        if (kept.has(item)) continue;
+        answer.push({ ...item, boundaryRecovery: true });
+        kept.add(item);
+        if (kept.size >= movementLimit) break;
+      }
+    }
+    heightProbes += checked.size;
+    if (limited) heightLimitedGroups++;
+    yield;
+  }
+  answer.stats = { components: planner.movementTopology.island, reachableComponents: reachable?.size, ...approaches ? { approachComponents: approaches.size } : {}, polygons: polygons.length, totalPolygons: topology.stats.totalPolygons, allComponents: topology.stats.allComponents, tips: tips.size, probes, heightProbes, heightLimitedGroups, groups: groups.size, candidates: answer.length };
+  return answer;
 }
 
 // offline-navigation/query.mjs
@@ -10311,10 +11011,16 @@ function toNav(p, o) {
 function fromNav(p, o) {
   return [o[0] + p.x * 100, o[1] - p.z * 100, o[2] + p.y * 100];
 }
-function distance(a, b) {
+function distance2(a, b) {
   return Math.hypot(...a.map((v, k) => v - b[k]));
 }
 var Planner = class {
+  actionTopologyJob(start, goal, features, options) {
+    return actionTopology(this, start, goal, features, options);
+  }
+  dropCandidatesJob(seeds, options) {
+    return discoverFalls(this, seeds, options);
+  }
   constructor(bytes2, metadata, options = {}) {
     if (!valid(metadata.originUE) || metadata.engine !== "recast-navigation@0.44.0") throw Error("Unsupported navigation metadata");
     this.origin = metadata.originUE;
@@ -10326,7 +11032,25 @@ var Planner = class {
     this.header = navHeader(bytes2);
     this.tileBuffers = /* @__PURE__ */ new Map();
   }
+  portalClampLimit(fromRef, toRef, point) {
+    const row = this.navMesh.getTileAndPolyByRef(fromRef);
+    if (!row.success) return 0.02;
+    let linkIndex = row.poly.firstLink() >>> 0, count = 0;
+    while (linkIndex !== 4294967295 && ++count <= row.tile.header().maxLinkCount()) {
+      const link = row.tile.links(linkIndex);
+      linkIndex = link.next() >>> 0;
+      if (link.ref() !== toRef || link.side() === 255 || link.bmin() === 0 && link.bmax() === 255) continue;
+      const a = row.poly.verts(link.edge()) * 3, b = row.poly.verts((link.edge() + 1) % row.poly.vertCount()) * 3;
+      const x = row.tile.verts(a), z = row.tile.verts(a + 2), dx = row.tile.verts(b) - x, dz = row.tile.verts(b + 2) - z, length2 = dx * dx + dz * dz;
+      if (!length2) continue;
+      const t = ((point.x - x) * dx + (point.z - z) * dz) / length2;
+      if (t < link.bmin() / 255 - 1e-5 || t > link.bmax() / 255 + 1e-5 || Math.hypot(point.x - x - t * dx, point.z - z - t * dz) > 2e-3) continue;
+      return Math.max(0.02, Math.sqrt(length2) / 255 + 2e-3);
+    }
+    return 0.02;
+  }
   replaceTile(slot, value) {
+    this.movementTopology = null;
     if (this.destroyed || this.header.tiles !== 0 || !Number.isInteger(slot) || slot < 0 || slot >= this.header.maxTiles) throw Error("Invalid conditional tile update");
     this.cancelQueries();
     const ref = this.header.maxTiles * this.header.maxPolys + slot * this.header.maxPolys, old = this.tileBuffers.get(slot);
@@ -10375,7 +11099,7 @@ var Planner = class {
     if (this.destroyed || !valid(start) || !valid(goal)) throw Error("Invalid navigation request");
     const q = this.query, halfExtents = { x: (options.horizontalProjectionCm ?? 100) / 100, y: (options.verticalProjectionCm ?? 75) / 100, z: (options.horizontalProjectionCm ?? 100) / 100 };
     const first = q.findNearestPoly(toNav(start, this.origin), { halfExtents }), last = q.findNearestPoly(toNav(goal, this.origin), { halfExtents });
-    let path, straight, surface, complete = false, reason = "endpoint missing", corners = [], points = [], heightFailure = null;
+    let path, straight, surface, complete = false, reason = "endpoint missing", corners = [], points = [], heightFailure = null, maxSurfaceClampCm = 0, quantizedPortalClamps = 0;
     const free = (value) => {
       value?.straightPath.destroy();
       value?.straightPathFlags.destroy();
@@ -10403,17 +11127,26 @@ var Planner = class {
               const t = j / steps, p = { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t }, h = q.getPolyHeight(ref, p);
               if (!h.success) {
                 const projected = q.closestPointOnPoly(ref, p), shift = projected.success ? Math.hypot(projected.closestPoint.x - p.x, projected.closestPoint.z - p.z) : Infinity;
-                if (!projected.success || shift > 0.02) {
+                let limit = 0.02;
+                if (projected.success && shift > 0.02 && i > 0 && j === 0) {
+                  for (let k = 1; k < n; k++) if (path.polys.get(k) === ref) {
+                    limit = this.portalClampLimit(path.polys.get(k - 1), ref, p);
+                    break;
+                  }
+                }
+                if (!projected.success || shift > limit) {
                   supported = false;
-                  heightFailure = { ref, point: fromNav(p, this.origin), horizontalClampCm: shift * 100 };
+                  heightFailure = { ref, point: fromNav(p, this.origin), horizontalClampCm: shift * 100, allowedClampCm: limit * 100 };
                   break;
                 }
+                maxSurfaceClampCm = Math.max(maxSurfaceClampCm, shift * 100);
+                if (shift > 0.02) quantizedPortalClamps++;
                 p.x = projected.closestPoint.x;
                 p.y = projected.closestPoint.y;
                 p.z = projected.closestPoint.z;
               } else p.y = h.height;
               const value = fromNav(p, this.origin);
-              if (!points.length || distance(points.at(-1), value) > 0.1) points.push(value);
+              if (!points.length || distance2(points.at(-1), value) > 0.1) points.push(value);
               if (points.length % 32 === 0) yield;
             }
             if (!supported) break;
@@ -10438,13 +11171,15 @@ var Planner = class {
         goal,
         projectedStart,
         projectedGoal,
-        startProjectionErrorCm: projectedStart ? distance(start, projectedStart) : null,
-        goalProjectionErrorCm: projectedGoal ? distance(goal, projectedGoal) : null,
+        startProjectionErrorCm: projectedStart ? distance2(start, projectedStart) : null,
+        goalProjectionErrorCm: projectedGoal ? distance2(goal, projectedGoal) : null,
         corridorPolygons: path?.polys.size ?? 0,
         pathStatus: path?.status ?? 0,
         straightStatus: straight?.status ?? 0,
-        meters: points.slice(1).reduce((sum, p, i) => sum + distance(points[i], p), 0) / 100,
+        meters: points.slice(1).reduce((sum, p, i) => sum + distance2(points[i], p), 0) / 100,
         heightFailure,
+        maxSurfaceClampCm,
+        quantizedPortalClamps,
         physicalVerified: false
       };
     } finally {
@@ -10464,10 +11199,1494 @@ var Planner = class {
       this.navMesh.destroy();
       for (const data of this.tileBuffers.values()) data.destroy();
       this.tileBuffers.clear();
+      this.movementTopology = null;
       this.destroyed = true;
     }
   }
 };
+
+// offline-navigation/admission.mjs
+var F = Math.fround;
+var EXT = 32768;
+var NULL = 4294967295;
+var OPP = (s) => s + 4 & 7;
+function* prepare(bytes2, slot) {
+  if (!ArrayBuffer.isView(bytes2) || bytes2.BYTES_PER_ELEMENT !== 1 || bytes2.length < 100) throw Error("Invalid Detour tile byte extent");
+  const sourceHeader = new DataView(bytes2.buffer, bytes2.byteOffset, bytes2.byteLength);
+  if (sourceHeader.getUint32(0, true) !== 1145979222 || sourceHeader.getUint32(4, true) !== 7) throw Error("Unsupported Detour tile format");
+  if (sourceHeader.getInt32(52, true) !== 0) throw Error("Budgeted admission rejects offMeshConCount > 0");
+  const copy = new Uint8Array(bytes2.length);
+  for (let at = 0; at < bytes2.length; at += 16384) {
+    copy.set(bytes2.subarray(at, at + 16384), at);
+    yield "copy";
+  }
+  const v = new DataView(copy.buffer), polyCount = v.getInt32(24, true), vertCount = v.getInt32(28, true), polyAt = 100 + vertCount * 12;
+  if (polyCount < 1 || vertCount < 1 || polyAt + polyCount * 32 > bytes2.length) throw Error("Invalid Detour polygon extent");
+  const portals = [], sides = Array.from({ length: 8 }, () => []);
+  for (let i = 0; i < polyCount; i++) {
+    const p = polyAt + i * 32, n = v.getUint8(p + 30), type = v.getUint8(p + 31) >> 6;
+    if (type !== 0) throw Error("Budgeted admission rejects offmesh/non-ground polygon type");
+    for (let j = 0; j < n; j++) {
+      const at = p + 16 + j * 2, nei = v.getUint16(at, true);
+      if (!(nei & EXT)) continue;
+      const side = nei & 255;
+      if (![0, 2, 4, 6].includes(side)) throw Error("Unexpected external side");
+      const ai = 100 + v.getUint16(p + 4 + j * 2, true) * 12, bi = 100 + v.getUint16(p + 4 + (j + 1) % n * 2, true) * 12;
+      const a = [v.getFloat32(ai, true), v.getFloat32(ai + 4, true), v.getFloat32(ai + 8, true)], b = [v.getFloat32(bi, true), v.getFloat32(bi + 4, true), v.getFloat32(bi + 8, true)];
+      const axis = side === 0 || side === 4 ? 2 : 0, apos = a[axis], bpos = b[axis];
+      const edge = { i, j, nei, side, a, b, axis, coord: a[axis === 2 ? 0 : 2], min: apos < bpos ? [apos, a[1]] : [bpos, b[1]], max: apos < bpos ? [bpos, b[1]] : [apos, a[1]] };
+      portals.push(edge);
+      sides[side].push(edge);
+      v.setUint16(at, 0, true);
+    }
+    if ((i & 31) === 31) yield "strip-index";
+  }
+  return { copy, slot, polyCount, portals, sides, x: v.getInt32(8, true), y: v.getInt32(12, true), layer: v.getInt32(16, true), climb: v.getFloat32(68, true) };
+}
+function* restore(row) {
+  for (let i = 0; i < row.portals.length; i++) {
+    const e = row.portals[i];
+    row.raw.get_polys(e.i).set_neis(e.j, e.nei);
+    if ((i & 31) === 31) yield "restore";
+  }
+}
+function overlap(a, b, climb) {
+  const px = F(0.01), minx = Math.max(F(a.min[0] + px), F(b.min[0] + px)), maxx = Math.min(F(a.max[0] - px), F(b.max[0] - px));
+  if (minx > maxx) return false;
+  const ad = F(F(a.max[1] - a.min[1]) / F(a.max[0] - a.min[0])), ak = F(a.min[1] - F(ad * a.min[0]));
+  const bd = F(F(b.max[1] - b.min[1]) / F(b.max[0] - b.min[0])), bk = F(b.min[1] - F(bd * b.min[0]));
+  const aminy = F(F(ad * minx) + ak), amaxy = F(F(ad * maxx) + ak), bminy = F(F(bd * minx) + bk), bmaxy = F(F(bd * maxx) + bk);
+  const dmin = F(bminy - aminy), dmax = F(bmaxy - amaxy);
+  if (F(dmin * dmax) < 0) return true;
+  const py2 = F(climb * F(2)), thr = F(py2 * py2);
+  return F(dmin * dmin) <= thr || F(dmax * dmax) <= thr;
+}
+function addLink(source, e, target, c) {
+  const idx = source.raw.get_linksFreeList() >>> 0;
+  if (idx === NULL) return;
+  const link = source.raw.get_links(idx), poly = source.raw.get_polys(e.i);
+  source.raw.set_linksFreeList(link.get_next());
+  link.set_ref((target.base | c.edge.i) >>> 0);
+  link.set_edge(e.j);
+  link.set_side(e.side);
+  link.set_next(poly.get_firstLink());
+  poly.set_firstLink(idx);
+  let lo = F(F(c.min - e.a[e.axis]) / F(e.b[e.axis] - e.a[e.axis])), hi = F(F(c.max - e.a[e.axis]) / F(e.b[e.axis] - e.a[e.axis]));
+  if (lo > hi) [lo, hi] = [hi, lo];
+  link.set_bmin(Math.round(F(Math.max(0, Math.min(1, lo)) * F(255))));
+  link.set_bmax(Math.round(F(Math.max(0, Math.min(1, hi)) * F(255))));
+}
+function* connect(source, target, side) {
+  const edges = side === -1 ? source.portals : source.sides[side];
+  let work = 0;
+  for (const e of edges) {
+    const found = [];
+    let previous = -1;
+    for (const c of target.sides[OPP(e.side)]) {
+      if (++work >= 64) {
+        work = 0;
+        yield "external-scan";
+      }
+      if (c.i === previous) continue;
+      if (Math.abs(F(e.coord - c.coord)) > F(0.01)) continue;
+      if (!overlap(e, c, target.climb)) continue;
+      found.push({ edge: c, min: Math.max(e.min[0], c.min[0]), max: Math.min(e.max[0], c.max[0]) });
+      previous = c.i;
+      if (found.length === 4) break;
+    }
+    for (const c of found) addLink(source, e, target, c);
+    if (++work >= 64) {
+      work = 0;
+      yield "external-links";
+    }
+  }
+}
+var offsets = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+function events(rows) {
+  const result = [], prior = [];
+  for (const row of rows) {
+    const same = prior.filter((t) => t.x === row.x && t.y === row.y).reverse();
+    if (same.length > 31) throw Error("Budgeted sameXY exceeds native MAX_NEIS");
+    for (const old of same) result.push([row, old, -1], [old, row, -1]);
+    for (let side = 0; side < 8; side++) {
+      const [dx, dy] = offsets[side], neis = prior.filter((t) => t.x === row.x + dx && t.y === row.y + dy).reverse();
+      if (neis.length > 32) throw Error("Budgeted neighbors exceed native MAX_NEIS");
+      for (const old of neis) result.push([row, old, side], [old, row, OPP(side)]);
+    }
+    prior.push(row);
+  }
+  return result;
+}
+
+// offline-navigation/world-window.mjs
+var need2 = (v, m) => {
+  if (!v) throw Error(m);
+};
+var key = (t) => t.x + "," + t.y + "," + (t.layer ?? 0);
+var WorldWindow = class {
+  constructor(index, readBlob, options = {}) {
+    need2(index.schema === 1 && index.kind === "experimental-sparse-world" && index.unknownState === "closed", "Unsupported sparse world");
+    need2(index.originUE.every((v) => v === 0) && index.extentCm > 0, "Unsupported sparse coordinate origin");
+    this.index = index;
+    this.readBlob = readBlob;
+    this.loaded = /* @__PURE__ */ new Map();
+    this.jobs = /* @__PURE__ */ new Set();
+    this.retained = /* @__PURE__ */ new Map();
+    this.busy = false;
+    this.destroyed = false;
+    const header = decodeBase64(index.navHeaderBase64);
+    this.maxTiles = Math.min(options.maxTiles ?? 256, navHeader(header).maxTiles);
+    this.maxBytes = options.maxBytes ?? 32 * 1024 * 1024;
+    this.readBlobJob = options.readBlobJob;
+    need2(Number.isInteger(this.maxTiles) && this.maxTiles > 0 && Number.isFinite(this.maxBytes) && this.maxBytes > 0, "Invalid world window budget");
+    this.defaultHeader = header;
+    this.plannerOptions = { maxNodes: options.maxNodes ?? 8192 };
+    this.planner = new Planner(header, index, this.plannerOptions);
+  }
+  select(bounds, states = {}, verticalBounds) {
+    need2(!this.destroyed && bounds.length === 4 && bounds.every(Number.isFinite) && bounds[0] <= bounds[2] && bounds[1] <= bounds[3], "Invalid world window bounds");
+    const size = this.index.extentCm, values = new Map(Object.entries(states).map(([id, v]) => [id.toLowerCase(), v]));
+    const tiles = this.index.tiles.filter((t) => t.x * size <= bounds[2] && (t.x + 1) * size >= bounds[0] && -t.y * size >= bounds[1] && -(t.y + 1) * size <= bounds[3] && (!verticalBounds || !t.verticalBoundsUE || t.verticalBoundsUE[0] <= verticalBounds[1] && t.verticalBoundsUE[1] >= verticalBounds[0]));
+    need2(tiles.length <= this.maxTiles, "World tile window budget exceeded; a smaller window or coarse corridor is required");
+    let bytes2 = 0, requiredPolygons = 1;
+    const unknown = /* @__PURE__ */ new Set(), selected = [];
+    for (const tile of tiles) {
+      let variant = "";
+      for (const id of tile.conditions) {
+        const state = values.get(id.toLowerCase());
+        if (state !== true && state !== false) unknown.add(id);
+        variant += state === true ? "0" : "1";
+      }
+      need2(Object.prototype.hasOwnProperty.call(tile.variants, variant), "Missing world state variant");
+      const blob = tile.variants[variant];
+      if (blob) {
+        const descriptor = this.index.blobs[blob];
+        need2(descriptor && Number.isInteger(descriptor.bytes) && descriptor.bytes > 0, "Missing world tile blob");
+        bytes2 += descriptor.bytes;
+        requiredPolygons = Math.max(requiredPolygons, descriptor.polygons ?? 16384);
+      }
+      selected.push({ ...tile, blob });
+    }
+    need2(bytes2 <= this.maxBytes, "World tile byte budget exceeded");
+    const maxPolys = Math.max(16384, 2 ** Math.ceil(Math.log2(requiredPolygons))), maxTiles = 2 ** 22 / maxPolys;
+    need2(maxPolys <= 65536 && tiles.length <= Math.min(this.maxTiles, maxTiles), "World dense-tile window capacity exceeded");
+    return { tiles: selected, bytes: bytes2, unknownActors: [...unknown], maxPolys, maxTiles };
+  }
+  _bytes(row, value) {
+    if (!row.blob) return null;
+    value ?? (value = this.readBlob(row.blob, this.index.blobs[row.blob]));
+    const b = value instanceof Uint8Array ? value : new Uint8Array(value);
+    need2(b.length === this.index.blobs[row.blob].bytes && b.length >= 100, "Invalid world tile size");
+    const v = new DataView(b.buffer, b.byteOffset, b.byteLength);
+    need2(v.getUint32(0, true) === 1145979222 && v.getInt32(4, true) === 7 && v.getInt32(8, true) === row.x && v.getInt32(12, true) === row.y && v.getInt32(16, true) === (row.layer ?? 0), "World tile coordinates differ");
+    need2(v.getInt32(24, true) <= (this.index.blobs[row.blob].polygons ?? 16384), "World tile polygon capacity metadata differs");
+    return b;
+  }
+  *_bytesJob(row) {
+    if (!row.blob) return null;
+    const prior = this.loaded.get(key(row)), resident = prior?.blob === row.blob ? this.planner.tileBuffers.get(prior.slot) : null;
+    if (resident) {
+      const bytes2 = new Uint8Array(resident.size);
+      for (let at = 0; at < bytes2.length; at += 16384) {
+        bytes2.set(resident.getHeapView().subarray(at, Math.min(bytes2.length, at + 16384)), at);
+        yield;
+      }
+      return this._bytes(row, bytes2);
+    }
+    return this._bytes(row, this.readBlobJob ? yield* this.readBlobJob(row.blob, this.index.blobs[row.blob]) : void 0);
+  }
+  _header(maxTiles, maxPolys) {
+    const header = this.defaultHeader.slice(), view2 = new DataView(header.buffer);
+    view2.setUint32(32, maxTiles, true);
+    view2.setUint32(36, maxPolys, true);
+    return header;
+  }
+  holdWindow() {
+    need2(!this.busy && !this.destroyed, "Cannot retain a busy world window");
+    need2(this.retained.size === 0 || this.retained.has(this.planner), "Nested temporary world windows are not supported");
+    const snapshot = { planner: this.planner, loaded: new Map(this.loaded) };
+    this.retained.set(snapshot.planner, (this.retained.get(snapshot.planner) ?? 0) + 1);
+    return snapshot;
+  }
+  restoreWindow(snapshot) {
+    need2(this.retained.has(snapshot.planner), "World snapshot is not retained");
+    if (this.planner !== snapshot.planner && !this.retained.has(this.planner)) this.planner.destroy();
+    this.planner = snapshot.planner;
+    this.loaded = new Map(snapshot.loaded);
+    const count = this.retained.get(snapshot.planner);
+    if (count === 1) this.retained.delete(snapshot.planner);
+    else this.retained.set(snapshot.planner, count - 1);
+  }
+  _track(source) {
+    const owner = this;
+    let job;
+    job = (function* () {
+      try {
+        return yield* source;
+      } finally {
+        owner.jobs.delete(job);
+      }
+    })();
+    this.jobs.add(job);
+    return job;
+  }
+  loadWindowJob(bounds, states = {}, verticalBounds) {
+    return this._track(this._loadWindowJob(bounds, states, verticalBounds));
+  }
+  *_loadWindowJob(bounds, states = {}, verticalBounds) {
+    need2(!this.busy && !this.destroyed, "World window is busy or destroyed");
+    const plan = this.select(bounds, states, verticalBounds), wanted = new Map(plan.tiles.map((t) => [key(t), t]));
+    const same = this.loaded.size === wanted.size && [...this.loaded].every(([id, row]) => wanted.get(id)?.blob === row.blob);
+    if (same) return { residentTiles: this.loaded.size, residentBytes: plan.bytes, unknownActors: plan.unknownActors };
+    const staged = new Planner(this._header(plan.maxTiles, plan.maxPolys), this.index, this.plannerOptions), loaded = /* @__PURE__ */ new Map(), admissions = [];
+    let committed = false;
+    this.busy = true;
+    try {
+      for (const tile of plan.tiles) {
+        const row = { ...tile, slot: loaded.size }, bytes2 = yield* this._bytesJob(row);
+        if (bytes2) {
+          const admission = yield* prepare(bytes2, row.slot);
+          staged.replaceTile(row.slot, admission.copy);
+          const native = staged.navMesh.getTile(row.slot);
+          admission.raw = native.raw;
+          admission.base = staged.navMesh.getPolyRefBase(native) >>> 0;
+          admission.copy = null;
+          admissions.push(admission);
+        }
+        loaded.set(key(row), row);
+        yield;
+      }
+      for (const row of admissions) yield* restore(row);
+      for (const [from, to, side] of events(admissions)) yield* connect(from, to, side);
+      if (!this.retained.has(this.planner)) this.planner.destroy();
+      this.planner = staged;
+      this.loaded = loaded;
+      committed = true;
+      return { residentTiles: loaded.size, residentBytes: plan.bytes, unknownActors: plan.unknownActors };
+    } finally {
+      if (!committed) staged.destroy();
+      this.busy = false;
+    }
+  }
+  routeJob(start, goal, states = {}, options = {}) {
+    return this._track(this._routeJob(start, goal, states, options));
+  }
+  *_routeJob(start, goal, states = {}, options = {}) {
+    const pad = (options.paddingTiles ?? 2) * this.index.extentCm;
+    const bounds = options.boundsUE ?? [Math.min(start[0], goal[0]) - pad, Math.min(start[1], goal[1]) - pad, Math.max(start[0], goal[0]) + pad, Math.max(start[1], goal[1]) + pad];
+    need2([start, goal].every((p) => p[0] >= bounds[0] && p[0] <= bounds[2] && p[1] >= bounds[1] && p[1] <= bounds[3]), "World window excludes an endpoint");
+    const heightPad = options.heightPaddingCm ?? 2e4, vertical = options.heightBoundsUE ?? [Math.min(start[2], goal[2]) - heightPad, Math.max(start[2], goal[2]) + heightPad];
+    const window = yield* this.loadWindowJob(bounds, states, vertical);
+    const route = yield* this.planner.routeJob(start, goal, options);
+    return { ...route, ...window, boundedWorldWindow: true, windowBoundsUE: bounds, verticalWindowUE: vertical, completeCollisionClaim: false };
+  }
+  candidateJob(start, goal, authoritativeStates, candidateStates, options = {}) {
+    return this._track(this._candidateJob(start, goal, authoritativeStates, candidateStates, options));
+  }
+  *_candidateJob(start, goal, authoritativeStates, candidateStates, options = {}) {
+    const known = new Map(Object.entries(authoritativeStates).map(([id, v]) => [id.toLowerCase(), v]));
+    for (const [id, value] of Object.entries(candidateStates)) need2(!(known.get(id.toLowerCase()) === false && value === true), "Known closed world actor cannot be opened for a candidate");
+    const previous = this.holdWindow();
+    try {
+      return yield* this.routeJob(start, goal, { ...authoritativeStates, ...candidateStates }, options);
+    } finally {
+      this.restoreWindow(previous);
+    }
+  }
+  cancelQueries() {
+    for (const job of [...this.jobs]) job.return();
+    this.jobs.clear();
+    this.planner.cancelQueries();
+  }
+  destroy() {
+    if (!this.destroyed) {
+      this.cancelQueries();
+      this.planner.destroy();
+      for (const planner of this.retained.keys()) if (planner !== this.planner) planner.destroy();
+      this.retained.clear();
+      this.loaded.clear();
+      this.destroyed = true;
+    }
+  }
+};
+
+// offline-navigation/coarse-components.mjs
+function* tileComponentsJob(bytes2) {
+  if (!(bytes2 instanceof Uint8Array) || bytes2.byteLength < 100) throw Error("Unsupported coarse tile layout");
+  const view2 = new DataView(bytes2.buffer, bytes2.byteOffset, bytes2.byteLength), count = view2.getInt32(24, true), vertices = view2.getInt32(28, true), at = 100 + vertices * 12;
+  if (view2.getUint32(0, true) !== 1145979222 || view2.getInt32(4, true) !== 7 || count < 0 || count > 65536 || vertices < 0 || at + count * 32 > bytes2.byteLength) throw Error("Unsupported coarse tile layout");
+  const parent = new Int32Array(count), labels = new Int32Array(count);
+  for (let polygon = 0; polygon < count; polygon++) {
+    parent[polygon] = polygon;
+    if ((polygon & 511) === 511) yield;
+  }
+  const find = (polygon) => {
+    while (parent[polygon] !== polygon) {
+      parent[polygon] = parent[parent[polygon]];
+      polygon = parent[polygon];
+    }
+    return polygon;
+  };
+  for (let polygon = 0; polygon < count; polygon++) {
+    const edges = view2.getUint8(at + polygon * 32 + 30);
+    if (edges > 6) throw Error("Unsupported coarse polygon layout");
+    for (let edge = 0; edge < edges; edge++) {
+      const next = view2.getUint16(at + polygon * 32 + 16 + edge * 2, true);
+      if (!next || next & 32768) continue;
+      if (next > count) throw Error("Invalid coarse polygon neighbor");
+      const first = find(polygon), second = find(next - 1);
+      if (first !== second) parent[first] = second;
+    }
+    if ((polygon & 63) === 63) yield;
+  }
+  const ordinals = /* @__PURE__ */ new Map();
+  for (let polygon = 0; polygon < count; polygon++) {
+    const component = find(polygon);
+    if (!ordinals.has(component)) ordinals.set(component, ordinals.size);
+    labels[polygon] = ordinals.get(component);
+    if ((polygon & 255) === 255) yield;
+  }
+  return { labels, components: ordinals.size };
+}
+
+// offline-navigation/world-corridors.mjs
+var need3 = (v, m) => {
+  if (!v) throw Error(m);
+};
+var distance3 = (a, b) => Math.hypot(...a.map((v, k) => v - b[k]));
+var Heap = class {
+  constructor() {
+    this.rows = [];
+  }
+  push(row) {
+    const a = this.rows;
+    let i = a.length;
+    a.push(row);
+    while (i) {
+      const p = i - 1 >> 1;
+      if (a[p][0] <= row[0]) break;
+      a[i] = a[p];
+      i = p;
+    }
+    a[i] = row;
+  }
+  pop() {
+    const a = this.rows, first = a[0], last = a.pop();
+    if (a.length) {
+      let i = 0;
+      while (i * 2 + 1 < a.length) {
+        let c = i * 2 + 1;
+        if (c + 1 < a.length && a[c + 1][0] < a[c][0]) c++;
+        if (a[c][0] >= last[0]) break;
+        a[i] = a[c];
+        i = c;
+      }
+      a[i] = last;
+    }
+    return first;
+  }
+};
+var WorldCorridors = class {
+  constructor(owner) {
+    this.owner = owner;
+    this.pages = /* @__PURE__ */ new Map();
+    this.anchorCache = /* @__PURE__ */ new Map();
+    this.componentCache = /* @__PURE__ */ new Map();
+  }
+  *exactAnchor(point, states, bounds, vertical = [point[2] - 200, point[2] + 200], goal = false) {
+    const owner = this.owner;
+    yield* owner.directJob(point, point, states, { paddingTiles: 0, boundsUE: bounds, heightBoundsUE: vertical });
+    const planner = owner.window.planner, nav = planner.navMesh, near = planner.query.findNearestPoly({ x: point[0] / 100, y: point[2] / 100, z: -point[1] / 100 }, { halfExtents: { x: 1, y: 0.75, z: 1 } });
+    if (!near.success || !near.nearestRef) return null;
+    const decoded = nav.decodePolyId(near.nearestRef), tile = [...owner.window.loaded.values()].find((t) => t.slot === decoded.tileIndex);
+    if (!tile?.coarseSeeds?.length || tile.blob !== tile.variants["0".repeat(tile.conditions.length)]) return null;
+    let groups = this.componentCache.get(tile.blob);
+    if (!groups) {
+      const bytes2 = yield* owner.blobJob(tile.blob, owner.index.blobs[tile.blob]);
+      groups = yield* tileComponentsJob(bytes2);
+    }
+    need3(groups.components === tile.coarseSeeds.length, "Coarse component metadata differs from optimistic tile");
+    this.componentCache.delete(tile.blob);
+    this.componentCache.set(tile.blob, groups);
+    if (this.componentCache.size > 8) this.componentCache.delete(this.componentCache.keys().next().value);
+    const ordinal = groups.labels[decoded.tilePolygonIndex];
+    if (ordinal === void 0) return null;
+    const [id, ...p] = tile.coarseSeeds[ordinal], route = yield* planner.routeJob(goal ? p : point, goal ? point : p);
+    return route.complete ? { id, point: p, cost: route.meters * 100 } : null;
+  }
+  *node(id) {
+    const m = this.owner.manifest.corridors;
+    need3(Number.isInteger(id) && id >= 0 && id < m.nodes, "Invalid coarse node");
+    const pageID = Math.floor(id / m.pageNodes);
+    let page = this.pages.get(pageID);
+    if (!page) {
+      const text = yield* this.owner.textJob("corridor", pageID);
+      need3(text.length <= 1048576, "Oversized corridor page");
+      page = JSON.parse(text);
+      need3(page.schema === 1 && page.world === this.owner.manifest.world && page.first === pageID * m.pageNodes && page.nodes.length <= m.pageNodes, "Invalid coarse page");
+    }
+    this.pages.delete(pageID);
+    this.pages.set(pageID, page);
+    while (this.pages.size > 16) this.pages.delete(this.pages.keys().next().value);
+    const row = page.nodes[id - page.first];
+    need3(row?.length === 7 && row.slice(0, 6).every(Number.isFinite) && Array.isArray(row[6]), "Invalid coarse component");
+    return row;
+  }
+  *anchors(point, states, goal = false) {
+    const size = this.owner.manifest.extentCm, x = Math.floor(point[0] / size), y = Math.floor(-point[1] / size), seen = /* @__PURE__ */ new Set();
+    for (const ring of [0, 1]) {
+      const epsilon = 1e-3, bounds = [Math.min(point[0], (x - ring) * size + epsilon), Math.min(point[1], -(y + 1 + ring) * size + epsilon), Math.max(point[0], (x + 1 + ring) * size - epsilon), Math.max(point[1], -(y - ring) * size - epsilon)], vertical = [point[2] - 200, point[2] + 200], metadata = yield* this.owner.metadataJob(bounds, vertical);
+      try {
+        const exact = yield* this.exactAnchor(point, states, bounds, vertical, goal);
+        if (exact) return [exact];
+      } catch (error) {
+        if (!String(error).match(/budget|capacity/)) throw error;
+      }
+      const candidates = metadata.tiles.filter((t) => t.x >= x - ring && t.x <= x + ring && t.y >= y - ring && t.y <= y + ring).flatMap((t) => t.coarseSeeds ?? []).sort((a, b) => distance3(a.slice(1), point) - distance3(b.slice(1), point));
+      for (const [id, ...p] of candidates.slice(0, 8)) {
+        if (seen.has(id)) continue;
+        seen.add(id);
+        try {
+          const r = yield* this.owner.directJob(goal ? p : point, goal ? point : p, states, { paddingTiles: 0, boundsUE: bounds, heightBoundsUE: vertical });
+          if (r.complete) return [{ id, point: p, cost: r.meters * 100 }];
+        } catch (error) {
+          if (!String(error).includes("budget") && !String(error).includes("capacity")) throw error;
+        }
+      }
+    }
+    return [];
+  }
+  *cachedAnchors(point, states, signature, goal) {
+    const key2 = JSON.stringify([point, goal, signature]);
+    let found = this.anchorCache.get(key2);
+    if (found) this.anchorCache.delete(key2);
+    else found = yield* this.anchors(point, states, goal);
+    this.anchorCache.set(key2, found);
+    while (this.anchorCache.size > 16) this.anchorCache.delete(this.anchorCache.keys().next().value);
+    return found;
+  }
+  *path(start, goal, states, options = {}) {
+    const signature = JSON.stringify(Object.entries(states).sort(([a], [b]) => a.localeCompare(b)));
+    const starts = yield* this.cachedAnchors(start, states, signature, false), goals = yield* this.cachedAnchors(goal, states, signature, true);
+    if (!starts.length || !goals.length) return null;
+    const target = new Map(goals.map((r) => [r.id, r])), scores = /* @__PURE__ */ new Map(), parent = /* @__PURE__ */ new Map(), via = /* @__PURE__ */ new Map(), actions = /* @__PURE__ */ new Map(), heap = new Heap(), heuristic = (p) => Math.min(...goals.map((g) => distance3(p, g.point)));
+    const allowedID = (id) => !options.componentIDs || options.componentIDs.has(id);
+    const allowedTile = (row) => !options.tileKeys || options.tileKeys.has(row.slice(0, 3).join(","));
+    const validateAction = (hint) => {
+      need3([hint.from, hint.to].every((id) => Number.isInteger(id) && id >= 0 && id < this.owner.manifest.corridors.nodes) && Number.isFinite(hint.cost) && hint.cost > 0 && typeof hint.guid === "string", "Invalid coarse action hint");
+      const point = (value) => Array.isArray(value) && value.length === 3 && value.every(Number.isFinite);
+      need3(!hint.entry && !hint.exit || point(hint.entry) && point(hint.exit), "Invalid coarse action pad");
+    };
+    need3(!options.actionSource || typeof options.actionSource.fromJob === "function", "Invalid coarse movement source");
+    need3(!options.actionHints || Array.isArray(options.actionHints) && options.actionHints.length <= 1024, "Invalid coarse action hint budget");
+    for (const hint of options.actionHints || []) {
+      validateAction(hint);
+      if (hint.requiresPassable !== void 0) {
+        need3(typeof hint.requiresPassable === "string" && hint.requiresPassable.length <= 220, "Invalid coarse action condition");
+        if (states[hint.requiresPassable] !== true) {
+          yield;
+          continue;
+        }
+      }
+      need3(hint.reverse === void 0 || hint.reverse === true && !hint.both, "Invalid placed action direction");
+      const forward = { to: hint.to, cost: hint.cost, guid: hint.guid, entry: hint.entry, exit: hint.exit, reverse: hint.reverse === true };
+      if (!actions.has(hint.from)) actions.set(hint.from, []);
+      actions.get(hint.from).push(forward);
+      if (hint.both) {
+        if (!actions.has(hint.to)) actions.set(hint.to, []);
+        actions.get(hint.to).push({ ...forward, to: hint.from, entry: hint.exit, exit: hint.entry, reverse: true });
+      }
+      yield;
+    }
+    if (!goals.some((goal2) => allowedID(goal2.id))) return null;
+    for (const s of starts) {
+      if (!allowedID(s.id) || options.tileKeys && !allowedTile(yield* this.node(s.id))) continue;
+      scores.set(s.id, s.cost);
+      heap.push([s.cost + heuristic(s.point), s.id, s.cost]);
+    }
+    let visited = 0, actionWork = 0;
+    while (heap.rows.length) {
+      const [, id, cost] = heap.pop();
+      if (scores.get(id) !== cost) continue;
+      if (target.has(id)) {
+        const ids = [id];
+        while (parent.has(ids.at(-1))) ids.push(parent.get(ids.at(-1)));
+        ids.reverse();
+        const rows = [];
+        for (const component of ids) {
+          const action = via.get(component), row2 = { id: component, row: yield* this.node(component) };
+          if (action) {
+            row2.viaAction = action.guid;
+            if (action.entry) {
+              row2.viaEntry = action.entry.slice();
+              row2.viaExit = action.exit.slice();
+            }
+            if (action.reverse) row2.viaReverse = true;
+          }
+          rows.push(row2);
+        }
+        return rows;
+      }
+      if (++visited > (options.maxCoarseNodes ?? 32768)) return null;
+      const row = yield* this.node(id), p = row.slice(3, 6);
+      for (const next of row[6]) {
+        if (!allowedID(next)) continue;
+        const n = yield* this.node(next);
+        if (!allowedTile(n)) continue;
+        const g = cost + distance3(p, n.slice(3, 6));
+        if (g < (scores.get(next) ?? Infinity)) {
+          scores.set(next, g);
+          parent.set(next, id);
+          via.delete(next);
+          heap.push([g + heuristic(n.slice(3, 6)), next, g]);
+        }
+      }
+      const movement = options.actionSource ? yield* options.actionSource.fromJob(id) : [];
+      need3(Array.isArray(movement) && movement.length <= 2048, "Invalid coarse movement adjacency budget");
+      let adjacencyChecks = 0;
+      for (const hint of movement) {
+        validateAction(hint);
+        need3(hint.from === id && !hint.both, "Movement adjacency changed direction");
+        if ((++adjacencyChecks & 31) === 0) yield;
+      }
+      for (const action of [...actions.get(id) || [], ...movement]) {
+        if ((++actionWork & 15) === 0) yield;
+        const excluded = options.excludedActions?.get(action.guid.toLowerCase()) ?? 0;
+        if (excluded & (action.reverse ? 2 : 1)) continue;
+        const next = action.to;
+        if (!allowedID(next)) continue;
+        const neighbor = yield* this.node(next);
+        if (!allowedTile(neighbor)) continue;
+        const nextCost = cost + Math.max(action.cost, distance3(p, neighbor.slice(3, 6)));
+        if (nextCost >= (scores.get(next) ?? Infinity)) continue;
+        scores.set(next, nextCost);
+        parent.set(next, id);
+        via.set(next, action);
+        heap.push([nextCost + heuristic(neighbor.slice(3, 6)), next, nextCost]);
+      }
+      if (visited % 32 === 0) yield;
+    }
+    return null;
+  }
+  *routeJob(start, goal, states, options = {}) {
+    const corridor = yield* this.path(start, goal, states, { ...options, actionHints: void 0, actionSource: void 0 });
+    if (!corridor) return null;
+    const points = [], corners = [];
+    let current = start, last = null, index = 0, complete = true;
+    const width = Math.max(1, Math.floor(Math.sqrt(this.owner.window.maxTiles)) - 3), targets = [...corridor.map((n) => n.row.slice(3, 6)), goal];
+    const append = (result) => {
+      if (points.length && result.points.length && distance3(points.at(-1), result.points[0]) > 2) return false;
+      for (const p of result.points) if (!points.length || distance3(points.at(-1), p) > 0.1) points.push(p);
+      corners.push(...result.corners);
+      return true;
+    };
+    while (index < targets.length) {
+      let stop = Math.min(targets.length - 1, index + width - 1), result;
+      for (; ; ) {
+        try {
+          const rows = corridor.slice(Math.max(0, index - 1), Math.min(corridor.length, stop + 1)).map((n) => n.row), size = this.owner.manifest?.extentCm;
+          const tileKeys = rows.length ? rows.map((r) => r.slice(0, 3).join(",")) : void 0;
+          const boundsUE = size && rows.length ? [Math.min(current[0], targets[stop][0], ...rows.map((r) => r[0] * size + 1e-3)), Math.min(current[1], targets[stop][1], ...rows.map((r) => -(r[1] + 1) * size + 1e-3)), Math.max(current[0], targets[stop][0], ...rows.map((r) => (r[0] + 1) * size - 1e-3)), Math.max(current[1], targets[stop][1], ...rows.map((r) => -r[1] * size - 1e-3))] : void 0;
+          result = yield* this.owner.directJob(current, targets[stop], states, { ...options, paddingTiles: 1, boundsUE, tileKeys });
+          if (!result.complete && stop > index) {
+            stop = index + Math.floor((stop - index) / 2);
+            yield;
+            continue;
+          }
+          break;
+        } catch (error) {
+          if ((String(error).includes("budget") || String(error).includes("capacity")) && stop > index) {
+            stop = index + Math.floor((stop - index) / 2);
+            continue;
+          }
+          throw error;
+        }
+      }
+      last = result;
+      if (!append(result)) {
+        complete = false;
+        last = { ...result, reason: "coarse segment projection gap" };
+        break;
+      }
+      if (!result.complete || points.length >= 16384) {
+        complete = false;
+        break;
+      }
+      current = points.at(-1);
+      index = stop + 1;
+      yield;
+    }
+    if (!last) return null;
+    return {
+      ...last,
+      start,
+      goal,
+      complete: complete && index === targets.length,
+      partial: !complete || index !== targets.length,
+      points,
+      corners,
+      meters: points.slice(1).reduce((sum, p, i) => sum + distance3(points[i], p), 0) / 100,
+      coarseCorridor: true,
+      coarseComponents: corridor.length,
+      completeCollisionClaim: false,
+      physicalVerified: false
+    };
+  }
+};
+
+// offline-navigation/vendor/fflate-bounded.mjs
+var u8 = Uint8Array;
+var u16 = Uint16Array;
+var i32 = Int32Array;
+var fleb = new u8([
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  2,
+  3,
+  3,
+  3,
+  3,
+  4,
+  4,
+  4,
+  4,
+  5,
+  5,
+  5,
+  5,
+  0,
+  /* unused */
+  0,
+  0,
+  /* impossible */
+  0
+]);
+var fdeb = new u8([
+  0,
+  0,
+  0,
+  0,
+  1,
+  1,
+  2,
+  2,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6,
+  6,
+  7,
+  7,
+  8,
+  8,
+  9,
+  9,
+  10,
+  10,
+  11,
+  11,
+  12,
+  12,
+  13,
+  13,
+  /* unused */
+  0,
+  0
+]);
+var clim = new u8([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
+var freb = function(eb, start) {
+  var b = new u16(31);
+  for (var i = 0; i < 31; ++i) {
+    b[i] = start += 1 << eb[i - 1];
+  }
+  var r = new i32(b[30]);
+  for (var i = 1; i < 30; ++i) {
+    for (var j = b[i]; j < b[i + 1]; ++j) {
+      r[j] = j - b[i] << 5 | i;
+    }
+  }
+  return { b, r };
+};
+var _a = freb(fleb, 2);
+var fl = _a.b;
+var revfl = _a.r;
+fl[28] = 258, revfl[258] = 28;
+var _b = freb(fdeb, 0);
+var fd = _b.b;
+var revfd = _b.r;
+var rev = new u16(32768);
+for (i = 0; i < 32768; ++i) {
+  x = (i & 43690) >> 1 | (i & 21845) << 1;
+  x = (x & 52428) >> 2 | (x & 13107) << 2;
+  x = (x & 61680) >> 4 | (x & 3855) << 4;
+  rev[i] = ((x & 65280) >> 8 | (x & 255) << 8) >> 1;
+}
+var x;
+var i;
+var hMap = (function(cd, mb, r) {
+  var s = cd.length;
+  var i = 0;
+  var l = new u16(mb);
+  for (; i < s; ++i) {
+    if (cd[i])
+      ++l[cd[i] - 1];
+  }
+  var le = new u16(mb);
+  for (i = 1; i < mb; ++i) {
+    le[i] = le[i - 1] + l[i - 1] << 1;
+  }
+  var co;
+  if (r) {
+    co = new u16(1 << mb);
+    var rvb = 15 - mb;
+    for (i = 0; i < s; ++i) {
+      if (cd[i]) {
+        var sv = i << 4 | cd[i];
+        var r_1 = mb - cd[i];
+        var v = le[cd[i] - 1]++ << r_1;
+        for (var m = v | (1 << r_1) - 1; v <= m; ++v) {
+          co[rev[v] >> rvb] = sv;
+        }
+      }
+    }
+  } else {
+    co = new u16(s);
+    for (i = 0; i < s; ++i) {
+      if (cd[i]) {
+        co[i] = rev[le[cd[i] - 1]++] >> 15 - cd[i];
+      }
+    }
+  }
+  return co;
+});
+var flt = new u8(288);
+for (i = 0; i < 144; ++i)
+  flt[i] = 8;
+var i;
+for (i = 144; i < 256; ++i)
+  flt[i] = 9;
+var i;
+for (i = 256; i < 280; ++i)
+  flt[i] = 7;
+var i;
+for (i = 280; i < 288; ++i)
+  flt[i] = 8;
+var i;
+var fdt = new u8(32);
+for (i = 0; i < 32; ++i)
+  fdt[i] = 5;
+var i;
+var flrm = /* @__PURE__ */ hMap(flt, 9, 1);
+var fdrm = /* @__PURE__ */ hMap(fdt, 5, 1);
+var max = function(a) {
+  var m = a[0];
+  for (var i = 1; i < a.length; ++i) {
+    if (a[i] > m)
+      m = a[i];
+  }
+  return m;
+};
+var bits = function(d, p, m) {
+  var o = p / 8 | 0;
+  return (d[o] | d[o + 1] << 8) >> (p & 7) & m;
+};
+var bits16 = function(d, p) {
+  var o = p / 8 | 0;
+  return (d[o] | d[o + 1] << 8 | d[o + 2] << 16) >> (p & 7);
+};
+var shft = function(p) {
+  return (p + 7) / 8 | 0;
+};
+var slc = function(v, s, e) {
+  if (s == null || s < 0)
+    s = 0;
+  if (e == null || e > v.length)
+    e = v.length;
+  return new u8(v.subarray(s, e));
+};
+var ec = [
+  "unexpected EOF",
+  "invalid block type",
+  "invalid length/literal",
+  "invalid distance",
+  "stream finished",
+  "no stream handler",
+  ,
+  "no callback",
+  "invalid UTF-8 data",
+  "extra field too long",
+  "date not in range 1980-2099",
+  "filename too long",
+  "stream finishing",
+  "invalid zip data"
+  // determined by unknown compression method
+];
+var err = function(ind, msg, nt) {
+  var e = new Error(msg || ec[ind]);
+  e.code = ind;
+  if (Error.captureStackTrace)
+    Error.captureStackTrace(e, err);
+  if (!nt)
+    throw e;
+  return e;
+};
+var inflt = function(dat, st, buf, dict) {
+  var sl = dat.length, dl = dict ? dict.length : 0;
+  if (!sl || st.f && !st.l)
+    return buf || new u8(0);
+  var noBuf = !buf;
+  var hardLimit = buf && st.i === 2 ? buf.length : 2147483647;
+  var resize = noBuf || st.i != 2;
+  var noSt = st.i;
+  if (noBuf)
+    buf = new u8(sl * 3);
+  var cbuf = function(l2) {
+    var bl = buf.length;
+    if (l2 > bl) {
+      var nbuf = new u8(Math.max(bl * 2, l2));
+      nbuf.set(buf);
+      buf = nbuf;
+    }
+  };
+  var final = st.f || 0, pos = st.p || 0, bt = st.b || 0, lm = st.l, dm = st.d, lbt = st.m, dbt = st.n;
+  var tbts = sl * 8;
+  do {
+    if (!lm) {
+      final = bits(dat, pos, 1);
+      var type = bits(dat, pos + 1, 3);
+      pos += 3;
+      if (!type) {
+        var s = shft(pos) + 4, l = dat[s - 4] | dat[s - 3] << 8, t = s + l;
+        if (t > sl) {
+          if (noSt)
+            err(0);
+          break;
+        }
+        if (resize)
+          cbuf(bt + l);
+        if (bt + l > hardLimit) err(0, "DEFLATE output exceeds bounded buffer");
+        buf.set(dat.subarray(s, t), bt);
+        st.b = bt += l, st.p = pos = t * 8, st.f = final;
+        continue;
+      } else if (type == 1)
+        lm = flrm, dm = fdrm, lbt = 9, dbt = 5;
+      else if (type == 2) {
+        var hLit = bits(dat, pos, 31) + 257, hcLen = bits(dat, pos + 10, 15) + 4;
+        var tl = hLit + bits(dat, pos + 5, 31) + 1;
+        pos += 14;
+        var ldt = new u8(tl);
+        var clt = new u8(19);
+        for (var i = 0; i < hcLen; ++i) {
+          clt[clim[i]] = bits(dat, pos + i * 3, 7);
+        }
+        pos += hcLen * 3;
+        var clb = max(clt), clbmsk = (1 << clb) - 1;
+        var clm = hMap(clt, clb, 1);
+        for (var i = 0; i < tl; ) {
+          var r = clm[bits(dat, pos, clbmsk)];
+          pos += r & 15;
+          var s = r >> 4;
+          if (s < 16) {
+            ldt[i++] = s;
+          } else {
+            var c = 0, n = 0;
+            if (s == 16)
+              n = 3 + bits(dat, pos, 3), pos += 2, c = ldt[i - 1];
+            else if (s == 17)
+              n = 3 + bits(dat, pos, 7), pos += 3;
+            else if (s == 18)
+              n = 11 + bits(dat, pos, 127), pos += 7;
+            while (n--)
+              ldt[i++] = c;
+          }
+        }
+        var lt = ldt.subarray(0, hLit), dt = ldt.subarray(hLit);
+        lbt = max(lt);
+        dbt = max(dt);
+        lm = hMap(lt, lbt, 1);
+        dm = hMap(dt, dbt, 1);
+      } else
+        err(1);
+      if (pos > tbts) {
+        if (noSt)
+          err(0);
+        break;
+      }
+    }
+    if (resize)
+      cbuf(bt + 131072);
+    var lms = (1 << lbt) - 1, dms = (1 << dbt) - 1;
+    var lpos = pos;
+    for (; ; lpos = pos) {
+      var c = lm[bits16(dat, pos) & lms], sym = c >> 4;
+      pos += c & 15;
+      if (pos > tbts) {
+        if (noSt)
+          err(0);
+        break;
+      }
+      if (!c)
+        err(2);
+      if (sym < 256) {
+        if (bt >= hardLimit) err(0, "DEFLATE output exceeds bounded buffer");
+        buf[bt++] = sym;
+      } else if (sym == 256) {
+        lpos = pos, lm = null;
+        break;
+      } else {
+        var add = sym - 254;
+        if (sym > 264) {
+          var i = sym - 257, b = fleb[i];
+          add = bits(dat, pos, (1 << b) - 1) + fl[i];
+          pos += b;
+        }
+        var d = dm[bits16(dat, pos) & dms], dsym = d >> 4;
+        if (!d)
+          err(3);
+        pos += d & 15;
+        var dt = fd[dsym];
+        if (dsym > 3) {
+          var b = fdeb[dsym];
+          dt += bits16(dat, pos) & (1 << b) - 1, pos += b;
+        }
+        if (pos > tbts) {
+          if (noSt)
+            err(0);
+          break;
+        }
+        if (resize)
+          cbuf(bt + 131072);
+        var end = bt + add;
+        if (end > hardLimit) err(0, "DEFLATE output exceeds bounded buffer");
+        if (bt < dt) {
+          var shift = dl - dt, dend = Math.min(dt, end);
+          if (shift + bt < 0)
+            err(3);
+          for (; bt < dend; ++bt)
+            buf[bt] = dict[shift + bt];
+        }
+        for (; bt < end; ++bt)
+          buf[bt] = buf[bt - dt];
+      }
+    }
+    st.l = lm, st.p = lpos, st.b = bt, st.f = final;
+    if (lm)
+      final = 1, st.m = lbt, st.d = dm, st.n = dbt;
+  } while (!final);
+  return bt != buf.length && noBuf ? slc(buf, 0, bt) : buf.subarray(0, bt);
+};
+var et = /* @__PURE__ */ new u8(0);
+var td = typeof TextDecoder != "undefined" && /* @__PURE__ */ new TextDecoder();
+var tds = 0;
+try {
+  td.decode(et, { stream: true });
+  tds = 1;
+} catch (e) {
+}
+function inflateBounded(data, size) {
+  if (!Number.isInteger(size) || size < 1 || size > 32768) throw Error("Invalid bounded inflate extent");
+  const state = { i: 2 }, out = inflt(data, state, new Uint8Array(size));
+  if (out.length !== size || !state.f || state.l || Math.ceil(state.p / 8) !== data.length) throw Error("Invalid bounded DEFLATE extent");
+  return out;
+}
+
+// offline-navigation/text-codec.mjs
+var need4 = (v, m) => {
+  if (!v) throw Error(m);
+};
+var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var base64 = new Uint8Array(128);
+for (let i = 0; i < alphabet.length; i++) base64[alphabet.charCodeAt(i)] = i;
+function* decodeBase64Job(text) {
+  need4(typeof text === "string" && text.length <= 1048576 && text.length % 4 === 0, "Invalid navigation payload size");
+  const padding = text.endsWith("==") ? 2 : text.endsWith("=") ? 1 : 0, end = text.length - padding, bytes2 = new Uint8Array(text.length / 4 * 3 - padding);
+  let offset = 0;
+  for (let at = 0; at < text.length; at += 8192) {
+    const stop = Math.min(at + 8192, end);
+    need4(!/[^A-Za-z0-9+/]/.test(text.slice(at, stop)), "Invalid navigation base64");
+    for (let i = at; i < stop; i += 4) {
+      const remaining = stop - i, a = base64[text.charCodeAt(i)], b = base64[text.charCodeAt(i + 1)], c = remaining > 2 ? base64[text.charCodeAt(i + 2)] : 0, d = remaining > 3 ? base64[text.charCodeAt(i + 3)] : 0;
+      bytes2[offset++] = a << 2 | b >> 4;
+      if (remaining > 2) bytes2[offset++] = b << 4 | c >> 2;
+      if (remaining > 3) bytes2[offset++] = c << 6 | d;
+      if (remaining === 2) need4((b & 15) === 0, "Non-canonical navigation base64");
+      if (remaining === 3) need4((c & 3) === 0, "Non-canonical navigation base64");
+    }
+    yield;
+  }
+  need4(offset === bytes2.length, "Incomplete navigation payload");
+  return bytes2;
+}
+
+// offline-navigation/packed-storage.mjs
+var need5 = (v, m) => {
+  if (!v) throw Error(m);
+};
+var integer = (n, a, b) => Number.isSafeInteger(n) && n >= a && n <= b;
+var crcTable = new Uint32Array(256);
+for (let i = 0; i < 256; i++) {
+  let c = i;
+  for (let j = 0; j < 8; j++) c = c >>> 1 ^ (c & 1 ? 3988292384 : 0);
+  crcTable[i] = c >>> 0;
+}
+function* crcJob(bytes2) {
+  const table = crcTable;
+  let c = 4294967295;
+  for (let at = 0; at < bytes2.length; at += 4096) {
+    const stop = Math.min(bytes2.length, at + 4096);
+    for (let i = at; i < stop; i++) c = c >>> 8 ^ table[(c ^ bytes2[i]) & 255];
+    yield;
+  }
+  return (c ^ 4294967295) >>> 0;
+}
+function* utf8Job(bytes2) {
+  const parts = [];
+  for (let at = 0; at < bytes2.length; at += 8192) {
+    const part = String.fromCharCode(...bytes2.subarray(at, Math.min(bytes2.length, at + 8192)));
+    if (/[\u0080-\uffff]/.test(part)) {
+      parts.push(yield* strictUtf8Job(bytes2.subarray(at)));
+      return parts.join("");
+    }
+    parts.push(part);
+    yield;
+  }
+  return parts.join("");
+}
+function* strictUtf8Job(bytes2) {
+  const parts = [];
+  let codes = [];
+  for (let i = 0; i < bytes2.length; ) {
+    const a = bytes2[i++];
+    let cp = a, n = 0, min = 0;
+    if (a >= 194 && a <= 223) {
+      cp = a & 31;
+      n = 1;
+      min = 128;
+    } else if (a >= 224 && a <= 239) {
+      cp = a & 15;
+      n = 2;
+      min = 2048;
+    } else if (a >= 240 && a <= 244) {
+      cp = a & 7;
+      n = 3;
+      min = 65536;
+    } else need5(a < 128, "Invalid packed UTF-8");
+    need5(i + n <= bytes2.length, "Truncated packed UTF-8");
+    for (let j = 0; j < n; j++) {
+      const b = bytes2[i++];
+      need5((b & 192) === 128, "Invalid packed UTF-8 continuation");
+      cp = cp << 6 | b & 63;
+    }
+    need5(cp >= min && cp <= 1114111 && !(cp >= 55296 && cp <= 57343), "Invalid packed UTF-8 codepoint");
+    if (cp > 65535) {
+      cp -= 65536;
+      codes.push(55296 + (cp >> 10), 56320 + (cp & 1023));
+    } else codes.push(cp);
+    if (codes.length >= 2048) {
+      parts.push(String.fromCharCode(...codes));
+      codes = [];
+      yield;
+    }
+  }
+  if (codes.length) parts.push(String.fromCharCode(...codes));
+  return parts.join("");
+}
+var PackedStore = class {
+  constructor(manifest, readText) {
+    const m = manifest.storage;
+    need5(m?.kind === "deflate-text-v1" && m.blockBytes === 32768 && m.indexPageRecords === 512 && m.maxContainerCharacters === 1048576, "Unsupported packed world storage");
+    need5(integer(m.records, 0, 1e7) && integer(m.containers, 0, 1e5) && /^[a-f0-9]{64}$/.test(manifest.sourceIndexSHA256), "Invalid packed storage extent");
+    Object.assign(this, { manifest, readText, layout: m });
+    this.containers = /* @__PURE__ */ new Map();
+    this.directories = /* @__PURE__ */ new Map();
+  }
+  *rowJob(id) {
+    const m = this.layout;
+    need5(integer(id, 0, m.records - 1), "Packed record out of range");
+    const pageID = Math.floor(id / m.indexPageRecords);
+    let page = this.directories.get(pageID);
+    if (!page) {
+      const text = this.readText("directories/" + pageID + ".json");
+      yield;
+      need5(typeof text === "string" && text.length <= 131072, "Oversized packed directory");
+      page = JSON.parse(text);
+      need5(page.schema === 1 && page.world === this.manifest.world && page.sourceIndexSHA256 === this.manifest.sourceIndexSHA256 && page.first === pageID * m.indexPageRecords && Array.isArray(page.records) && page.records.length === Math.min(m.indexPageRecords, m.records - page.first), "Packed directory identity differs");
+    }
+    this.directories.delete(pageID);
+    this.directories.set(pageID, page);
+    while (this.directories.size > 4) this.directories.delete(this.directories.keys().next().value);
+    const row = page.records[id - page.first];
+    need5(Array.isArray(row) && row.length === 5, "Invalid packed directory record");
+    const [container, offset, length, bytes2, crc] = row;
+    need5(integer(container, 0, m.containers - 1) && integer(offset, 0, m.maxContainerCharacters) && integer(length, 4, 65536) && length % 4 === 0 && offset + length <= m.maxContainerCharacters && integer(bytes2, 1, m.blockBytes) && integer(crc, 0, 4294967295), "Invalid packed record extent");
+    return row;
+  }
+  *recordJob(id) {
+    const [container, offset, length, bytes2, crc] = yield* this.rowJob(id);
+    let text = this.containers.get(container);
+    if (!text) {
+      text = this.readText("packs/" + container + ".txt");
+      yield;
+      const header = "PBZDF1|" + this.manifest.world + "|" + this.manifest.sourceIndexSHA256 + "|" + container + "\n";
+      need5(typeof text === "string" && text.length <= this.layout.maxContainerCharacters && text.startsWith(header) && offset >= header.length, "Packed container identity differs");
+    }
+    need5(offset + length <= text.length, "Truncated packed container");
+    this.containers.delete(container);
+    this.containers.set(container, text);
+    while (this.containers.size > 2) this.containers.delete(this.containers.keys().next().value);
+    const compressed = yield* decodeBase64Job(text.slice(offset, offset + length));
+    const output = inflateBounded(compressed, bytes2);
+    yield;
+    need5((yield* crcJob(output)) === crc, "Packed record CRC differs");
+    return output;
+  }
+  *bytesJob(span) {
+    need5(Array.isArray(span) && span.length === 3, "Invalid packed logical span");
+    const [first, count, bytes2] = span;
+    need5(integer(first, 0, this.layout.records - 1) && integer(count, 1, 32) && first + count <= this.layout.records && integer(bytes2, 1, 1048576) && count === Math.ceil(bytes2 / this.layout.blockBytes), "Invalid packed logical extent");
+    const out = new Uint8Array(bytes2);
+    let at = 0;
+    for (let i = 0; i < count; i++) {
+      const part = yield* this.recordJob(first + i);
+      need5(part.length === Math.min(this.layout.blockBytes, bytes2 - at), "Packed block length differs");
+      out.set(part, at);
+      at += part.length;
+      yield;
+    }
+    need5(at === bytes2, "Incomplete packed logical file");
+    return out;
+  }
+  *textJob(span) {
+    return yield* utf8Job(yield* this.bytesJob(span));
+  }
+  clear() {
+    this.containers.clear();
+    this.directories.clear();
+  }
+};
+
+// offline-navigation/world-pages.mjs
+var need6 = (v, m) => {
+  if (!v) throw Error(m);
+};
+var drain = (job) => {
+  let row;
+  do {
+    row = job.next();
+  } while (!row.done);
+  return row.value;
+};
+var overlaps = (a, b) => a[0] <= b[2] && a[2] >= b[0] && a[1] <= b[3] && a[3] >= b[1];
+var PagedWorld = class {
+  constructor(manifest, readText, options = {}) {
+    need6(manifest.schema === 1 && manifest.kind === "paged-sparse-world" && manifest.unknownState === "closed", "Unsupported paged world");
+    need6(manifest.pages.length <= 1e5 && manifest.chunkBytes <= 196608, "Invalid world paging budget");
+    this.manifest = manifest;
+    this.readText = readText;
+    this.pages = /* @__PURE__ */ new Map();
+    this.jobs = /* @__PURE__ */ new Set();
+    this.maxPages = options.maxPages ?? 8;
+    this.packed = manifest.storage ? new PackedStore(manifest, readText) : null;
+    this.packetCache = /* @__PURE__ */ new Map();
+    this.maxPackets = options.maxPackets ?? 4;
+    this.blobCache = /* @__PURE__ */ new Map();
+    this.blobCacheBytes = 0;
+    this.maxCachedBytes = options.maxCachedBytes ?? 8 * 1024 * 1024;
+    need6(Number.isInteger(this.maxPages) && this.maxPages > 0, "Invalid page cache budget");
+    need6(Number.isInteger(this.maxPackets) && this.maxPackets > 0 && this.maxPackets <= 16, "Invalid packet cache budget");
+    need6(Number.isSafeInteger(this.maxCachedBytes) && this.maxCachedBytes >= 0 && this.maxCachedBytes <= 32 * 1024 * 1024, "Invalid decoded tile cache budget");
+    need6(!manifest.blobLayout || manifest.blobLayout === "packets-v1" && (Array.isArray(manifest.packets) || Number.isSafeInteger(manifest.packetCount) && manifest.packetCount >= 0), "Unsupported world blob layout");
+    this.index = { ...manifest, kind: "experimental-sparse-world", tiles: [], blobs: {} };
+    this.window = new WorldWindow(this.index, (id, row) => drain(this.blobJob(id, row)), { ...options, readBlobJob: (id, row) => this.blobJob(id, row) });
+    this.corridors = manifest.corridors ? new WorldCorridors(this) : null;
+  }
+  *decodePacketJob(text) {
+    return yield* decodeBase64Job(text);
+  }
+  *blobJob(id, row) {
+    need6(/^[a-f0-9]{64}$/.test(id) && Number.isInteger(row.bytes) && row.bytes > 0 && row.bytes <= 16 * 1024 * 1024, "Invalid paged blob");
+    if (this.blobCache.has(id)) {
+      const cached = this.blobCache.get(id);
+      need6(cached.length === row.bytes, "Cached world tile size differs");
+      this.blobCache.delete(id);
+      this.blobCache.set(id, cached);
+      return cached;
+    }
+    if (this.manifest.blobLayout === "packets-v1") {
+      need6(Array.isArray(row.parts) && row.parts.length > 0 && row.parts.length <= Math.ceil(row.bytes / this.manifest.chunkBytes) + 1, "Invalid world packet spans");
+      const bytes3 = new Uint8Array(row.bytes);
+      let at2 = 0;
+      const count = this.manifest.packetCount ?? this.manifest.packets.length;
+      for (const [packetID, offset, length] of row.parts) {
+        need6([packetID, offset, length].every(Number.isInteger) && packetID >= 0 && packetID < count && offset >= 0 && length > 0 && at2 + length <= bytes3.length, "Invalid world packet span");
+        const expected = this.manifest.packetCount === void 0 ? this.manifest.packets[packetID].bytes : packetID === count - 1 ? this.manifest.lastPacketBytes : this.manifest.chunkBytes;
+        need6(offset + length <= expected, "World packet span exceeds data");
+        if (this.packed) {
+          const block = this.packed.layout.blockBytes, base = packetID * (this.manifest.chunkBytes / block);
+          need6(Number.isInteger(base), "Invalid packed packet alignment");
+          for (let source = offset; source < offset + length; ) {
+            const ordinal = Math.floor(source / block), id2 = base + ordinal;
+            let part = this.packetCache.get(id2);
+            if (!part) part = yield* this.packed.recordJob(id2);
+            need6(part.length === Math.min(block, expected - ordinal * block), "Truncated packed packet block");
+            this.packetCache.delete(id2);
+            this.packetCache.set(id2, part);
+            while (this.packetCache.size > this.maxPackets) this.packetCache.delete(this.packetCache.keys().next().value);
+            const within = source % block, n = Math.min(part.length - within, offset + length - source);
+            need6(n > 0, "Invalid packed packet range");
+            bytes3.set(part.subarray(within, within + n), at2);
+            at2 += n;
+            source += n;
+            yield;
+          }
+          continue;
+        }
+        let packet = this.packetCache.get(packetID);
+        if (!packet) {
+          const text = this.readText("packets/" + packetID + ".txt");
+          yield;
+          packet = yield* this.decodePacketJob(text);
+          need6(packet.length === expected && packet.length <= this.manifest.chunkBytes, "Truncated world data chunk");
+        }
+        this.packetCache.delete(packetID);
+        this.packetCache.set(packetID, packet);
+        while (this.packetCache.size > this.maxPackets) this.packetCache.delete(this.packetCache.keys().next().value);
+        need6(offset + length <= packet.length, "World packet span exceeds data");
+        bytes3.set(packet.subarray(offset, offset + length), at2);
+        at2 += length;
+        yield;
+      }
+      need6(at2 === bytes3.length, "Incomplete world blob spans");
+      return this.cacheBlob(id, bytes3);
+    }
+    need6(row.chunks === Math.ceil(row.bytes / this.manifest.chunkBytes), "Invalid world chunk count");
+    const bytes2 = new Uint8Array(row.bytes);
+    let at = 0;
+    for (let i = 0; i < row.chunks; i++) {
+      const text = this.readText("blobs/" + id.slice(0, 2) + "/" + id + "/" + i + ".txt");
+      yield;
+      const part = yield* this.decodePacketJob(text), expected = Math.min(this.manifest.chunkBytes, row.bytes - at);
+      need6(part.length === expected, "Truncated world data chunk");
+      bytes2.set(part, at);
+      at += part.length;
+      yield;
+    }
+    return this.cacheBlob(id, bytes2);
+  }
+  cacheBlob(id, bytes2) {
+    if (bytes2.length <= this.maxCachedBytes) {
+      if (this.blobCache.has(id)) {
+        this.blobCacheBytes -= this.blobCache.get(id).length;
+        this.blobCache.delete(id);
+      }
+      while (this.blobCacheBytes + bytes2.length > this.maxCachedBytes) {
+        const key2 = this.blobCache.keys().next().value;
+        this.blobCacheBytes -= this.blobCache.get(key2).length;
+        this.blobCache.delete(key2);
+      }
+      this.blobCache.set(id, bytes2);
+      this.blobCacheBytes += bytes2.length;
+    }
+    return bytes2;
+  }
+  *textJob(kind, id) {
+    need6(Number.isInteger(id) && id >= 0, "Invalid world text identity");
+    if (this.packed) {
+      const span = kind === "page" ? this.manifest.pages[id]?.packed : this.manifest.corridors?.packed?.[id];
+      return yield* this.packed.textJob(span);
+    }
+    const text = this.readText((kind === "page" ? "pages/" : "corridors/") + id + ".json");
+    yield;
+    return text;
+  }
+  *metadataJob(bounds, vertical, tileKeys, xyKeys) {
+    const tiles = [], blobs = {};
+    for (const descriptor of this.manifest.pages) {
+      if (!overlaps(descriptor.boundsUE, bounds) || descriptor.verticalBoundsUE[0] > vertical[1] || descriptor.verticalBoundsUE[1] < vertical[0]) continue;
+      need6(Number.isInteger(descriptor.id) && descriptor.id >= 0, "Invalid world page identity");
+      let page = this.pages.get(descriptor.id);
+      if (!page) {
+        const text = yield* this.textJob("page", descriptor.id);
+        need6(text.length === descriptor.characters && text.length <= 1048576, "Invalid world page length");
+        page = JSON.parse(text);
+        need6(page.schema === 1 && page.world === this.manifest.world && page.id === descriptor.id && page.tiles.length <= 128, "World page identity differs");
+      }
+      this.pages.delete(descriptor.id);
+      this.pages.set(descriptor.id, page);
+      while (this.pages.size > this.maxPages) this.pages.delete(this.pages.keys().next().value);
+      const size = this.manifest.extentCm;
+      for (const tile of page.tiles) {
+        if (tileKeys && !tileKeys.has(tile.x + "," + tile.y + "," + tile.layer)) continue;
+        if (xyKeys && !xyKeys.has(tile.x + "," + tile.y)) continue;
+        if (!overlaps([tile.x * size, -(tile.y + 1) * size, (tile.x + 1) * size, -tile.y * size], bounds) || tile.verticalBoundsUE[0] > vertical[1] || tile.verticalBoundsUE[1] < vertical[0]) continue;
+        tiles.push(tile);
+        need6(tiles.length <= this.window.maxTiles, "World tile window budget exceeded; coarse corridor required");
+        for (const blob of Object.values(tile.variants)) if (blob) {
+          need6(page.blobs[blob], "Missing paged blob descriptor");
+          blobs[blob] = page.blobs[blob];
+        }
+      }
+      yield;
+    }
+    return { tiles, blobs };
+  }
+  routeJob(start, goal, states = {}, options = {}) {
+    return this._track(this._routeJob(start, goal, states, options));
+  }
+  *_routeJob(start, goal, states, options) {
+    options = { paddingTiles: 0, ...options };
+    let direct;
+    try {
+      direct = yield* this.directJob(start, goal, states, options);
+      if (direct.complete || !this.corridors || options.directOnly) return direct;
+    } catch (error) {
+      if (options.directOnly || !this.corridors || !String(error).match(/budget|capacity/)) throw error;
+    }
+    return (yield* this.corridors.routeJob(start, goal, states, options)) ?? direct ?? { complete: false, partial: true, reason: "coarse corridor unavailable", points: [], corners: [], meters: 0, physicalVerified: false };
+  }
+  _track(source) {
+    const owner = this;
+    let job;
+    job = (function* () {
+      try {
+        return yield* source;
+      } finally {
+        owner.jobs.delete(job);
+      }
+    })();
+    this.jobs.add(job);
+    return job;
+  }
+  *directJob(start, goal, states, options) {
+    const pad = (options.paddingTiles ?? 2) * this.manifest.extentCm, height = options.heightPaddingCm ?? 2e4;
+    const bounds = options.boundsUE ?? [Math.min(start[0], goal[0]) - pad, Math.min(start[1], goal[1]) - pad, Math.max(start[0], goal[0]) + pad, Math.max(start[1], goal[1]) + pad];
+    const vertical = options.heightBoundsUE ?? [Math.min(start[2], goal[2]) - height, Math.max(start[2], goal[2]) + height];
+    const tileKeys = options.tileKeys ? new Set(options.tileKeys) : null;
+    if (tileKeys) need6(tileKeys.size <= this.window.maxTiles && [...tileKeys].every((k) => /^-?\d+,-?\d+,\d+$/.test(k)), "World coarse footprint budget or identity invalid");
+    const xyKeys = options.xyKeys ? new Set(options.xyKeys) : null;
+    if (xyKeys) need6(xyKeys.size <= this.window.maxTiles && [...xyKeys].every((k) => /^-?\d+,-?\d+$/.test(k)), "World segment footprint budget or identity invalid");
+    const metadata = yield* this.metadataJob(bounds, vertical, tileKeys, xyKeys);
+    const oldTiles = this.index.tiles, oldBlobs = this.index.blobs;
+    this.index.tiles = metadata.tiles;
+    this.index.blobs = { ...oldBlobs, ...metadata.blobs };
+    let done = false;
+    try {
+      const result = yield* this.window.routeJob(start, goal, states, { ...options, boundsUE: bounds });
+      done = true;
+      return { ...result, pagedWorld: true, experimentalOnly: true, completeCollisionClaim: false };
+    } finally {
+      if (!done) this.index.tiles = oldTiles;
+      const retained = new Set(Object.values(this.index.tiles).flatMap((t) => Object.values(t.variants)).filter(Boolean));
+      for (const row of this.window.loaded.values()) if (row.blob) retained.add(row.blob);
+      this.index.blobs = Object.fromEntries([...retained].filter((id) => this.index.blobs[id]).map((id) => [id, this.index.blobs[id]]));
+    }
+  }
+  candidateJob(start, goal, authoritative, candidate, options = {}) {
+    return this._track(this._candidateJob(start, goal, authoritative, candidate, options));
+  }
+  *_candidateJob(start, goal, authoritative, candidate, options) {
+    const known = new Map(Object.entries(authoritative).map(([id, v]) => [id.toLowerCase(), v]));
+    for (const [id, v] of Object.entries(candidate)) need6(!(known.get(id.toLowerCase()) === false && v === true), "Known closed world actor cannot be opened for a candidate");
+    const previous = this.window.holdWindow(), tiles = this.index.tiles, blobs = this.index.blobs;
+    try {
+      return yield* this.routeJob(start, goal, { ...authoritative, ...candidate }, options);
+    } finally {
+      this.window.restoreWindow(previous);
+      this.index.tiles = tiles;
+      this.index.blobs = blobs;
+    }
+  }
+  cancelQueries() {
+    for (const job of [...this.jobs]) job.return();
+    this.jobs.clear();
+    this.window.cancelQueries();
+  }
+  destroy() {
+    this.cancelQueries();
+    this.window.destroy();
+    this.pages.clear();
+    this.packetCache.clear();
+    this.blobCache.clear();
+    this.blobCacheBytes = 0;
+    this.corridors?.pages.clear();
+    this.corridors?.anchorCache.clear();
+    this.corridors?.componentCache.clear();
+    this.packed?.clear();
+  }
+};
+
+// offline-navigation/world-set.mjs
+var need7 = (v, m) => {
+  if (!v) throw Error(m);
+};
+var WorldSet = class {
+  constructor(manifest, readText, options = {}) {
+    need7(manifest.schema === 1 && manifest.kind === "multi-grid-world" && manifest.unknownState === "closed" && manifest.grids.length >= 2 && manifest.grids.length <= 16, "Unsupported world grid set");
+    Object.assign(this, { manifest, readText, options });
+    this.current = null;
+    this.currentID = null;
+    for (const grid of manifest.grids) need7(/^[a-z0-9_]+$/.test(grid.id) && grid.index === "grids/" + grid.id + "/index.json" && ["include", "exclude"].includes(grid.selector.mode) && grid.selector.zBandUE.length === 2, "Invalid world grid selector");
+  }
+  select(point) {
+    const found = this.manifest.grids.filter((g) => {
+      const [a, b] = g.selector.zBandUE, inside = point[2] >= a && point[2] <= b;
+      return g.selector.mode === "include" ? inside : !inside;
+    });
+    need7(found.length === 1, "World grid selectors overlap or omit a coordinate");
+    return found[0];
+  }
+  ensure(grid) {
+    if (this.currentID === grid.id) return this.current;
+    this.current?.destroy();
+    this.current = null;
+    this.currentID = null;
+    const manifest = JSON.parse(this.readText(grid.index));
+    need7(manifest.world === this.manifest.world && manifest.sourceIndexSHA256 === grid.sourceIndexSHA256 && manifest.kind === "paged-sparse-world", "World subgrid index differs");
+    const prefix = grid.index.slice(0, -"index.json".length);
+    this.current = new PagedWorld(manifest, (file) => this.readText(prefix + file), this.options);
+    this.currentID = grid.id;
+    return this.current;
+  }
+  *query(start, goal, states, options, candidate) {
+    const a = this.select(start), b = this.select(goal);
+    if (a.id !== b.id) return { complete: false, partial: true, reason: "isolated navigation grids require a verified action connection", points: [], corners: [], meters: 0, unknownActors: [], physicalVerified: false };
+    const grid = this.ensure(a), result = candidate ? yield* grid.candidateJob(start, goal, states, candidate, options) : yield* grid.routeJob(start, goal, states, options);
+    return { ...result, navigationGrid: a.id, cellCm: grid.manifest.cellCm };
+  }
+  routeJob(start, goal, states = {}, options = {}) {
+    return this.query(start, goal, states, options);
+  }
+  candidateJob(start, goal, states, candidate, options = {}) {
+    return this.query(start, goal, states, options, candidate);
+  }
+  cancelQueries() {
+    this.current?.cancelQueries();
+  }
+  destroy() {
+    this.current?.destroy();
+    this.current = null;
+    this.currentID = null;
+  }
+};
+function createWorld(manifest, readText, options) {
+  return manifest.kind === "multi-grid-world" ? new WorldSet(manifest, readText, options) : new PagedWorld(manifest, readText, options);
+}
 
 // offline-navigation/runtime.mjs
 init_recast_navigation_wasm();
@@ -76266,3 +78485,4 @@ function initialize2() {
     return result;
   });
 }
+})();

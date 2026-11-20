@@ -1,0 +1,1319 @@
+{
+  "schema": 1,
+  "version": "1.11.1",
+  "clientDate": "2026-11-16",
+  "source": "PBZRouteSurveyTasks.resolve(PBZRouteTables)",
+  "inputSHA256": "f6114c12a2a009c3b5c3cc6259aa9a1a4a5cd2b9549a777d87c143a7fdd97053",
+  "scope": "Original 47 custom endpoint pairs; raw targets unchanged; geometry-derived nearby standing positions only; no player trajectory inputs",
+  "total": 47,
+  "topologyComplete": 7,
+  "independentWalkingPassed": 4,
+  "remainingNoFullTopology": 40,
+  "gameAccepted": 0,
+  "remainingWork": true,
+  "rows": [
+    {
+      "number": 1,
+      "id": "B03",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "八卦阁前路口",
+      "toName": "戏梦山庄正门",
+      "start": {
+        "x": -174570,
+        "y": 112368,
+        "z": -3068
+      },
+      "end": {
+        "x": -187916,
+        "y": 114639,
+        "z": -1057
+      },
+      "status": "离线步行碰撞通过",
+      "reasons": [],
+      "topologyComplete": true,
+      "independentSamples": 1609,
+      "independentFailures": 0,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": {
+        "cpu": 1078,
+        "wall": 9731,
+        "pumps": 456,
+        "maxSlice": 13.9
+      },
+      "gameAccepted": false,
+      "independentRouteSHA256": "7535d63bac667d0171a6c92e888b235a68c24beb2800353a7bebf7a6c5a0a675"
+    },
+    {
+      "number": 2,
+      "id": "S012",
+      "world": "pbz_xigu_wp",
+      "fromName": "恶弓手营地",
+      "toName": "溪谷杀气塔一层",
+      "start": {
+        "x": -73233,
+        "y": 231409,
+        "z": -16044
+      },
+      "end": {
+        "x": -61876,
+        "y": 222885,
+        "z": -15848
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 3,
+      "id": "S018",
+      "world": "pbz_xigu_wp",
+      "fromName": "远眺龙柱处",
+      "toName": "瀑布吊桥",
+      "start": {
+        "x": -52359,
+        "y": 227135,
+        "z": -20715
+      },
+      "end": {
+        "x": -55527,
+        "y": 213608,
+        "z": -15827
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 4,
+      "id": "S020",
+      "world": "pbz_xigu_wp",
+      "fromName": "瀑布吊桥",
+      "toName": "溪谷杀气塔底",
+      "start": {
+        "x": -55527,
+        "y": 213608,
+        "z": -15827
+      },
+      "end": {
+        "x": -62272,
+        "y": 221490,
+        "z": -19123
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 5,
+      "id": "S030",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "人偶思乡之崖",
+      "toName": "悬崖山舍",
+      "start": {
+        "x": -51458,
+        "y": 136650,
+        "z": 3333
+      },
+      "end": {
+        "x": -47835,
+        "y": 152968,
+        "z": 1717
+      },
+      "status": "仅拓扑候选",
+      "reasons": [
+        "独立碰撞未通过：32个样点"
+      ],
+      "topologyComplete": true,
+      "independentSamples": 1180,
+      "independentFailures": 32,
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058A98B59202_1453692831"
+      ],
+      "runtimeStress": {
+        "cpu": 1657,
+        "wall": 15474,
+        "pumps": 728,
+        "maxSlice": 7.08
+      },
+      "gameAccepted": false,
+      "independentRouteSHA256": "ecd4cea9f925aa448beaa8344a84421bd9059bc90ae5594e86b8457c8af977b9"
+    },
+    {
+      "number": 6,
+      "id": "S037",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "血色森林杀气塔大门",
+      "toName": "血色森林杀气塔六层",
+      "start": {
+        "x": -41391,
+        "y": 179640,
+        "z": 2116
+      },
+      "end": {
+        "x": -44879,
+        "y": 176470,
+        "z": 5926
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 7,
+      "id": "S040",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "岔路口",
+      "toName": "正道大营外门",
+      "start": {
+        "x": -14954,
+        "y": 139930,
+        "z": -1531
+      },
+      "end": {
+        "x": -11067,
+        "y": 128049,
+        "z": -1662
+      },
+      "status": "离线步行碰撞通过",
+      "reasons": [],
+      "topologyComplete": true,
+      "independentSamples": 710,
+      "independentFailures": 0,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": {
+        "cpu": 1117,
+        "wall": 10480,
+        "pumps": 487,
+        "maxSlice": 5.18
+      },
+      "gameAccepted": false,
+      "independentRouteSHA256": "de5e1de9fd722c42453f4fa3d96f56abcbe50d05e883d03f62647cabc76de779"
+    },
+    {
+      "number": 8,
+      "id": "S062",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "废弃酒窖",
+      "toName": "南门廊桥",
+      "start": {
+        "x": -160727,
+        "y": 128612,
+        "z": -1895
+      },
+      "end": {
+        "x": -160184,
+        "y": 145382,
+        "z": -8090
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 9,
+      "id": "S072",
+      "world": "pbz_houjie_wp",
+      "fromName": "后街乘凉处",
+      "toName": "窄巷民居二楼",
+      "start": {
+        "x": -217748,
+        "y": 120620,
+        "z": -1994
+      },
+      "end": {
+        "x": -228350,
+        "y": 110929,
+        "z": 1052
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 10,
+      "id": "S116",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "通往校场的路",
+      "toName": "校场",
+      "start": {
+        "x": 27862,
+        "y": 64529,
+        "z": 8878
+      },
+      "end": {
+        "x": 32383,
+        "y": 59677,
+        "z": 8171
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 11,
+      "id": "S128",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "铁杀营地",
+      "toName": "囚笼洞口",
+      "start": {
+        "x": -69485,
+        "y": -43900,
+        "z": 14882
+      },
+      "end": {
+        "x": -67184,
+        "y": -68173,
+        "z": 15703
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 12,
+      "id": "S002",
+      "world": "pbz_xigu_wp",
+      "fromName": "圣母像裂缝",
+      "toName": "初见玉儿处",
+      "start": {
+        "x": 9443,
+        "y": 288850,
+        "z": -31437
+      },
+      "end": {
+        "x": -4089,
+        "y": 277254,
+        "z": -30487
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 13,
+      "id": "S004",
+      "world": "pbz_xigu_wp",
+      "fromName": "红丝线障壁",
+      "toName": "残偶谷底",
+      "start": {
+        "x": -11137,
+        "y": 282425,
+        "z": -28477
+      },
+      "end": {
+        "x": -4124,
+        "y": 294281,
+        "z": -29340
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 14,
+      "id": "S013",
+      "world": "pbz_xigu_wp",
+      "fromName": "溪谷杀气塔一层",
+      "toName": "血肉花田",
+      "start": {
+        "x": -61876,
+        "y": 222885,
+        "z": -15848
+      },
+      "end": {
+        "x": -71223,
+        "y": 210868,
+        "z": -19561
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 15,
+      "id": "S024",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "荒废官道",
+      "toName": "远眺庞镇之桥",
+      "start": {
+        "x": -98903,
+        "y": 190396,
+        "z": -548
+      },
+      "end": {
+        "x": -128997,
+        "y": 169891,
+        "z": -1464
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 16,
+      "id": "S025",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "远眺庞镇之桥",
+      "toName": "挂笼小道",
+      "start": {
+        "x": -128997,
+        "y": 169891,
+        "z": -1464
+      },
+      "end": {
+        "x": -105769,
+        "y": 156472,
+        "z": 6
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 17,
+      "id": "S033",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "镜林龙柱",
+      "toName": "遗冢地",
+      "start": {
+        "x": -25145,
+        "y": 156265,
+        "z": 2107
+      },
+      "end": {
+        "x": -28236,
+        "y": 172240,
+        "z": 630
+      },
+      "status": "仅拓扑候选",
+      "reasons": [
+        "独立碰撞未通过：4个样点"
+      ],
+      "topologyComplete": true,
+      "independentSamples": 863,
+      "independentFailures": 4,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false,
+      "independentRouteSHA256": "ffd7c6b4568c02949aa4504430586737b7916ac21f47d27107e64fdfc99088d9"
+    },
+    {
+      "number": 18,
+      "id": "S038",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "血色森林杀气塔六层",
+      "toName": "血色森林杀气塔底",
+      "start": {
+        "x": -44879,
+        "y": 176470,
+        "z": 5926
+      },
+      "end": {
+        "x": -44937,
+        "y": 180481,
+        "z": -2198
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 19,
+      "id": "S039",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "梦醒之地",
+      "toName": "岔路口",
+      "start": {
+        "x": -2351,
+        "y": 146230,
+        "z": 859
+      },
+      "end": {
+        "x": -14954,
+        "y": 139930,
+        "z": -1531
+      },
+      "status": "离线步行碰撞通过",
+      "reasons": [],
+      "topologyComplete": true,
+      "independentSamples": 1363,
+      "independentFailures": 0,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": {
+        "cpu": 2445,
+        "wall": 23105,
+        "pumps": 1063,
+        "maxSlice": 4.83
+      },
+      "gameAccepted": false,
+      "independentRouteSHA256": "399431fb02a4b92e1c993f86dff4cd796041ada915a9d93be4e728ad153348bb"
+    },
+    {
+      "number": 20,
+      "id": "S041",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "岔路口",
+      "toName": "老根头藏身处",
+      "start": {
+        "x": -14954,
+        "y": 139930,
+        "z": -1531
+      },
+      "end": {
+        "x": -22625,
+        "y": 125663,
+        "z": -3593
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 21,
+      "id": "S047",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "陆家村小张藏身处",
+      "toName": "黑蛇屋",
+      "start": {
+        "x": -58333,
+        "y": 121767,
+        "z": -1512
+      },
+      "end": {
+        "x": -60182,
+        "y": 123185,
+        "z": -434
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 22,
+      "id": "S055",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "幸存者小院",
+      "toName": "残偶弃置坑口",
+      "start": {
+        "x": -41698,
+        "y": 111881,
+        "z": -242
+      },
+      "end": {
+        "x": -27576,
+        "y": 114525,
+        "z": -7536
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 23,
+      "id": "S060",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "人偶试验场",
+      "toName": "通向庞镇的密道",
+      "start": {
+        "x": -63714,
+        "y": 86319,
+        "z": -5823
+      },
+      "end": {
+        "x": -64432,
+        "y": 110328,
+        "z": -1430
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 24,
+      "id": "S073",
+      "world": "pbz_houjie_wp",
+      "fromName": "窄巷民居二楼",
+      "toName": "戏声缥缈的水塘",
+      "start": {
+        "x": -228350,
+        "y": 110929,
+        "z": 1052
+      },
+      "end": {
+        "x": -248837,
+        "y": 103353,
+        "z": -3598
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 25,
+      "id": "S075",
+      "world": "pbz_houjie_wp",
+      "fromName": "三船殉难井底",
+      "toName": "青蛇屋",
+      "start": {
+        "x": -243284,
+        "y": 97511,
+        "z": -4172
+      },
+      "end": {
+        "x": -257247,
+        "y": 77702,
+        "z": -5766
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 26,
+      "id": "S081",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "正道临时居所",
+      "toName": "码头货栈",
+      "start": {
+        "x": -173184,
+        "y": 106134,
+        "z": 1251
+      },
+      "end": {
+        "x": -167052,
+        "y": 102321,
+        "z": 2450
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 27,
+      "id": "S083",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "庞镇船坞",
+      "toName": "戏梦山庄正门",
+      "start": {
+        "x": -162549,
+        "y": 96415,
+        "z": 872
+      },
+      "end": {
+        "x": -187916,
+        "y": 114639,
+        "z": -1057
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 28,
+      "id": "S084",
+      "world": "pbz_houjie_wp",
+      "fromName": "戏声缥缈的水塘",
+      "toName": "后山凉亭",
+      "start": {
+        "x": -248837,
+        "y": 103353,
+        "z": -3598
+      },
+      "end": {
+        "x": -261990,
+        "y": 127983,
+        "z": -5338
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 29,
+      "id": "S085",
+      "world": "pbz_houjie_wp",
+      "fromName": "后山凉亭",
+      "toName": "贫民窟",
+      "start": {
+        "x": -261990,
+        "y": 127983,
+        "z": -5338
+      },
+      "end": {
+        "x": -266717,
+        "y": 102496,
+        "z": -8297
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 30,
+      "id": "S087",
+      "world": "pbz_houjie_wp",
+      "fromName": "老根头家",
+      "toName": "青蛇屋",
+      "start": {
+        "x": -263693,
+        "y": 93501,
+        "z": -4878
+      },
+      "end": {
+        "x": -257247,
+        "y": 77702,
+        "z": -5766
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 31,
+      "id": "S089",
+      "world": "pbz_ximeng_wp",
+      "fromName": "傩面祭台",
+      "toName": "吹火楼下",
+      "start": {
+        "x": -229874,
+        "y": 67442,
+        "z": 15435
+      },
+      "end": {
+        "x": -219380,
+        "y": 73706,
+        "z": 9950
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 32,
+      "id": "S092",
+      "world": "pbz_ximeng_wp",
+      "fromName": "竹影道",
+      "toName": "戏梦山庄小张藏身处",
+      "start": {
+        "x": -198776,
+        "y": 62628,
+        "z": 9448
+      },
+      "end": {
+        "x": -202734,
+        "y": 69648,
+        "z": 7440
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 33,
+      "id": "S093",
+      "world": "pbz_ximeng_wp",
+      "fromName": "竹影道",
+      "toName": "戏园",
+      "start": {
+        "x": -198776,
+        "y": 62628,
+        "z": 9448
+      },
+      "end": {
+        "x": -195831,
+        "y": 76381,
+        "z": 6598
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 34,
+      "id": "S097",
+      "world": "pbz_ximeng_wp",
+      "fromName": "连廊",
+      "toName": "戏梦山庄龙柱",
+      "start": {
+        "x": -215086,
+        "y": 84699,
+        "z": 6933
+      },
+      "end": {
+        "x": -230043,
+        "y": 83346,
+        "z": 7126
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 35,
+      "id": "S103",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "栈道入口",
+      "toName": "栈道眺望台",
+      "start": {
+        "x": 3601,
+        "y": 87142,
+        "z": 4495
+      },
+      "end": {
+        "x": 6907,
+        "y": 79331,
+        "z": 7805
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 36,
+      "id": "S110",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "鸽舍",
+      "toName": "三高塔",
+      "start": {
+        "x": 22216,
+        "y": 79381,
+        "z": 8432
+      },
+      "end": {
+        "x": 28841,
+        "y": 77067,
+        "z": 7799
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 37,
+      "id": "S113",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "大营瀑布后方",
+      "toName": "通往校场的路",
+      "start": {
+        "x": 44597,
+        "y": 68729,
+        "z": 9621
+      },
+      "end": {
+        "x": 27862,
+        "y": 64529,
+        "z": 8878
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 38,
+      "id": "S114",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "通往校场的路",
+      "toName": "白山派的覆灭之路",
+      "start": {
+        "x": 27862,
+        "y": 64529,
+        "z": 8878
+      },
+      "end": {
+        "x": 57899,
+        "y": 53979,
+        "z": 11342
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 39,
+      "id": "S117",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "校场",
+      "toName": "校场深处",
+      "start": {
+        "x": 32383,
+        "y": 59677,
+        "z": 8171
+      },
+      "end": {
+        "x": 20221,
+        "y": 56585,
+        "z": 5904
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 40,
+      "id": "S119",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "庞镇杀气塔上部一层",
+      "toName": "庞镇杀气塔顶",
+      "start": {
+        "x": -177756,
+        "y": 85563,
+        "z": 4578
+      },
+      "end": {
+        "x": -175092,
+        "y": 74511,
+        "z": 10035
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "端点未投影到步行网格（附近有静态站位）"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 41,
+      "id": "S126",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "禁忌之径",
+      "toName": "白影陨落之处",
+      "start": {
+        "x": -172800,
+        "y": -42852,
+        "z": 929
+      },
+      "end": {
+        "x": -153202,
+        "y": -23842,
+        "z": 765
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 42,
+      "id": "S129",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "囚笼洞口",
+      "toName": "囚笼道",
+      "start": {
+        "x": -67184,
+        "y": -68173,
+        "z": 15703
+      },
+      "end": {
+        "x": -65741,
+        "y": -64282,
+        "z": 19270
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 43,
+      "id": "S130",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "囚笼道",
+      "toName": "横刀平台",
+      "start": {
+        "x": -65741,
+        "y": -64282,
+        "z": 19270
+      },
+      "end": {
+        "x": -62016,
+        "y": -56023,
+        "z": 18282
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 44,
+      "id": "S131",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "横刀平台",
+      "toName": "宗祠外山门",
+      "start": {
+        "x": -62016,
+        "y": -56023,
+        "z": 18282
+      },
+      "end": {
+        "x": -61474,
+        "y": -75381,
+        "z": 25145
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 45,
+      "id": "S132",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "宗祠外山门",
+      "toName": "圣母娘娘宗祠",
+      "start": {
+        "x": -61474,
+        "y": -75381,
+        "z": 25145
+      },
+      "end": {
+        "x": -59980,
+        "y": -93090,
+        "z": 29000
+      },
+      "status": "离线步行碰撞通过",
+      "reasons": [],
+      "topologyComplete": true,
+      "independentSamples": 1288,
+      "independentFailures": 0,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": {
+        "cpu": 1572,
+        "wall": 14593,
+        "pumps": 684,
+        "maxSlice": 4.44
+      },
+      "gameAccepted": false,
+      "independentRouteSHA256": "1dafe39d9be075f71e12dfd40d251c72a9031399ad4de40dbcc6ca5ef927350d"
+    },
+    {
+      "number": 46,
+      "id": "S134",
+      "world": "pbz_duanhun_wp",
+      "fromName": "山神庙",
+      "toName": "银白之路",
+      "start": {
+        "x": -194690,
+        "y": -42148,
+        "z": 27747
+      },
+      "end": {
+        "x": -192128,
+        "y": -66153,
+        "z": 30933
+      },
+      "status": "缺完整连接",
+      "reasons": [
+        "步行与已建模动作未形成完整链"
+      ],
+      "topologyComplete": false,
+      "independentSamples": null,
+      "independentFailures": null,
+      "nativeActionsNotCertified": [],
+      "runtimeStress": null,
+      "gameAccepted": false
+    },
+    {
+      "number": 47,
+      "id": "S135",
+      "world": "pbz_duanhun_wp",
+      "fromName": "银白之路",
+      "toName": "最后的正道营地",
+      "start": {
+        "x": -192128,
+        "y": -66153,
+        "z": 30933
+      },
+      "end": {
+        "x": -200749,
+        "y": -83232,
+        "z": 36429
+      },
+      "status": "仅拓扑候选",
+      "reasons": [
+        "独立碰撞未通过：21个样点",
+        "普通JS压力调度未通过"
+      ],
+      "topologyComplete": true,
+      "independentSamples": 1477,
+      "independentFailures": 21,
+      "nativeActionsNotCertified": [
+        "BP_GapBlocker_C_UAID_E89C25A7512041FD02_1854395230"
+      ],
+      "runtimeStress": {
+        "timeout": true,
+        "cpu": 3214,
+        "wall": 30003
+      },
+      "gameAccepted": false,
+      "independentRouteSHA256": "3a34306e849dbdeffa86089d70a24c9654199690ef717ae6455c942e1ac45390"
+    }
+  ],
+  "independentEvidence": "build/custom-route-audit-1110/release-audit/collision-results.json"
+}

@@ -1,0 +1,15 @@
+{
+  "receipt": "build/install-navigation-1.10.1-20261116T182203Z/receipt.json",
+  "version": "1.10.1",
+  "flavor": "development",
+  "matched": 5133,
+  "oldFiles": 60823,
+  "oldBytes": 13252697934,
+  "installedFiles": 5133,
+  "installedBytes": 3649608031,
+  "managerModId": "7b5c0f24834b",
+  "backup": "D:\\coding\\git_rep\\pbz-navigation\\build\\install-navigation-1.10.1-20261116T182203Z\\backup",
+  "otherModsUnchanged": true,
+  "savesAndSettingsUnchanged": true,
+  "startedGame": false
+}

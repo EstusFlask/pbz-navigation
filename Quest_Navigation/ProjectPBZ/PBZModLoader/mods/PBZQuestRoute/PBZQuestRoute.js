@@ -7,6 +7,7 @@ const {pickItem,mapIntent,pickTrackerItem,pickBell,directionalItems,readItem,fin
 const {PadFocus,directions:padDirections}=require('./PBZRoutePadFocus'),padFocus=new PadFocus();
 const {Tracker}=require('./PBZRouteTracker'),{Pointer}=require('./PBZRoutePointer');
 const Passages=require('./PBZRoutePassages'),Obstacles=require('./PBZRouteObstacles'),Drops=require('./PBZRouteDrops');
+const Mechanisms=require('./PBZRouteMechanisms');
 const LocalWalk=require('./PBZRouteLocalWalk');
 const Guides=require('./PBZRouteGuides');
 const Roadbook=require('./PBZRouteRoadbook');
@@ -19,14 +20,14 @@ const Blocked=require('./PBZRouteBlocked'),Repair=require('./PBZRouteRepair'),Go
 const Locks=require('./PBZRouteLocks');
 const Connectivity=require('./PBZRouteConnectivity');
 const planning=new (require('./PBZRouteJobs').Planner)(log);
-const recast=new (require('./PBZRouteRecast').RecastCache)(id=>require(id),{UE,P,T,alive:W.alive},log,()=>{
+const recast=new (require('./PBZRouteRecastProvider').RecastCache)(id=>require(id),{UE,P,T,alive:W.alive,readText:textFile,dataRoot:typeof __dirname==='string'?__dirname.replace(/[\\/]+$/,'')+'/PBZRecastWorlds':null,movementDataRoot:typeof __dirname==='string'?__dirname.replace(/[\\/]+$/,'')+'/PBZRouteMovementData':null},log,()=>{
  planning.clear('collision state changed');previous=null;guardedLeg=null;S.trip=null;S.line=[];S.threadEnd=null;S.version++;threads?.hide();
 });
 const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudget=null,blockedTrip=null,nativeRepairKey='',lastGuardVersion=-1;
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.9.2';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.11.2';
 const Build=require('./PBZRouteBuild');
 let diagnostics=null,developerAPI=null,developerPC=null,developerPawn=null,developerWorld=null,developerKeys=null,surveyTracker=null;
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
@@ -38,6 +39,7 @@ let deviationSince=0,corridor=null;
 let nextClearance=0;
 let statusHud=null,lastStatusPoll=0,lastStatusCulture=0,statusEnglish=false;
 let stanceEpoch=0,wasGrounded=null,lastFoot=null,lastGroundFoot=null,poseReady=true,groundedNow=true;
+let movementContext=null;
 const failedEdges=new Map();
 const provenJoins=new Map();
 const confirmations=new WeakMap();let mini=null;
@@ -153,10 +155,18 @@ function* proofJob(leg,lookout,context,options={}){
  const replacements=[];
  for(const c of weak){yield;
   if(leg.roadbook&&R.dist(foot,c.a)>12000)continue;
-  const key=leg.world+'/'+c.edge, cached=provenJoins.get(key),now=Date.now();
+  const placement=c.kind===9&&c.source==='game-placement';
+  const liveTrigger=c.requiresLaunchBox||c.mode==='hook'||placement&&c.requiresLoaded;
+  const key=[leg.world,c.edge,c.guid,c.mode,c.a.x,c.a.y,c.a.z,c.b.x,c.b.y,c.b.z].join('/'), cached=liveTrigger?null:provenJoins.get(key),now=Date.now();
   let value=cached&&cached.until>now?cached.value:null;
-  if(!value){value=yield* Passages.checkJob(w,c);if(!value)return reject(c,null,true);
-   provenJoins.set(key,{value,until:now+15000});}
+  if(!value){
+   const block=placement?Passages.placementBlock?.(w,c,S.pawn):null;
+   if(!block)value=yield* Passages.checkJob(w,c);
+   if(!value){
+    if(placement)options.onPlacementRejected?.(c,block);
+    return reject(c,null,block?.unknown??true);
+   }
+   if(!liveTrigger)provenJoins.set(key,{value,until:now+15000});}
   if(c.kind===8&&Array.isArray(value)){
    const points=R.dist(value[0],c.a)<=R.dist(value[0],c.b)?value:value.slice().reverse();
    replacements.push({from:c.from,points});
@@ -173,9 +183,15 @@ function* proofJob(leg,lookout,context,options={}){
  if(replacements.length){leg.meters=R.extent(leg.points)/100;for(const c of leg.walks||[]){c.from=leg.points.indexOf(c.a);c.to=leg.points.indexOf(c.b);}}
  for(const c of leg.checks)if(c.kind===12){
   if(R.dist(foot,c.a)>6000){Obstacles.obstacle(leg,Obstacles.mark(leg,c,'drop landing pending',c.a,true));continue;}
-  const result=yield* Drops.inspect(w,c.a,c.b);
-  if(!result.ok){Obstacles.obstacle(leg,Obstacles.mark(leg,c,result.why,result.p,result.unknown));return c.edge;}
-  c.verified=true;
+  const result=yield* Drops.recheck(w,c);
+  if(!result.ok){
+   if(c.source==='recast-boundary'&&c.guid&&typeof c.reverse==='boolean'&&result.unknown===false&&result.obstructed===true)
+    options.onGeometricObstruction?.(c);
+   if(result.trajectoryChanged)options.onTrajectoryChanged?.();
+   Obstacles.obstacle(leg,Obstacles.mark(leg,c,result.why,result.p,result.unknown));
+   return c.edge;
+  }
+  c.verified=true;c.verifiedAt=Date.now();
  }
  for(const cross of leg.checks){yield;if(cross.kind===8||cross.kind===9||cross.kind===10||cross.kind===11||cross.kind===12||lookout&&cross.kind===5||good.has(cross.edge)||R.dist(foot,cross.a)>8500||count>=12)continue;count++;
   if(lockRows.some(r=>r.world===leg.world&&R.dist(r.p,cross.a)<230)){good.add(cross.edge);continue;}
@@ -188,7 +204,20 @@ function* proofJob(leg,lookout,context,options={}){
    // clearance through the outward movement and the descent onto its landing.
    const mid={x:b.x,y:b.y,z:a.z+24};const hit=w.hit(a,mid,true)||w.hit(mid,b,true);if(hit)return reject(cross,hit.point,false);
   }good.add(cross.edge);}
- let physical=yield* Feasibility.check(w,leg,foot);
+ let candidate=leg;
+ if((leg.provider==='recast'||leg.provider==='native')&&leg.points.length>=2&&R.dist(foot,leg.points[0])>.1){
+  // Mesh projection may shift the starting point across a wall or a seam.
+  // Include the join in the regular physical audit and its bounded repair.
+  const shift=row=>{
+   const shifted={...row};
+   if(row.from!==undefined)shifted.from++;
+   if(row.to!==undefined)shifted.to++;
+   return shifted;
+  };
+  candidate={...leg,points:[foot,...leg.points],walks:(leg.walks||[]).map(shift),
+   moves:(leg.moves||[]).map(shift),checks:leg.checks.map(shift)};
+ }
+ let physical=yield* Feasibility.check(w,candidate,foot);
  if(!physical.ok)rememberCollision(leg,physical);
  if(!physical.ok)context?.report?.('walking rejected',{world:leg.world,edge:physical.edge,why:physical.why,p:physical.p,
   a:physical.a,b:physical.b,locked:!!physical.locked,segment:physical.segment,
@@ -196,23 +225,29 @@ function* proofJob(leg,lookout,context,options={}){
   actions:leg.moves?.map(m=>({edge:m.edge,kind:m.kind,guid:m.guid}))});
  if(!physical.ok&&context){
   const previewGoal=context.goalWorld===leg.world?context.goal:leg.points[leg.points.length-1];
-  Blocked.offer(context,Blocked.fromFailure(leg,physical,previewGoal),context.start,previewGoal);
-  let candidate=leg;
+  Blocked.offer(context,Blocked.fromFailure(candidate,physical,previewGoal),context.start,previewGoal);
   while(!physical.ok&&!options.deferRepair&&(context.repairs||0)<2){
    context.repairs=(context.repairs||0)+1;
-   const clock=context.clock||Date.now;context.repairDeadline??=clock()+3500;
+   const clock=context.clock||Date.now;context.repairDeadline??=clock()+(leg.provider==='recast'?600:3500);
    const fixed=yield* Repair.repair(w,candidate,physical,foot,{clock,deadline:context.repairDeadline,
-    traverse:['atlas','roadbook'].includes(leg.provider)?context.repairTraversal:undefined,report:context.report});if(!fixed)break;
+    hints:leg.provider==='recast'?null:undefined,traverse:['atlas','roadbook'].includes(leg.provider)?context.repairTraversal:undefined,report:context.report});if(!fixed)break;
    candidate=fixed.candidate;physical=fixed.verdict;
    if(!physical.ok){rememberCollision(candidate,physical);Blocked.offer(context,Blocked.fromFailure(candidate,physical,previewGoal),context.start,previewGoal);}
    else Object.assign(leg,candidate);
   }
  }
  if(!physical.ok){
+  const movement=physical.movement;
+  if(movement&&options.onGeometricObstruction&&physical.unknown===false&&!physical.locked&&physical.why==='blocked body clearance'){
+   const airborne=yield* Drops.inspect(w,movement.entry,movement.exit,movement.kind==='surface'?'jump':'fall');
+   if(airborne?.ok)options.onWalkSeamAirborne?.(movement);
+   else if(airborne?.unknown===false)options.onGeometricObstruction(movement);
+  }
   const c={edge:physical.edge,a:physical.a||foot,b:physical.b||physical.p||foot};
   Obstacles.obstacle(leg,Obstacles.mark(leg,c,physical.why,physical.p,!!physical.unknown,physical.block));return physical.edge;
  }
  Object.assign(leg,physical.leg);
+ if(leg.conditionalCandidate&&!leg.scenePartial){leg.partial=false;leg.physicalConditionsVerified=true;}
  return null;
 }
 function atArrivalBell(dest){
@@ -233,8 +268,12 @@ function updateRouteStatus(force=false){
  const notice=[diagnostics?.notice(now),diagnostics?.survey?.notice(now)].filter(Boolean).join('\n');if(notice&&W.alive(S.pawn)&&!menu)S.routeStatus=notice+(S.routeStatus?'\n'+S.routeStatus:'');
  statusHud?.update(gameContext||S.pawn,S.routeStatus,now);
 }
-function reset(){diagnostics?.survey?.finish('player context reset');S.travelPhase=null;clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);}
+function reset(){diagnostics?.survey?.finish('player context reset');S.travelPhase=null;clearRouteStatus();S.bellArrival=null;guardRetry=0;planning.clear('world reset');auditor.reset();guardedLeg=null;blockedTrip=null;S.threadEnd=null;S.trip=null;S.line=[];S.scout=null;previous=null;S.version++;S.contextEpoch++;threads?.clear();ink?.clearAll();mini?.clearAll();S.arrival.probe=null;previousID=null;pending=null;lastScout=0;retry=0;deviationSince=0;corridor=null;for(const g of graphs.values())Passages.resetLadders(g);Passages.resetRecast?.();}
 function setTrip(trip,dest,start,why,requestContext){
+ if(trip&&S.trip===trip&&S.targetKey===dest.key){
+  const snapshot=requestContext||routeRequest(dest,start);
+  previous={key:dest.key,p:dest.p,site:start,level:S.level,revision:snapshot.revision,originRevision:snapshot.originRevision};lastSolve=Date.now();return;
+ }
  if(trip?.legs.some(l=>l.diagnostic))why+=' [blocked preview]';
  else if(trip?.legs.some(l=>l.partial))why+=' [partial]';else if(trip)why+=' [complete]';
  S.arrival.select(dest);deviationSince=0;corridor=null;guardRetry=0;
@@ -268,15 +307,272 @@ function nativeWalk(start,goal,allowPartial=false,report){
  const leg={world:S.level,provider:'native',searchDirection:'forward',points,checks:[],gates:[],moves:[],walks:points.slice(1).map((b,i)=>({a:points[i],b,edge:-1,from:i,to:i+1})),meters:R.extent(points)/100,partial};
  if(partial)Obstacles.obstacle(leg,{id:'native-frontier',world:S.level,p:points[points.length-1],unknown:true,icon:'mechanism',label:'前方通路待确认'});return leg;
 }
+function* recastBellTransfer(dest,start,world,context){
+ const bells=bellList().filter(bell=>bell.world===dest.world);
+ if(bells.length<2)return null;
+ const clock=context.clock||Date.now,deadline=clock()+225;
+ const mesh={name:dest.world,*routeJob(a,b){
+  const route=yield* (recast.routeLocal?.(dest.world,a,b)||[]);
+  if(route&&!route.partial)return route;
+  return yield* (recast.routeEndpointLocal?.(dest.world,a,b)||[]);
+ }};
+ const job=BellTransfer.plan(mesh,mesh,start,dest.p,bells,{
+  connectedArrivalsOnly:true,connectedEvidence:'recast',
+  approaches:(at,bell)=>Goals.approaches(world,at,140,{targetKey:'bell:'+bell.id}),
+  ready:function*(p,goals){
+   for(const q of goals){
+    const r=R.xy(p,q),dz=q.z-p.z;
+    if(r<=90&&Math.abs(dz)<=68){const join=Surface.join(world,p,{q,r,dz});yield;if(join)return true;}
+   }
+   return false;
+  },
+  verify:function*(leg){return (yield* proofJob(leg,false,undefined,{deferRepair:true}))===null&&!leg.partial;},
+  inspectArrival:function*(route,bell){
+   for(let i=1;i<route.points.length;i++){
+    if(Locks.crossing(lockRows,dest.world,route.points[i-1],route.points[i]))return {blocked:true};
+    if((i&31)===0)yield;
+   }
+   if(R.dist(start,toPoint(bell.at))>6000)return null;
+   const checked=yield* Feasibility.check(world,route,toPoint(bell.at));
+   if(!checked.ok)return checked.unknown&&!checked.locked?null:{blocked:true};
+   return {verified:!checked.leg.partial};
+  }
+ });
+ let row;
+ try{
+  while(clock()<deadline){
+   row=job.next();
+   if(row.done)break;
+   yield;
+  }
+ }finally{if(!row?.done)job.return();}
+ const trip=row?.done?row.value:null;
+ if(trip){
+  context.bellTransfer=trip;
+  context.report?.('recast bell fallback',{from:trip.transfer.from.id,to:trip.transfer.to.id,evidence:trip.transfer.evidence});
+  context.onDiagnostic?.(trip);
+ }
+ return trip;
+}
+function* refreshPlanActions(graph,start,goal,context,options){
+ const discovery=Passages.refreshLoadedJob(graph,S.world,S.pawn,start,goal,options);
+ if(!context.acceptPassageObservation)return yield* discovery;
+ try{
+  for(;;){
+   const before=graph.passageRevision??0;
+   const row=discovery.next();
+   const after=graph.passageRevision??0;
+   if(after!==before)context.acceptPassageObservation(before,after);
+   if(row.done)return row.value;
+   yield row.value;
+  }
+ }finally{discovery.return();}
+}
 function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=0){
  if(depth===0&&dest.world===S.level&&recast.covers(S.level,S.world.feet(),dest.p)){
   const start=S.world.feet();context.start||={...start};context.goal||={...dest.p};context.goalWorld||=dest.world;
   if(S.world.refreshRulesJob)yield* S.world.refreshRulesJob();
-  const leg=yield* recast.route(S.level,start,dest.p);if(!leg)return null;
-  context.report?.('recast candidate',{points:leg.points.length,partial:leg.partial,generation:leg.recastGeneration});
-  // Never splice old atlas/recorded guides into a covered Recast result.
-  const rejected=yield* proofJob(leg,false,context,{deferRepair:true});
-  return rejected===null?{legs:[leg],transfer:null}:Blocked.finish(context);
+  const routeWorld=context.world||=Locks.constrain(S.world,lockRows,S.level),g=Passages.recastContext?.(S.level)||graphs.get(S.level);
+  const tryBellTransfer=function*(){
+   if(context.bellTransferTried||walkOnly||dest.noTransfer||!dest.item||dest.bell||atArrivalBell(dest)||R.dist(start,dest.p)<=2500)return;
+   context.bellTransferTried=true;
+   yield* recastBellTransfer(dest,start,routeWorld,context);
+  };
+  const finishCandidate=function*(trip){
+   if(!trip.legs[0].partial)return trip;
+   yield* tryBellTransfer();
+   return context.bellTransfer||trip;
+  };
+  const refreshedActions=new Set();
+  if(g&&Passages.refreshLoadedJob)yield* refreshPlanActions(g,start,dest.p,context,{report:context.report,refreshedActions});
+  const motionSeeds=Passages.placementEndpoints?.(g,routeWorld,start,dest.p)||Passages.loadedEndpoints?.(g,routeWorld)||[];
+  const focusedSeeds=motionSeeds.filter(p=>p.x>=Math.min(start.x,dest.p.x)-600&&p.x<=Math.max(start.x,dest.p.x)+600&&p.y>=Math.min(start.y,dest.p.y)-600&&p.y<=Math.max(start.y,dest.p.y)+600&&p.z>=Math.min(start.z,dest.p.z)-1500&&p.z<=Math.max(start.z,dest.p.z)+1500),motionWindows=focusedSeeds.length<motionSeeds.length?[focusedSeeds,motionSeeds]:[motionSeeds];
+  let movementConnectors=0,pendingPlacement;
+  const rejectedCorridorDirections=new Map();
+  let missingCorridorDirections;
+  for(let windowStage=0;windowStage<=motionWindows.length;windowStage++){
+  const alternateStage=windowStage===motionWindows.length;
+  let leg;
+  if(alternateStage){
+   const corridorExclusions=new Map(rejectedCorridorDirections);
+   for(const [key,mask] of missingCorridorDirections||[])
+    corridorExclusions.set(key,(corridorExclusions.get(key)??0)|mask);
+   if(movementConnectors>=24||!corridorExclusions.size||!recast.routeAlternateMovement)break;
+   const alternate=yield* recast.routeAlternateMovement(S.level,start,dest.p,corridorExclusions);
+   if(!alternate)break;
+   leg=alternate.leg;
+  }else{
+   leg=yield* recast.route(S.level,start,dest.p,{localActions:true,motionSeeds:motionWindows[windowStage],focusedWindow:motionWindows.length>1&&windowStage===0});
+  }
+  const windowConnectorLimit=motionWindows.length>1&&windowStage===0?8:24;
+  context.report?.('recast candidate',{points:leg?.points.length||0,partial:leg?.partial,generation:leg?.recastGeneration});
+  if(leg&&(!leg.partial||leg.conditionalCandidate)){
+   const rejected=yield* proofJob(leg,false,context);if(rejected===null)return yield* finishCandidate({legs:[leg],transfer:null});
+  }
+  const approaches=(yield* Goals.approaches(routeWorld,dest.p,180,{targetKey:dest.key})).filter(p=>R.xy(p,dest.p)<=190&&Math.abs(p.z-dest.p.z)<=110);
+  // The marker remains the destination. Nearby standing pads avoid routing
+  // into the bell/collectible's own collider or onto its top surface.
+  if(recast.routeLocal)for(const goal of approaches.slice().sort((a,b)=>R.dist(start,a)-R.dist(start,b)).slice(0,8)){
+   const candidate=yield* recast.routeLocal(S.level,start,goal);
+   if(candidate&&!candidate.partial){const rejected=yield* proofJob(candidate,false,context);if(rejected===null)return yield* finishCandidate({legs:[candidate],transfer:null});}
+  }
+  const endpointRoute=yield* require('./PBZRouteRecastApproach').route(recast,S.level,routeWorld,start,dest.p,approaches,{clock:context.clock,report:context.report});
+  if(endpointRoute){const rejected=yield* proofJob(endpointRoute,false,context);if(rejected===null)return yield* finishCandidate({legs:[endpointRoute],transfer:null});}
+  // Runtime navigation can include a currently deployed surface that differs
+  // from the cooked snapshot. It remains only a candidate: the exact same
+  // live floor/body/lock audit must certify every displayed segment.
+  const native= nativeWalk(start,dest.p,false,context.report?value=>context.report('native covered candidate',value):undefined);
+  if(native){const rejected=yield* proofJob(native,false,context);if(rejected===null)return yield* finishCandidate({legs:[native],transfer:null});}
+  yield* tryBellTransfer();
+  // Walking topology is only one part of navigation. Keep cooked/current
+  // interactions, while every ground connector still uses Recast or live
+  // checked walking. No recorded guide or old atlas geometry enters here.
+  const memo=new Map(),clock=context.clock||Date.now;
+  const key=(a,b)=>[a.x,a.y,a.z,b.x,b.y,b.z].join('/');memo.set(key(start,dest.p),leg);
+  const walkJob=function*(a,b){
+   const id=key(a,b);if(!memo.has(id))memo.set(id,yield*(recast.routeLocal?recast.routeLocal(S.level,a,b):recast.route(S.level,a,b)));
+   const result=memo.get(id);if(!result||result.partial&&!result.conditionalCandidate)return null;
+   // checkedWalkJob performs the full live floor/body/lock audit, including
+   // the exact standing pads, before this hypothetical corridor is usable.
+   return result.conditionalCandidate?{...result,partial:false}:result;
+  };
+  if(g&&typeof Passages.liveRouteJob==='function'){
+   const priorityActions=recast.actionCorridorActions?.();
+   if(priorityActions?.length&&Passages.refreshLoadedJob)
+    yield* refreshPlanActions(g,start,dest.p,context,{corridorActions:priorityActions,refreshedActions,report:context.report});
+   const seeds=motionSeeds,hasMovementPolicy=typeof routeWorld.dropPolicy==='function';
+   const features=hasMovementPolicy&&recast.dropCandidates?
+    yield* recast.dropCandidates(S.level,start,dest.p,seeds,routeWorld.dropPolicy()):[];
+   const corridorActions=new Set((priorityActions||[]).map(guid=>guid.toLowerCase()));
+   const corridorDirections=recast.actionCorridorDirections?.();
+   const excludeSelectedPlacement=(guid,mask=3)=>{
+    const key=String(guid).toLowerCase();
+    if(!alternateStage&&corridorActions.has(key)&&((corridorDirections?.get(key)??3)&mask))
+     rejectedCorridorDirections.set(key,(rejectedCorridorDirections.get(key)??0)|mask);
+   };
+   // Deferred heights extend this same resident window. Do not recheck its
+   // confirmed geometric failures; unknown support remains eligible. A new
+   // window gets fresh checks, apart from the existing alternate-corridor bans.
+   const rejectedMovementDirections=new Map(alternateStage?
+    [...rejectedCorridorDirections].filter(([guid])=>guid.startsWith('recast-movement:')):[]);
+   const excludedPlacements=new Map(),airborneDirections=new Map();
+   let offeredMixedRoute=false;
+   for(let movementStage=0;movementStage<2;movementStage++){
+   if(movementConnectors>=windowConnectorLimit)break;let stageConnectors=0,addedCollisionExclusion=false,trajectoryChanged=false,placementRejected=false;
+   const excludeObstructedDirection=({guid,reverse})=>{
+    const key=String(guid).toLowerCase(),prior=rejectedMovementDirections.get(key)??0,next=prior|(reverse?2:1);
+    if(next!==prior){rejectedMovementDirections.set(key,next);addedCollisionExclusion=true;}
+   };
+   const trip=yield* Passages.liveRouteJob(g,routeWorld,start,dest.p,nativeWalk,{clock,walkJob,recast:true,features,priorityActions,actionPads:recast.actionCorridorPads?.(),excludedDirections:rejectedMovementDirections,excludedPlacements,airborneDirections,goals:approaches.length?approaches:[dest.p],topologyJob:recast.actionTopology?(features=>recast.actionTopology(S.level,start,approaches[0]||dest.p,features,approaches.slice(1),rejectedMovementDirections.size>0)):null,
+    actionPadCandidates:recast.actionPadCandidates?(p=>recast.actionPadCandidates(S.level,p)):null,
+    maxConnectors:Math.min(windowConnectorLimit-movementConnectors,movementStage===0&&features.deferredCount?8:24),report:(phase,data)=>{
+    if(phase==='action connector start')stageConnectors=Math.max(stageConnectors,data.id||0);
+    if(phase==='action search exhausted'||phase==='action chain accepted')stageConnectors=Math.max(stageConnectors,data.connectors||0);
+    if(phase==='action rejected'&&data.source==='recast-boundary'){
+     const guid=String(data.guid).toLowerCase();
+     if(data.knownBlocked)excludeObstructedDirection(data);
+     if(!alternateStage&&corridorActions.has(guid))rejectedCorridorDirections.set(guid,(rejectedCorridorDirections.get(guid)??0)|(data.reverse?2:1));
+    }
+    context.report?.(phase,data);
+   },
+    onUnavailable:excludeSelectedPlacement,
+    onClosed:(first,action)=>{
+     const state=action.feature.state||g.passageStates?.get(String(action.feature.guid).toLowerCase()),block=state?.block||{unknown:true,icon:'mechanism',label:'机关通路待确认'};context.blockedCondition=block;
+     if(!first.points?.length)return;
+     const source={...first,world:S.level,provider:'recast',actionsIntegrated:true,topologyComplete:false,physicalVerified:true,goalTopology:{pendingAction:action.feature.guid,goal:dest.p}};
+     const diagnostic=Blocked.fromFailure(source,{prefix:first.points,prefixLeg:first,segment:first.points.length-1,p:first.points.at(-1),unknown:!!block.unknown,locked:!!block.locked,block,why:'movement condition unavailable'},dest.p);
+     if(diagnostic)Blocked.offer(context,diagnostic,start,dest.p);
+    }});
+   movementConnectors+=stageConnectors;
+   const mixed=trip?.legs?.[0],end=mixed?.points?.at(-1);
+   if(mixed&&!mixed.partial&&R.finite(end)&&R.xy(end,dest.p)<=190&&Math.abs(end.z-dest.p.z)<=110){
+    offeredMixedRoute=true;
+    Object.assign(mixed,{provider:'recast',actionsIntegrated:true,topologyComplete:true,physicalVerified:false,recastGeneration:recast.revision});
+    const rejected=yield* proofJob(mixed,false,context,{onGeometricObstruction:check=>{
+     excludeObstructedDirection(check);
+     const guid=String(check.guid).toLowerCase();
+     if(!alternateStage&&corridorActions.has(guid))
+      rejectedCorridorDirections.set(guid,(rejectedCorridorDirections.get(guid)??0)|(check.reverse?2:1));
+    },onTrajectoryChanged:()=>{trajectoryChanged=true;},onWalkSeamAirborne:({guid,reverse})=>{
+     const key=String(guid).toLowerCase();airborneDirections.set(key,(airborneDirections.get(key)??0)|(reverse?2:1));trajectoryChanged=true;
+    },onPlacementRejected:(check,block)=>{
+     const key=String(check.guid).toLowerCase(),mask=check.reverse?2:1,prior=excludedPlacements.get(key)??0;
+     excludedPlacements.set(key,prior|mask);placementRejected=!(prior&mask);
+     excludeSelectedPlacement(key,mask);
+     pendingPlacement??={leg:mixed,check,block};
+    }});
+    if(rejected===null)return yield* finishCandidate(trip);
+   }
+   const extra=movementStage===0&&recast.moreMovementCandidates?yield* recast.moreMovementCandidates(S.level,start,dest.p):[];
+   if(movementStage!==0||(!extra?.length&&!addedCollisionExclusion&&!trajectoryChanged&&!placementRejected))break;
+   for(let i=0;i<(extra?.length||0);i++){features.push(extra[i]);if((i&63)===63)yield;}
+   const reason=extra?.length?'height':addedCollisionExclusion?'collision':trajectoryChanged?'trajectory':'placement';
+   context.report?.(`recast movement ${reason} retry`,{count:extra?.length||0,total:features.length,excludedDirections:rejectedMovementDirections.size});
+   }
+   if(!offeredMixedRoute&&hasMovementPolicy&&recast.dropCandidates&&windowStage===motionWindows.length-1&&movementConnectors<24&&corridorDirections){
+    // A coarse hint may be filtered before live checks, for example when
+    // its descent exceeds the player's envelope. Try another footprint
+    // after deferred proposals, without marking unseen geometry obstructed.
+    const missing=new Map([...corridorDirections].filter(([guid])=>guid.startsWith('recast-movement:')));
+    for(let i=0;missing.size&&i<features.length;i++){
+     const {guid,both,noForward,noReverse}=features[i],key=String(guid).toLowerCase();
+     const selected=missing.get(key);
+     if(selected){
+      const supplied=(noForward?0:1)|(both&&!noReverse?2:0),remaining=selected&~supplied;
+      if(remaining)missing.set(key,remaining);else missing.delete(key);
+     }
+     if((i&63)===63)yield;
+    }
+    missingCorridorDirections=missing;
+    if(missing.size)context.report?.('recast selected movement unavailable',{count:missing.size});
+   }
+  }
+  }
+  if(recast.walkingAlternative){
+   const alternate=yield* recast.walkingAlternative(S.level,start,dest.p);
+   if(alternate&&(!alternate.partial||alternate.conditionalCandidate)){
+    context.report?.('recast expanded walking candidate',{points:alternate.points.length,meters:alternate.meters});
+    const rejected=yield* proofJob(alternate,false,context);if(rejected===null)return yield* finishCandidate({legs:[alternate],transfer:null});
+   }
+  }
+  if(pendingPlacement){
+   const {leg,check}=pendingPlacement,block=pendingPlacement.block||{unknown:true,icon:'mechanism',label:'机关通路待确认'};
+   context.blockedCondition=block;
+   const last=check.from;
+   if(Number.isInteger(last)&&last>0){
+    const before=row=>row.to<=last,prefix={...leg,points:leg.points.slice(0,last+1),checks:leg.checks.filter(before),
+     walks:leg.walks.filter(before),moves:leg.moves.filter(before),obstacles:[],locks:[],topologyComplete:false,
+     goalTopology:{pendingAction:check.guid,goal:dest.p}};
+    const rejected=yield* proofJob(prefix,false,context,{deferRepair:true});
+    if(rejected===null){
+     const p=prefix.points.at(-1),pending=Blocked.fromFailure(prefix,{prefix:prefix.points,prefixLeg:prefix,segment:prefix.points.length-1,
+      p,unknown:prefix.scenePartial||!!block.unknown,locked:!prefix.scenePartial&&!!block.locked,
+      block:prefix.scenePartial?undefined:{...block,p},why:prefix.scenePartial?'scene is not loaded':'movement condition unavailable'},dest.p);
+     for(const obstacle of prefix.obstacles||[])Obstacles.obstacle(pending,obstacle);
+     Blocked.offer(context,pending,start,dest.p);
+    }
+   }
+  }
+  if(!context.gateApproachAttempt&&recast.pendingSlideGate){
+   const gate=yield* recast.pendingSlideGate(S.level,start,dest.p);
+   if(gate){
+    const attempt={clock:context.clock,report:context.report,acceptPassageObservation:context.acceptPassageObservation,
+     gateApproachAttempt:true,world:routeWorld};
+    const prefix=yield* makePlan({key:'gate:'+gate.gate,p:gate.p,world:S.level,noTransfer:true},true,false,false,attempt);
+    const leg=prefix?.legs[0],end=leg?.points.at(-1);
+    if(leg&&!leg.partial&&R.finite(end)&&R.xy(end,gate.p)<=190&&Math.abs(end.z-gate.p.z)<=110){
+     const block={id:gate.gate,p:end,unknown:!gate.closed,locked:gate.closed,
+      icon:gate.closed?'locked':'mechanism',label:gate.closed?'雾门尚未开启':'雾门通行状态待确认',source:'live-mechanism'};
+     context.blockedCondition=block;
+     leg.goalTopology={pendingAction:gate.gate,goal:dest.p};
+     const diagnostic=Blocked.fromFailure(leg,{prefix:leg.points,prefixLeg:leg,segment:leg.points.length-1,p:end,
+      unknown:block.unknown,locked:block.locked,block,why:'fog gate unavailable'},dest.p);
+     if(diagnostic)Blocked.offer(context,diagnostic,start,dest.p);
+    }
+   }
+  }
+  context.unresolvedConnection=true;
+  return Blocked.finish(context);
  }
  if(dest.noTransfer)walkOnly=true;
  const bellApproach=atArrivalBell(dest);
@@ -542,10 +838,39 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
  if(depth===0&&transferEligible&&!context.bellTransferTried){const transfer=yield* prepareTransfer();if(transfer)return transfer;}
  return depth===0?context.topologyPrefix||context.partial||Blocked.finish(context):null;
 }
-function routeRequest(dest,start=S.world.feet()){
+function routeRequest(dest,start=S.world.feet(),passageRevision){
  const covered=dest.world===S.level&&recast.covers(S.level,start,dest.p);
- return {key:dest.key,world:dest.world,level:S.level,p:dest.p,start,revision:covered?'recast/'+recast.revision+'/'+S.lockVersion:(graphs.get(S.level)?.passageRevision||0)+'/'+S.lockVersion+'/'+atlas.revision,
+ const revision=covered?'recast/'+recast.revision+'/'+S.lockVersion+'/actions'+(passageRevision??Passages.recastContext?.(S.level)?.passageRevision??0):(graphs.get(S.level)?.passageRevision||0)+'/'+S.lockVersion+'/'+atlas.revision;
+ const movement=movementContext?.pawn===S.pawn&&movementContext?.level===S.level?movementContext?.revision:0;
+ return {key:dest.key,world:dest.world,level:S.level,p:dest.p,start,revision:movement?revision+'/movement'+movement:revision,
   originRevision:stanceEpoch+'/'+Math.round(S.world?.h||0)+','+Math.round(S.world?.r||0)};
+}
+function observeMovement(now){
+ if(typeof S.world.dropPolicy!=='function')return;
+ if(movementContext?.pawn!==S.pawn||movementContext?.level!==S.level)
+  movementContext={pawn:S.pawn,level:S.level,revision:0,next:0,current:null,pending:null};
+ const context=movementContext;
+ if(!poseReady){context.pending=null;return;}
+ if(now<context.next)return;
+ // Complete walking legs remain usable when jump input or speed changes.
+ const leg=S.trip?.legs[S.active];
+ if(!planning.pending&&leg&&!leg.partial&&!leg.diagnostic&&!leg.checks?.some(check=>check.kind===12)){
+  context.pending=null;return;
+ }
+ context.next=now+450;
+ const policy=S.world.dropPolicy();
+ const bucket=(value,width)=>Number.isFinite(value)?Math.round(value/width):'';
+ const signature=policy?[
+  Number(policy.canJump===true),Number(policy.allowRunoff===true),bucket(policy.speedCm,50),
+  bucket(policy.jumpVelocityCm,20),bucket(policy.gravityCm,50),
+  bucket(policy.maxJumpHeightCm,25),bucket(policy.maxRunoffHeightCm,25),bucket(policy.maxHeightCm,25),bucket(policy.maxRunCm,25)
+ ].join('/'):'unavailable';
+ if(context.current===null)context.current=signature;
+ if(context.current===signature){context.pending=null;return;}
+ // Two grounded samples keep a brief movement-mode or input transition from
+ // invalidating a long running request. Its physical checks still read live.
+ if(context.pending!==signature){context.pending=signature;return;}
+ context.current=signature;context.pending=null;context.revision++;
 }
 function standingAt(p){
  const mode=S.pawn?.CharacterMovement?.MovementMode,modes=UE.EMovementMode;
@@ -577,10 +902,21 @@ function solve(dest,reason){
  const start=S.world.feet(),request=routeRequest(dest,start),force=!previous||reason==='blocked approach changed'||reason==='loaded frontier'||reason==='player context changed'||reason==='destination bell reached';
  const retained={trip:S.trip,key:S.targetKey,active:S.active,request:previous};
  const keepExisting=(now,candidate)=>retained.trip&&S.trip===retained.trip&&retained.key===dest.key&&
-  retained.request?.revision===now.revision&&retained.trip.legs.every(l=>!l.partial&&!l.diagnostic)&&
+  retained.request?.revision===now.revision&&retained.request?.originRevision===now.originRevision&&retained.trip.legs.every(l=>!l.partial&&!l.diagnostic)&&
   Blocked.keepComplete(retained.trip.legs[retained.active],S.world,now.start,candidate?.legs[0]);
  S.lookoutHint=Passages.isLookout(S.level,start,dest);
- const context={report:(phase,detail)=>log('route search',phase+' '+JSON.stringify(detail)),onDiagnostic:trip=>{
+ let scheduledRequest;
+ const context={report:(phase,detail)=>log('route search',phase+' '+JSON.stringify(detail)),
+ acceptPassageObservation:(before,after)=>{
+  const active=planning.job?.request;
+  if(!active||active!==scheduledRequest||!active.revision.startsWith('recast/'))return;
+  // Credit only changes made in this discovery step. A gate or pawn update
+  // between steps still invalidates the request's original assumptions.
+  const prior=routeRequest(dest,start,before);
+  if(active.revision!==prior.revision||active.originRevision!==prior.originRevision)return;
+  active.revision=routeRequest(dest,start,after).revision;
+  if(previous?.key===dest.key&&previous.revision===prior.revision)previous.revision=active.revision;
+ },onDiagnostic:trip=>{
   if(!Blocked.canGuide(trip?.legs[0]))return;
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(current?.key===dest.key&&S.level===request.level&&R.dist(current.p,dest.p)<190){
@@ -606,12 +942,13 @@ function solve(dest,reason){
   setTrip(trip,dest,now.start,reason+' async cpu='+metrics.cpu+'ms wall='+metrics.wall+'ms',now);
   if(trip)S.routeWork=null;
   updateRouteStatus(true);
-  if(!trip&&planning.failed)planning.failed.revision=routeRequest(dest,start).revision;
+  if(!trip&&planning.failed){planning.failed.revision=routeRequest(dest,start).revision;if(context.unresolvedConnection){planning.failed.failureCause=context.blockedCondition?'mechanism':'connection';planning.failed.detail=context.blockedCondition?.label;}}
  },force);
  if(accepted){
+  scheduledRequest=planning.job.request;
   S.routeWork={...request,started:Date.now()};
   previous={key:dest.key,p:{...dest.p},site:{...start},level:S.level,revision:request.revision,originRevision:request.originRevision};lastSolve=Date.now();
-  if(!S.trip||S.targetKey!==dest.key){S.trip=null;S.line=[];S.targetKey=dest.key;S.version++;threads.hide();}
+  if(!S.trip||S.targetKey!==dest.key||retained.request?.originRevision!==request.originRevision||originChanged({...request,start:retained.request?.site||start,originRevision:retained.request?.originRevision},request,S.trip)){S.trip=null;S.line=[];S.targetKey=dest.key;S.version++;threads.hide();}
   updateRouteStatus(true);
  }
 }
@@ -622,7 +959,7 @@ function observe(){
  const locID=low(ms.GetMapIDByLocation(W.vec(foot)));S.area=locID&&locID!=='none'?locID:low(ms.GetCurrentMapID());
  if(oldWorld!==S.level){wasGrounded=null;lastFoot=null;lastGroundFoot=null;S.world.resetRules?.();stanceEpoch++;}
  if(oldWorld!==S.level){planning.clear('region changed');oldWorld=S.level;previous=null;lastBells=0;scout.snapshot=null;for(const k of Object.keys(forbidden))delete forbidden[k];for(const k of Object.keys(passed))delete passed[k];failedEdges.clear();provenJoins.clear();graphs.get(S.level)?.clearLiveEdges();safe('locks',locks);}
- const activeGraph=recast.covers(S.level,foot)?graphs.get(S.level):graph(S.level);
+ const activeGraph=recast.covers(S.level,foot)?Passages.recastContext?.(S.level)||graphs.get(S.level):graph(S.level);
  groundedNow=standingAt(foot);
  poseReady=groundedNow&&(!lastFoot||Math.abs(lastFoot.z-foot.z)<20);
  if(wasGrounded===false&&groundedNow&&lastGroundFoot){
@@ -661,6 +998,7 @@ function observe(){
   if(S.travelPhase.kind==='traversal'&&(!groundedNow||!poseReady)){updateRouteStatus(true);return;}
   S.travelPhase=null;previous=null;solve(target,'controlled movement ended');return;
  }
+ observeMovement(now);
  if(!atArrivalBell(target))S.bellArrival=null;
  const transfer=S.targetKey===target.key?S.trip?.transfer:null;
  // Consume the arrival before origin/revision checks can restart the old
@@ -680,13 +1018,14 @@ function observe(){
  if(previous&&!planning.pending&&poseReady&&(previous.revision!==currentRequest.revision||previous.originRevision!==currentRequest.originRevision)){
   solve(target,'player context changed');return;
  }
- if(!menu&&!planning.pending)safe('loaded passage anchors',()=>Passages.updateLoaded(graphs.get(S.level),S.world,S.pawn,nativeWalk));
+ if(!menu&&!planning.pending)safe('loaded passage anchors',()=>Passages.updateLoaded(activeGraph,S.world,S.pawn));
  if(!previous||previous.key!==target.key||previous.level!==S.level||R.dist(previous.p,target.p)>190){solve(target,'selection');return;}
  if(S.trip){
   if(S.arrival.isDone(S))return;
   // Also visit arrival when a route has collapsed to one point or its FX is off.
   const leg=S.trip.legs[S.active];
-  if(leg.diagnostic&&!planning.pending&&poseReady&&now-lastSolve>1500&&movedForRetry(foot,previous.site)){solve(target,'blocked approach changed');return;}
+  if(leg.diagnostic&&!planning.pending&&poseReady&&now-lastSolve>1500&&
+   (leg.provider==='recast'?Blocked.retryRecast(leg,Locks.constrain(S.world,lockRows,S.level),foot,now):movedForRetry(foot,previous.site))){solve(target,'blocked approach changed');return;}
   if(leg.scenePartial&&!planning.pending&&poseReady&&R.dist(foot,leg.points[leg.points.length-1])<600&&now-lastSolve>2000&&movedForRetry(foot,previous.site)){solve(target,'loaded frontier');return;}
   // A physical arrival remains a gameplay state independently of what gets drawn.
   const end=S.line[S.line.length-1];
@@ -719,19 +1058,40 @@ function guardRoute(now){
   guardRetry=0;const target=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(target?.key===S.targetKey&&!S.arrival.isDone(S)){solve(target,'blocked detour');return;}
  }
- Guides.refreshActions(leg,graphs.get(leg.world));
+ const actionGraph=leg.actionsIntegrated?Passages.recastContext?.(leg.world):graphs.get(leg.world);
+ if(!leg.actionsIntegrated)Guides.refreshActions(leg,actionGraph);
+ let mechanismChanged=false;
  for(const move of leg.moves||[]){
-  const state=graphs.get(leg.world)?.passageStates?.get(String(move.stateGuid||move.guid||'').toLowerCase());
-  if(state?.ready===false)move.block=state.block;
-  else if(move.block?.source==='live-mechanism')delete move.block;
+  const state=actionGraph?.passageStates?.get(String(move.stateGuid||move.guid||'').toLowerCase());
+  const prior=move.block;
+  // Resident actor states are refreshed separately from this per-frame guard.
+  const relayState=move.wallrunRelay?.map(step=>({step,state:actionGraph?.passageStates?.get(step.guid.toLowerCase())}));
+  let block=state?.ready===false?state.block:leg.actionsIntegrated?Mechanisms.directionBlock(state,move):null;
+  if(relayState)for(const row of relayState){
+   block=row.state?.ready===false?row.state.block:Mechanisms.directionBlock(row.state,{kind:'wallrun',wallrunAToB:row.step.wallrunAToB});
+   if(block)break;
+  }
+  if(move.slideRelay)for(const guid of move.slideRelay){
+   const stepState=actionGraph?.passageStates?.get(guid.toLowerCase());
+   if(stepState?.ready===false){block=stepState.block;break;}
+  }
+  if(block)move.block=block;
+  else if(prior?.source==='live-mechanism')delete move.block;
+  if(leg.actionsIntegrated&&(prior?.source==='live-mechanism'||block?.source==='live-mechanism')&&
+   (prior?.label!==block?.label||prior?.source!==block?.source||prior?.unknown!==block?.unknown))mechanismChanged=true;
+ }
+ if(mechanismChanged){
+  guardedLeg=null;
+  if(leg.obstacles)leg.obstacles=leg.obstacles.filter(row=>!row.transient||row.source!=='live-mechanism');
  }
  if(guardedLeg!==leg){guardedLeg=leg;auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now);S.threadEnd=auditor.safe;lastGuardVersion='';}
- else if(!auditor.job&&(now-auditor.started>10000||R.xy(feet,auditor.origin)>200||Math.abs(feet.z-auditor.origin.z)>=75))auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now);
+ else if(!auditor.job&&(now-auditor.started>10000||R.xy(feet,auditor.origin)>200||Math.abs(feet.z-auditor.origin.z)>=75))auditor.begin(Blocked.auditLeg(leg),Locks.constrain(S.world,lockRows,S.level),feet,now,true);
  const hadJob=!!auditor.job,result=auditor.pump(Date.now,12,1);
- S.threadEnd=auditor.safe||feet;
+ S.threadEnd=auditor.visibleEnd(now)||feet;
  if(hadJob&&result?.mark){
   if(!leg.diagnostic||!result.mark.unknown)Obstacles.obstacle(leg,{...result.mark,transient:true});
   log('blocked '+result.mark.edge,(result.mark.unknown?'pending ':'collision ')+result.mark.reason+' @'+[result.mark.p.x,result.mark.p.y,result.mark.p.z].map(Math.round).join(','));
+  if(!result.mark.unknown&&leg.provider==='recast'&&!leg.recastRepairRequested){leg.recastRepairRequested=true;guardRetry=now+180;}
   if(!result.mark.unknown&&!leg.guide&&leg.provider!=='recast'){
    const g=graph(leg.world),banned=forbidden[leg.world]||=new Set();let added=0;
    if(g)for(const edge of Obstacles.nearbyEdges(g,result.mark,result.normal)){

@@ -1,6 +1,10 @@
 // The game explicitly disallows WASM code generation. Binaryen translates the
 // pinned upstream module to ordinary JS; Emscripten's bindings stay compatible.
 export * from './query.mjs';
+export {WorldWindow} from './world-window.mjs';
+export {PagedWorld} from './world-pages.mjs';
+export {WorldSet,createWorld} from './world-set.mjs';
+export {PackedStore} from './packed-storage.mjs';
 import {initialize as initializeQuery} from './query.mjs';
 import createModule from '@recast-navigation/wasm';
 import instantiate from 'pbz:recast-javascript';

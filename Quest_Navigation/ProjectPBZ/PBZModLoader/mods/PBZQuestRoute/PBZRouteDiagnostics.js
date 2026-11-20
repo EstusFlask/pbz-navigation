@@ -5,6 +5,14 @@ const copy=value=>JSON.parse(JSON.stringify(value));
 const point=p=>p&&[p.x,p.y,p.z].every(Number.isFinite)?{x:p.x,y:p.y,z:p.z}:null;
 function fields(row,names){const out={};for(const name of names)if(row?.[name]!==undefined)out[name]=row[name];return out;}
 function target(row){return row?{...fields(row,['key','world','area','bell','provider','item','label','name','title','survey','surveyRole','noTransfer']),p:point(row.p),start:point(row.start)}:null;}
+function visibility(row,index){
+ const out={index,wantedOn:!!row.on,meshWanted:row.meshOn,fiberOff:!!row.fiberOff,repairs:row.visibilityRepairs||0};
+ const read=(name,fn)=>{try{const value=fn();if(typeof value==='boolean'||typeof value==='number'&&Number.isFinite(value))out[name]=value;}catch(_){}};
+ read('actorHidden',()=>typeof row.a?.IsHidden==='function'?row.a.IsHidden():row.a?.bHidden);
+ read('meshVisible',()=>row.fiber?.IsVisible?.());read('meshHiddenInGame',()=>row.fiber?.bHiddenInGame);
+ read('parentBounds',()=>row.fiber?.bUseAttachParentBound);read('neverDistanceCull',()=>row.fiber?.bNeverDistanceCull);
+ read('cachedCullDistance',()=>row.fiber?.CachedMaxDrawDistance);read('meshSections',()=>row.fiber?.GetNumSections?.());return out;
+}
 function snapshot(S,planner,threads,notes){
  let remaining=20000;
  const points=rows=>{const count=rows?.length||0,taken=(rows||[]).slice(0,remaining).map(point).filter(Boolean);remaining-=taken.length;
@@ -22,7 +30,8 @@ function snapshot(S,planner,threads,notes){
    rows:(S.observedLocks||[]).map(row=>fields(row,['id','world','p','locked','unknown','requiredItems','requiredWeapons','requiredTags','requirements','weaponRequirements','requirementCount','source']))},
   planner:{pending:planner.pending,request:target(planner.job?.request),failed:target(planner.failed),stats:planner.stats,
    cpu:planner.job?.cpu,pumps:planner.job?.pumps,maxSlice:planner.job?.maxSlice},
-  renderState:{threadEnd:point(S.threadEnd),attachment:threads?.attachment||null,branch:threads?.branch||null,branchOK:threads?.branchOK,hint:threads?.hint,motion:threads?.motion||null},
+  renderState:{threadEnd:point(S.threadEnd),attachment:threads?.attachment||null,branch:threads?.branch||null,branchOK:threads?.branchOK,hint:threads?.hint,motion:threads?.motion||null,
+   hiddenReason:threads?.lastHiddenReason||null,lastDraw:threads?.lastDraw??null,visibility:(threads?.pool||[]).map(visibility).slice(0,32)},
   rendered:(threads?.pool||[]).filter(r=>r.on&&r.meshOn!==false).map(r=>({points:r.__devPoints||[],total:r.__devTotal||0})),
   lastLogs:notes.slice(-100)});
 }

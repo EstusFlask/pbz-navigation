@@ -141,7 +141,12 @@ def collision_meshes(decoded):
     result=[];convex_index=0
     for shape in shapes:
         if shape['kind']=='convex':
-            if convex_index>=len(cooked['simple']):raise ValueError('Cooked convex is missing')
+            if convex_index>=len(cooked['simple']):
+                # Explicit native opt-out leaves ChaosConvexMesh null. Engine
+                # AddGeometry skips that convex; do not invent a hull from its
+                # editor vertices or silently forgive a missing required cook.
+                if props.get('bNeverNeedsCookedCollisionData') and not cooked['simple']:continue
+                raise ValueError('Cooked convex is missing')
             source=cooked['simple'][convex_index];convex_index+=1
             if source and shape.get('CollisionEnabled',3) in (1,3,5):result.append((source['vertices'],source['triangles']))
         else:

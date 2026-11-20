@@ -6,9 +6,11 @@ import re
 import subprocess
 import zipfile
 from release_profiles import archive_name, included, build_bytes, lua_build_bytes, BUILD, LUA_BUILD
+from world_package import world_sources
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--flavor', choices=['release','development','all'], default='all')
+parser.add_argument('--world-stage',help='Verified public full-world staging; defaults to release metadata')
 args=parser.parse_args()
 
 root = Path(__file__).resolve().parents[1]
@@ -16,6 +18,7 @@ nav = root / 'Quest_Navigation'
 release = json.loads((root/'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))
 lock = json.loads((root/'release/VERSION-LOCK.json').read_text(encoding='utf-8'))
 version = str(release['version'])
+world_files,world_hashes=world_sources(root,release,args.world_stage)
 def version_key(value):
     match = re.fullmatch(r'(\d+)\.(\d+)\.(\d+)(?:-fork\.\d+)?', value)
     if not match:
@@ -55,6 +58,7 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
             archive.write(source, relative)
     for name in stream_state['files']:
         archive.write(streamed/name,scripts+'PBZRouteStreaming/'+name)
+    for name,file in sorted(world_files.items()):archive.write(file,name)
     archive.write(root/'docs/USER-GUIDE.md', 'INSTALL-README.md')
     archive.write(root/'release/CHANGELOG.md', 'CHANGELOG.md')
     archive.write(root/'docs/BELL-ROUTE-AUDIT.md', 'BELL-ROUTE-AUDIT.md')

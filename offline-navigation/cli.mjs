@@ -1,5 +1,6 @@
 // Recast and Detour are executed by the upstream WebAssembly distribution.
 import fs from 'node:fs';
+import {maskCompactHeightfield} from './grid-mask.mjs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -30,18 +31,37 @@ function loadNav(path){const meta=JSON.parse(fs.readFileSync(path+'.json','utf8'
  return {...importNavMesh(new Uint8Array(bytes)),meta};}
 export function buildOneTile(local,rcConfig,tile,context){
  const positions=new VerticesArray(),indices=new TrianglesArray(),chunky=new RecastChunkyTriMesh();
+ const chunkCoverage={schema:1,triangles:local.indices.length/3,queries:0,largestOverlap:0,largestCapacity:0,expandedQueries:0};
+ const compact=Raw.Recast.buildCompactHeightfield;
+ if(local.obstacleBounds?.length||local.conservativeGridMask)Raw.Recast.buildCompactHeightfield=function(ctx,height,climb,hf,chf){
+  const result=compact.call(this,ctx,height,climb,hf,chf);
+  if(result)for(const bounds of local.obstacleBounds??[])Raw.Recast.markBoxArea(ctx,bounds[0],bounds[1],0,chf);
+  if(result&&local.conservativeGridMask){const m=local.conservativeGridMask;maskCompactHeightfield(chf,m.supports,m.blockers,m.marginCm??2);}
+  return result;
+ };
  try{
   positions.copy(local.positions);indices.copy(local.indices);
-  if(!local.indices.length)return{data:null,empty:true};
+  if(!local.indices.length)return{data:null,empty:true,chunkCoverage};
   requireValue(chunky.init(positions,indices,local.indices.length/3,256),'collision spatial index failed');
+  // Upstream's tile generator asks for at most 512 chunks and accepts a full
+  // result buffer as complete. Dense real tiles exceed that cap. Grow the
+  // supplied array until the query is unsaturated; at most one leaf exists
+  // per input triangle, so the existing geometry limit also bounds this work.
+  const overlap=chunky.getChunksOverlappingRect.bind(chunky);
+  chunky.getChunksOverlappingRect=(min,max,ids,requested)=>{
+   let capacity=Math.min(requested,chunkCoverage.triangles),expanded=false,count;
+   for(;;){ids.resize(capacity);count=overlap(min,max,ids,capacity);if(count<capacity||capacity===chunkCoverage.triangles)break;capacity=Math.min(chunkCoverage.triangles,capacity*2);expanded=true;}
+   chunkCoverage.queries++;chunkCoverage.largestOverlap=Math.max(chunkCoverage.largestOverlap,count);chunkCoverage.largestCapacity=Math.max(chunkCoverage.largestCapacity,capacity);if(expanded)chunkCoverage.expandedQueries++;
+   return count;
+  };
   const result=generateTileNavMeshData(positions,indices,rcConfig,chunky,tile,{buildBvTree:true},false,context);
-  if(result.success)return{data:result.data??null,empty:!result.data};
+  if(result.success)return{data:result.data??null,empty:!result.data,chunkCoverage};
   const retry=generateTileNavMeshData(positions,indices,rcConfig,chunky,tile,{buildBvTree:true},true,context);
   let empty=false;
   try{empty=result.error==='Failed to create Detour navmesh data'&&retry.intermediates.polyMesh?.npolys()===0&&retry.intermediates.polyMesh?.nverts()===0;}
   finally{retry.data?.destroy();for(const [key,free]of [['heightfield',freeHeightfield],['compactHeightfield',freeCompactHeightfield],['contourSet',freeContourSet],['polyMesh',freePolyMesh],['polyMeshDetail',freePolyMeshDetail]])if(retry.intermediates[key])free(retry.intermediates[key]);}
-  requireValue(empty,`Recast tile ${tile.x},${tile.y}: ${result.error}`);return{data:null,empty:true};
- }finally{chunky.destroy();positions.destroy();indices.destroy();}
+  requireValue(empty,`Recast tile ${tile.x},${tile.y}: ${result.error}`);return{data:null,empty:true,chunkCoverage};
+ }finally{Raw.Recast.buildCompactHeightfield=compact;chunky.destroy();positions.destroy();indices.destroy();}
 }
 function checkedTiledBuild(g,config,partition,inputFile){
  const generatorConfig={...tiledNavMeshGeneratorConfigDefaults,...config};

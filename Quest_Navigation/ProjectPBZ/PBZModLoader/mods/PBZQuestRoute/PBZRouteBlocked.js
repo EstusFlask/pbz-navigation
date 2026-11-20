@@ -1,5 +1,7 @@
 'use strict';
 const R=require('./PBZRouteCore');
+const withinPrefix=(check,end)=>Number.isInteger(check.from)&&Number.isInteger(check.to)&&
+ check.from>=0&&check.from<check.to&&check.to<=end;
 function fromFailure(source,failure,goal){
  const prefix=(failure.prefix||[source.points[0]]).filter(R.finite).map(p=>({...p}));
  if(!prefix.length)return null;
@@ -8,7 +10,7 @@ function fromFailure(source,failure,goal){
  // Raw provider chords beyond the measured frontier are not route guidance.
  // An authored corridor may remain on the map as a pending, dashed candidate.
  const segment=failure.segment??0;
- for(let i=0;i<=segment&&i<source.points.length;i++){
+ if(!speculative)for(let i=0;i<=segment&&i<source.points.length;i++){
   let best=-1,d=201;for(let j=0;j<prefix.length;j++){const v=R.dist(source.points[i],prefix[j]);if(v<d){d=v;best=j;}}
   if(best>=0)indices.set(i,best);
  }
@@ -21,22 +23,28 @@ function fromFailure(source,failure,goal){
  const block={id:'route:blocked',world:source.world,p:failure.p||safe,approach:safe,edge:failure.edge??-1,
   icon:failure.locked?'locked':unknown?'mechanism':'barrier',unknown,locked:!!failure.locked,reason:failure.why||'route pending',
   label:failure.locked?'通道未解锁':unknown?'前方通路待确认':'此处受阻，正在尝试绕行',...failure.block};
+ if(failure.probeA&&failure.probeB)block.probe={a:{...failure.probeA},b:{...failure.probeB}};
  const meta=failure.prefixLeg||{};
  const moves=(meta.moves||[]).filter(m=>m.to<=verifiedEndIndex).map(m=>({...m}));
+ // A checked drop still needs to be audited on the way to a later barrier.
+ // The failure can occur midway through an action, so require a whole move
+ // in the checked prefix before retaining its trajectory and proof.
+ const checks=(meta.checks||[]).filter(c=>c.kind===12&&c.verified&&withinPrefix(c,verifiedEndIndex)&&
+  moves.some(m=>m.drop&&m.from>=c.from&&m.to===c.to&&(!c.guid||m.guid===c.guid))).map(c=>({...c}));
  if(!speculative)for(const m of source.moves||[]){
   const from=indices.get(m.from),to=indices.get(m.to);
   if(from===undefined||to===undefined||from>=to||moves.some(n=>n.edge===m.edge&&n.guid===m.guid&&n.kind===m.kind))continue;
   moves.push({...m,from,to,pending:to>verifiedEndIndex});
  }
  return {...source,points,walks:meta.walks||prefix.slice(1).map((b,i)=>({a:prefix[i],b,from:i,to:i+1,edge:-1})),
-  moves,gates:source.gates||[],checks:[],obstacles:[block],locks:[block],
+  moves,gates:source.gates||[],checks,obstacles:[block],locks:[block],
   diagnostic:true,partial:true,scenePartial:false,verifiedEndIndex,meters:R.extent(points)/100};
 }
 function auditLeg(leg){
  if(!leg.diagnostic)return leg;
  const n=leg.verifiedEndIndex;
  return {...leg,points:leg.points.slice(0,n+1),walks:(leg.walks||[]).filter(w=>w.to<=n),
-  moves:(leg.moves||[]).filter(m=>m.to<=n),checks:[]};
+  moves:(leg.moves||[]).filter(m=>m.to<=n),checks:(leg.checks||[]).filter(c=>withinPrefix(c,n)),auditIdentity:leg};
 }
 function regressesFromActions(current,candidate,goal){
  if(!current||!candidate?.partial||!goal||current.world!==candidate.world)return false;
@@ -81,5 +89,21 @@ function keepComplete(leg,world,foot,pending){
  const join=world.step(foot,near.p,true);
  return !!join.p&&R.dist(join.p,near.p)<50;
 }
+function retryRecast(leg,world,foot,now){
+ const end=leg.points[leg.verifiedEndIndex],block=leg.obstacles?.find(b=>b.id==='route:blocked'),probe=block?.probe;
+ if(!end||!block)return false;
+ if(probe){
+  const dx=probe.b.x-probe.a.x,dy=probe.b.y-probe.a.y,length=Math.hypot(dx,dy);
+  const along=length?((foot.x-probe.a.x)*dx+(foot.y-probe.a.y)*dy)/length:0;
+  const side=length?Math.abs((foot.x-probe.a.x)*dy-(foot.y-probe.a.y)*dx)/length:Infinity;
+  if(along>150&&side<760&&R.xy(foot,end)<1200&&Math.abs(foot.z-end.z)<200)return true;
+ }
+ if(R.dist(foot,end)>1800||now<(leg.nextBlockProbe||0))return false;
+ leg.nextBlockProbe=now+900;
+ if(!probe)return false;
+ const result=world.step(probe.a,probe.b,false);
+ return !!result.p&&R.dist(result.p,probe.b)<200;
+}
 exports.fromFailure=fromFailure;exports.auditLeg=auditLeg;exports.offer=offer;exports.finish=finish;exports.regressesFromActions=regressesFromActions;
 exports.canGuide=canGuide;exports.keepComplete=keepComplete;
+exports.retryRecast=retryRecast;

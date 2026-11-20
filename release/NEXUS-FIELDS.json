@@ -9,7 +9,9 @@
   ],
   "draftFileUploaded": true,
   "name": "Quest and Exploration Navigation - Fork",
-  "version": "1.9.2",
+  "version": "1.11.2",
+  "offlineWorldStage": "build/offline-navigation/integration-release-1.11.2",
+  "offlineWorldCount": 11,
   "upstreamVersion": "0.8.5-beta",
   "localPatchBase": "0.8.5-local-fix5",
   "authorField": "azqwq333 - original - kurosakana - fork",
@@ -17,10 +19,10 @@
   "language": "Any",
   "shortDescription": "Quest, collectible and bell navigation with selectable rope colors, checked detours, transfers and D-pad item focus. Experimental; map coverage is incomplete. / 任务、收集物与铃铛导航：可选绳子颜色、绕行、中转及十字键选物。实验版，全图覆盖未完成。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
-  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.2.zip",
-  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.9.2",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.2",
   "fileCategory": "Main Files",
-  "fileDescription": "Added a JavaScript navigation runtime compatible with the game host and improved loading messages. / 导航运行端适配游戏宿主，改善加载提示显示。",
+  "fileDescription": "Improved guidance across wall runs, automatic slides and changing mechanisms. / 改善连续跑墙、自动滑坡和机关状态变化时的导航。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -135,14 +137,14 @@
     "verifiedOnPublicPage": true,
     "evidence": "release/NEXUS-CHANGELOG-CLEANUP-20261114.json"
   },
-  "localCandidateVersion": "1.9.2",
-  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.2_Development.zip",
+  "localCandidateVersion": "1.11.2",
+  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2_Development.zip",
   "previousLocalCandidate": {
-    "version": "1.9.1",
+    "version": "1.9.3",
     "date": "2026-11-15",
     "installed": true,
     "uploaded": false,
-    "note": "User still had no route through the finish and no visible loading status. Logs confirm the embedder forbids WASM code generation."
+    "note": "User marked disappearing line twice with heavy attack; snapshots retain cached rendered geometry and no recent guide hits. Narrow seam audit disagreement reproduced."
   },
   "localCandidateHistory": [
     {

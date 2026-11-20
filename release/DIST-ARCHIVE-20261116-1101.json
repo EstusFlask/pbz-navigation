@@ -1,0 +1,12 @@
+[
+  {
+    "original": "dist/Quest_and_Exploration_Navigation_Fork_1.10.0.zip",
+    "archive": "build/release-archive/20261116-before-1.10.1/Quest_and_Exploration_Navigation_Fork_1.10.0.zip",
+    "sha256": "89d033032c0b5b42cdce4b7605344ce0d15f499c810090f09581dd8719324b29"
+  },
+  {
+    "original": "dist/Quest_and_Exploration_Navigation_Fork_1.10.0_Development.zip",
+    "archive": "build/release-archive/20261116-before-1.10.1/Quest_and_Exploration_Navigation_Fork_1.10.0_Development.zip",
+    "sha256": "58d187c1802da89f60ae43076a2314629b8c16e43ae6fa8702dd650455ec930b"
+  }
+]

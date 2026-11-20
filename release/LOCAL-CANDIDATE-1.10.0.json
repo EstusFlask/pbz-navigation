@@ -1,0 +1,116 @@
+{
+  "version": "1.10.0",
+  "branch": "codex/recast-routing-193",
+  "clientDate": "2026-11-16",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.10.0.zip",
+      "bytes": 3110708891,
+      "installedBytes": 13252782121,
+      "files": 60831,
+      "worldFiles": 59333,
+      "profile": {
+        "version": "1.10.0",
+        "flavor": "release",
+        "label": "1.10.0",
+        "development": false,
+        "sourceSHA256": "aa11938a37bf3bc76dc9e800a8b9680a6f38e2db9f9adf2bc2455f7b9d63e0fe",
+        "captureSchema": 1
+      },
+      "runtimeSHA256": "a33bfd3a4ae7bcd8ea72af10adc1f2f8816cd5d2efe8c39f149cf88e04970ab0",
+      "adapterSHA256": "bdb9cabb394c0005c2e9026ff3f65a27fe4b1eb0e1f1d1fd89d52e91796048c7",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sha256": "89d033032c0b5b42cdce4b7605344ce0d15f499c810090f09581dd8719324b29"
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.10.0_Development.zip",
+      "bytes": 3110732017,
+      "installedBytes": 13252886993,
+      "files": 60838,
+      "worldFiles": 59333,
+      "profile": {
+        "version": "1.10.0",
+        "flavor": "development",
+        "label": "1.10.0-dev",
+        "development": true,
+        "sourceSHA256": "aa11938a37bf3bc76dc9e800a8b9680a6f38e2db9f9adf2bc2455f7b9d63e0fe",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "5b157e3a8d814685953cdfaedc7412e3d2ce4f1a75e215aaa9db93c5f386faf1",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      },
+      "runtimeSHA256": "a33bfd3a4ae7bcd8ea72af10adc1f2f8816cd5d2efe8c39f149cf88e04970ab0",
+      "adapterSHA256": "bdb9cabb394c0005c2e9026ff3f65a27fe4b1eb0e1f1d1fd89d52e91796048c7",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sha256": "58d187c1802da89f60ae43076a2314629b8c16e43ae6fa8702dd650455ec930b"
+    }
+  ],
+  "totals": {
+    "inventoriedPackages": 80956,
+    "extractedPackages": 80956,
+    "triangles": 485977371,
+    "collisionParseFailures": 0,
+    "knownGeometryValidationFailures": 0,
+    "bakedWorlds": 11,
+    "spatialTiles": 356998,
+    "heightLayers": 593296,
+    "uniqueBlobs": 509792,
+    "navigationBytes": 9308484076
+  },
+  "stagedFiles": 60829,
+  "stageReceipt": "build/offline-navigation/integration-mod-1.10.receipt.json",
+  "stageReceiptSHA256": "5971e3ef6906455ad84d0093d03ca59005d50499216dc9a22a53afe8c1c7cb4e",
+  "validationEvidence": {
+    "build/js-1.10.0-validation.log": "eb6f0df855a8d1811afc5c8c4824db037fd35a22d2df45aaa4a1aa147037a480",
+    "build/world-1.10.0-validation.log": "3f3169ebb3e8791a73809e81b39f1ab1cfbe23b3b35329b42c9446075f8faec5",
+    "build/components-1.10.0-validation.log": "a2d9d12080e01d58c68840ad51a3127afa29567c3da6381a0582fff79b875d82",
+    "build/recast-1.10.0-validation.log": "052057e4f7a62161183dedd1caec9f66912892bea641ca9eee3d31b6309a9014",
+    "build/body-1.10.0-validation.log": "db147cb6a9d4a07fa6279f3e36eb2717b1561eeda9c69dcbfc3fcb81e767bdd4",
+    "build/world-package-1.10.0-validation.log": "f50aa269d12b0e63c55a3e325b52161604d79c8d183c2c25ac7daba8726e1ca0",
+    "build/native-1.10.0-validation.log": "b8ff85a172c1d3310fa48682e23bd195e996daa83007760c180838ab4210a47e",
+    "build/lua-1.10.0-validation.log": "79a353d21eba891ca2ff1812f48b6444db47b14de7610141c6e42ac1ace0f5eb",
+    "build/offline-navigation/paged-staged-1.10.0.json": "cc7915c9a79cf8ee6949a8458dab83321a65cac4ee0461bc4f943365a2fd51ed",
+    "build/package-1.10.0-validation.log": "10801b10dab107e19bea0c652d8d58fc94a6e98c4a1cfafdd34410c52a0cfbaa"
+  },
+  "tests": {
+    "javascript": 397,
+    "worldPipeline": 11,
+    "componentExtensions": 7,
+    "recast": 9,
+    "body": 2,
+    "worldPackage": 1
+  },
+  "fieldRoute005": {
+    "candidatePoints": 64,
+    "meters": 22.459473262060996,
+    "complete": false,
+    "independentPrefixSamples": 112,
+    "independentPrefixFailures": 0,
+    "actualGameAcceptance": false
+  },
+  "completeCollisionClaim": false,
+  "physicalVerified": false,
+  "installed": false,
+  "startedGame": false,
+  "uploaded": false,
+  "limitations": [
+    "Dynamic layers, moving/animated collision and destructible state remain incomplete",
+    "Special-action coverage and full gameplay acceptance remain incomplete",
+    "Route 005 remains a partial walking candidate",
+    "Isolated giant grid uses conservative 10m cells; regular terrain remains 10cm",
+    "Paged text storage remains large; compressed-container research is not deployed"
+  ]
+}

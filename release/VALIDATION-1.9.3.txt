@@ -1,0 +1,25 @@
+1.9.3 — initial candidates, checked local detours and ribbon stability.
+Date: 2026-11-15; branch codex/recast-routing-193; baseline f3924a7a.
+
+USER 1.9.2 RESULT: core runs; route 001 geometry broadly correct after stairs
+and manual destruction of one prop. Initial branches and ribbon stability fail.
+Evidence: tests/fixtures/recast-192-routing-20261115.json
+
+PASS: 387 JS tests, no skips/failures; 9 Recast/WASM controls; Lua/file bridge.
+RED/GREEN: wrong partial branch with an unknown fog gate; local obstacle detour
+disabled; movement retries before distant unchanged blocks; duplicate commit;
+audit refresh ribbon collapse; lower centre ray in a narrow seam.
+PASS: temporary variants restore on cancellation; known closed not relaxed;
+actual scene barriers remain blocking; no attack/unlock calls.
+PASS: obstacle disappearance can resume from the same player position.
+PASS: preserved ribbon evidence expires; a new measured wall clips immediately.
+PASS: existing adapter version-only compile; native ABI suite not rerun.
+PASS: release 1496 files; development 1503 exact matches; version agreement.
+PASS: no EXE/COM/SCR/MSI/.wasm, private saves/keys, tools or node_modules in ZIPs.
+PASS: core and regional data unchanged; old 1.9.2 ZIPs archived by matching hash.
+
+Not installed, game not launched, saves not written, not uploaded.
+1.9.3 field behavior still needs confirmation; no full-game completion claimed.
+Report: docs/FIELD-FIX-1.9.3.md
+State: docs/OFFLINE-NAVIGATION-STATE.md
+Hashes: release/LOCAL-CANDIDATE-1.9.3.json

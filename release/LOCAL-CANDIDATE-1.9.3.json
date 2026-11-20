@@ -1,0 +1,84 @@
+{
+  "version": "1.9.3",
+  "branch": "codex/recast-routing-193",
+  "sourceBaseline": "f3924a7a",
+  "clientDate": "2026-11-15",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.3.zip",
+      "bytes": 129183361,
+      "sha256": "52c6d8c2c819fb6f5e65114fc0f86291dd77c8d2e060963c4ae0dff57066a3ff",
+      "files": 1496,
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "kernelAndRegionalSourcesMatch192AfterLFNormalization": true,
+      "normalization": "Git checkout converted LF to CRLF; generated core and tile module payloads unchanged",
+      "profile": {
+        "version": "1.9.3",
+        "flavor": "release",
+        "label": "1.9.3",
+        "development": false,
+        "sourceSHA256": "06ebac0afcbb3f78dea8a84ddea45b3e0bc6a00b937a52af3ac6cec5d16e9ec4",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.3_Development.zip",
+      "bytes": 129206148,
+      "sha256": "066a7cd1c99dd99fdbc94cbd1f09484f11f4632a9545dd0ff8a0dda91b180b1e",
+      "files": 1503,
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "kernelAndRegionalSourcesMatch192AfterLFNormalization": true,
+      "normalization": "Git checkout converted LF to CRLF; generated core and tile module payloads unchanged",
+      "profile": {
+        "version": "1.9.3",
+        "flavor": "development",
+        "label": "1.9.3-dev",
+        "development": true,
+        "sourceSHA256": "06ebac0afcbb3f78dea8a84ddea45b3e0bc6a00b937a52af3ac6cec5d16e9ec4",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "9cac49616a8bf78b6c48c7ce5aedc8ac89690c278736b667c4a7b77c3b6d3c72",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 387,
+  "coreControlsPassed": 9,
+  "luaChecks": "passed",
+  "nativeChecks": "Existing adapter version-only compile; ABI suite not rerun",
+  "packageChecks": "passed",
+  "latestUserAcceptance": {
+    "version": "1.9.2",
+    "scope": "Route 001 geometry broadly correct after moving toward stairs and breaking a prop",
+    "caveats": [
+      "Both bells initially wrong",
+      "Breakable obstruction needed manual attack",
+      "Frequent recalculation/ribbon flicker"
+    ]
+  },
+  "fieldInput": "tests/fixtures/recast-192-routing-20261115.json",
+  "fixes": [
+    "Temporary unknown-fog candidates restored on cancellation and checked in the scene; known closed preserved",
+    "Scene-only local detours, no old hints or interaction actions",
+    "Blocked probes wait for actual clearance or player advancement instead of every 6m",
+    "Identical diagnostic commit retains route version and proof",
+    "Audit refresh carries only unexpired evidence; new measured wall clips immediately",
+    "Paired support for narrow seams with a lower walkable centre ray"
+  ],
+  "installed": false,
+  "uploaded": false,
+  "gameStarted": false,
+  "saveWritten": false,
+  "actualGameAcceptance": "1.9.3 pending; no unconditional complete route pass",
+  "persistentState": "docs/OFFLINE-NAVIGATION-STATE.md",
+  "report": "docs/FIELD-FIX-1.9.3.md"
+}

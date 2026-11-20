@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "sourceBinarySHA256": "4415933ce33476f14c837abb61a1b60af8b78cd81783896501913a7aac69e423",
+  "blueprintSHA256": "06a6d0300f5cdd9fc99b8a41476a36a8cf7f2909db5bde9175ac3f03afb69558",
+  "blueprint": "/Game/RenewalContent/Actors/SpecialMove/Volume/BP_SpecialMove_ClimLadder",
+  "prefix": ["UberGraphFrame", "PBZActorSave", "bFold", "bTriggered", "LadderAmount", "bBroken", "BrokenFrom"],
+  "nativeConstructor": "0x145fcbf80",
+  "nativeConstruction": "0x145fde530",
+  "nativeLadderAmountOffset": 1196,
+  "nativeBrokenFromOffset": 1204,
+  "nativeDefaultAmount": 10,
+  "sectionCm": 50,
+  "endCm": 25,
+  "topMeshLocalZ": "(LadderAmount - 2) * 50 + 25",
+  "bottomMeshLocalZ": "bBroken ? clamp(BrokenFrom, 0, LadderAmount - 2) * 50 - 25 : 0",
+  "evidence": [
+    "build/custom-route-audit-1112/ladder-native-schema.json",
+    "build/custom-route-audit-1112/ladder-construction-proof.json",
+    "build/custom-route-audit-1112/ladder-native-math-final.log"
+  ],
+  "scope": "Static candidate mesh axes only. Current native triggers and movement conditions remain mandatory; no method is invoked and no game acceptance is inferred."
+}

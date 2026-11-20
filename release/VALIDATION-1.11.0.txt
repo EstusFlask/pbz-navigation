@@ -1,0 +1,26 @@
+1.11.0 本地验证记录（2026-11-16，America/Tijuana）
+
+范围：思乡之崖撞墙/无上下层引导；同类动作和机关状态；保持11世界压缩导航数据。
+
+实现与证据：
+- 两个字段失败先红后绿：Recast部分前缀被局部修补标成complete；Recast提前返回绕过动作图。
+- 只使用真实碰撞/Detour与放置交互，12,872条离线几何候选/28页/11世界。每条运行时仍受当前capsule、floor、能力、落差伤害余量与锁条件审核。
+- 上攀来自BoxA真实触发体、EdgeSpline上缘与当前站脚点；不调用写Actor/MotionWarping的CalculateUpRunningWarpTarget。
+- 换层旧线立即失效，失效Actor撤销路径，折梯/升降装置/钩索等当前未知或关闭不开放，能到的入口显示实际条件。
+- 没有重烘焙或退回loose世界数据；没有读玩家采样来造路。
+
+通过：
+- 413 JavaScript tests（full-js-regressions-1110.log）；11 world pipeline tests；7 cooked component controls。
+- Lua/真实收集桥接，native ABI/runtime SHA gate/host dispatch；2 installer success/rollback controls。
+- 暂存的11世界/12网格普通JS禁WASM/动态字符串生成启动、actor状态和小块查询。
+- 实际WorldCache+Jobs普通JS压缩完整混合拓扑控制：普通17.762秒/maxSlice10.07ms；jitless压力26.722秒/maxSlice9.33ms，2ms调度/50ms暂停/30秒期限不变。
+- 独立静态三角面 oracle 选出三次下降、两次上攀及末段步行组合；重新检查1206非上攀样点，0失败。上攀自身不是空中capsule运动的验证对象；其候选pad仅获静态支撑净空控制，不等于原生动作验收。
+- 标准/开发完整ZIP精确清单/逐文件SHA/CRC/版本/flavor/所有权；与110个收集Mod路径重叠0，管理器识别为原导航更新。
+
+限制：
+- 未启动游戏；这不是用户对1.11.0的新增实机通过。
+- 全动作开放、指定750cm/s和420cm/s跳跃等只是明确的离线控制。运行端从当前pawn读实际能力，缺失不套用旧角色默认值。
+- 五个密集离线提案窗口受原32MiB/256槽预算限制被跳过；保留有界运行时发现。所有世界/所有机关/所有路线不作全通声明。
+- 不自动开启机关，不写存档或其他Mod，不上传。
+
+最终安装：1.11.0 Development，5,173文件/3,650,472,948字节全部SHA匹配；导航管理器记录5be5f0270049，其他9个Mod/存档/设置不变。最终包SHA和备份见INSTALLATION-1.11.0.json。机关卸载→重新加载的条件恢复已补回归，最终413项JS全通过。

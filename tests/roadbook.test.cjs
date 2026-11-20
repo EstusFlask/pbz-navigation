@@ -4,6 +4,12 @@ const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/m
 const facts=require('../authoring/placed-passage-facts.json'),audit=require('../authoring/roadbook-course-audit.json');
 const data=require(root+'/PBZRouteRoadbookData'),placed=require(root+'/PBZRoutePlacedPassages');
 const run=job=>{let r,count=0;do{r=job.next();assert.ok(++count<100000);}while(!r.done);return r.value;};
+test('placed hook window seeds use the actual launch box and retain the airborne grab anchor',()=>{
+ const proof={TriggerBox:[-50501.45616210075,141883.9551099743,2281.2591286732827],GrabPoint:[-51544.93691199249,140929.96582277963,2973.9408275324736],LandArea:[-52255.50572038968,140637.61342780603,2126.7288909556246]},hook=placed.forWorld('pbz_fujizhilin_wp').find(r=>r.guid.endsWith('_1708767337'));
+ assert.equal(hook.path.length,3,'the airborne grab point was used as a walking entry');
+ for(const [i,key]of ['TriggerBox','GrabPoint','LandArea'].entries())for(let axis=0;axis<3;axis++)assert.ok(Math.abs(hook.path[i][axis]-proof[key][axis])<1e-6);
+ assert.equal(hook.entrySource,'TriggerBox');assert.equal(hook.requiresLiveEndpoints,true);assert.equal(hook.both,false);
+});
 test('every roadbook worksheet link is accounted for without promoting unresolved geometry',()=>{
  assert.equal(audit.links.length,140);assert.equal(new Set(audit.links.map(x=>x.id)).size,140);
  const worlds=[...new Set(audit.links.map(x=>x.world).filter(Boolean))],courses=worlds.flatMap(w=>data.forWorld(w));
@@ -23,7 +29,10 @@ test('all placed passage facts require the current loaded instance and retain pr
  const digest=crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname,'../authoring/placed-passage-facts.json'))).digest('hex');
  assert.equal(audit.factsSHA256,digest);
  for(const world of worlds)assert.equal(require(root+'/PBZRoutePlacedPassages/'+world).data.factsSHA256,digest);
- assert.equal(worlds.flatMap(w=>placed.forWorld(w)).length,facts.rows.length);
+ const ladders=worlds.flatMap(w=>require(root+'/PBZRouteLadderData').forWorld(w));assert.equal(worlds.flatMap(w=>placed.forWorld(w)).length,facts.rows.length+ladders.length);
+ const hooks=worlds.flatMap(w=>require(root+'/PBZRouteHookData').forWorld(w));assert.equal(hooks.length,75);
+ for(const hook of hooks){const old=facts.rows.find(r=>r.guid===hook.guid);assert.equal(hook.packageSHA256,old.packageSHA256);assert.equal(hook.requiresLiveEndpoints,true);assert.equal(hook.requiresLoaded,true);assert.equal(hook.nativeTriggersCertified,false);assert.equal(hook.entrySource,'TriggerBox');assert.equal(hook.path.length,3);assert.equal(hook.both,false);}
+ for(const ladder of ladders){assert.equal(ladder.requiresLiveEndpoints,true);assert.equal(ladder.requiresLoaded,true);assert.equal(ladder.nativeTriggersCertified,false);assert.equal(ladder.endpointSource,'cooked-ladder-mesh-axis');}
  const ids=new Set();for(const f of facts.rows){
   const key=f.world+'/'+f.guid;assert.ok(!ids.has(key));ids.add(key);
   assert.equal(f.requiresLoaded,true);assert.equal(f.packageSHA256.length,64);

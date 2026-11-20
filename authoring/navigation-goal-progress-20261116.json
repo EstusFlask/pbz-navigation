@@ -1,0 +1,2327 @@
+{
+  "schema": 1,
+  "goal": "把所有路线问题与mod连接问题都做好",
+  "status": "active",
+  "achieved": false,
+  "clientDate": "2026-11-17",
+  "installedVersion": "1.11.1",
+  "developmentWork": "unreleased 1.11.2 source/data; package version lock and installed game unchanged",
+  "scope": "All navigation routes/world reconstruction/current mechanisms/Mod target and runtime integration; 47 custom pairs are a required regression set, not the entire objective",
+  "worldRasterRepair": {
+    "inventoriedTiles": 356998,
+    "rebuilt": 452,
+    "failed": 0,
+    "changed": 426,
+    "unchangedCandidate": 26,
+    "unaffectedOriginalBytesRetained": 356546,
+    "regionalBlobsChanged": 32,
+    "backup": "build/offline-navigation/raster-rebuild-1112/backup/"
+  },
+  "storage": {
+    "worldFiles": 3683,
+    "worldBytes": 3202524385,
+    "plainJSFullLogicalSHAGrids": 12,
+    "pagedSmokeGrids": 12
+  },
+  "currentCandidateSet": {
+    "total": 47,
+    "completeTopology": 35,
+    "stillMissingFullChain": 12,
+    "scheduledJSComplete": 33,
+    "zeroFailureRawCandidates": 14,
+    "zeroFailureCases": [1, 7, 9, 17, 19, 25, 28, 30, 35, 40, 43, 44, 45, 47],
+    "uncertifiedNativeCases": [9, 30, 35, 40, 43, 44, 47],
+    "nativeActionsStillUncertified": true,
+    "gameAccepted": 0,
+    "rawCandidateCollisionFailures": 19,
+    "audit": "build/custom-route-audit-1112/prefix-ranked-wasm-all/summary.json",
+    "scheduledAudit": "build/custom-route-audit-1112/fine-endpoint-js-all/summary.json",
+    "collisionAudit": "build/custom-route-audit-1112/fine-endpoint-js-all/collision-results.json",
+    "jsCompleteCases": [1, 2, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18, 19, 20, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 39, 40, 43, 44, 45, 47],
+    "jsPausedCases": [24, 38],
+    "jsTimeoutCases": [37]
+  },
+  "residentDetourFix": {
+    "case": 38,
+    "rootCause": "routeLocal rejected endpoints outside prior request bounds despite complete routes in the same resident planner",
+    "regressionTest": "tests/recast-integration.test.cjs",
+    "baselineCompleteTopology": 34,
+    "currentCompleteTopology": 35,
+    "addedCompleteTopologyCase": 38,
+    "otherPriorCompleteCasesRetained": true
+  },
+  "boundedActionRanking": {
+    "rankedPrefix": 1024,
+    "reason": "Transitions consumes at most 512 initial plus 512 refilled one-way geometry features",
+    "orderComparedWithFullStableSort": "identical for all 47 custom-route cases",
+    "wasmCompleteTopology": 35,
+    "wasmPriorCompleteChainsRetained": 35,
+    "jsCompleteUnderScheduler": 33,
+    "newJSSchedulerCompletions": [32],
+    "runtimeBytes": 3584260,
+    "runtimeSHA256": "596962d118c46ed885b13d91481bc1ece0cb06f1b746a2876950d0cbc21d789a",
+    "graphRepresentation": "CSR typed arrays with signed action indexes",
+    "endpointProjectionQueriesPerYield": 4,
+    "productionShapeCase3Profile": "build/custom-route-audit-1112/fine-endpoint-3-profile-final/03-S018.json",
+    "case3ProfileMaxSchedulerSliceMs": 9.34,
+    "case3ProfileMaxDirectJobStepMs": 8.772,
+    "case3UninstrumentedRunMaxSchedulerSliceMs": 40.82,
+    "case3Complete": false,
+    "edgeWrapperObjects": 0,
+    "rankingWrapperObjects": 0,
+    "largeCase": {
+      "features": 58775,
+      "randomDifferentialCases": 100,
+      "randomDifferentialMismatches": 0,
+      "oldMedianCPUms": 178.035,
+      "newMedianCPUms": 142.175,
+      "oldMedianPeakHeapBytes": 18256888,
+      "newMedianPeakHeapBytes": 9177296,
+      "typedScratchBytes": 2409815
+    },
+    "shippedBundleDifferentialFixture": "build/custom-route-audit-1112/csr-runtime-differential-key.json",
+    "shippedBundleDifferentialCases": 100,
+    "shippedBundleDifferentialMismatches": 0,
+    "oldBundleMedianCPUms": 178.035,
+    "csrBundleMedianCPUms": 142.175,
+    "oldBundleMedianHeapBytes": 18256888,
+    "csrBundleMedianHeapBytes": 9177296,
+    "runtimeManifest": "build/offline-navigation/runtime/manifest.json"
+  },
+  "offlineAuditBatchMerge": {
+    "largeArraySpreadWasIn": "offline-navigation/audit-custom-routes.mjs",
+    "productionMakePlanPassesRecastArrayDirectly": true,
+    "auditBatchSize": 64,
+    "case3Before": {
+      "paused": true,
+      "blockingSliceMs": 101
+    },
+    "case3After": {
+      "paused": false,
+      "wallMs": 22465,
+      "completeRoute": false
+    },
+    "productionCodeChangedForThisObservation": false
+  },
+  "collisionFilteredAlternatives": {
+    "scope": "Source-bound offline collision evidence, original candidate ordering and shared 24-connector limit; not gameplay acceptance",
+    "5": {
+      "complete": true,
+      "connectors": 6,
+      "samples": 1201,
+      "nonNativeFailures": 0,
+      "nativeActionsUncertified": 2,
+      "unassessedCandidates": 0,
+      "jsWallMs": 11938
+    },
+    "38": {
+      "complete": true,
+      "connectors": 4,
+      "samples": 2045,
+      "nonNativeFailures": 0,
+      "nativeActionsUncertified": 1,
+      "unassessedCandidates": 0,
+      "jsWallMs": 15345
+    },
+    "2And4": {
+      "complete": false,
+      "reason": "30s runtime deadline reached after full 1024-candidate collision filtering",
+      "rawCandidateCollisionFailures": {
+        "2": 19,
+        "4": 105
+      }
+    }
+  },
+  "validation": {
+    "jsTests": 489,
+    "jsLog": "build/custom-route-audit-1112/fine-endpoint-final-js-tests.log",
+    "targetedTopologyTests": 27,
+    "targetedTopologyTestsLog": "build/custom-route-audit-1112/topology-prefix-targeted.log",
+    "worldPipeline": 11,
+    "worldPipelineLog": "build/custom-route-audit-1112/fine-endpoint-final-world-tests.log",
+    "runtimeLogicalSHAReport": "build/custom-route-audit-1112/fine-endpoint-runtime-sha.json",
+    "runtimeLogicalFiles": 59895,
+    "runtimeLogicalBytes": 9776305886,
+    "runtimeLogicalSHAWorlds": 12,
+    "pagedWorldReport": "build/custom-route-audit-1112/fine-endpoint-paged-smoke.json",
+    "pagedWorldGrids": 12,
+    "pagedWorldFailures": 0,
+    "rasterProvenanceControls": 2,
+    "generatedFieldProvenanceControls": 2,
+    "realLadderControls": 2,
+    "realHookControls": 2
+  },
+  "remainingWork": [
+    "12 custom endpoint pairs still lack a complete modeled candidate: 3,11,15,16,21,22,23,24,29,41,42,46",
+    "19 of 33 current JS candidates still fail independent cooked collision: 2,4,5,6,8,10,12,13,14,18,20,26,27,31,32,33,34,36,39; 5 and 38 have source-bound collision-filtered alternatives",
+    "Source-bound mocked collision alternatives for 6/20 use 3 of 24 connectors and zero non-native failures; actual game physics/latency/conditions not accepted",
+    "Current CSR endpoint-yield-4 run has 33 complete; pauses 24/38 and timeout 37, other missing cases are 3/11/15/16/21/22/23/29/41/42/46; retain 50ms/30s and investigate profile/uninstrumented case-3 slice difference (9.34ms vs 40.82ms)",
+    "The earlier 101ms stall was an offline audit harness spread; the production planner passes the array directly. Current case 3 has no complete route, max slice 44.37ms; do not claim the harness fix repaired the Mod",
+    "Collision-filtered 2/4 reruns still exceed 30s despite the exact bounded-prefix ranking; raw selected lines have 19/105 independent collision failures",
+    "26/36 currently have topology chains but 93/34 independent cooked-collision failures; earlier 1024-candidate physical searches still found no acceptable alternate, so expand action coverage without using fixed routes or trajectories",
+    "Current loaded native endpoints, mechanisms, target identity, ribbon visibility and complete scene route still need game acceptance",
+    "Final source/profile/native adapter/flavor archives and installation checks remain; actual game/dist/version lock 1.11.1"
+  ],
+  "evidence": [
+    {
+      "file": "build/offline-navigation/raster-coverage-audit.json",
+      "sha256": "4e61484acbee4ddad5cc8158e73a0f4c0d2106a2101dd2c19b2ef9b0db7d1da9"
+    },
+    {
+      "file": "build/offline-navigation/raster-rebuild-1112/rebuild.json",
+      "sha256": "4f67897b8befb95ba36c30098d42b57eca405e17fa4ab535445608c8bbe5341c"
+    },
+    {
+      "file": "build/offline-navigation/raster-rebuild-1112/applied.json",
+      "sha256": "8c238eccf7f179a49c8d690087545767623121914a19491298e921df8f01d76e"
+    },
+    {
+      "file": "build/offline-navigation/packed-runtime-sha-1112.json",
+      "sha256": "99a65fa4f6fd3a805bdd0d7faa47384ae0d049df7224631f0a13c5fbc17cf895"
+    },
+    {
+      "file": "build/custom-route-audit-1112/topology-envelope/summary.json",
+      "sha256": "59f91aab9430ef99c857d599ea21deb98d58bac729d14efaf56e8834432876f7"
+    },
+    {
+      "file": "build/custom-route-audit-1112/topology-envelope/collision-results.json",
+      "sha256": "ad6a4b255f1fce729b6572cc88ad926577b6053d6b6139dfdbeafd6200eed26e"
+    },
+    {
+      "file": "build/custom-route-audit-1112/js-current-verified/summary.json",
+      "sha256": "152c8fc02dd84091b8152d43e7ab4aebbc75cfd05b9076674612d620c495829c"
+    },
+    {
+      "file": "build/custom-route-audit-1112/oracle-filtered/collision-results.json",
+      "sha256": "4997107aae04771367b70157de5467f89728b5c7247fe3eee166b707ad9b6725"
+    },
+    {
+      "file": "build/custom-route-audit-1112/local-fields-all-routes/summary.json",
+      "sha256": "8887d544ac671cd09fa158e4548128253996d2ebc5eaa9d07083b46d1cddc27b"
+    },
+    {
+      "file": "build/custom-route-audit-1112/local-fields-all-routes/collision-results.json",
+      "sha256": "f0ce9a4af2de12c5c8322eb350111ea53d54f2d7f10598eb95990277bff4f5ba"
+    },
+    {
+      "file": "build/custom-route-audit-1112/local-component-fields-products.json",
+      "sha256": "88a1943af1ce2dbb26e81795988c44ac1278754571dea2a9391cfdfd00e1bf64"
+    },
+    {
+      "file": "build/custom-route-audit-1112/local-fields-full-coordinate-proof.json",
+      "sha256": "d99490b32c39495abbd8d72164d83e3985bdf63a022b21eb475c6135fc4290cf"
+    },
+    {
+      "file": "build/offline-navigation/placed-ladder-complete-1112/receipt.json",
+      "sha256": "72838904063d435a4d8ee5628e498982883d10c8859d7e2488ad1f1746170e10"
+    },
+    {
+      "file": "build/offline-navigation/placed-hook-volumes-1112/receipt.json",
+      "sha256": "2715741ca5d9e158896e4d06a9601e07ae2e2041fd65811c94a213dddf1ac6df"
+    },
+    {
+      "file": "build/offline-navigation/action-corridors-volume-geometry-1112/summary.json",
+      "sha256": "b0a882d8311bf095622160555ad188d7831c0f2626df6a90e6404b86a6eb0bfd"
+    },
+    {
+      "file": "build/custom-route-audit-1112/jump-filter-preflight-all/summary.json",
+      "sha256": "fbbaea8d01a415a9473dbc9b5f29e94304f55d14c93b24aa4ff08079f36bef22"
+    },
+    {
+      "file": "build/custom-route-audit-1112/jump-filter-preflight-all/collision-results.json",
+      "sha256": "114eed1cdcea8c2c61cba32b0b3d2de95a4a4f03221eef243019ef1d475f7a65"
+    },
+    {
+      "file": "build/custom-route-audit-1112/preflight-js-40-47/summary.json",
+      "sha256": "a4ae583f9614afed6b550da9ff344f5a1b755f098db417edb00c2fc4691b05c0"
+    },
+    {
+      "file": "build/custom-route-audit-1112/14-js-preflight/summary.json",
+      "sha256": "2056973421926e01eb3cf46550be7193f0b4deaa68a6f0b68523f901a6e40e1a"
+    },
+    {
+      "file": "build/custom-route-audit-1112/36-37-js-preflight/summary.json",
+      "sha256": "7b44b8f40140ed525d91aba342b8034434c6cbb258ca53377ccbb8738945b2cf"
+    },
+    {
+      "file": "build/custom-route-audit-1112/full-js-jump-filter-preflight.log",
+      "sha256": "02699b4befcdc4b5ac664af292478be2ea322027986ff454a5771f4a3b357d8f"
+    },
+    {
+      "file": "build/custom-route-audit-1112/world-pipeline-jump-filter-preflight.log",
+      "sha256": "544903d16bcda6f4b2fad9fb90a3bab7e67b7f13c71b2d534193879fd098de05"
+    },
+    {
+      "file": "build/custom-route-audit-1112/placed-hook-delivery-final.log",
+      "sha256": "c79547cff6a047cebcd3615e04a75bd9168dc41ee6dd7edfcd7f0f772045dbe6"
+    },
+    {
+      "file": "build/custom-route-audit-1112/placed-ladder-delivery-final.log",
+      "sha256": "776bf845b6d613ab9b44f4fff84cad0297b621785ccfda4c0571dcd24bad7d88"
+    },
+    {
+      "file": "build/offline-navigation/runtime/manifest.json",
+      "sha256": "1bc9b96d675e79c64b3ca8a623323b8492e760f18b773180b214860df19ba2fb"
+    },
+    {
+      "file": "build/custom-route-audit-1112/surface-relevant-alternatives-final-all/summary.json",
+      "sha256": "c11922de6d2ccc98db530ea28e72a746b97fba009807109cf297d12b6de4277e"
+    },
+    {
+      "file": "build/custom-route-audit-1112/surface-relevant-alternatives-final-all/collision-results.json",
+      "sha256": "6eab324aa96ea4cd9fbaac1a6ca3d228ad20fc7bd0adf91dd6c1a0b0ba82e2ba"
+    },
+    {
+      "file": "build/custom-route-audit-1112/full-js-surface-alternatives-final.log",
+      "sha256": "ad4474ef1c12cb456cc3382974b01352c6165aedd9d5892d5accefee10e07b46"
+    },
+    {
+      "file": "build/custom-route-audit-1112/world-pipeline-surface-alternatives-final.log",
+      "sha256": "ea2363ab0735b0b1b0279eb0131a8a71246a30e810958121a70cd1a8762647a0"
+    },
+    {
+      "file": "build/custom-route-audit-1112/41-height-band-probe.json",
+      "sha256": "a1aae4f49fd5c7cd8fc7e6e0ff5d0244758234dfe88be292e74c6407822731d1"
+    },
+    {
+      "file": "build/custom-route-audit-1112/41-rooted-resident-probe.json",
+      "sha256": "1facfd2131f8887ea87e28e2279ec6ef9229c790ecaacc53ab1cb8f14ecccf95"
+    },
+    {
+      "file": "build/custom-route-audit-1112/41-floor-source-probe/source-proof.json",
+      "sha256": "34b216044fb2f47072577486bd925fb81e40618df1a400054b022b1db52ae588"
+    },
+    {
+      "file": "build/offline-navigation/movement-packed-merged-rooted-41-1112/pbz_pangzhen_wp.packed-receipt.json",
+      "sha256": "13f5ddca0d58f397c3f44dc67f3ac3013b2e101f349b5bf1acb0528802fad6eb"
+    },
+    {
+      "file": "build/custom-route-audit-1112/full-js-final-source.log",
+      "sha256": "27cc26bc96131cbf1de100170d9c3037fac75e333c9c8c57e354033d60228409"
+    },
+    {
+      "file": "build/custom-route-audit-1112/world-pipeline-final-source.log",
+      "sha256": "8834bd3c09209070c82f126d84aad683fd5596b22bb220e591707e6157648ca9"
+    },
+    {
+      "file": "build/custom-route-audit-1112/surface-relevant-js-controls/summary.json",
+      "sha256": "e154c03fba535454c11f9e3c773983e4545babe16bd481a9760c4b6acfea571a"
+    },
+    {
+      "file": "build/custom-route-audit-1112/relevant-fused-js36-alone/summary.json",
+      "sha256": "93ae5e1f10d474e223ef8ee16e8d4d42c947dac0bfdd5105c78448bc34ec3c9e"
+    },
+    {
+      "file": "build/custom-route-audit-1112/41-merged-packed-proof.json",
+      "sha256": "690b7789fa1bd27e1398c9f775214631f0572af9e6bc8de889d2edb1c3c1006d"
+    },
+    {
+      "file": "build/custom-route-audit-1112/scoped-refill-wasm-all/summary.json",
+      "sha256": "05257b9cef38c2ca2b75893274cea494a019af1a509ae83994f49fc43202dc88"
+    },
+    {
+      "file": "build/custom-route-audit-1112/scoped-refill-wasm-all/collision-results.json",
+      "sha256": "897150b2945895d9d64fc21a2a2b1c795bca9fdc4a1026ee22026657889c2cd3"
+    },
+    {
+      "file": "build/custom-route-audit-1112/scoped-refill-js-final-all/summary.json",
+      "sha256": "edec71d6c2e967b92566b85e85e099f22bb243658dffbea348c791312dd5b16e"
+    },
+    {
+      "file": "build/custom-route-audit-1112/crc-local-06-20-collision-js/summary.json",
+      "sha256": "6ea98005ea5022b49758c704d9158ab1fe1f390be38bd19bcea1af8e93533e0f"
+    },
+    {
+      "file": "build/custom-route-audit-1112/crc-local-06-20-collision-js/collision-results.json",
+      "sha256": "278a10dcf032afd23161a7973fb9bcd47312336817f43b98be4095e5892639c1"
+    },
+    {
+      "file": "build/offline-navigation/packed-runtime-sha-scoped-crc-final.json",
+      "sha256": "99a65fa4f6fd3a805bdd0d7faa47384ae0d049df7224631f0a13c5fbc17cf895"
+    },
+    {
+      "file": "build/offline-navigation/paged-catalog-scoped-crc-final.json",
+      "sha256": "8a7b1d1ec60b0cce80298ac07be0d128f7f4cad3f41beaafc474a599f3436788"
+    },
+    {
+      "file": "build/custom-route-audit-1112/runtime-scope-crc-refill-receipt.json",
+      "sha256": "e6ce988faff320c64c886a36089fb4052a2023c310900a3ff61d825329eba50d"
+    },
+    {
+      "file": "build/custom-route-audit-1112/full-js-scoped-refill-delivery.log",
+      "sha256": "bc96e1c1b3e72c926390d3b2faedbe98c8a6fb6ad1327562bce37d488e0a0f2e"
+    },
+    {
+      "file": "build/custom-route-audit-1112/world-pipeline-scoped-refill-final.log",
+      "sha256": "52ad58e566f4b6ba92eeeb4e703d84b2e1b22db8b2b477ce19d59d648e26a15d"
+    }
+  ],
+  "rows": [
+    {
+      "number": 1,
+      "id": "B03",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "八卦阁前路口",
+      "toName": "戏梦山庄正门",
+      "start": {
+        "x": -174570,
+        "y": 112368,
+        "z": -3068
+      },
+      "end": {
+        "x": -187916,
+        "y": 114639,
+        "z": -1057
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1644,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "60856a6827e62ae2fbcbf56793c210c6d702a60a6e76efca1a334549f665ef06",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 176,
+          "wall": 1346,
+          "pumps": 63,
+          "maxSlice": 16.19
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 2,
+      "id": "S012",
+      "world": "pbz_xigu_wp",
+      "fromName": "恶弓手营地",
+      "toName": "溪谷杀气塔一层",
+      "start": {
+        "x": -73233,
+        "y": 231409,
+        "z": -16044
+      },
+      "end": {
+        "x": -61876,
+        "y": 222885,
+        "z": -15848
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1005,
+      "candidateCollisionFailures": 19,
+      "candidatePathSHA256": "b0eb3272220cec775f311f8ead4bd16c3c71543b5c4d0f1b83cc1d9a2ca7238c",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2228,
+          "wall": 22914,
+          "pumps": 1102,
+          "maxSlice": 9.1
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 3,
+      "id": "S018",
+      "world": "pbz_xigu_wp",
+      "fromName": "远眺龙柱处",
+      "toName": "瀑布吊桥",
+      "start": {
+        "x": -52359,
+        "y": 227135,
+        "z": -20715
+      },
+      "end": {
+        "x": -55527,
+        "y": 213608,
+        "z": -15827
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 679,
+          "wall": 5408,
+          "paused": true
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 4,
+      "id": "S020",
+      "world": "pbz_xigu_wp",
+      "fromName": "瀑布吊桥",
+      "toName": "溪谷杀气塔底",
+      "start": {
+        "x": -55527,
+        "y": 213608,
+        "z": -15827
+      },
+      "end": {
+        "x": -62272,
+        "y": 221490,
+        "z": -19123
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1273,
+      "candidateCollisionFailures": 105,
+      "candidatePathSHA256": "bfa82dcbbf1c17d89988499964ae83ca7959dc089528742932f61c91f0f47d76",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1501,
+          "wall": 16210,
+          "pumps": 773,
+          "maxSlice": 5.18
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 5,
+      "id": "S030",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "人偶思乡之崖",
+      "toName": "悬崖山舍",
+      "start": {
+        "x": -51458,
+        "y": 136650,
+        "z": 3333
+      },
+      "end": {
+        "x": -47835,
+        "y": 152968,
+        "z": 1717
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1124,
+      "candidateCollisionFailures": 64,
+      "candidatePathSHA256": "e5cead4b4e5240d98b99bf0cd605838bb3c598501ce61af308ebcd3ec35a70c9",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058A98B59202_1353230808",
+        "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058A98B59202_1453692831"
+      ],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": {
+        "number": 5,
+        "id": "S030",
+        "world": "pbz_fujizhilin_wp",
+        "routeSHA256": "7e685b780be5027096bf6b6386f647701e4f68f8b0bf95f8269a277ed5119ce2",
+        "samples": 1200,
+        "nativeActionsNotCertified": [
+          "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058A98B59202_1353230808",
+          "BP_SpecialMove_UpRunning_C_UAID_BCFCE7058A98B59202_1453692831"
+        ],
+        "failures": [],
+        "independentGeometryPassed": true,
+        "physicalVerified": false,
+        "evidence": "build/custom-route-audit-1112/oracle-filtered/collision-results.json"
+      },
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 281,
+          "wall": 2833,
+          "pumps": 136,
+          "maxSlice": 4.56
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 6,
+      "id": "S037",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "血色森林杀气塔大门",
+      "toName": "血色森林杀气塔六层",
+      "start": {
+        "x": -41391,
+        "y": 179640,
+        "z": 2116
+      },
+      "end": {
+        "x": -44879,
+        "y": 176470,
+        "z": 5926
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1837,
+      "candidateCollisionFailures": 17,
+      "candidatePathSHA256": "a12f614893475bdc02617752eee289b465ff34ad9e3cd60a6848e8158524b68b",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2844,
+          "wall": 26386,
+          "pumps": 1211,
+          "maxSlice": 14.91
+        },
+        "evidence": "js-focused-hard-cases"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 705,
+          "wall": 7505,
+          "pumps": 355,
+          "maxSlice": 13.85
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      },
+      "sourceBoundCollisionReplay24": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2888,
+          "wall": 26354,
+          "pumps": 1229,
+          "maxSlice": 13.87
+        },
+        "connectors": 3,
+        "samples": 2242,
+        "failures": 0,
+        "nativeActionsNotCertified": [],
+        "precomputed": true,
+        "gameAccepted": false,
+        "evidence": "build/custom-route-audit-1112/crc-local-06-20-collision-js"
+      }
+    },
+    {
+      "number": 7,
+      "id": "S040",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "岔路口",
+      "toName": "正道大营外门",
+      "start": {
+        "x": -14954,
+        "y": 139930,
+        "z": -1531
+      },
+      "end": {
+        "x": -11067,
+        "y": 128049,
+        "z": -1662
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 699,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "8d3219a1145a4a6d56b82e392a70e510ff1a13816acebf17e23440bbb2f8b145",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 60,
+          "wall": 609,
+          "pumps": 30,
+          "maxSlice": 2.6
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 8,
+      "id": "S062",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "废弃酒窖",
+      "toName": "南门廊桥",
+      "start": {
+        "x": -160727,
+        "y": 128612,
+        "z": -1895
+      },
+      "end": {
+        "x": -160184,
+        "y": 145382,
+        "z": -8090
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1608,
+      "candidateCollisionFailures": 138,
+      "candidatePathSHA256": "d52ff0da704e7c788efd96cfda09399be1b3d71b7751f06159bcf61f92af8bb7",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 2537,
+          "wall": 24993,
+          "pumps": 1132,
+          "maxSlice": 6.43
+        },
+        "evidence": "js-focused-hard-cases"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1243,
+          "wall": 13457,
+          "pumps": 640,
+          "maxSlice": 5.07
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 9,
+      "id": "S072",
+      "world": "pbz_houjie_wp",
+      "fromName": "后街乘凉处",
+      "toName": "窄巷民居二楼",
+      "start": {
+        "x": -217748,
+        "y": 120620,
+        "z": -1994
+      },
+      "end": {
+        "x": -228350,
+        "y": 110929,
+        "z": 1052
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1181,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "8c9b32ad15230e3bbefd6534e0e376243927d1e699ba40203e4df161d2e8196a",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_ClimLadder_C_UAID_E89C25A7512647AF02_1748085609"
+      ],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1313,
+          "wall": 11074,
+          "pumps": 522,
+          "maxSlice": 7.37
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 124,
+          "wall": 1280,
+          "pumps": 63,
+          "maxSlice": 3.07
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 10,
+      "id": "S116",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "通往校场的路",
+      "toName": "校场",
+      "start": {
+        "x": 27862,
+        "y": 64529,
+        "z": 8878
+      },
+      "end": {
+        "x": 32383,
+        "y": 59677,
+        "z": 8171
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 483,
+      "candidateCollisionFailures": 37,
+      "candidatePathSHA256": "92c83387d66c9d463042210152363ccc8e6a96e178335f0cf0328a2bdc52efac",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2955,
+          "wall": 26433,
+          "pumps": 1243,
+          "maxSlice": 9.12
+        },
+        "evidence": "js-packed-focused-10"
+      },
+      "independentFilteredAlternative": {
+        "number": 10,
+        "id": "S116",
+        "world": "pbz_zhengdaodaying_wp",
+        "routeSHA256": "2b4082b9e78e1887f8472f2f0745f773a2048b69a9af53c01232ef922533f492",
+        "samples": 474,
+        "nativeActionsNotCertified": [],
+        "failures": [],
+        "independentGeometryPassed": true,
+        "physicalVerified": false,
+        "evidence": "build/custom-route-audit-1112/10-oracle-filtered/collision-results.json"
+      },
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 928,
+          "wall": 10160,
+          "pumps": 477,
+          "maxSlice": 4.94
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 11,
+      "id": "S128",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "铁杀营地",
+      "toName": "囚笼洞口",
+      "start": {
+        "x": -69485,
+        "y": -43900,
+        "z": 14882
+      },
+      "end": {
+        "x": -67184,
+        "y": -68173,
+        "z": 15703
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 1137,
+          "wall": 12641,
+          "pumps": 603,
+          "maxSlice": 7.32
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 12,
+      "id": "S002",
+      "world": "pbz_xigu_wp",
+      "fromName": "圣母像裂缝",
+      "toName": "初见玉儿处",
+      "start": {
+        "x": 9443,
+        "y": 288850,
+        "z": -31437
+      },
+      "end": {
+        "x": -4089,
+        "y": 277254,
+        "z": -30487
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1189,
+      "candidateCollisionFailures": 90,
+      "candidatePathSHA256": "d2e8e952ac3403f26a8330ca16481bb505ac0431074976c2597775432c881a09",
+      "nativeActionsNotCertified": [
+        "BP_ASM_RopeSwing_C_UAID_BCFCE7058A98907902_1465384292",
+        "BP_SpecialMove_ClimLadder_C_UAID_60CF84809909898B02_1464023409",
+        "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98C88B02_2052256231",
+        "BP_SpecialMove_SideRunning_C_UAID_60CF84809909308502_1333727114",
+        "BP_SpecialMove_SideRunning_C_UAID_60CF84809909BFA102_1866290528"
+      ],
+      "priorScheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 3450,
+          "wall": 30003
+        },
+        "evidence": "js-focused-hard-cases"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1304,
+          "wall": 13538,
+          "pumps": 648,
+          "maxSlice": 14.46
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 13,
+      "id": "S004",
+      "world": "pbz_xigu_wp",
+      "fromName": "红丝线障壁",
+      "toName": "残偶谷底",
+      "start": {
+        "x": -11137,
+        "y": 282425,
+        "z": -28477
+      },
+      "end": {
+        "x": -4124,
+        "y": 294281,
+        "z": -29340
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 819,
+      "candidateCollisionFailures": 96,
+      "candidatePathSHA256": "1be8cb498ec86f8fa545e008637852f2d2791a2ae32112570cea63d819d2fbab",
+      "nativeActionsNotCertified": [
+        "BP_ASM_RopeSwing_C_UAID_BCFCE7058A98907902_1232095288"
+      ],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1373,
+          "wall": 13266,
+          "pumps": 596,
+          "maxSlice": 4.74
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 607,
+          "wall": 6370,
+          "pumps": 299,
+          "maxSlice": 4.44
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 14,
+      "id": "S013",
+      "world": "pbz_xigu_wp",
+      "fromName": "溪谷杀气塔一层",
+      "toName": "血肉花田",
+      "start": {
+        "x": -61876,
+        "y": 222885,
+        "z": -15848
+      },
+      "end": {
+        "x": -71223,
+        "y": 210868,
+        "z": -19561
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1719,
+      "candidateCollisionFailures": 122,
+      "candidatePathSHA256": "5ef235eee1bbbab366935b0d2ea612de0515036a9ea1319f2d9354d9a5eb0462",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 2782,
+          "wall": 30002
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 15,
+      "id": "S024",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "荒废官道",
+      "toName": "远眺庞镇之桥",
+      "start": {
+        "x": -98903,
+        "y": 190396,
+        "z": -548
+      },
+      "end": {
+        "x": -128997,
+        "y": 169891,
+        "z": -1464
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 1847,
+          "wall": 19349,
+          "paused": true
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 16,
+      "id": "S025",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "远眺庞镇之桥",
+      "toName": "挂笼小道",
+      "start": {
+        "x": -128997,
+        "y": 169891,
+        "z": -1464
+      },
+      "end": {
+        "x": -105769,
+        "y": 156472,
+        "z": 6
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1494,
+          "wall": 14336,
+          "pumps": 645,
+          "maxSlice": 5.05
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 462,
+          "wall": 4647,
+          "paused": true
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 17,
+      "id": "S033",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "镜林龙柱",
+      "toName": "遗冢地",
+      "start": {
+        "x": -25145,
+        "y": 156265,
+        "z": 2107
+      },
+      "end": {
+        "x": -28236,
+        "y": 172240,
+        "z": 630
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 866,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "39e9cf5661f22103797d41302144da55bfbd7f69189f38bacee134f9bb059081",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 268,
+          "wall": 2704,
+          "pumps": 128,
+          "maxSlice": 7.08
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 18,
+      "id": "S038",
+      "world": "pbz_fujizhilin_wp",
+      "fromName": "血色森林杀气塔六层",
+      "toName": "血色森林杀气塔底",
+      "start": {
+        "x": -44879,
+        "y": 176470,
+        "z": 5926
+      },
+      "end": {
+        "x": -44937,
+        "y": 180481,
+        "z": -2198
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 2396,
+      "candidateCollisionFailures": 229,
+      "candidatePathSHA256": "5310f667a634b790bf5c90b36b4a3fc29b18fdf597aafd253182a6f680f56dfd",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 976,
+          "wall": 10562,
+          "pumps": 505,
+          "maxSlice": 6.6
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 19,
+      "id": "S039",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "梦醒之地",
+      "toName": "岔路口",
+      "start": {
+        "x": -2351,
+        "y": 146230,
+        "z": 859
+      },
+      "end": {
+        "x": -14954,
+        "y": 139930,
+        "z": -1531
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1388,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "efc3c35af14ba5d5fb37ddfa5c575772baddcb1b5bcbe7ad1f58cb1685e4e566",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 94,
+          "wall": 1010,
+          "pumps": 47,
+          "maxSlice": 2.77
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 20,
+      "id": "S041",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "岔路口",
+      "toName": "老根头藏身处",
+      "start": {
+        "x": -14954,
+        "y": 139930,
+        "z": -1531
+      },
+      "end": {
+        "x": -22625,
+        "y": 125663,
+        "z": -3593
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1157,
+      "candidateCollisionFailures": 1,
+      "candidatePathSHA256": "fb98eef793da7f26db16048673742ae6caaa4a42cbc48123253c25668ca1f26f",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_ClimLadder_C_UAID_74563C6BC2BD7BA102_1623134359"
+      ],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 818,
+          "wall": 7474,
+          "pumps": 345,
+          "maxSlice": 6.35
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 101,
+          "wall": 1025,
+          "pumps": 49,
+          "maxSlice": 2.74
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      },
+      "sourceBoundCollisionReplay24": {
+        "complete": true,
+        "metrics": {
+          "cpu": 381,
+          "wall": 3202,
+          "pumps": 151,
+          "maxSlice": 6.96
+        },
+        "connectors": 3,
+        "samples": 1172,
+        "failures": 0,
+        "nativeActionsNotCertified": [
+          "BP_SpecialMove_ClimLadder_C_UAID_74563C6BC2BD7BA102_1623134359"
+        ],
+        "precomputed": true,
+        "gameAccepted": false,
+        "evidence": "build/custom-route-audit-1112/crc-local-06-20-collision-js"
+      }
+    },
+    {
+      "number": 21,
+      "id": "S047",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "陆家村小张藏身处",
+      "toName": "黑蛇屋",
+      "start": {
+        "x": -58333,
+        "y": 121767,
+        "z": -1512
+      },
+      "end": {
+        "x": -60182,
+        "y": 123185,
+        "z": -434
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 2470,
+          "wall": 27185,
+          "pumps": 1294,
+          "maxSlice": 8.56
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 22,
+      "id": "S055",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "幸存者小院",
+      "toName": "残偶弃置坑口",
+      "start": {
+        "x": -41698,
+        "y": 111881,
+        "z": -242
+      },
+      "end": {
+        "x": -27576,
+        "y": 114525,
+        "z": -7536
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 2859,
+          "wall": 30018
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 23,
+      "id": "S060",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "人偶试验场",
+      "toName": "通向庞镇的密道",
+      "start": {
+        "x": -63714,
+        "y": 86319,
+        "z": -5823
+      },
+      "end": {
+        "x": -64432,
+        "y": 110328,
+        "z": -1430
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 2830,
+          "wall": 30003
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 24,
+      "id": "S073",
+      "world": "pbz_houjie_wp",
+      "fromName": "窄巷民居二楼",
+      "toName": "戏声缥缈的水塘",
+      "start": {
+        "x": -228350,
+        "y": 110929,
+        "z": 1052
+      },
+      "end": {
+        "x": -248837,
+        "y": 103353,
+        "z": -3598
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 1716,
+          "wall": 18160,
+          "pumps": 880,
+          "maxSlice": 6.56
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 25,
+      "id": "S075",
+      "world": "pbz_houjie_wp",
+      "fromName": "三船殉难井底",
+      "toName": "青蛇屋",
+      "start": {
+        "x": -243284,
+        "y": 97511,
+        "z": -4172
+      },
+      "end": {
+        "x": -257247,
+        "y": 77702,
+        "z": -5766
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 2006,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "09cd4e20ffad94a8d9f1bf6a66ed1bbbdbe4936932f9ceca1747c040b3eed914",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 149,
+          "wall": 1553,
+          "pumps": 74,
+          "maxSlice": 2.65
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 26,
+      "id": "S081",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "正道临时居所",
+      "toName": "码头货栈",
+      "start": {
+        "x": -173184,
+        "y": 106134,
+        "z": 1251
+      },
+      "end": {
+        "x": -167052,
+        "y": 102321,
+        "z": 2450
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 593,
+      "candidateCollisionFailures": 93,
+      "candidatePathSHA256": "ac1168d5d70f3dfcff39db8c5aa63da0d322dd790369639caed6db4c0fd9afcc",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_SkewUpRunning_C_UAID_60CF848217CAFD8202_1443375035",
+        "BP_SpecialMove_UpRunning_C_UAID_60CF848217CAD18002_1933336397"
+      ],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 267,
+          "wall": 2752,
+          "pumps": 131,
+          "maxSlice": 4.56
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 27,
+      "id": "S083",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "庞镇船坞",
+      "toName": "戏梦山庄正门",
+      "start": {
+        "x": -162549,
+        "y": 96415,
+        "z": 872
+      },
+      "end": {
+        "x": -187916,
+        "y": 114639,
+        "z": -1057
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 2317,
+      "candidateCollisionFailures": 105,
+      "candidatePathSHA256": "c70e877d2375f5f1177d2a6a5b5cbb675255e7feb6aef5701bc3d12db4a89b1b",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 3102,
+          "wall": 30002
+        },
+        "evidence": "js-focused-hard-cases"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1432,
+          "wall": 15281,
+          "pumps": 740,
+          "maxSlice": 5.5
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 28,
+      "id": "S084",
+      "world": "pbz_houjie_wp",
+      "fromName": "戏声缥缈的水塘",
+      "toName": "后山凉亭",
+      "start": {
+        "x": -248837,
+        "y": 103353,
+        "z": -3598
+      },
+      "end": {
+        "x": -261990,
+        "y": 127983,
+        "z": -5338
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 2147,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "01e6d5c0e4f005645ad58a71bd89afc47348efbbc28b9849d70e5c86a1547273",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 248,
+          "wall": 2390,
+          "pumps": 112,
+          "maxSlice": 21.27
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 29,
+      "id": "S085",
+      "world": "pbz_houjie_wp",
+      "fromName": "后山凉亭",
+      "toName": "贫民窟",
+      "start": {
+        "x": -261990,
+        "y": 127983,
+        "z": -5338
+      },
+      "end": {
+        "x": -266717,
+        "y": 102496,
+        "z": -8297
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 1838,
+          "wall": 20592,
+          "pumps": 982,
+          "maxSlice": 8.65
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 30,
+      "id": "S087",
+      "world": "pbz_houjie_wp",
+      "fromName": "老根头家",
+      "toName": "青蛇屋",
+      "start": {
+        "x": -263693,
+        "y": 93501,
+        "z": -4878
+      },
+      "end": {
+        "x": -257247,
+        "y": 77702,
+        "z": -5766
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1000,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "01a9ba3a46c0beac865792cb1e65e2033b9fbdc1b4906f816fb432254da9a7c9",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_ClimLadder_C_UAID_60CF848099091BF502_2074590128"
+      ],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 777,
+          "wall": 7346,
+          "pumps": 330,
+          "maxSlice": 4.97
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 105,
+          "wall": 1088,
+          "pumps": 54,
+          "maxSlice": 3.11
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 31,
+      "id": "S089",
+      "world": "pbz_ximeng_wp",
+      "fromName": "傩面祭台",
+      "toName": "吹火楼下",
+      "start": {
+        "x": -229874,
+        "y": 67442,
+        "z": 15435
+      },
+      "end": {
+        "x": -219380,
+        "y": 73706,
+        "z": 9950
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1546,
+      "candidateCollisionFailures": 94,
+      "candidatePathSHA256": "98e34af5425deb2373b6bd63f3425eb91c819dd93228a97837ea46b0efc2f63b",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 3192,
+          "wall": 30012
+        },
+        "evidence": "js-focused-hard-cases"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1635,
+          "wall": 17633,
+          "pumps": 835,
+          "maxSlice": 8.43
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 32,
+      "id": "S092",
+      "world": "pbz_ximeng_wp",
+      "fromName": "竹影道",
+      "toName": "戏梦山庄小张藏身处",
+      "start": {
+        "x": -198776,
+        "y": 62628,
+        "z": 9448
+      },
+      "end": {
+        "x": -202734,
+        "y": 69648,
+        "z": 7440
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 578,
+      "candidateCollisionFailures": 61,
+      "candidatePathSHA256": "efb5ac02f3acd58e52e2aa99f9661a01dcb2dee4f0f7b869652d86a56192246f",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 495,
+          "wall": 4396,
+          "paused": true
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 33,
+      "id": "S093",
+      "world": "pbz_ximeng_wp",
+      "fromName": "竹影道",
+      "toName": "戏园",
+      "start": {
+        "x": -198776,
+        "y": 62628,
+        "z": 9448
+      },
+      "end": {
+        "x": -195831,
+        "y": 76381,
+        "z": 6598
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1063,
+      "candidateCollisionFailures": 127,
+      "candidatePathSHA256": "c734921aebb17b99b02b7246fde531c96c5654e4ee8ad5fb2f69fc185a2ef25d",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1896,
+          "wall": 19233,
+          "pumps": 887,
+          "maxSlice": 4.3
+        },
+        "evidence": "js-focused-hard-cases"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 1687,
+          "wall": 18049,
+          "pumps": 861,
+          "maxSlice": 5.8
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 34,
+      "id": "S097",
+      "world": "pbz_ximeng_wp",
+      "fromName": "连廊",
+      "toName": "戏梦山庄龙柱",
+      "start": {
+        "x": -215086,
+        "y": 84699,
+        "z": 6933
+      },
+      "end": {
+        "x": -230043,
+        "y": 83346,
+        "z": 7126
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1367,
+      "candidateCollisionFailures": 11,
+      "candidatePathSHA256": "c402dd065d39b58f6e2f0b61e3f0e5b9b0850a2e4ebfe5c32af5127f91413e79",
+      "nativeActionsNotCertified": [
+        "BP_GapBlocker_C_UAID_74563C6BC2BD47B802_1833161011",
+        "BP_SpecialMove_UpRunning_C_UAID_74563C6BC2BD47B802_1925390012"
+      ],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 341,
+          "wall": 3100,
+          "paused": true
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 35,
+      "id": "S103",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "栈道入口",
+      "toName": "栈道眺望台",
+      "start": {
+        "x": 3601,
+        "y": 87142,
+        "z": 4495
+      },
+      "end": {
+        "x": 6907,
+        "y": 79331,
+        "z": 7805
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 931,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "0547eb2fe0f9f1806bd130d3848651ceb4a00d9f2b67b74e151d81a3b872abf9",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A98246F02_2044765227"
+      ],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 889,
+          "wall": 8370,
+          "pumps": 380,
+          "maxSlice": 4.78
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 119,
+          "wall": 1106,
+          "pumps": 54,
+          "maxSlice": 9.47
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 36,
+      "id": "S110",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "鸽舍",
+      "toName": "三高塔",
+      "start": {
+        "x": 22216,
+        "y": 79381,
+        "z": 8432
+      },
+      "end": {
+        "x": 28841,
+        "y": 77067,
+        "z": 7799
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 634,
+      "candidateCollisionFailures": 34,
+      "candidatePathSHA256": "b4a4f67fcbed793607dd1d93575a191307d235cc2c66d57f1d5dbd94f69e62e9",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A982B6F02_2138820167"
+      ],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2266,
+          "wall": 23697,
+          "pumps": 1126,
+          "maxSlice": 5.68
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 37,
+      "id": "S113",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "大营瀑布后方",
+      "toName": "通往校场的路",
+      "start": {
+        "x": 44597,
+        "y": 68729,
+        "z": 9621
+      },
+      "end": {
+        "x": 27862,
+        "y": 64529,
+        "z": 8878
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1352,
+      "candidateCollisionFailures": 54,
+      "candidatePathSHA256": "893edd81404d8cd3982234db96e3388941167ddc5e29004ce619ea10e135f6bb",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_ClimLadder_C_UAID_BCFCE7058A982D6F02_1488450810",
+        "BP_SpecialMove_ClimLadder_C_UAID_E89C25A75120D0E902_1566081218"
+      ],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 2928,
+          "wall": 30007
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 38,
+      "id": "S114",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "通往校场的路",
+      "toName": "白山派的覆灭之路",
+      "start": {
+        "x": 27862,
+        "y": 64529,
+        "z": 8878
+      },
+      "end": {
+        "x": 57899,
+        "y": 53979,
+        "z": 11342
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 404,
+          "wall": 3795,
+          "paused": true
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 39,
+      "id": "S117",
+      "world": "pbz_zhengdaodaying_wp",
+      "fromName": "校场",
+      "toName": "校场深处",
+      "start": {
+        "x": 32383,
+        "y": 59677,
+        "z": 8171
+      },
+      "end": {
+        "x": 20221,
+        "y": 56585,
+        "z": 5904
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 794,
+      "candidateCollisionFailures": 51,
+      "candidatePathSHA256": "0a3dc011f455d168e789f185640cbd26ed983d7ec5fd9d1e1e912fcb236f68f2",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2166,
+          "wall": 20817,
+          "pumps": 942,
+          "maxSlice": 9.72
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": {
+        "number": 39,
+        "id": "S117",
+        "world": "pbz_zhengdaodaying_wp",
+        "routeSHA256": "32aae106568cb5a8b43f1e71b19752457ee71edc091f1b2f38542abe4c2d358e",
+        "samples": 894,
+        "nativeActionsNotCertified": [],
+        "failures": [],
+        "independentGeometryPassed": true,
+        "physicalVerified": false,
+        "evidence": "build/custom-route-audit-1112/39-oracle-filtered/collision-results.json"
+      },
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 408,
+          "wall": 4289,
+          "pumps": 205,
+          "maxSlice": 4.65
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 40,
+      "id": "S119",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "庞镇杀气塔上部一层",
+      "toName": "庞镇杀气塔顶",
+      "start": {
+        "x": -177756,
+        "y": 85563,
+        "z": 4578
+      },
+      "end": {
+        "x": -175092,
+        "y": 74511,
+        "z": 10035
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1340,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "82cfdd4867755b4d717aaadbe0c08fc78af26400a0807db3e3d3bc6a717ee243",
+      "nativeActionsNotCertified": [
+        "BP_GapBlocker_C_UAID_60CF8480990936EE02_2116211725",
+        "BP_GapBlocker_C_UAID_60CF84809909DCF702_1116064071"
+      ],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 513,
+          "wall": 5217,
+          "pumps": 249,
+          "maxSlice": 5.79
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 41,
+      "id": "S126",
+      "world": "pbz_pangzhen_wp",
+      "fromName": "禁忌之径",
+      "toName": "白影陨落之处",
+      "start": {
+        "x": -172800,
+        "y": -42852,
+        "z": 929
+      },
+      "end": {
+        "x": -153202,
+        "y": -23842,
+        "z": 765
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 68,
+          "wall": 705,
+          "pumps": 34,
+          "maxSlice": 2.85
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 42,
+      "id": "S129",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "囚笼洞口",
+      "toName": "囚笼道",
+      "start": {
+        "x": -67184,
+        "y": -68173,
+        "z": 15703
+      },
+      "end": {
+        "x": -65741,
+        "y": -64282,
+        "z": 19270
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 2764,
+          "wall": 30001
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 43,
+      "id": "S130",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "囚笼道",
+      "toName": "横刀平台",
+      "start": {
+        "x": -65741,
+        "y": -64282,
+        "z": 19270
+      },
+      "end": {
+        "x": -62016,
+        "y": -56023,
+        "z": 18282
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 3177,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "2cd4e708799650b1ca6e48805a899a3ed4672b1a7c7d335ba6881a013afbbe82",
+      "nativeActionsNotCertified": [
+        "BP_Lift_C_UAID_74563CC57EE2693A02_1910205249",
+        "BP_SpecialMove_SideRunning_C_UAID_BCFCE7058A98517802_1396495827"
+      ],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2883,
+          "wall": 26644,
+          "pumps": 1207,
+          "maxSlice": 10.32
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 604,
+          "wall": 5277,
+          "paused": true
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 44,
+      "id": "S131",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "横刀平台",
+      "toName": "宗祠外山门",
+      "start": {
+        "x": -62016,
+        "y": -56023,
+        "z": 18282
+      },
+      "end": {
+        "x": -61474,
+        "y": -75381,
+        "z": 25145
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 2457,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "113d26e95f1f1a921c9aeb9d70861e3365b8c398822e8631d482008edfe454bf",
+      "nativeActionsNotCertified": [
+        "BP_SpecialMove_SideRunning_C_UAID_BCFCE7058A98517802_1396495827"
+      ],
+      "priorScheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 2545,
+          "wall": 23443,
+          "pumps": 1077,
+          "maxSlice": 6
+        },
+        "evidence": "js-new-mixed-candidates"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 731,
+          "wall": 7505,
+          "pumps": 360,
+          "maxSlice": 12.17
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 45,
+      "id": "S132",
+      "world": "pbz_dengdingshandao_wp",
+      "fromName": "宗祠外山门",
+      "toName": "圣母娘娘宗祠",
+      "start": {
+        "x": -61474,
+        "y": -75381,
+        "z": 25145
+      },
+      "end": {
+        "x": -59980,
+        "y": -93090,
+        "z": 29000
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1288,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "07f2f4032e3ed5c2d5e5ddbe1f9cbd1ccd53184a62043b9bff8364a60c166e3b",
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 115,
+          "wall": 1281,
+          "pumps": 59,
+          "maxSlice": 3
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 46,
+      "id": "S134",
+      "world": "pbz_duanhun_wp",
+      "fromName": "山神庙",
+      "toName": "银白之路",
+      "start": {
+        "x": -194690,
+        "y": -42148,
+        "z": 27747
+      },
+      "end": {
+        "x": -192128,
+        "y": -66153,
+        "z": 30933
+      },
+      "topologyCandidate": false,
+      "candidateCollisionSamples": null,
+      "candidateCollisionFailures": null,
+      "candidatePathSHA256": null,
+      "nativeActionsNotCertified": [],
+      "priorScheduledControl": null,
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": false,
+        "metrics": {
+          "cpu": 1273,
+          "wall": 13841,
+          "pumps": 661,
+          "maxSlice": 5.77
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    },
+    {
+      "number": 47,
+      "id": "S135",
+      "world": "pbz_duanhun_wp",
+      "fromName": "银白之路",
+      "toName": "最后的正道营地",
+      "start": {
+        "x": -192128,
+        "y": -66153,
+        "z": 30933
+      },
+      "end": {
+        "x": -200749,
+        "y": -83232,
+        "z": 36429
+      },
+      "topologyCandidate": true,
+      "candidateCollisionSamples": 1451,
+      "candidateCollisionFailures": 0,
+      "candidatePathSHA256": "78f0f9cc1680becf28518c5ab8134cbedf170d3ef4c3ebb76d12c29cba934e0f",
+      "nativeActionsNotCertified": [
+        "BP_GapBlocker_C_UAID_E89C25A7512041FD02_1854395230"
+      ],
+      "priorScheduledControl": {
+        "complete": false,
+        "metrics": {
+          "timeout": true,
+          "cpu": 3232,
+          "wall": 30003
+        },
+        "evidence": "js-segment-window-47"
+      },
+      "independentFilteredAlternative": null,
+      "gameAccepted": false,
+      "scheduledControl": {
+        "complete": true,
+        "metrics": {
+          "cpu": 161,
+          "wall": 1649,
+          "pumps": 81,
+          "maxSlice": 3.25
+        },
+        "evidence": "build/custom-route-audit-1112/scoped-refill-js-final-all"
+      }
+    }
+  ],
+  "movementStorage": {
+    "kind": "spatial-geometry-movement-proposals",
+    "worlds": 11,
+    "rows": 3329090,
+    "files": 83,
+    "bytes": 50304144,
+    "localFieldsCoordinateSHAWorlds": 8,
+    "legacyCoordinateSHAWorlds": 11,
+    "source": "Real source-bound Detour boundary candidates only; accepted paths/trajectories excluded",
+    "proof": "build/custom-route-audit-1112/local-fields-full-coordinate-proof.json",
+    "cache": {
+      "containers": 2,
+      "directoryPages": 4,
+      "metadataPages": 2,
+      "binaryPages": 2
+    }
+  },
+  "ladderRecovery": {
+    "instances": 123,
+    "worlds": 8,
+    "failed": 0,
+    "savedAxisCrossChecked": 50,
+    "nativeConstructionMathCrossChecked": 50,
+    "brokenLadderAccounted": true,
+    "requiresLoadedNativeTriggerEndpoints": true,
+    "nativeActionAcceptance": false,
+    "receipt": "build/offline-navigation/placed-ladder-complete-1112/receipt.json"
+  },
+  "hookRecovery": {
+    "instances": 75,
+    "worlds": 7,
+    "errors": 0,
+    "files": 8,
+    "bytes": 76442,
+    "requiresLiveEndpoints": true,
+    "entrySource": "TriggerBox",
+    "source": "game-placement",
+    "receipt": "build/offline-navigation/placed-hook-volumes-1112/receipt.json",
+    "physicalVerified": false
+  },
+  "runtimePolicy": {
+    "maxRiseCm": 93.63636363636364,
+    "source": "current actor capabilities; preserve original deadlines and connector budget",
+    "lazyActionChainPrevalidation": true,
+    "earlyJumpApexFilterAppliedToSurface": false,
+    "jumpApexEnforcedBy": "PBZRouteDrops.inspect only after ordinary walking fails",
+    "optimisticGraphPruning": "Known irrelevant geometry only after a complete chain; retain native, unknown endpoints and relevant same-component repairs"
+  },
+  "slopeMovementPolicy": {
+    "surfaceMayBeOrdinarySlopeWalk": true,
+    "jumpRiseBound": "enforced only when ballistic jump is proposed",
+    "finalGroundCapsuleLockChecks": "unchanged"
+  },
+  "runtimeBundle": {
+    "bytes": 3578321,
+    "sha256": "fee8c87028f2d0f106a147418dd5098b63735865a4dcf3d8fdaf714ff844c6d2",
+    "sourceManifest": "build/offline-navigation/runtime/manifest.json",
+    "commonJSClosure": true,
+    "localCRCTable": true
+  },
+  "route41Research": {
+    "complete": false,
+    "rootedRegionRows": 95508,
+    "corridorRows": 91482,
+    "mergedRows": 473847,
+    "packedPages": 1117,
+    "packedBytes": 7041131,
+    "installed": false,
+    "modSourceApplied": false,
+    "heightBandProbe": "build/custom-route-audit-1112/41-height-band-probe.json",
+    "floorSourceProof": "build/custom-route-audit-1112/41-floor-source-probe/source-proof.json",
+    "maskStateProven": false,
+    "fullChainProven": false
+  }
+}

@@ -8,7 +8,7 @@ import re
 import math
 from pbz_game_packages import Reader
 from pbz_zen import Package,native_classes
-from pbz_offline_assets import Assets,place,winding_negative
+from pbz_offline_assets import Assets,place,winding_negative,TransformChain
 from pbz_body_setup import body_setup,collision_meshes,simple_mesh
 from pbz_offline_mesh import read_mesh,write_mesh
 from pbz_landscape import landscape
@@ -75,12 +75,21 @@ def main():
     explicit=json.loads(args.actor_states.read_text(encoding='utf-8')) if args.actor_states else None
     if explicit and (explicit.get('schema')!=1 or explicit.get('world')!=inventory['case']['worldPackage'].split('/')[-1]):raise ValueError('Explicit actor conditions do not match region')
     state=CollisionState(assets,inventory['case']['worldPackage'].split('/')[-1],args.scenario,snapshot,explicit)
-    table=profiles();vertices,triangles=read_mesh(folder/'walls.pbzmesh')
-    sources=[dict(kind='saved-dynamic-wall',**row) for row in inventory['walls']['sources']]
-    failures=[];counts=Counter();body_cache={};dynamic=[];decode_oodle=oodle_decoder()
+    return reconstruct(inventory,folder,assets,state,profiles(),classes,args.scenario,snapshot,explicit)
+
+
+def reconstruct(inventory,folder,assets,state,table,classes,scenario='base',snapshot=None,explicit=None,sink=None,cells=None):
+    """Decode the same collision rules into an aggregate or a bounded streaming sink."""
+    vertices,triangles=read_mesh(folder/'walls.pbzmesh') if sink is None else ([],[])
+    sources=[dict(kind='saved-dynamic-wall',**row) for row in inventory['walls']['sources']] if sink is None else []
+    failures=[];counts=Counter();body_cache={};spline_cache={};dynamic=[];decode_oodle=oodle_decoder()
     def append(points,faces,source,negative=False):
         if not points or not faces or not overlap(points,inventory['case']['boundsUE']):return
         condition=source.get('condition')
+        if sink is not None:
+            sink.emit(points,faces,source,negative)
+            if condition and condition['omitInScenario']:counts['savedStateCollisionOmitted']+=1
+            return
         if condition:
             dynamic.append(dict(source={k:v for k,v in source.items() if k!='condition'},condition=condition,
                                 vertices=points,triangles=[(a,c,b) for a,b,c in faces] if negative else faces))
@@ -88,17 +97,19 @@ def main():
         offset=len(vertices);vertices.extend(points)
         triangles.extend((a+offset,c+offset,b+offset) if negative else (a+offset,b+offset,c+offset) for a,b,c in faces)
         sources.append(dict(**source,vertices=len(points),triangles=len(faces),firstVertex=offset,firstTriangle=len(triangles)-len(faces)))
-    cells=[dict(file=inventory['case']['rootCache'],package=inventory['case']['worldPackage'],
-                sha256=inventory['rootSHA256'],cell='persistent-level'),*inventory['inventory']['cells']]
+    if cells is None:
+        cells=[dict(file=inventory['case']['rootCache'],package=inventory['case']['worldPackage'],
+                    sha256=inventory['rootSHA256'],cell='persistent-level'),*inventory['inventory']['cells']]
     for n,cell in enumerate(cells):
-        p=Package((ROOT/cell['file']).read_bytes(),classes);p.asset_name=cell['package'].casefold()
+        p=Package((ROOT/cell['file']).read_bytes(),classes);p.asset_name=cell['package'].casefold();p.asset_sha256=cell['sha256']
+        if sink is not None:sink.inspect_package(p,cell)
         for i,e in enumerate(p.exports):
             cls=e['className']
             if cls=='DynamicMeshComponent':
                 # Root spline walls were already included by the dedicated
                 # wall export. Other saved dynamic meshes belong to the scene.
                 actor=p.exports[e['outer']] if e['outer']<len(p.exports) else {}
-                if cell['cell']=='persistent-level' and actor.get('name','').startswith('BP_SplineWall_C_'):continue
+                if sink is None and cell['cell']=='persistent-level' and actor.get('name','').startswith('BP_SplineWall_C_'):continue
                 try:
                     props=assets.component(p,i);body={**props.get('BodyInstance',{})}
                     body.setdefault('CollisionProfileName','NoCollision')
@@ -117,7 +128,7 @@ def main():
                     chain=assets.chain(p,i)
                     for points,faces in meshes:
                         append([place(v,chain)for v in points],faces,dict(kind='saved-dynamic-collision',package=cell['package'],export=i,
-                               actor=actor.get('name'),sourceSHA256=cell['sha256']),winding_negative(chain))
+                               actor=actor.get('name'),sourceSHA256=cell['sha256'],**(dict(navFloorAllowed=False,posePolicy='saved dynamic-parent baseline; live occupancy unresolved') if any(row.get('navFloorAllowed') is False for row in chain) else {})),winding_negative(chain))
                     counts['dynamicDecoded']+=1
                 except (ValueError,KeyError,IndexError)as ex:failures.append(dict(package=cell['package'],export=i,type=cls,why=str(ex)))
                 continue
@@ -130,6 +141,7 @@ def main():
                         # volumes override this in their native actor constructor.
                         settings['CollisionProfileName']='BlockAll' if actor.get('className')=='BlockingVolume' else 'OverlapAllDynamic'
                     if not blocks_player(settings,table):counts['shapeNonBlocking']+=1;continue
+                    condition=state.component(p,i)
                     if cls=='BrushComponent':
                         ref=props.get('brushBodySetup')
                         target=assets.resolve(p,ref) if ref else None
@@ -151,8 +163,11 @@ def main():
                             if max(abs(v) for v in scale)-min(abs(v) for v in scale)>1e-5:
                                 raise ValueError('Non-uniform round shape needs native scaling adaptation')
                     for local,faces in meshes:
-                        append([place(v,chain) for v in local],faces,dict(kind='primitive-shape',shape=cls,package=cell['package'],export=i,
-                               sourceSHA256=cell['sha256']),winding_negative(chain))
+                        source=dict(kind='primitive-shape',shape=cls,package=cell['package'],export=i,sourceSHA256=cell['sha256'])
+                        if any(row.get('navFloorAllowed') is False for row in chain):
+                            source.update(navFloorAllowed=False,posePolicy='authored reference baseline; live occupancy unresolved')
+                        if condition:source['condition']=condition
+                        append([place(v,chain) for v in local],faces,source,winding_negative(chain))
                     counts['shapeDecoded']+=1
                 except (ValueError,KeyError,IndexError) as ex:failures.append(dict(package=cell['package'],export=i,type=cls,why=str(ex)))
                 continue
@@ -205,6 +220,8 @@ def main():
                     data=landscape(p,i);parent=data['properties'].get('parent',0)
                     if parent<=0:raise ValueError('Landscape root parent unresolved')
                     chain=assets.chain(p,parent-1)
+                    if any(key in data['properties'] for key in ('location','rotation','scale')):
+                        chain=TransformChain([data['properties'],*chain])
                     points=[place(v,chain) for v in data['vertices']]
                     append(points,data['triangles'],dict(kind='cooked-landscape',package=cell['package'],export=i,
                            selectedField=data['selected'],dimensions=data['dimensions'],sourceSHA256=cell['sha256']),winding_negative(chain))
@@ -222,7 +239,15 @@ def main():
                 if target is None:raise ValueError('Static mesh object unresolved')
                 mp,mi=target
                 bodies=[mi] if cls=='SplineMeshComponent' and mp.exports[mi]['className']=='BodySetup' else [j for j,row in enumerate(mp.exports) if row['className']=='BodySetup' and row['outer']==mi]
-                if cls=='SplineMeshComponent' and mp.exports[mi]['className']!='BodySetup':raise ValueError('Deformed spline collision body missing')
+                spline_proof=None
+                if cls=='SplineMeshComponent' and mp.exports[mi]['className']!='BodySetup':
+                    from pbz_spline_collision import exact_sibling_index,resolve_exact_sibling_body,REVIEWED_MESH_SHA256
+                    if mp.asset_sha256!=REVIEWED_MESH_SHA256:raise ValueError('Deformed spline collision body missing for an unreviewed source mesh')
+                    spline_key=(p.asset_sha256,mp.asset_sha256)
+                    if spline_key not in spline_cache:spline_cache[spline_key]=exact_sibling_index(assets,p,mp.asset_sha256)
+                    recovered,spline_proof,_,_=resolve_exact_sibling_body(assets,p,i,spline_cache[spline_key])
+                    mp,mi=p,spline_proof['savedBodyExport'];bodies=[mi]
+                    body_cache[(mp.asset_name,mi)]=recovered
                 if len(bodies)!=1:raise ValueError('Static mesh body setup not unique')
                 key=(getattr(mp,'asset_name',id(mp)),bodies[0])
                 if key not in body_cache:body_cache[key]=body_setup(mp,bodies[0])
@@ -237,6 +262,9 @@ def main():
                     source=dict(kind='spline-body-collision' if cls=='SplineMeshComponent' else 'instance-body-collision' if matrices is not None else 'static-body-collision',package=cell['package'],export=i,
                                 meshPackage=getattr(mp,'asset_name',cell['package']),meshExport=mi,bodyExport=bodies[0],
                                 collisionTraceFlag=body['properties'].get('CollisionTraceFlag',0),sourceSHA256=getattr(mp,'asset_sha256',cell['sha256']))
+                    if spline_proof:source['exactSplineCollisionReuse']={k:v for k,v in spline_proof.items() if k not in ('equivalenceKey','effectiveBody')}
+                    if any(row.get('navFloorAllowed') is False for row in chain):
+                        source.update(navFloorAllowed=False,posePolicy='authored/saved dynamic-parent baseline only; live occupancy unresolved')
                     if condition:source['condition']=condition
                     if matrices is None:append([place(v,chain) for v in local],faces,source,winding_negative(chain))
                     else:
@@ -246,16 +274,17 @@ def main():
                 counts['staticDecoded']+=1
             except (ValueError,KeyError,IndexError) as ex:
                 failures.append(dict(package=cell['package'],export=i,type=cls,why=str(ex)))
-        if n%100==0:print(n,'cells',len(vertices),'vertices',len(triangles),'triangles',len(failures),'gaps',flush=True)
+        if sink is None and n%100==0:print(n,'cells',len(vertices),'vertices',len(triangles),'triangles',len(failures),'gaps',flush=True)
     pending={key:inventory['inventory']['classes'].get(key,0) for key in ['LakeCollisionComponent','NavModifierComponent']}
     report=dict(schema=1,kind='game-collision-reconstruction',world=inventory['world'],boundsUE=inventory['case']['boundsUE'],
                 completeCollisionClaim=False,counts=dict(counts),unresolved=failures,pendingCollisionTypes=pending,sources=sources,
-                scenario=args.scenario,stateSnapshot={k:v for k,v in snapshot.items() if k!='actors'} if snapshot else None,
+                scenario=scenario,stateSnapshot={k:v for k,v in snapshot.items() if k!='actors'} if snapshot else None,
                 conditionalActors=list(state.observations.values()),validatedStateRules=sorted(state.validated),
                 explicitConditions=explicit,
                 inputs='Installed game collision; no Heybox, atlas faces or player-route positions')
+    if sink is not None:return report
     (folder/'conditional-collision.json').write_text(json.dumps(dict(schema=1,scope='Gameplay collision state kept separate from fixed geometry',
-          scenario=args.scenario,meshes=dynamic),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          scenario=scenario,meshes=dynamic),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     write_mesh(folder/'collision.pbzmesh',vertices,triangles,provenance=report)
     (folder/'collision-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print('RESULT',dict(counts),'vertices',len(vertices),'triangles',len(triangles),'unresolved',len(failures),flush=True)

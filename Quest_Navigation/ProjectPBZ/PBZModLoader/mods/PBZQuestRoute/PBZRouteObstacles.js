@@ -47,10 +47,20 @@ function* sweep(w,a,b){
 // run inside the whole-world graph search or the map's drawing callback.
 class Auditor{
  constructor(){this.cache=new Map();this.reset();}
- reset(){this.leg=null;this.job=null;this.safe=null;this.result=null;this.started=0;this.nextPump=0;}
- begin(leg,w,feet,now){
+ reset(){this.leg=null;this.owner=null;this.job=null;this.safe=null;this.result=null;this.started=0;this.nextPump=0;this.proofUntil=0;this.carry=null;this.attached=false;}
+ visibleEnd(now){
+  const carry=this.carry;
+  if(!carry||!this.attached||now>=carry.until||this.result?.mark)return this.safe;
+  const at=p=>{const q=R.nearestOnLine(p,this.leg.points);return q.i+q.t;};
+  return this.safe&&at(this.safe)>=at(carry.p)?this.safe:carry.p;
+ }
+ begin(leg,w,feet,now,preserve=false){
+  const owner=leg.auditIdentity||leg,near=R.nearestOnLine(feet,leg.points),prior=this.visibleEnd(now);
+  const until=prior===this.carry?.p?this.carry.until:this.proofUntil;
+  const carry=preserve&&leg.provider==='recast'&&this.owner===owner&&prior&&now<until&&near.d<100&&Math.abs(near.p.z-feet.z)<75?{p:{...prior},until}:null;
+  this.owner=owner;this.carry=carry;this.proofUntil=now+1800;this.attached=false;
   this.leg=leg;this.started=now;this.result=null;this.origin={...feet};
-  const near=R.nearestOnLine(feet,leg.points);this.safe={...feet};
+  this.safe={...feet};
   const self=this;
   this.job=(function*(){
    if(!near.p)return {complete:true};
@@ -64,19 +74,22 @@ class Auditor{
     if(!row.value.ok)return {mark:{...mark(leg,join,row.value.why,row.value.p,row.value.unknown,row.value.block),approach:feet},normal:row.value.normal};
     }
    }
-   self.safe=near.p;
-   for(let i=near.i;i<leg.points.length-1;i++){
+   self.attached=true;self.safe=near.p;let cachedSteps=0;
+   const length=leg.points.length-1;
+   const walkAt=yield* R.segmentLookup(leg.walks,length,false,near.i),moveAt=yield* R.segmentLookup(leg.moves,length,false,near.i);
+   const checkAt=yield* R.segmentLookup(leg.checks,length,true,near.i);
+   for(let i=near.i;i<length;i++){
     const a=i===near.i?near.p:leg.points[i],b=leg.points[i+1];
     if(R.dist(feet,a)>6000||R.dist(feet,b)>6500)return {range:true};
-    const walking=(leg.walks||[]).find(c=>c.from<=i&&c.to>=i+1);
-    const move=(leg.moves||[]).find(c=>c.from!==undefined&&c.to!==undefined&&c.from<=i&&c.to>=i+1);
-    const cross=(leg.checks||[]).find(c=>c.from!==undefined&&c.from<=i&&(c.to??c.from+1)>=i+1);
+    const walking=walkAt(i),move=moveAt(i),cross=checkAt(i);
     const c={...(walking||cross||{}),a,b,edge:walking?.edge??cross?.edge??move?.edge??-1,from:i,to:i+1};
-    if(move?.drop&&cross?.kind===12&&!cross.verified){
-     const test=require('./PBZRouteDrops').inspect(w,cross.a,cross.b);let row;
+    if(cross?.kind===12&&(move?.drop||cross.trajectory)&&(!cross.verified||cross.verifiedAt!==undefined&&now-cross.verifiedAt>900)){
+     const test=require('./PBZRouteDrops').recheck(w,cross);let row;
      do{row=test.next();if(!row.done)yield;}while(!row.done);
      if(!row.value.ok)return {mark:{...mark(leg,cross,row.value.why,row.value.p,row.value.unknown),approach:cross.a},normal:row.value.normal};
-     cross.verified=true;leg.obstacles=(leg.obstacles||[]).filter(x=>x.edge!==cross.edge||x.condition!==12);
+     cross.verified=true;cross.verifiedAt=now;
+     const identity='route:'+cross.edge+':'+id(cross.a,cross.b);
+     leg.obstacles=(leg.obstacles||[]).filter(x=>x.id!==identity||x.condition!==12);
     }
     if(move&&!walking){
      if(move.block)return {mark:{...mark(leg,c,'closed traversal',a,!!move.block.unknown,move.block),approach:a}};
@@ -94,7 +107,7 @@ class Auditor{
      clear(leg,c.edge,b);self.safe=b;yield;continue;
     }
     const cacheKey=leg.world+'/'+id(a,b),cached=self.cache.get(cacheKey);
-    if(cached&&now-cached.at<1800){self.safe=cached.p;yield;continue;}
+    if(cached&&now-cached.at<(leg.provider==='recast'?900:1800)){self.proofUntil=Math.min(self.proofUntil,cached.at+1800);self.safe=cached.p;if((++cachedSteps&15)===0)yield;continue;}
     const test=sweep(w,a,b);let row;
     do{row=test.next();if(!row.done){self.safe=row.value;yield;}}while(!row.done);
     if(!row.value.ok){

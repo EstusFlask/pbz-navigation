@@ -3,12 +3,12 @@
   "objective": "Reconstruct full-world walking navigation from installed-game collision through Recast/Detour, then integrate verified special actions, conditions and live guidance; validate offline, host integration and field acceptance separately",
   "roadmap": "docs/NAVIGATION-TODO.md",
   "timezone": "America/Tijuana",
-  "currentBuild": "1.9.2",
+  "currentBuild": "1.11.1",
   "currentPhase": "A",
-  "activeCase": "ROUTE-001",
-  "currentAction": "Fix confirmed 1.9.1 game-host WASM code-generation prohibition with Binaryen-translated JavaScript runtime; reproduce under the same V8 restriction, retain upstream Detour and regional data. Restore visible status with explicit viewport layout, cooked font and visibility refresh. Persistent full-world state: docs/OFFLINE-NAVIGATION-STATE.md. Actual 1.9.2 field acceptance pending.",
-  "fieldSession": "build/field-1.8.0-no-routes",
-  "recording": "Session ended with game exit;12 reports and completed post windows imported read-only. No external listener or background capture started.",
+  "activeCase": "FULL-NAVIGATION-GOAL",
+  "currentAction": "Continue all route and Mod integration repairs: corrected dense rasterization, spatial candidate storage, intermediate platforms, actual ladder candidates/directions and mixed coarse action corridors. Installed 1.11.1 remains unchanged; current candidate routes are not game acceptance.",
+  "fieldSession": "build/field-1111-20261116",
+  "recording": "Existing reports read and frozen only. No game launch, background collection, save changes or upload. Current source/data fixes have not been installed.",
   "installedAudit": {
     "build": "1.8.0",
     "flavor": "development",
@@ -27,6 +27,33 @@
     "authoring/field-confirmations-20261113.json"
   ],
   "cases": [
+    {
+      "id": "FIELD-WORLD-005",
+      "status": "failed_field_pending_retest",
+      "world": "pbz_fujizhilin_wp",
+      "fromBell": "Bell_LZSJ_006",
+      "toBell": "Bell_LZSJ_020",
+      "name": "人偶思乡之崖→悬崖山舍：原地无线与顿卡",
+      "worksheet": "worksheet-030",
+      "candidateBuild": "1.10.1",
+      "livePassedBuilds": [],
+      "fieldFailure": "Six-world experimental 1.9.4-dev snapshot: ready, then 28 protected 56–170ms steps cancelled before a world query result",
+      "offlineCandidate": {
+        "complete": false,
+        "points": 64,
+        "meters": 22.459473262060996,
+        "independentPrefixSamples": 112,
+        "independentPrefixFailures": 0,
+        "scope": "Actual paged core, WorldCache and Jobs; captured endpoints; no current game physics acceptance"
+      },
+      "checkpoint": "Use the same stationary start and target; distinguish initial visible prefix, stalls, and full route connectivity. Do not promote the partial prefix to full-route acceptance.",
+      "resultEvidence": [
+        "build/field-route005-20261116/field-summary.json",
+        "build/field-route005-20261116/provider-scheduled.json",
+        "build/field-route005-20261116/provider-scheduled-jitless.json",
+        "docs/FIELD-FIX-1.10.0.md"
+      ]
+    },
     {
       "id": "A-01",
       "status": "passed_user_confirmed",
@@ -414,7 +441,7 @@
       "name": "1号路线：戏梦山庄正门方向",
       "world": "pbz_pangzhen_wp",
       "targetBell": "Bell_XM_015",
-      "status": "suffix_user_accepted_front_unresolved",
+      "status": "geometry_user_accepted_with_start_obstacle_and_stability_caveats",
       "capturedBuilds": [
         "1.8.1-dev"
       ],
@@ -426,6 +453,33 @@
       "candidateBuild": "1.8.2",
       "resultEvidence": [
         "authoring/route-001-reference-1.8.1-20261115.json"
+      ],
+      "latestFieldFeedback": {
+        "version": "1.9.3",
+        "date": "2026-11-15",
+        "source": "User heavy-attack markers and report",
+        "issue": "Previously visible ribbon disappears while walking",
+        "cases": [
+          "20261116T030445274Z-001",
+          "20261116T030445274Z-002"
+        ],
+        "evidence": "tests/fixtures/recast-193-disappearing-20261115.json",
+        "fixCandidate": "1.9.4",
+        "actualFixAcceptance": "pending"
+      },
+      "fieldFeedbackHistory": [
+        {
+          "version": "1.9.2",
+          "date": "2026-11-15",
+          "source": "User report in this chat",
+          "geometry": "User reports overall route correct after moving toward stairs",
+          "caveats": [
+            "Initial wrong route for both bells",
+            "Breakable obstacle required a light attack",
+            "Ribbon flashes/disappears during repeated recalculation"
+          ],
+          "evidence": "tests/fixtures/recast-192-routing-20261115.json"
+        }
       ]
     }
   ],
@@ -797,5 +851,8 @@
     "compiledIntoRoutes": false
   },
   "heyboxArchive": "archive/heybox-20261115/manifest.json",
-  "persistentState": "docs/OFFLINE-NAVIGATION-STATE.md"
+  "persistentState": "docs/OFFLINE-NAVIGATION-STATE.md",
+  "developmentBuild": "unreleased 1.11.2 work",
+  "activeGoalProgress": "authoring/navigation-goal-progress-20261116.json",
+  "installedCurrentEvidence": "release/INSTALLATION-1.11.1.json"
 }

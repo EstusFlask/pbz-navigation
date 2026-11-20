@@ -19,7 +19,7 @@ class Assets:
         if identity!=NATIVE.get('sourceBinarySHA256'):raise ValueError('Installed game build differs from the reviewed native serialization schema')
         self.container_sha256=hashlib.sha256(reader.toc).hexdigest()
         self.folder=Path(folder)/self.container_sha256[:16]
-        self.index={};self.cache=OrderedDict();self.props={}
+        self.index={};self.cache=OrderedDict();self.props={};self.reference_skeletons=OrderedDict()
         for line in (ROOT/'build/game-files.txt').read_text().splitlines():
             _,chunk,kind,path=line.split(None,3)
             if kind!='ExportBundleData':continue
@@ -94,14 +94,17 @@ class Assets:
             result['BodyInstance']={**inherited.get('BodyInstance',{}),**own.get('BodyInstance',{})}
         if 'parent'in own:result['_parent']=(p,own['parent'])
         if 'staticMesh'in own:result['_mesh']=(p,own['staticMesh'])
+        for field in ('SkeletalMesh','SkinnedAsset'):
+            if field in own:result['_skinned']=(p,own[field])
+        if cls=='GeometryCollectionComponent':result.update(navFloorAllowed=False,savedGeometryCollectionPoseOnly=True)
         self.props[key]=result;return result
 
     def chain(self,p,index,seen=()):
         key=(id(p),index)
         if key in seen:raise ValueError('Component attachment cycle')
         props=self.component(p,index);out=TransformChain([props])
-        if props.get('socket') not in (None,0,'None',''):
-            raise ValueError('Socket attachment needs the saved bone/socket transform: '+str(props['socket']))
+        socket=props.get('socket')
+        if socket not in (None,0,'None','') and not props.get('_parent'):raise ValueError('Named attachment without a typed parent')
         if props.get('_parent'):
             pp,ref=props['_parent']
             if ref:
@@ -115,6 +118,16 @@ class Assets:
                     siblings=[i for i,e in enumerate(p.exports) if e['outer']==owner and e['name']==name]
                     if len(siblings)!=1:raise ValueError('Inherited attachment counterpart unresolved')
                     parent,pi=p,siblings[0]
+                if socket not in (None,0,'None',''):
+                    from pbz_skeletal import reference_mesh,reference_bone_chain
+                    parent_props=self.component(parent,pi);binding=parent_props.get('_skinned')
+                    target=self.resolve(*binding) if binding else None
+                    if not target:raise ValueError('Named attachment needs a supported typed skinned asset: '+str(socket))
+                    mp,mi=target;cache_key=(mp.asset_name,mi)
+                    if cache_key not in self.reference_skeletons:
+                        self.reference_skeletons[cache_key]=reference_mesh(mp,mi,self)
+                        while len(self.reference_skeletons)>16:self.reference_skeletons.popitem(last=False)
+                    out.extend(reference_bone_chain(self.reference_skeletons[cache_key],socket))
                 out.extend(self.chain(parent,pi,(*seen,key)))
         return out
 
@@ -134,18 +147,42 @@ def rotate(point,q):
     return (px+w*tx+y*tz-z*ty,py+w*ty+z*tx-x*tz,pz+w*tz+x*ty-y*tx)
 
 
+def signed_matrix_rotation(parent_q,parent_scale,local_q,local_scale):
+    # UE ConstructTransformFromMatrixWithDesiredScale: normalize each axis,
+    # reapply the desired scale signs, then construct and normalize TQuat.
+    axes=[]
+    for j in range(3):
+        axis=rotate(tuple(float(k==j) for k in range(3)),local_q)
+        axis=rotate(tuple(axis[k]*local_scale[j]*parent_scale[k] for k in range(3)),parent_q)
+        length=math.sqrt(sum(v*v for v in axis))
+        if length<1e-8:return (0.,0.,0.,1.)
+        sign=-1 if parent_scale[j]*local_scale[j]<0 else 1
+        axes.append(tuple(v/length*sign for v in axis))
+    m=[[axes[j][i] for j in range(3)] for i in range(3)];trace=sum(m[i][i] for i in range(3))
+    if trace>0:
+        root=math.sqrt(trace+1);w=.5*root;factor=.5/root
+        quat=[(m[2][1]-m[1][2])*factor,(m[0][2]-m[2][0])*factor,(m[1][0]-m[0][1])*factor,w]
+    else:
+        i=max(range(3),key=lambda k:m[k][k]);j=(i+1)%3;k=(j+1)%3
+        root=math.sqrt(max(0,1+m[i][i]-m[j][j]-m[k][k]))
+        if root<1e-12:raise ValueError('Degenerate signed attachment rotation')
+        quat=[0.,0.,0.,0.];quat[i]=.5*root;factor=.5/root
+        quat[j]=(m[j][i]+m[i][j])*factor;quat[k]=(m[k][i]+m[i][k])*factor;quat[3]=(m[k][j]-m[j][k])*factor
+    length=math.sqrt(sum(v*v for v in quat));return tuple(v/length for v in quat)
+
+
 def world_transform(chain):
     if hasattr(chain,'_world'):return chain._world
     q=(0,0,0,1);t=(0,0,0);scale=(1,1,1)
     for row in reversed(chain):
         pitch,yaw,roll=(math.radians(v)/2 for v in row.get('rotation') or (0,0,0))
-        local_q=qmul(qmul((0,0,math.sin(yaw),math.cos(yaw)),(0,-math.sin(pitch),0,math.cos(pitch))),(-math.sin(roll),0,0,math.cos(roll)))
+        local_q=row.get('rotationQuat') or qmul(qmul((0,0,math.sin(yaw),math.cos(yaw)),(0,-math.sin(pitch),0,math.cos(pitch))),(-math.sin(roll),0,0,math.cos(roll)))
         local_t=row.get('location') or (0,0,0);local_scale=row.get('scale') or (1,1,1)
-        if any(v<0 for v in (*scale,*local_scale)) and max(scale)-min(scale)>1e-8 and abs(local_q[3])<1-1e-8:
-            raise ValueError('Mirrored nonuniform attachment needs matrix decomposition')
+        mirrored=any(v<0 for v in (*scale,*local_scale)) and max(scale)-min(scale)>1e-8 and abs(local_q[3])<1-1e-8
+        composed_q=signed_matrix_rotation(q,scale,local_q,local_scale) if mirrored else qmul(q,local_q)
         translation=rotate(tuple(local_t[k]*scale[k] for k in range(3)),q)
         t=local_t if row.get('bAbsoluteLocation') else tuple(t[k]+translation[k] for k in range(3))
-        q=local_q if row.get('bAbsoluteRotation') else qmul(q,local_q)
+        q=local_q if row.get('bAbsoluteRotation') else composed_q
         scale=local_scale if row.get('bAbsoluteScale') else tuple(scale[k]*local_scale[k] for k in range(3))
     result=(q,t,scale)
     if isinstance(chain,TransformChain):chain._world=result

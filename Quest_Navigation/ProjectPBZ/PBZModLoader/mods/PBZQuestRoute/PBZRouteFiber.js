@@ -11,6 +11,11 @@ function add(r,transform){if(!UE.ProceduralMeshComponent?.StaticClass)throw Erro
  if(!material)throw Error('ribbon material unavailable');
  const m=r.a.AddComponentByClass(UE.ProceduralMeshComponent.StaticClass(),false,transform,false);if(!W.alive(m))throw Error('ribbon mesh component could not be created');
  m.SetCollisionEnabled(UE.ECollisionEnabled.NoCollision);m.SetGenerateOverlapEvents(false);m.SetCastShadow(false);m.SetMaterial(0,material);
+ // This owned mesh already has a bounded, collision-checked draw horizon.
+ // Its bounds must follow its vertices, independently of the inactive FX root.
+ try{m.SetCullDistance?.(0);}catch(_){}
+ try{if(typeof m.bUseAttachParentBound==='boolean')m.bUseAttachParentBound=false;}catch(_){}
+ try{if(typeof m.bNeverDistanceCull==='boolean')m.bNeverDistanceCull=true;}catch(_){}
  try{r.fiberMaterial=m.CreateDynamicMaterialInstance?.(0,material);}catch(_){}
  r.fiber=m;}
 function mesh(ps,org,radius=.82,{colors=true,indices=true,color=Color.blue}={}){

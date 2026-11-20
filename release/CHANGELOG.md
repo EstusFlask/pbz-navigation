@@ -1,3 +1,40 @@
+### Version 1.11.2
+
+- Improved guidance for consecutive wall runs, automatic slides, grapples and collapsed bridges.
+- 改善连续跑墙、自动滑坡、钩索和塌桥路段的引导。
+- Updated routes when nearby mechanisms or movement options change, and spread route checks across frames.
+- 附近机关或移动能力变化时更新路线，并将路线检查分散到多个画面帧执行。
+
+### Version 1.11.1
+
+- Improved custom start/end navigation, clear standing approaches, action connections and walking detours; reduced repeated loading when widening a route search.
+- 改善自定义起终点导航、目标附近站位、动作连接和步行绕行，减少扩大寻路范围时的重复装载。
+
+### Version 1.11.0
+
+- Improved multi-floor routes with descents, climbs and current mechanism checks; corrected routes that stopped against walls or stayed on the previous floor.
+- 改善下降、上攀及机关通路引导，修正路线指墙和换层后仍保留旧路线的问题。
+
+### Version 1.10.1
+
+- Reduced installed navigation size and file count with lossless on-demand compressed storage.
+- 导航数据无损压缩并按需读取，减少安装体积和文件数。
+
+### Version 1.10.0
+
+- Expanded reconstructed world navigation and improved route loading responsiveness and failure messages.
+- 扩展重建世界导航，改善路线加载响应与失败提示。
+
+### Version 1.9.4
+
+- Improved continuous ribbon display and floor checks around narrow seams.
+- 改善行走中的绳子显示及窄接缝地面校验。
+
+### Version 1.9.3
+
+- Improved initial route selection, checked local obstacle detours and ribbon stability while walking.
+- 改善起点选路、现场障碍绕行和行走时的绳子稳定性。
+
 ### Version 1.9.2
 
 - Added a JavaScript navigation runtime compatible with the game host and improved loading message visibility.

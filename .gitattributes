@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# These generated movement manifests bind sibling files by their byte hashes.
+/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteActionCorridors/** -text whitespace=cr-at-eol
+/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteMovementData/** -text whitespace=cr-at-eol
+/Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteMovementCorridors/** -text whitespace=cr-at-eol

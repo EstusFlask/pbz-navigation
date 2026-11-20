@@ -26,7 +26,9 @@ class DynamicCursor(Cursor):
         for compressed,raw in chunks:
             if compressed<0 or raw<0 or self.at+compressed>len(self.data):raise ValueError('Invalid compressed block')
             value=bytes(self.data[self.at:self.at+compressed]);self.skip(compressed)
-            output.append(value if compressed==raw else self.decompress(value,raw))
+            # SerializeCompressedNew always invokes the recorded decompressor.
+            # An Oodle frame can coincidentally have the same stored/raw size.
+            output.append(self.decompress(value,raw))
         return b''.join(output)
 
     def vector(self,fmt):

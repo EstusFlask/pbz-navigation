@@ -3585,5 +3585,341 @@
       "name": "FocusOffset",
       "kind": 10
     }
+  ],
+  "geometryCollection": [
+    {
+      "name": "ChaosSolverActor",
+      "kind": 82
+    },
+    {
+      "name": "RestCollection",
+      "kind": 82
+    },
+    {
+      "name": "InitializationFields",
+      "kind": 22
+    },
+    {
+      "name": "Simulating",
+      "kind": 76
+    },
+    {
+      "name": "ObjectType",
+      "kind": 30
+    },
+    {
+      "name": "GravityGroupIndex",
+      "kind": 3
+    },
+    {
+      "name": "OneWayInteractionLevel",
+      "kind": 3
+    },
+    {
+      "name": "bDensityFromPhysicsMaterial",
+      "kind": 76
+    },
+    {
+      "name": "bForceMotionBlur",
+      "kind": 76
+    },
+    {
+      "name": "EnableClustering",
+      "kind": 76
+    },
+    {
+      "name": "ClusterGroupIndex",
+      "kind": 3
+    },
+    {
+      "name": "MaxClusterLevel",
+      "kind": 3
+    },
+    {
+      "name": "MaxSimulatedLevel",
+      "kind": 3
+    },
+    {
+      "name": "DamageModel",
+      "kind": 30
+    },
+    {
+      "name": "DamageThreshold",
+      "kind": 22
+    },
+    {
+      "name": "bUseSizeSpecificDamageThreshold",
+      "kind": 76
+    },
+    {
+      "name": "bUseMaterialDamageModifiers",
+      "kind": 76
+    },
+    {
+      "name": "DamagePropagationData",
+      "kind": 25
+    },
+    {
+      "name": "bEnableDamageFromCollision",
+      "kind": 76
+    },
+    {
+      "name": "bAllowRemovalOnSleep",
+      "kind": 76
+    },
+    {
+      "name": "bAllowRemovalOnBreak",
+      "kind": 76
+    },
+    {
+      "name": "bForceUpdateActiveTransforms",
+      "kind": 76
+    },
+    {
+      "name": "ClusterConnectionType",
+      "kind": 30
+    },
+    {
+      "name": "CollisionGroup",
+      "kind": 3
+    },
+    {
+      "name": "CollisionSampleFraction",
+      "kind": 10
+    },
+    {
+      "name": "LinearEtherDrag",
+      "kind": 10
+    },
+    {
+      "name": "PhysicalMaterial",
+      "kind": 82
+    },
+    {
+      "name": "InitialVelocityType",
+      "kind": 30
+    },
+    {
+      "name": "InitialLinearVelocity",
+      "kind": 25
+    },
+    {
+      "name": "InitialAngularVelocity",
+      "kind": 25
+    },
+    {
+      "name": "PhysicalMaterialOverride",
+      "kind": 82
+    },
+    {
+      "name": "CacheParameters",
+      "kind": 25
+    },
+    {
+      "name": "RestTransforms",
+      "kind": 22
+    },
+    {
+      "name": "NotifyGeometryCollectionPhysicsStateChange",
+      "kind": 27
+    },
+    {
+      "name": "NotifyGeometryCollectionPhysicsLoadingStateChange",
+      "kind": 27
+    },
+    {
+      "name": "OnChaosBreakEvent",
+      "kind": 27
+    },
+    {
+      "name": "OnChaosRemovalEvent",
+      "kind": 27
+    },
+    {
+      "name": "OnChaosCrumblingEvent",
+      "kind": 27
+    },
+    {
+      "name": "DesiredCacheTime",
+      "kind": 10
+    },
+    {
+      "name": "CachePlayback",
+      "kind": 76
+    },
+    {
+      "name": "OnChaosPhysicsCollision",
+      "kind": 27
+    },
+    {
+      "name": "bNotifyBreaks",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyCollisions",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyTrailing",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyRemovals",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyCrumblings",
+      "kind": 76
+    },
+    {
+      "name": "bCrumblingEventIncludesChildren",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyGlobalBreaks",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyGlobalCollisions",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyGlobalRemovals",
+      "kind": 76
+    },
+    {
+      "name": "bNotifyGlobalCrumblings",
+      "kind": 76
+    },
+    {
+      "name": "bGlobalCrumblingEventIncludesChildren",
+      "kind": 76
+    },
+    {
+      "name": "bStoreVelocities",
+      "kind": 76
+    },
+    {
+      "name": "bIsCurrentlyNavigationRelevant",
+      "kind": 76
+    },
+    {
+      "name": "bShowBoneColors",
+      "kind": 76
+    },
+    {
+      "name": "bUpdateComponentTransformToRootBone",
+      "kind": 76
+    },
+    {
+      "name": "bUseRootProxyForNavigation",
+      "kind": 76
+    },
+    {
+      "name": "bUpdateNavigationInTick",
+      "kind": 76
+    },
+    {
+      "name": "bEnableReplication",
+      "kind": 76
+    },
+    {
+      "name": "bEnableAbandonAfterLevel",
+      "kind": 76
+    },
+    {
+      "name": "AbandonedCollisionProfileName",
+      "kind": 20
+    },
+    {
+      "name": "ISMPool",
+      "kind": 82
+    },
+    {
+      "name": "CustomRendererType",
+      "kind": 81
+    },
+    {
+      "name": "bOverrideCustomRenderer",
+      "kind": 76
+    },
+    {
+      "name": "bAutoAssignISMPool",
+      "kind": 76
+    },
+    {
+      "name": "bUseStaticMeshCollisionForTraces",
+      "kind": 76
+    },
+    {
+      "name": "ReplicationAbandonClusterLevel",
+      "kind": 3
+    },
+    {
+      "name": "CustomRenderer",
+      "kind": 19
+    },
+    {
+      "name": "CollisionProfilePerLevel",
+      "kind": 22
+    },
+    {
+      "name": "ReplicationAbandonAfterLevel",
+      "kind": 3
+    },
+    {
+      "name": "ReplicationMaxPositionAndVelocityCorrectionLevel",
+      "kind": 3
+    },
+    {
+      "name": "RepData",
+      "kind": 25
+    },
+    {
+      "name": "RepStateData",
+      "kind": 25
+    },
+    {
+      "name": "RepDynamicData",
+      "kind": 25
+    },
+    {
+      "name": "DummyBodySetup",
+      "kind": 82
+    },
+    {
+      "name": "EventDispatcher",
+      "kind": 82
+    },
+    {
+      "name": "EmbeddedGeometryComponents",
+      "kind": 22
+    },
+    {
+      "name": "AngularEtherDrag",
+      "kind": 10
+    }
+  ],
+  "meshComponent": [
+    {
+      "name": "OverrideMaterials",
+      "kind": 22
+    },
+    {
+      "name": "OverlayMaterial",
+      "kind": 82
+    },
+    {
+      "name": "OverlayMaterialMaxDrawDistance",
+      "kind": 10
+    },
+    {
+      "name": "MaterialSlotsOverlayMaterial",
+      "kind": 22
+    },
+    {
+      "name": "bEnableMaterialParameterCaching",
+      "kind": 12
+    }
   ]
 }

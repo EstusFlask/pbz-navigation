@@ -57,8 +57,9 @@ class Cursor(BinaryCursor):
 
     def primitive(self,prop):
         kind=prop['kind'];name=prop['name']
-        fmt={0:'B',1:'B',12:'B',30:'B',76:'B',2:'H',5:'H',3:'i',6:'I',82:'i',14:'i',4:'q',7:'Q',11:'d',20:'2I',10:'f'}
+        fmt={0:'B',1:'B',12:'B',30:'B',76:'B',2:'H',5:'H',3:'i',6:'I',82:'i',14:'i',17:'i',4:'q',7:'Q',11:'d',20:'2I',10:'f'}
         if kind in fmt:return self.read(fmt[kind])
+        if kind==27:return [self.read('i2I') for _ in range(self.count(10000))]
         if kind==28:return [self.read('I2I') for _ in range(self.count(10000))]
         if kind==22:return [self.read('I') for _ in range(self.count(10000))]
         if kind==25 and name=='BodyInstance':return self.body()
@@ -93,10 +94,40 @@ class Cursor(BinaryCursor):
             prop=schema[f];out[prop['name']]=self.primitive(prop)
         return out
 
+    def spline_curve(self,width):
+        fields,zeros=self.header();points=[]
+        for field in fields:
+            if field in zeros:continue
+            if field==0:
+                for _ in range(self.count(100000)):
+                    pf,pz=self.header();point={}
+                    for slot in pf:
+                        if slot in pz:continue
+                        if slot==0:value=self.read('f')
+                        elif slot in (1,2,3):value=self.read(str(width)+('f' if width==1 else 'd'))
+                        elif slot==4:value=self.read('B')
+                        else:raise ValueError('Unsupported spline curve point')
+                        point[slot]=value
+                    points.append(point)
+            elif field==1:self.read('B')
+            elif field==2:self.read('f')
+            else:raise ValueError('Unsupported spline curve field')
+        return points
+
+    def spline_curves(self):
+        fields,zeros=self.header();out={}
+        for field in fields:
+            if field in zeros:continue
+            if field in (0,1,2,3):out[field]=self.spline_curve((3,4,3,1)[field])
+            elif field==4:out[field]=self.read('I')
+            else:raise ValueError('Unsupported spline curves struct')
+        return out
+
     def component(self,cls,full=False):
         offsets={'SceneComponent':0,'StaticMeshComponent':173,'SplineMeshComponent':185,'InstancedStaticMeshComponent':194,'DynamicMeshComponent':146,'BillboardComponent':122,
                  'BoxComponent':123,'SphereComponent':123,'CapsuleComponent':124,'BrushComponent':116,
-                 'HoudiniAssetComponent':171,'SkeletalMeshComponentBudgeted':239,'CineCameraComponent':45}
+                 'HoudiniAssetComponent':171,'SkeletalMeshComponentBudgeted':239,'CineCameraComponent':45,'LandscapeSplinesComponent':117,
+                 'SplineComponent':132,'ChildActorComponent':5,'SkeletalMeshComponent':236,'GeometryCollectionComponent':197}
         if cls not in offsets:raise ValueError('Unsupported component class '+cls)
         offset=offsets[cls];fields,zeros=self.header();out={}
         for f in fields:
@@ -114,15 +145,43 @@ class Cursor(BinaryCursor):
                         out[key]=self.camera_struct(NATIVE[key])
                     else:
                         prop=NATIVE['cineCamera'][f];out[prop['name']]=self.primitive(prop)
+                elif cls=='ChildActorComponent':
+                    if f<3:out[('childActorClass','childActor','childActorTemplate')[f]]=self.read('i')
+                    elif f<5:out[('bChildActorIsTransient','bSetOwner')[f-3]]=self.read('B')
+                    else:raise ValueError('Unsupported child actor field')
+                elif cls=='GeometryCollectionComponent' and f<78:
+                    prop=NATIVE['geometryCollection'][f];name=prop['name']
+                    if name=='DamageThreshold':value=self.array('f')
+                    elif name=='InitializationFields':value=self.array('i')
+                    elif name in ('InitialLinearVelocity','InitialAngularVelocity'):value=self.read('3d')
+                    elif name=='DamagePropagationData':value=self.small_struct(['B','f','f'])
+                    else:value=self.primitive(prop)
+                    out[name]=value
+                elif cls=='GeometryCollectionComponent' and f<83:
+                    prop=NATIVE['meshComponent'][f-78];out[prop['name']]=self.array('i') if prop['name']=='OverrideMaterials' else self.primitive(prop)
                 elif f>=primitive_offset:
                     prop=SCHEMA['primitive'][f-primitive_offset]
                     try:out[prop['name']]=self.primitive(prop)
                     except ValueError as ex:raise ValueError(prop['name']+': '+str(ex)) from ex
+                elif cls=='SplineComponent':
+                    if f==0:
+                        if self.read('B')!=0:raise ValueError('Nonempty native spline implementation')
+                    elif f==1:out['splineCurves']=self.spline_curves()
+                    elif f in (2,3,11):out['splineField'+str(f)]=self.read('f' if f in (3,11) else 'i')
+                    elif f in (4,5,6,7,8,9,10,17):out['splineField'+str(f)]=self.read('B')
+                    elif f in (12,13,14,15):out['splineField'+str(f)]=self.read('i')
+                    elif f==16:out['splineUp']=self.read('3d')
+                    else:raise ValueError('Unsupported spline component field')
+                elif cls=='LandscapeSplinesComponent' and f<3:
+                    out[['landscapeSplineControlPoints','landscapeSplineSegments','cookedForeignMeshComponents'][f]]=self.array('i')
                 elif cls=='BillboardComponent' and f<8:out['billboardField'+str(f)]=self.read('i' if f==0 else 'B' if f==1 else 'f')
                 elif cls=='BrushComponent' and f<2:out['brushBodySetup' if f==1 else 'brush']=self.read('i')
                 elif cls=='SkeletalMeshComponentBudgeted' and f<len(NATIVE['budgetedSkeletal']):
-                    prop=NATIVE['budgetedSkeletal'][f];out[prop['name']]=self.primitive(prop)
+                    prop=NATIVE['budgetedSkeletal'][f];out[prop['name']]=self.small_struct(['i','B','B','f','f']) if prop['name']=='AnimationData' else self.primitive(prop)
                 elif cls=='SkeletalMeshComponentBudgeted' and f==120:out['overrideMaterials']=self.array('i')
+                elif cls=='SkeletalMeshComponent' and f<117:
+                    prop=NATIVE['budgetedSkeletal'][f+3];out[prop['name']]=self.small_struct(['i','B','B','f','f']) if prop['name']=='AnimationData' else self.primitive(prop)
+                elif cls=='SkeletalMeshComponent' and f==117:out['overrideMaterials']=self.array('i')
                 elif cls=='InstancedStaticMeshComponent' and f<21:
                     if f in (17,18,19):value=self.bounds_cache()
                     elif f in (3,4,8,9,10,15):value=self.read('i')
@@ -193,7 +252,7 @@ class Cursor(BinaryCursor):
             elif 29<=rel<44:
                 prop=NATIVE['actorComponent'][rel-29]
                 if prop['name']=='ComponentTags':value=self.array('2I')
-                elif prop['name']=='PrimaryComponentTick':raise ValueError('Unsupported serialized primary tick')
+                elif prop['name']=='PrimaryComponentTick':value=self.small_struct(['B']*6+['f'])
                 else:value=self.primitive(prop)
                 out[prop['name']]=value
             else:raise ValueError('Unsupported scene prefix')

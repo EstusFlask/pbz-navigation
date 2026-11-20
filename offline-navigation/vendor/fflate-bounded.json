@@ -1,0 +1,7 @@
+{
+  "upstream": "fflate@0.8.2 esm/browser.js",
+  "upstreamSHA256": "8cc1f687e0159e977addb6b85e274dbd11e622cf151f4fcb7b85d49622ea43e7",
+  "modifiedSHA256": "cbc61820bc516bfc2a78d5b390cea83dc7d4488ea6043462c5b7de47e930073a",
+  "changes": "Only stored/literal/match output guards and bounded exact-stream wrapper; no async or generated code used",
+  "license": "MIT; FFLATE-LICENSE.txt"
+}

@@ -1,0 +1,142 @@
+{
+  "storage": {
+    "kind": "deflate-text-v1",
+    "worldDataFiles": 3643,
+    "worldDataBytes": 3169926559,
+    "fullRuntimeLogicalSHA": true,
+    "blockBytes": 32768,
+    "containerCharacters": 1048576
+  },
+  "version": "1.10.1",
+  "branch": "codex/recast-routing-193",
+  "clientDate": "2026-11-16",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.10.1.zip",
+      "bytes": 2499442733,
+      "installedBytes": 3649677818,
+      "files": 5142,
+      "worldFiles": 3643,
+      "profile": {
+        "version": "1.10.1",
+        "flavor": "release",
+        "label": "1.10.1",
+        "development": false,
+        "sourceSHA256": "2bd326c9b313b26295ab69e01aea0e8256baaef11c7b6b5fe4f97c2f34faac14",
+        "captureSchema": 1
+      },
+      "runtimeSHA256": "ddcfd097c4e24749f45e9bc17b4fabdca14acca28556ee78c3209a6f089cd0bc",
+      "adapterSHA256": "87d40590bc5b023a110f7ce5d01bd4e7a89823eb3588e5eebb58341eef20d9d2",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sha256": "f60df7497c7488b2698910f62da23e7968c924c7b937ddeed3250ed91c9bd86d"
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.10.1_Development.zip",
+      "bytes": 2499465863,
+      "installedBytes": 3649782690,
+      "files": 5149,
+      "worldFiles": 3643,
+      "profile": {
+        "version": "1.10.1",
+        "flavor": "development",
+        "label": "1.10.1-dev",
+        "development": true,
+        "sourceSHA256": "2bd326c9b313b26295ab69e01aea0e8256baaef11c7b6b5fe4f97c2f34faac14",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "5b157e3a8d814685953cdfaedc7412e3d2ce4f1a75e215aaa9db93c5f386faf1",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      },
+      "runtimeSHA256": "ddcfd097c4e24749f45e9bc17b4fabdca14acca28556ee78c3209a6f089cd0bc",
+      "adapterSHA256": "87d40590bc5b023a110f7ce5d01bd4e7a89823eb3588e5eebb58341eef20d9d2",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sha256": "a3d546cad9a749873bbe44260b94d7854774020f9196a4f0d3ccef85c0ca2574"
+    }
+  ],
+  "totals": {
+    "inventoriedPackages": 80956,
+    "extractedPackages": 80956,
+    "triangles": 485977371,
+    "collisionParseFailures": 0,
+    "knownGeometryValidationFailures": 0,
+    "bakedWorlds": 11,
+    "spatialTiles": 356998,
+    "heightLayers": 593296,
+    "uniqueBlobs": 509792,
+    "navigationBytes": 9308484076
+  },
+  "stagedFiles": 5141,
+  "stageReceipt": "build/offline-navigation/integration-mod-1.10.1.receipt.json",
+  "stageReceiptSHA256": "cfe1cb6df8fc3413cadc15b7863791be8ac3f48196f99f973d4df95c85ae9b32",
+  "validationEvidence": {
+    "build/offline-navigation/packed-runtime-sha-1101.json": "cf127e8ac547bcb1c47e5ea5474b9dd2cfc5d2a1b57b428d7de8c915212a43bc",
+    "build/offline-navigation/mod-worlds-deflate-1101/compression-summary.json": "ef75f582e72a9a2b8082a1c8b5f68bbdc8ae2a4675fdd683a190d3c5cad3c472",
+    "build/install-transaction-1101.log": "d3f4762a95c5ef0e69acc231569ccc9c6645f692408cf2d311b6d24465324add",
+    "build/js-1.10.1-validation.log": "ca24230bcdfca04c6518f70920cc90d6f6ac1ea32b2e8b3e2a916094063e49d6",
+    "build/world-1.10.1-validation.log": "52c04b9ab6153aafc6b320351dd9f72eb722bc4cadd84afd7dc94f0e6929856f",
+    "build/components-1.10.1-validation.log": "acbfb657e3af9c01c58b3770b644b793cbf7711e9fc7d1f3c50e985a5e1c2d88",
+    "build/recast-1.10.1-validation.log": "a7ca07129c13820b4d6e0b9fe3ed89d87483fce1e20fa53ba078e76de295a72a",
+    "build/body-1.10.1-validation.log": "a83ffcef3c387b94d03a039de793ead719250e49d31be9ca97859adb896d4a8b",
+    "build/world-package-1.10.1-validation.log": "eb16a878d8d8afe8689bb3417e1c87ab4c31fe8962660a1fc3a0a764013c3084",
+    "build/native-1.10.1-validation.log": "b8ff85a172c1d3310fa48682e23bd195e996daa83007760c180838ab4210a47e",
+    "build/lua-1.10.1-validation.log": "8bb230cfde329b99af059dc099fe37b3135f8f98af7aa3ec55c1e3d95edc00b9",
+    "build/offline-navigation/paged-compressed-1101.json": "cc7915c9a79cf8ee6949a8458dab83321a65cac4ee0461bc4f943365a2fd51ed",
+    "build/package-1.10.1-validation.log": "afbbf5b58dc04a401633370cdcbb2be464acde04c41ccf8767c3264ec5697382"
+  },
+  "tests": {
+    "javascript": 401,
+    "worldPipeline": 11,
+    "componentExtensions": 7,
+    "recast": 9,
+    "body": 2,
+    "worldPackage": 1
+  },
+  "fieldRoute005": {
+    "candidatePoints": 64,
+    "meters": 22.459473262060996,
+    "complete": false,
+    "independentPrefixSamples": 112,
+    "independentPrefixFailures": 0,
+    "actualGameAcceptance": false
+  },
+  "completeCollisionClaim": false,
+  "physicalVerified": false,
+  "installed": true,
+  "startedGame": false,
+  "uploaded": false,
+  "limitations": [
+    "Dynamic layers, moving/animated collision and destructible state remain incomplete",
+    "Special-action coverage and full gameplay acceptance remain incomplete",
+    "Route 005 remains a partial walking candidate",
+    "Isolated giant grid uses conservative 10m cells; regular terrain remains 10cm",
+    "Lossless bounded compressed storage is deployed; full game route acceptance remains separate"
+  ],
+  "installation": {
+    "receipt": "build/install-navigation-1.10.1-20261116T182203Z/receipt.json",
+    "version": "1.10.1",
+    "flavor": "development",
+    "matched": 5133,
+    "oldFiles": 60823,
+    "oldBytes": 13252697934,
+    "installedFiles": 5133,
+    "installedBytes": 3649608031,
+    "managerModId": "7b5c0f24834b",
+    "backup": "D:\\coding\\git_rep\\pbz-navigation\\build\\install-navigation-1.10.1-20261116T182203Z\\backup",
+    "otherModsUnchanged": true,
+    "savesAndSettingsUnchanged": true,
+    "startedGame": false
+  }
+}

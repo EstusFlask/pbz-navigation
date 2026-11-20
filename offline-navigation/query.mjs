@@ -1,6 +1,7 @@
 // Platform-neutral Recast/Detour query adapter. No filesystem, browser or Node API.
 import { init, importNavMesh, NavMeshQuery, Detour, statusSucceed,UnsignedCharArray,Raw } from 'recast-navigation';
 import {navHeader} from './nav-set.mjs';
+import {discoverFalls,actionTopology} from './movement-links.mjs';
 export { navHeader,parseNavSet,assembleNavSet,selectVariants,decodeBase64 } from './nav-set.mjs';
 
 export function capabilities(){
@@ -18,6 +19,8 @@ function fromNav(p,o){return[o[0]+p.x*100,o[1]-p.z*100,o[2]+p.y*100];}
 function distance(a,b){return Math.hypot(...a.map((v,k)=>v-b[k]));}
 
 export class Planner{
+ actionTopologyJob(start,goal,features,options){return actionTopology(this,start,goal,features,options);}
+ dropCandidatesJob(seeds,options){return discoverFalls(this,seeds,options);}
  constructor(bytes,metadata,options={}){
   if(!valid(metadata.originUE)||metadata.engine!=='recast-navigation@0.44.0')throw Error('Unsupported navigation metadata');
   this.origin=metadata.originUE;this.metadata=metadata;
@@ -25,7 +28,24 @@ export class Planner{
   this.query=new NavMeshQuery(this.navMesh,{maxNodes:options.maxNodes??65535});this.destroyed=false;this.jobs=new Set();
   this.header=navHeader(bytes);this.tileBuffers=new Map();
  }
+ portalClampLimit(fromRef,toRef,point){
+  const row=this.navMesh.getTileAndPolyByRef(fromRef);if(!row.success)return .02;
+  let linkIndex=row.poly.firstLink()>>>0,count=0;
+  while(linkIndex!==0xffffffff&&++count<=row.tile.header().maxLinkCount()){
+   const link=row.tile.links(linkIndex);linkIndex=link.next()>>>0;
+   if(link.ref()!==toRef||link.side()===0xff||link.bmin()===0&&link.bmax()===255)continue;
+   const a=row.poly.verts(link.edge())*3,b=row.poly.verts((link.edge()+1)%row.poly.vertCount())*3;
+   const x=row.tile.verts(a),z=row.tile.verts(a+2),dx=row.tile.verts(b)-x,dz=row.tile.verts(b+2)-z,length2=dx*dx+dz*dz;
+   if(!length2)continue;
+   const t=((point.x-x)*dx+(point.z-z)*dz)/length2;
+   // Only the exact outgoing edge and its quantized external portal qualify.
+   if(t<link.bmin()/255-1e-5||t>link.bmax()/255+1e-5||Math.hypot(point.x-x-t*dx,point.z-z-t*dz)>.002)continue;
+   return Math.max(.02,Math.sqrt(length2)/255+.002);
+  }
+  return .02;
+ }
  replaceTile(slot,value){
+  this.movementTopology=null;
   if(this.destroyed||this.header.tiles!==0||!Number.isInteger(slot)||slot<0||slot>=this.header.maxTiles)throw Error('Invalid conditional tile update');
   this.cancelQueries();const ref=this.header.maxTiles*this.header.maxPolys+slot*this.header.maxPolys,old=this.tileBuffers.get(slot);
   if(old){const result=this.navMesh.removeTile(ref);try{if(!statusSucceed(result.raw.status))throw Error('Detour tile removal failed');}finally{Raw.destroy(result.raw);}old.destroy();this.tileBuffers.delete(slot);}
@@ -51,7 +71,7 @@ export class Planner{
   if(this.destroyed||!valid(start)||!valid(goal))throw Error('Invalid navigation request');
   const q=this.query,halfExtents={x:(options.horizontalProjectionCm??100)/100,y:(options.verticalProjectionCm??75)/100,z:(options.horizontalProjectionCm??100)/100};
   const first=q.findNearestPoly(toNav(start,this.origin),{halfExtents}),last=q.findNearestPoly(toNav(goal,this.origin),{halfExtents});
-  let path,straight,surface,complete=false,reason='endpoint missing',corners=[],points=[],heightFailure=null;
+  let path,straight,surface,complete=false,reason='endpoint missing',corners=[],points=[],heightFailure=null,maxSurfaceClampCm=0,quantizedPortalClamps=0;
   const free=value=>{value?.straightPath.destroy();value?.straightPathFlags.destroy();value?.straightPathRefs.destroy();};
   try{
    if(first.success&&last.success&&first.nearestRef&&last.nearestRef){
@@ -75,9 +95,16 @@ export class Planner{
        const t=j/steps,p={x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t},h=q.getPolyHeight(ref,p);
        if(!h.success){
         const projected=q.closestPointOnPoly(ref,p),shift=projected.success?Math.hypot(projected.closestPoint.x-p.x,projected.closestPoint.z-p.z):Infinity;
-        // Portal points can lie a floating-point epsilon outside the entering
-        // polygon. Clamp only to that same polygon, never a different floor.
-        if(!projected.success||shift>.02){supported=false;heightFailure={ref,point:fromNav(p,this.origin),horizontalClampCm:shift*100};break;}
+        let limit=.02;
+        // Detour encodes a partial external link's overlap as byte fractions
+        // of its outgoing edge. At that portal only, the entering polygon can
+        // require a clamp within one quantization unit. Interior points retain
+        // the original 2cm guard; the polygon/floor is never changed.
+        if(projected.success&&shift>.02&&i>0&&j===0){
+         for(let k=1;k<n;k++)if(path.polys.get(k)===ref){limit=this.portalClampLimit(path.polys.get(k-1),ref,p);break;}
+        }
+        if(!projected.success||shift>limit){supported=false;heightFailure={ref,point:fromNav(p,this.origin),horizontalClampCm:shift*100,allowedClampCm:limit*100};break;}
+        maxSurfaceClampCm=Math.max(maxSurfaceClampCm,shift*100);if(shift>.02)quantizedPortalClamps++;
         p.x=projected.closestPoint.x;p.y=projected.closestPoint.y;p.z=projected.closestPoint.z;
        }else p.y=h.height;
        const value=fromNav(p,this.origin);if(!points.length||distance(points.at(-1),value)>.1)points.push(value);
@@ -96,9 +123,9 @@ export class Planner{
     start,goal,projectedStart,projectedGoal,startProjectionErrorCm:projectedStart?distance(start,projectedStart):null,
     goalProjectionErrorCm:projectedGoal?distance(goal,projectedGoal):null,corridorPolygons:path?.polys.size??0,
     pathStatus:path?.status??0,straightStatus:straight?.status??0,meters:points.slice(1).reduce((sum,p,i)=>sum+distance(points[i],p),0)/100,
-    heightFailure,physicalVerified:false};
+    heightFailure,maxSurfaceClampCm,quantizedPortalClamps,physicalVerified:false};
   }finally{path?.polys.destroy();free(straight);free(surface);}
  }
  cancelQueries(){for(const job of [...this.jobs])job.return();this.jobs.clear();}
- destroy(){if(!this.destroyed){this.cancelQueries();this.query.destroy();this.navMesh.destroy();for(const data of this.tileBuffers.values())data.destroy();this.tileBuffers.clear();this.destroyed=true;}}
+ destroy(){if(!this.destroyed){this.cancelQueries();this.query.destroy();this.navMesh.destroy();for(const data of this.tileBuffers.values())data.destroy();this.tileBuffers.clear();this.movementTopology=null;this.destroyed=true;}}
 }

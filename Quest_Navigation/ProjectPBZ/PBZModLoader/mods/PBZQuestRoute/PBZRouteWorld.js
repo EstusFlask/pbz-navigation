@@ -22,9 +22,10 @@ function contact(w,h,ground=true){
  }catch(_){}
  return {...result,component};
 }
-function supportHit(w,a,b){
+function supportHit(w,a,b,expectedZ){
  const hit=w.hit(a,b);
- if(hit&&(hit.penetrating||walkable(w,hit)))return hit;
+ const lowerSeam=hit&&Number.isFinite(expectedZ)&&hit.nz>.98&&hit.point.z<expectedZ-w.rise-2;
+ if(hit&&(hit.penetrating||walkable(w,hit)&&!lowerSeam))return hit;
  // A centre ray on a rock's side is not the character's whole floor contact.
  // Sample inside the capsule footprint without weakening its body sweep.
  const d=Math.max(8,Math.min(22,(Number(w.r)||35)*.45)),samples=[];let best=null;
@@ -35,12 +36,13 @@ function supportHit(w,a,b){
   samples.push(valid?q:null);
   if(valid&&(!best||Math.abs(q.point.z-reference)<Math.abs(best.point.z-reference)))best=q;
  }
- // A missing or unwalkable centre hit needs independently walkable ground
+ // A missing, unwalkable or implausibly low centre hit needs walkable ground
  // on opposite sides of the capsule. IsWalkable=false describes the sampled
  // riser/side contact; it does not forbid probing a different floor contact.
  // A single nearby bank must not turn a pit or a platform edge into a walk.
- if(!hit||!walkable(w,hit)){
-  const pairs=[[samples[0],samples[1]],[samples[2],samples[3]]].filter(([a,b])=>a&&b&&Math.abs(a.point.z-b.point.z)<=12);
+ if(!hit||!walkable(w,hit)||lowerSeam){
+  const pairs=[[samples[0],samples[1]],[samples[2],samples[3]]].filter(([a,b])=>a&&b&&Math.abs(a.point.z-b.point.z)<=12&&
+   (!lowerSeam||Math.abs((a.point.z+b.point.z)/2-expectedZ)<Math.abs(hit.point.z-expectedZ)));
   if(!pairs.length)return hit;
   const pair=pairs.sort((x,y)=>Math.abs((x[0].point.z+x[1].point.z)/2-(a.z+b.z)/2)-Math.abs((y[0].point.z+y[1].point.z)/2-(a.z+b.z)/2))[0];
   best={...pair[0],point:{...pair[0].point,z:(pair[0].point.z+pair[1].point.z)/2}};
@@ -61,7 +63,7 @@ class Ground{
   if(Number.isFinite(h)&&h>=this.r)this.h=h;
   const p=plain(this.cap.K2_GetComponentLocation());p.z-=this.h;return p;
  }
- hit(a,b,body=false,owners=false){const o=P.$ref(undefined),k=UE.KismetSystemLibrary,c=this.color;
+ hit(a,b,body=false,owners=false,walking=true){const o=P.$ref(undefined),k=UE.KismetSystemLibrary,c=this.color;
   const tail=[this.profile,false,this.ignored,UE.EDrawDebugTrace.None,o,true,c,c,0];let yes;
   // A simple-collision miss is not proof of empty space: some cooked meshes
   // expose only triangle collision. Keep the pawn profile for both queries.
@@ -72,14 +74,14 @@ class Ground{
   // their downward direction. Only add the reverse complex sweep after misses.
   for(let pass=0;pass<(body?3:2);pass++){
    tail[1]=pass>0;reversed=pass===2;this.calls++;
-   if(body){const lift=this.rise+3,half=Math.max(this.r,this.h-lift/2);const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(reversed?db:da),vec(reversed?da:db),Math.max(5,this.r*.98),half,...tail);}
+   if(body){const lift=walking?this.rise+3:2,half=walking?Math.max(this.r,this.h-lift/2):this.h;const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(reversed?db:da),vec(reversed?da:db),Math.max(5,this.r*.98),half,...tail);}
    else yes=k.LineTraceSingleByProfile(this.pawn,vec(a),vec(b),...tail);
    if(yes&&P.$unref(o)?.bBlockingHit)break;
   }
   if(!yes)return null;const h=P.$unref(o);if(!h||!h.bBlockingHit)return null;
   const point=plain(h.ImpactPoint),nz=Number(h.ImpactNormal.Z);if(!R.finite(point))return null;
   const {component,...limits}=contact(this,h,!body);
-  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating,component,complex:!!tail[1],body,...limits,...(reversed?{reverse:true}:{})};
+  const result={point,nz,normal:plain(h.ImpactNormal),penetrating:!!h.bStartPenetrating,component,complex:!!tail[1],body,...limits,...(reversed?{reverse:true}:{}),...(body&&h.Location?{center:plain(h.Location)}:{})};
   if(body)try{result.actor=component?.GetOwner?.();}catch(_){}
   if(owners){
    result.owners=[];
@@ -116,10 +118,31 @@ class Ground{
    return {x:p.x,y:p.y,z:q.z};
   }catch(_){return null;}
  }
+ dropPolicy(){
+  try{
+   const m=this.pawn.CharacterMovement,damage=Number(this.pawn.DamageDepth),death=Number(this.pawn.DeadDepth),gravity=Math.abs(Number(m.GetGravityZ?.())),speed=Number(m.GetMaxSpeed?.()),jump=Number(m.JumpZVelocity),canJump=this.pawn.CanJump?.()===true;
+   if(!(damage>100&&death>=damage&&gravity>1&&speed>0))return null;
+   const forceDisable=Number(m.bForceDisableLedgeProtection)||0,forceEnable=Number(m.bForceEnableLedgeProtection)||0;
+   const allowRunoff=forceDisable>0&&forceEnable<=0&&m.bCanWalkOffLedges===true;
+   const launch=canJump&&jump>0?jump:0,apex=launch*launch/(2*gravity),safeHeight=Math.min(damage,death)-Math.max(50,this.rise);
+   const maxJumpHeightCm=launch?Math.max(0,Math.min(1950,safeHeight-apex)):0;
+   const maxRunoffHeightCm=allowRunoff?Math.max(0,Math.min(1950,safeHeight)):0;
+   const maxHeightCm=Math.max(maxJumpHeightCm,maxRunoffHeightCm);if(maxHeightCm<100)return null;
+   const jumpSeconds=launch?(launch+Math.sqrt(launch*launch+2*gravity*maxJumpHeightCm))/gravity:0;
+   const runoffSeconds=Math.sqrt(2*maxRunoffHeightCm/gravity);
+   const maxRunCm=Math.min(1200,speed*Math.max(jumpSeconds,runoffSeconds));
+   return{maxHeightCm,maxRunCm,maxJumpHeightCm,maxRunoffHeightCm,maxRiseCm:launch?Math.max(0,apex-20):0,gravityCm:gravity,speedCm:speed,jumpVelocityCm:launch,canJump,allowRunoff,ledgeProtection:{forceDisable,forceEnable,heightCm:Number(m.LedgeProtectionHeight)||null},source:'current-player-fall-thresholds',damageDepthCm:damage,deadDepthCm:death};
+  }catch(_){return null;}
+ }
+ airHit(a,b){return this.hit(a,b,true,false,false);}
+ standAt(p){
+  const hit=this.hit({...p,z:p.z+this.rise+50},{...p,z:p.z-this.rise-50},true,false,false);
+  return hit&&!hit.penetrating&&hit.nz>=this.normal-.025&&R.finite(hit.center)?{x:p.x,y:p.y,z:hit.center.z-this.h-2}:null;
+ }
  snapshot(p){
   const m=this.pawn?.CharacterMovement;
   return {feet:p,halfHeight:this.h,radius:this.r,stepHeight:this.rise,normal:this.normal,profile:this.profile,
-   mode:Number(m?.MovementMode),customMode:Number(m?.CustomMovementMode),slopeVolumes:this.slopeRules?.volumes.length||0,movementFloor:this.standingFloor(p),query:this.lastFloorQuery};
+   mode:Number(m?.MovementMode),customMode:Number(m?.CustomMovementMode),slopeVolumes:this.slopeRules?.volumes.length||0,movementFloor:this.standingFloor(p),query:this.lastFloorQuery,dropPolicy:this.dropPolicy()};
  }
  *refreshRulesJob(){
   this.slopeRules||=new (require('./PBZRouteTerrainRules').SlopeRules)(this.pawn);
@@ -156,7 +179,7 @@ class Ground{
   // ray can start inside a ceiling or hit another walkable layer first.
   const attempts=[];let best=null;
   for(const up of [12,Math.max(55,this.rise+10),180]){
-   const h=supportHit(this,{...p,z:p.z+up},{...p,z:p.z-(deep?520:155)});
+   const h=supportHit(this,{...p,z:p.z+up},{...p,z:p.z-(deep?520:155)},p.z);
    attempts.push({up,hit:h?{z:h.point.z,nz:h.nz,penetrating:!!h.penetrating}:null});
    if(h&&!h.penetrating&&walkable(this,h)){
     if(!best||Math.abs(h.point.z-p.z)<Math.abs(best.z-p.z))best=h.point;
@@ -172,13 +195,13 @@ class Ground{
   const n=Math.max(1,Math.ceil(R.xy(a,b)/35)),points=[];let previous=a;
   const probe=(from,q,depth=0)=>{
    const run=R.xy(from,q),reach=this.rise+run*this.slope+7;
-   const hit=supportHit(this,{x:q.x,y:q.y,z:from.z+reach},{x:q.x,y:q.y,z:from.z-reach-8});
+   const hit=supportHit(this,{x:q.x,y:q.y,z:from.z+reach},{x:q.x,y:q.y,z:from.z-reach-8},from.z);
    let failure;
    if(!hit)failure={why:'no supporting floor'};
    else if(hit.penetrating||!walkable(this,hit))failure={hit:hit.point,why:'surface is not walkable',collision:hit};
    else if(Math.abs(hit.point.z-from.z)>reach+1)failure={why:'different floor'};
-   else if(hit.nz>.98&&Math.abs(hit.point.z-from.z)>this.rise+2)failure={hit:hit.point,why:'ledge exceeds step height'};
-   else if(hit.stepUp===false&&hit.nz>.98&&hit.point.z-from.z>3)failure={hit:hit.point,why:'component forbids step up'};
+   else if(hit.nz>.98&&Math.abs(hit.point.z-from.z)>this.rise+2)failure={hit:hit.point,why:'ledge exceeds step height',collision:hit};
+   else if(hit.stepUp===false&&hit.nz>.98&&hit.point.z-from.z>3)failure={hit:hit.point,why:'component forbids step up',collision:hit};
    else {
     const rule=this.slopeRules?.blocked(from,hit.point);
     if(rule)return {hit:hit.point,why:'forced slope slide uphill',block:rule};

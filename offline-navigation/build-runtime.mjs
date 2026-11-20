@@ -30,10 +30,11 @@ const embeddedWasm={name:'pbz-javascript-core',setup(build){
 }};
 await esbuild.build({entryPoints:[path.join(here,'runtime.mjs')],plugins:[embeddedWasm],bundle:true,format:'cjs',platform:'neutral',mainFields:['module','main'],
  conditions:['import','default'],target:'es2020',outfile:path.join(out,'PBZRecastRuntime.js'),minify:false,legalComments:'inline',
- banner:{js:'// Recast/Detour translated to ordinary JavaScript by Binaryen wasm2js. No WASM code generation. See THIRD-PARTY-LICENSES.txt.\nvar performance = globalThis.performance || {now: function(){return Date.now();}};'},
+ banner:{js:'// Recast/Detour translated to ordinary JavaScript by Binaryen wasm2js. No WASM code generation. See THIRD-PARTY-LICENSES.txt.\n(function(){\nvar performance = globalThis.performance || {now: function(){return Date.now();}};'},
+ footer:{js:'})();'},
  define:{'import.meta.url':'""'}});
 const licenses=[];
-for(const name of ['recast-navigation','@recast-navigation/core','@recast-navigation/wasm']){
+for(const name of ['recast-navigation','@recast-navigation/core','@recast-navigation/wasm','fflate']){
  const folder=path.join(here,'node_modules',name),file=path.join(folder,'LICENSE');
  if(fs.existsSync(file))licenses.push(name+'\n'+fs.readFileSync(file,'utf8'));
 }
@@ -41,7 +42,9 @@ licenses.push(fs.readFileSync(path.join(here,'RECAST-LICENSE.txt'),'utf8'));
 licenses.push('Binaryen wasm2js runtime helpers\n'+fs.readFileSync(path.join(here,'node_modules/binaryen/LICENSE'),'utf8'));
 fs.writeFileSync(path.join(out,'THIRD-PARTY-LICENSES.txt'),licenses.join('\n\n'));
 const bytes=fs.readFileSync(path.join(out,'PBZRecastRuntime.js'));
+const sources=Object.fromEntries(['build-runtime.mjs','runtime.mjs','query.mjs','movement-links.mjs','nav-set.mjs','world-window.mjs','world-pages.mjs','world-corridors.mjs','world-set.mjs','coarse-components.mjs','admission.mjs','text-codec.mjs','packed-storage.mjs','vendor/fflate-bounded.mjs','package-lock.json']
+ .map(name=>[name,crypto.createHash('sha256').update(fs.readFileSync(path.join(here,name))).digest('hex')]));
 fs.writeFileSync(path.join(out,'manifest.json'),JSON.stringify({schema:1,engine:'recast-navigation@0.44.0',format:'CommonJS + translated JavaScript',backend:'javascript-wasm2js',requiresWebAssembly:false,
  bootstrap:'Emscripten instantiateWasm hook backed by ordinary JS',binaryen,upstreamWasmSHA256:coreHash,translation:JSON.parse(fs.readFileSync(translationState,'utf8')),
- customExecutable:false,newNativeLibrary:false,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')},null,2));
+ customExecutable:false,newNativeLibrary:false,sources,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')},null,2));
 console.log('Built pure JavaScript runtime:',bytes.length,'bytes');

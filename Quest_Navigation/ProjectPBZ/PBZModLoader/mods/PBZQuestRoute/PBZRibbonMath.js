@@ -33,10 +33,38 @@ function around(raw){
 }
 const influence=1000,farLift=105,tailLength=155;
 const smooth=x=>{x=R.clamp(x);return x*x*(3-2*x);};
-function road(raw){
- const points=around(raw),arc=[0];
+function road(raw,checks=[]){
+ const ranges=checks.filter(check=>check.kind===12&&check.trajectory&&Number.isInteger(check.from)&&
+  Number.isInteger(check.to)&&check.from>=0&&check.to>check.from&&check.to<raw.length).sort((a,b)=>a.from-b.from);
+ const spans=[];
+ for(const {from,to} of ranges){
+  const last=spans.at(-1);
+  if(last&&from<=last.to)last.to=Math.max(last.to,to);
+  else spans.push({from,to});
+ }
+ const points=[],protectedKnots=[],protectedSpans=[];
+ let cursor=0;
+ for(const {from,to} of spans){
+  for(const p of around(raw.slice(cursor,from+1)))append(points,p);
+  // Keep the exact action endpoints, including a point too close to the
+  // preceding walking sample to survive ordinary ribbon simplification.
+  if(points.length&&dist(points.at(-1),raw[from])===0)points[points.length-1]=raw[from];
+  else points.push(raw[from]);
+  const first=points.length-1;
+  protectedKnots.push(first);
+  for(let i=from+1;i<=to;i++)if(dist(points.at(-1),raw[i])>0){
+   points.push(raw[i]);protectedKnots.push(points.length-1);
+  }
+  protectedSpans.push([first,points.length-1]);
+  cursor=to;
+ }
+ for(const p of around(raw.slice(cursor)))append(points,p);
+ const arc=[0];
  for(let i=1;i<points.length;i++)arc.push(arc[i-1]+dist(points[i-1],points[i]));
- return {points,arc,length:arc[arc.length-1],offset:new Float64Array(points.length)};
+ const fixed=new Uint8Array(points.length);
+ for(const i of protectedKnots)fixed[i]=1;
+ return {points,arc,length:arc[arc.length-1],offset:new Float64Array(points.length),fixed,
+  actionKnots:protectedKnots.map(i=>arc[i]),actionSpans:protectedSpans.map(([a,b])=>[arc[a],arc[b]])};
 }
 function index(r,s){
  let a=0,b=r.arc.length-1;while(b-a>1){const m=(a+b)>>1;if(r.arc[m]<=s)a=m;else b=m;}
@@ -73,13 +101,23 @@ function frame(r,m,anchor,motion){
   side:{x:-(ahead.y-origin.y)/planar,y:(ahead.x-origin.x)/planar},
   nearHeight,startTail,baseHeight,motion};
 }
+// Fade the moving head onto the fixed action polyline before takeoff.
+function actionWeight(r,s){
+ let distance=60;
+ for(const [a,b] of r.actionSpans){
+  if(s<a-60)break;
+  if(s>=a&&s<=b)return 0;
+  distance=Math.min(distance,Math.max(a-s,s-b));
+ }
+ return smooth(distance/60);
+}
 function at(r,s,f){
  const p=floor(r,s),endDist=Math.max(0,r.length-s),tail=smooth(endDist/tailLength);
  const rest=farLift;
  if(!f){p.z+=rest;return p;}
- const d=Math.max(0,s-f.start),restWeight=smooth(d/influence),pull=1-restWeight;
+ const d=Math.max(0,s-f.start),restWeight=smooth(d/influence),weight=actionWeight(r,s),pull=(1-restWeight)*weight;
  const startTail=f.startTail;
- const anchorWeight=(1-smooth(d/Math.min(420,Math.max(1,r.length-f.start))))*Math.min(1,tail/Math.max(.000001,startTail));
+ const anchorWeight=weight*(1-smooth(d/Math.min(420,Math.max(1,r.length-f.start))))*Math.min(1,tail/Math.max(.000001,startTail));
  const belly=Math.sin(Math.PI*R.clamp(d/influence))**2*pull*tail;
  // Body motion bends the near strand sideways. Do not drive a travelling
  // vertical sine wave through the exact part the player is running towards.
@@ -94,11 +132,22 @@ function at(r,s,f){
 }
 function section(r,f,a,b){
  if(b-a<1)return null;
- // Fixed material coordinates: passing an atlas knot must never insert or
- // remove a spline point or renumber live Niagara particles / mesh vertices.
- const ps=[],n=b-a<250?Math.max(2,Math.ceil((b-a)/20)):f?Math.min(48,Math.ceil((b-a)/35)):52;
- for(let i=0;i<=n;i++)ps.push(at(r,a+(b-a)*i/n,f));
- return {ps,before:a>0?at(r,Math.max(0,a-4),f):null,after:b<r.length?at(r,Math.min(r.length,b+4),f):null};
+ const n=b-a<250?Math.max(2,Math.ceil((b-a)/20)):f?Math.min(48,Math.ceil((b-a)/35)):52;
+ const arcs=[],knots=r.actionKnots,spans=r.actionSpans;
+ let knot=index({arc:knots},a),span=0;
+ while(knot<knots.length&&knots[knot]<=a)knot++;
+ for(let i=0;i<=n;i++){
+  const s=i===n?b:a+(b-a)*i/n;
+  while(knot<knots.length&&knots[knot]<s)arcs.push(knots[knot++]);
+  while(span<spans.length&&spans[span][1]<s)span++;
+  const fixed=span<spans.length&&spans[span][0]<=s;
+  // Inside an action the raised line follows its exact knots. A uniform
+  // sample between them only splits the same straight sphere sweep.
+  if(i===0||i===n||!fixed||knots[knot]===s)arcs.push(s);
+  if(knots[knot]===s)knot++;
+ }
+ const ps=arcs.map(s=>at(r,s,f));
+ return {ps,arcs,before:a>0?at(r,Math.max(0,a-4),f):null,after:b<r.length?at(r,Math.min(r.length,b+4),f):null};
 }
 exports.road=road;exports.floor=floor;exports.index=index;exports.match=match;exports.animate=animate;exports.frame=frame;
 exports.at=at;exports.section=section;exports.influence=influence;exports.around=around;exports.unit=unit;exports.append=append;exports.attachment=attachment;

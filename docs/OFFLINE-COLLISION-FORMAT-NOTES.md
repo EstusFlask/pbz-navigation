@@ -344,3 +344,28 @@ placed camera 只有 29 字节：fields=[7,46,71,77,78,86]、zeros={71,77}。hea
 Lens own 顺序为 MinFocalLength、MaxFocalLength、MinFStop、MaxFStop、MinimumFocusDistance、SqueezeFactor（均 kind10/f32）、DiaphragmBladeCount（kind3/i32）。Focus own 顺序为 FocusMethod（kind30/u8）、ManualFocusDistance（kind10/f32）、TrackingFocusSettings（kind25/struct）、bSmoothFocusChanges（kind12/u8）、FocusSmoothingInterpSpeed、FocusOffset（均 kind10/f32）；本例没有序列化 TrackingFocusSettings。
 
 当前 camera 模板链只有 placed379 → template6 → native CDO。其 Root 已有世界位置 (-162409.542,95231.798,-3998.569)，组合后的 camera 原点约 (-162033.057,95160.582,-3884.226)；这些坐标仍应交给实际几何 bounds 筛选，而非按“预览 actor”名字略去。完整字段值、偏移、payload SHA 与精确末尾校验在 `build/physics-research/cinecamera-template-chain-probe.json` 和 `cinecamera-template-decoded-proof.json`。
+
+
+## 完整旁镇：cell / data-layer 完整消费审计（2026-11-15）
+
+`tools/audit-offline-world-semantics.py` 对相同hash的完整world root执行了额外只读审计，输出在私有`build/offline-navigation/worlds/pbz_pangzhen_wp/cell-semantics.json`。32,822个RuntimeLevelStreamingCell和17个DataLayerInstanceWithAsset全部精确消费到payload末尾；failure=0，cell引用的layer名全部能对应root实例。15,225个cell的HLOD标志为真，21,808个有非空DataLayers。四个AlwaysLoaded仍由PersistentLevel承载。
+
+本机UHT描述确认FDataLayerInstanceNames的序列化顺序为`bIsFirstDataLayerExternal:u8`和`DataLayers:Array<FName>`，数组内的inner descriptor不另占unversioned slot。遵守struct自己的header与zero mask，再按root name table解析FName。与固定源码的[DataLayerInstanceNames声明](https://github.com/katataki/UES5.6/blob/6b2c694ab693a2711ff7c1e45e66ced95f8d7de5/Engine/Source/Runtime/Engine/Public/WorldPartition/DataLayer/DataLayerInstanceNames.h)一致，实际布局结论同时受全表边界验证约束。
+
+PBZ的DataLayerInstanceWithAsset cooked slot为：0 DataLayerAsset/objectRef，1 InitialRuntimeState/u8，2 Parent/objectRef，3 Children/Array<objectRef>。游戏UHT另含ShortName，但其editor-only字段不进入cooked slot。17个实例的实际present fields只使用0/1/2；它们的asset和parent全部解析并记录。状态值0/1/2分别为Unloaded/Loaded/Activated；没有序列化InitialRuntimeState的实例按[构造器默认Unloaded](https://github.com/katataki/UES5.6/blob/6b2c694ab693a2711ff7c1e45e66ced95f8d7de5/Engine/Source/Runtime/Engine/Private/WorldPartition/DataLayer/DataLayerInstance.cpp)记录初始值，并明确标记该值并非live状态。
+
+main_la初始Activated，引用它的cell为21,373个；main_logic为575个。其余包括初始Unloaded的LD、剧情、远景和厂商演示layer，不能仅因初始关闭就从整个游戏模型删除，也不能把全部几何的并集当成任何时刻的真实场景。当前几何提取完整保留所有包，实验图块尚未应用激活条件；运行时剧情切换/父层传播仍是单独的语义缺口。HLOD虽然已恢复标志，碰撞仍须依据各组件实际gate，不能由HLOD名称一概剔除或放行。
+
+
+### 完整世界新增的 LandscapeSplines 附件
+
+全包扫描在cell `BYPC6DM3FOP6Z742EB33ALI9X`发现48个SplineMeshComponent的父变换未支持，不能略去这些道路。两父节点export69/70为LandscapeSplinesComponent。本机UHT精确给出三个cooked数组：ControlPoints、Segments、CookedForeignMeshComponents（inner descriptor不占slot），与固定[引擎类声明](https://github.com/katataki/UES5.6/blob/6b2c694ab693a2711ff7c1e45e66ced95f8d7de5/Engine/Source/Runtime/Landscape/Classes/LandscapeSplinesComponent.h)中的PrimitiveComponent继承关系一致。三项own slot之后为114个Primitive slot，因此Scene offset=117，RelativeLocation为slot122。
+
+两个placed payload分别144/88字节，fields均为[0,1,122]；前两数组count为13/12和6/5。解析后分别停在136/80，余下8字节精确为UObject无GUID与空UCS修改数组。实际父世界位置为(-179064.816,-2789.926,807.089)及(-179064.816,-1449.350,973.528)厘米。包SHA为`11eeed871fcd5824a9ded594cfa198c2f99c9bf995fc4fe2a7be1991431a5096`，完整私有证明在world构建目录的`landscape-splines-proof.json`；新增真实包回归检查了世界放置、数组数与末尾边界。提取器重建受影响包，而非给旧失败记录改成成功。
+
+
+### 全包最后九个 Heightfield 的自身变换
+
+完整旁镇最终扫描到cell `D2A3ECYNYDGG1H303H1NLBDUL` export9—17的LandscapeHeightfieldCollisionComponent额外保存Scene.RelativeLocation/RelativeScale3D。该类11个own slot加114个Primitive slot，Scene offset=125，因此slot130/132为3d位移/缩放。先前只读AttachParent会报错；不能只跳过字段后继续用父变换，那会把该组地形移错126米。
+
+已按原schema恢复location/rotation/scale，并仅在实际有自身变换时将其加入FTransform链。export9的location=(126,0,0)，scale=(1,1,0.9999999999999999)，Heightfield为127×127、31,752三角形；全部9项新增285,768三角形。真实包回归同时验证原生高度场完整消费和自身变换值。修复后完整32,819包的已记录解析错误清零，但游戏规则覆盖结论不变。

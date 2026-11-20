@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Game-data collision import and Recast/Detour through JS/WebAssembly; no native executable distribution",
   "dependencies": {
+    "fflate": "0.8.2",
     "recast-navigation": "0.44.0"
   },
   "scripts": {

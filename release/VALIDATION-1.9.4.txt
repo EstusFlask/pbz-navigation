@@ -1,0 +1,27 @@
+1.9.4 — heavy-attack-marked disappearing ribbon, 2026-11-15.
+
+READ: reports 20261116T030445274Z-001 and -002 from actual AppData Saved.
+Baseline key modules match installed 1.9.3-dev package.
+Both markers retain cached rendered rows; last 128 guide probes each have no hit.
+Native/GPU visibility was not captured by the old recorder.
+
+RED/GREEN: planning accepts paired support over a narrow seam, but a fresh audit
+floorAt falls to the bottom and rejects the same path. Both now agree.
+RED/GREEN: cached on-state skips restoration of hidden native actor/mesh.
+RED/GREEN: cached geometry skips rebuilding cleared native mesh sections.
+
+PASS: 391 JS tests, no skips/failures; 9 Recast/WASM controls; Lua/file bridge.
+PASS: true walls, wide pits and one-bank support remain blocked.
+PASS: bounded visibility checks, independent mesh bounds and additive capture.
+PASS: existing native adapter version-only compile; ABI suite not rerun.
+PASS: standard ZIP 1496 files, development ZIP 1503 exact matches and versions.
+PASS: no EXE/COM/SCR/MSI/.wasm, private saves/keys, node_modules or extraction tools.
+PASS: core/data unchanged after LF normalization; original ZIP hashes preserved.
+
+Not installed, game not launched, saves not written, not uploaded.
+1.9.4 actual field result remains unverified.
+User explicitly authorizes a new project chat to perform full-world rebuilding
+after this fix, without requiring another game run before offline work starts.
+Report: docs/FIELD-FIX-1.9.4.md
+State: docs/OFFLINE-NAVIGATION-STATE.md
+Hashes: release/LOCAL-CANDIDATE-1.9.4.json

@@ -1,0 +1,8 @@
+1.10.0 local candidate validation; no installation, game launch or upload.
+397 JS; 11 world pipeline; 7 component; 9 Recast; 2 Body; public-package, native ABI and Lua controls passed.
+11 worlds / 12 grids: banned-code-generation core and actual WorldCache state/bootstrap smoke passed.
+Giant grid: every 116852 polygon / 365356 vertex-detail hull passed true support and obstacle checks.
+Route 005: 64-point / 22.459m partial prefix only; 112 independent capsule samples passed; no full-route acceptance.
+Both standalone ZIPs: exact manifest, every file SHA, CRC, version/flavor and owned-path checks passed.
+release: dist/Quest_and_Exploration_Navigation_Fork_1.10.0.zip | 3110708891 bytes | 60831 files | SHA256 89d033032c0b5b42cdce4b7605344ce0d15f499c810090f09581dd8719324b29
+development: dist/Quest_and_Exploration_Navigation_Fork_1.10.0_Development.zip | 3110732017 bytes | 60838 files | SHA256 58d187c1802da89f60ae43076a2314629b8c16e43ae6fa8702dd650455ec930b

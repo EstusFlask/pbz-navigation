@@ -9,16 +9,19 @@ import subprocess
 import zipfile
 from collector_fixture import current_fixture
 from release_profiles import archive_name, included, build_bytes, lua_build_bytes, BUILD, LUA_BUILD, DEVELOPMENT_FILES
+from world_package import world_sources
 
 root=Path(__file__).resolve().parents[1]
 nav=root/'Quest_Navigation'
 parser=argparse.ArgumentParser()
 parser.add_argument('--manager-state',type=Path)
 parser.add_argument('--flavor',choices=['release','development','all'],default='all')
+parser.add_argument('--world-stage',help='Verified public full-world staging; defaults to release metadata')
 args=parser.parse_args()
 release=json.loads((root/'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))
 lock=json.loads((root/'release/VERSION-LOCK.json').read_text(encoding='utf-8'))
 version=str(release['version'])
+world_files,world_hashes=world_sources(root,release,args.world_stage)
 def version_key(value):
     match=re.fullmatch(r'(\d+)\.(\d+)\.(\d+)(?:-fork\.\d+)?', value)
     assert match, 'invalid release version: '+value
@@ -65,6 +68,7 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     assert not any(Path(n).suffix.lower() in {'.exe','.com','.scr','.msi'} for n in names), 'executable included in Mod package'
     expected={p.relative_to(nav).as_posix() for p in nav.rglob('*') if p.is_file() and included(p.relative_to(nav).as_posix(),flavor)}
     expected.update(scripts+'PBZRouteStreaming/'+name for name in stream_state['files'])
+    expected.update(world_files)
     assert names==expected|set(package_documents), 'incomplete navigation package'
     assert not any('/mods/pbzmaptracker/' in n.lower() for n in names), 'collector file included'
     assert not any('/mods/pbzmodconfig/' in n.lower() for n in names), 'shared settings framework file included'
@@ -85,10 +89,17 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     assert not any(n.endswith('PBZQuestRoute-settings.json') for n in names), 'player color settings included in update'
     for name in ['README-en.txt','README-zh.txt','INSTALL-README.md','CHANGELOG.md']:
         assert version in z.read(name).decode('utf-8'), 'documentation version mismatch'
-    for name in names:
+    # Keep the full per-file hash check, reading large archives in physical
+    # order instead of seeking randomly through tens of thousands of entries.
+    for name in sorted(names,key=lambda name:z.getinfo(name).header_offset):
         if name in (BUILD,LUA_BUILD):continue
-        source=package_documents[name] if name in package_documents else streamed/name[len(scripts+'PBZRouteStreaming/'):] if name.startswith(scripts+'PBZRouteStreaming/') else root/'build/legacy-atlas'/Path(name).name if name.startswith(scripts+'PBZRouteChunks/') else nav/name
-        assert hashlib.sha256(z.read(name)).digest()==hashlib.sha256(source.read_bytes()).digest(),name
+        source=world_files[name] if name in world_files else package_documents[name] if name in package_documents else streamed/name[len(scripts+'PBZRouteStreaming/'):] if name.startswith(scripts+'PBZRouteStreaming/') else root/'build/legacy-atlas'/Path(name).name if name.startswith(scripts+'PBZRouteChunks/') else nav/name
+        identity=hashlib.sha256(z.read(name)).digest()
+        # World files were fully decoded/reconstructed and SHA-verified by the
+        # stager. Compare the archive to that immutable receipt, avoiding a
+        # redundant multi-GB disk pass over the same validated snapshot.
+        if name in world_hashes:assert identity.hex()==world_hashes[name], 'staging receipt differs: '+name
+        else:assert identity==hashlib.sha256(source.read_bytes()).digest(),name
     print(f'PASS: {flavor} complete archive, {len(names)} exact file matches, no collector-owned paths')
     print(f'PASS: archive, runtime, native adapter and documentation versions agree: {version}')
     if args.manager_state:
@@ -108,7 +119,8 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
                 same=overlap*2>=len(mod['files'])
                 print(f"UE MM: {mod['name']}: {overlap}/{len(mod['files'])} existing paths; recognized update={same}")
                 assert same
-        assert len(owners)==1 and 'Quest' in owners[0]['name'], 'download takes ownership of another mod'
+        assert len(owners)<=1 and (not owners or 'Quest' in owners[0]['name']), 'download takes ownership of another mod'
+        if not owners:print('PASS: no existing Mod owns these paths; navigation can be registered as a new managed install')
         tracker=next(m for m in mods if m['name']=='Map Collectible Tracker')
         assert not any(key(f['target'],f['fileName']) in entries for f in tracker['files'])
         print(f"PASS: zero package overlap with all {len(tracker['files'])} installed collector paths")

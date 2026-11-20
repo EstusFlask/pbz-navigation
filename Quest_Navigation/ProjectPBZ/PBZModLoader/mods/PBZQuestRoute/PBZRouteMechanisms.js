@@ -5,17 +5,24 @@ function inspect(actor,feature,options={}){
  const id=String(feature.guid||actor.GetName()),raw=feature.path?.[0];
  const p=raw?{x:raw[0],y:raw[1],z:raw[2]}:options.point?.(actor.K2_GetActorLocation());
  const stop=(label,unknown=false,extra={})=>({ready:false,block:{id,p,icon:unknown?'mechanism':'locked',label,unknown,locked:!unknown,source:'live-mechanism',...extra}});
+ const directions=kind==='ladder'?{up:actor.bEnableBottomToTop,down:actor.bEnableTopToBottom}:
+  kind==='wallrun'?{aToB:actor.bEnableAToB,bToA:actor.bEnableBToA}:null;
+ const ready=()=>directions?{ready:true,directions}:{ready:true};
+ if(kind==='ladder'&&actor.bEnableBottomToTop===false&&actor.bEnableTopToBottom===false)return stop('梯子当前禁止通行');
+ if(kind==='wallrun'&&directions.aToB===false&&directions.bToA===false)return stop('跑墙当前禁止通行');
+ if(kind==='slide'&&actor.bAutoStartOnOverlap===false)return stop('滑坡当前未开启自动进入');
  if(kind==='ladder'&&(typeof actor.bFold==='boolean'?actor.bFold:feature.fold)){
   const moving=[actor.HookTimelineComponent,actor.LadderTimelineComponent].some(t=>t?.IsPlaying?.());
   if(actor.bTriggered!==true||moving)return stop(moving?'折梯正在放下 · 等待停止':'折梯未放下 · 需从另一侧解锁');
  }
  if(kind==='lift'){
+  if(typeof actor.GearIsDoing!=='boolean'&&typeof actor.Lift?.IsPlaying!=='function')return stop('升降装置停靠状态待确认',true);
   if(actor.bIsBroken===true||actor.LiftBroken===true)return stop('升降装置已损坏');
   if(actor.GearIsDoing===true||actor.Lift?.IsPlaying?.())return stop('升降装置运动中 · 等待停靠');
  }
  if(kind==='boarding')try{
   const boat=actor.BPGetBoat?.(),available=boat?.CanInteractWithWharf?.(actor);
-  if(available===true)return {ready:true};
+  if(available===true)return ready();
   if(available===false)return stop('船只或码头当前不可登船');
  }catch(_){}
  if(kind==='pole'){
@@ -35,16 +42,35 @@ function inspect(actor,feature,options={}){
   const value=actor.GetInteractRequirementMeet?.(pawn);
   if(states&&value!==undefined){
    if(states.RequirementNotMeet!==undefined&&value===states.RequirementNotMeet)return stop('交互条件未满足'+(requiredWeapon?' · 需要影之武装 '+(options.weapon?.(requiredWeapon)?.name||requiredWeapon):''),false,{requiredWeapons:requiredWeapon?[requiredWeapon]:[]});
-   if([states.NoRequirement,states.RequirementMeet].some(v=>v!==undefined&&value===v))return {ready:true};
+   if([states.NoRequirement,states.RequirementMeet].some(v=>v!==undefined&&value===v))return ready();
   }
  }catch(_){}
- if(interactionReady&&!requiredWeapon)return {ready:true};
+ if(interactionReady&&!requiredWeapon)return ready();
  // This newly discovered hook was absent from the original authored graph.
  // Its geometry alone cannot certify weapon, flow or activation conditions.
  if(kind==='hook')return stop('钩索交互条件待确认'+(requiredWeapon?' · '+(options.weapon?.(requiredWeapon)?.name||requiredWeapon):''),true);
  if(feature.requiresCondition||['walljump','vault','pole','boarding','boat','ride','chase','portal'].includes(kind))
   return stop(({walljump:'蹬墙跳',vault:'翻越',pole:'立柱跳跃',boarding:'登船',boat:'行船',ride:'剧情骑乘',chase:'剧情追逐',portal:'场景转移'})[kind]+'条件待确认',true);
- return {ready:true};
+ return ready();
+}
+function allowsDirection(actor,kind,entry,exit){
+ if(!actor||kind!=='ladder')return true;
+ if(exit.z>entry.z+80&&actor.bEnableBottomToTop===false)return false;
+ if(exit.z<entry.z-80&&actor.bEnableTopToBottom===false)return false;
+ return true;
+}
+const wallrunDirectionBlock={icon:'locked',label:'跑墙当前方向不可用',source:'live-mechanism',locked:true};
+const ladderDirectionBlock={...wallrunDirectionBlock,label:'梯子当前方向不可用'};
+function directionBlock(state,move){
+ const directions=state?.directions;
+ if(!directions||state.ready===false)return null;
+ if(move.kind==='wallrun'&&typeof move.wallrunAToB==='boolean'&&directions[move.wallrunAToB?'aToB':'bToA']===false)
+  return wallrunDirectionBlock;
+ if(move.kind==='ladder'&&move.p&&move.end){
+  const rise=move.end.z-move.p.z;
+  if((rise>80&&directions.up===false)||(rise<-80&&directions.down===false))return ladderDirectionBlock;
+ }
+ return null;
 }
 function describe(actor,options={}){
  if(!actor)return null;
@@ -71,4 +97,4 @@ function describe(actor,options={}){
  }
  return null;
 }
-exports.inspect=inspect;exports.describe=describe;
+exports.inspect=inspect;exports.describe=describe;exports.allowsDirection=allowsDirection;exports.directionBlock=directionBlock;

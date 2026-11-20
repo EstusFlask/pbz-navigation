@@ -12,6 +12,12 @@ test('a newly detected blocker makes the remaining map route unconfirmed',()=>{
  assert.ok(parts.some(p=>p.style==='blocked'));
 });
 function run(job){let r,n=0;do{r=job.next();assert.ok(++n<100000);}while(!r.done);return r.value;}
+
+test('ladder direction changes remain observable when the native interaction requirement reports ready',()=>{
+ const M=require(root+'/PBZRouteMechanisms'),actor={GetName:()=> 'ladder',GetInteractRequirementMeet:()=>0,bEnableBottomToTop:true,bEnableTopToBottom:true},feature={guid:'ladder',kind:'ladder',path:[[0,0,0],[0,0,600]]},options={UE:{EInteractRequirementState:{NoRequirement:0}}};
+ const first=M.inspect(actor,feature,options);actor.bEnableBottomToTop=false;const changed=M.inspect(actor,feature,options);
+ assert.equal(first.directions.up,true);assert.equal(changed.directions.up,false);assert.notEqual(JSON.stringify(first),JSON.stringify(changed),'the route revision could not see the direction change');actor.bEnableTopToBottom=false;assert.equal(M.inspect(actor,feature,options).ready,false);
+});
 test('known locks can be bypassed by a physically checked alternative and do not block another floor',()=>{
  const world={floorAt:p=>p,step:(a,b)=>({p:b})},view=L.constrain(world,[lock],'test');
  const route=run(Local.search(view,{x:0,y:0,z:0},{x:560,y:0,z:0},{clock:()=>0}));
@@ -77,4 +83,10 @@ test('folding ladders and lifts retain their actual activation and motion condit
  const lift={...base,GearIsDoing:true};assert.equal(M.inspect(lift,{...feature,kind:'lift'}).ready,false);
  lift.GearIsDoing=false;assert.equal(M.inspect(lift,{...feature,kind:'lift'}).ready,true);
  lift.bIsBroken=true;assert.equal(M.inspect(lift,{...feature,kind:'lift'}).ready,false);
+});
+
+
+test('an unknown lift stop state stays closed even if generic interaction requirements pass',()=>{
+ const M=require(root+'/PBZRouteMechanisms');
+ assert.equal(M.inspect({GetName:()=> 'unknown-lift'},{guid:'unknown-lift',kind:'lift'}).ready,false);
 });

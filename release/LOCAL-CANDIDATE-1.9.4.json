@@ -1,0 +1,71 @@
+{
+  "version": "1.9.4",
+  "branch": "codex/recast-routing-193",
+  "clientDate": "2026-11-15",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.4.zip",
+      "bytes": 129183960,
+      "sha256": "06ca17ed15dfddd51951cd59c65a0c538b7aabf78efc240ac2aadd8516bdc776",
+      "files": 1496,
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "kernelAndDataUnchangedAfterLFNormalization": true,
+      "profile": {
+        "version": "1.9.4",
+        "flavor": "release",
+        "label": "1.9.4",
+        "development": false,
+        "sourceSHA256": "ac1c7904962d01b6b0336849e4c80a17cdc1f79016edc7a786c2dfa75128301a",
+        "captureSchema": 1
+      }
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.9.4_Development.zip",
+      "bytes": 129207076,
+      "sha256": "f504b90e70384bf4edf1669429ebc2c6572b6cbb18880b33e6c528d158fb4e98",
+      "files": 1503,
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "kernelAndDataUnchangedAfterLFNormalization": true,
+      "profile": {
+        "version": "1.9.4",
+        "flavor": "development",
+        "label": "1.9.4-dev",
+        "development": true,
+        "sourceSHA256": "ac1c7904962d01b6b0336849e4c80a17cdc1f79016edc7a786c2dfa75128301a",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "5b157e3a8d814685953cdfaedc7412e3d2ce4f1a75e215aaa9db93c5f386faf1",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 391,
+  "coreControlsPassed": 9,
+  "luaChecks": "passed",
+  "nativeChecks": "Existing adapter version-only compile; ABI suite not rerun",
+  "packageChecks": "passed",
+  "fieldInput": "tests/fixtures/recast-193-disappearing-20261115.json",
+  "fixes": [
+    "floorAt and step use consistent paired support around narrow lower centre-ray seams",
+    "Bounded native visibility recovery and cleared native section rebuild",
+    "Independent owned mesh bounds and distance-cull configuration",
+    "Development capture includes native flags, section count and actual hide reason"
+  ],
+  "actualFieldAcceptance": "Pending; cached geometry in old reports does not prove native/GPU visibility",
+  "installed": false,
+  "uploaded": false,
+  "gameStarted": false,
+  "saveWritten": false,
+  "report": "docs/FIELD-FIX-1.9.4.md",
+  "persistentState": "docs/OFFLINE-NAVIGATION-STATE.md",
+  "nextTask": "User explicitly requests a new local project chat to execute complete offline world reconstruction after this fix"
+}

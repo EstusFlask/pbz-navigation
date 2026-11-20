@@ -2,6 +2,18 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute');
 const {message,StatusHud}=require(root+'/PBZRouteStatus');
+test('a stationary timed-out or paused request keeps its visible failure until a new context',()=>{
+ const {Planner}=require(root+'/PBZRouteJobs');let wall=0;
+ const planner=new Planner(()=>{},()=>wall),atlas={pending:new Map()},request={key:'field-005',world:'forest',level:'forest',p:{x:100,y:0,z:0},start:{x:0,y:0,z:0},revision:1,started:0};
+ planner.request(request,function*(){while(true)yield;},()=>{});
+ wall=31001;planner.pump();assert.equal(planner.pending,false);
+ assert.match(message(planner,atlas,request,60000),/超时/);
+ assert.match(message(planner,atlas,request,60000,true),/timed out/i);
+ planner.request(request,function*(){wall+=60;yield;},()=>{},true);wall+=20;planner.pump();
+ assert.match(message(planner,atlas,request,90000),/中断/);
+ assert.equal(message(planner,atlas,{...request,key:'other'},90000),'');
+ planner.clear();assert.equal(message(planner,atlas,request,90000),'');
+});
 function widgets(){
  const made=[],created=[],reports=[];
  class Widget{

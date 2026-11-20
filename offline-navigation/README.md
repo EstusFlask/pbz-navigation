@@ -1,6 +1,8 @@
 # 离线碰撞 → Recast / Detour
 
-开发分支：`codex/offline-recast-navigation`。当前先接入八卦阁前路口到戏梦山庄正门及周边首区域，其他区域继续原有导航；完整游戏尚未重建。版本、实机失败与下一步以[持久项目状态](../docs/OFFLINE-NAVIGATION-STATE.md)为准；最初实现范围见[实现记录](../docs/OFFLINE-RECAST-IMPLEMENTATION-20261115.md)。
+当前进度：11世界首轮提取/烘焙及压缩已完成，实际安装1.11.1；后续发现512碰撞分块静默截断，已筛查356998图块并只重建452风险图块，原数据备份保留。未发行修复还包括中间平台候选、按空间压缩动作页、梯子候选/实时方向和混合动作粗走廊。离线候选、独立碰撞、宿主模拟和真实游戏验收分别记账；全部目标仍active。接手以[持久状态](../docs/OFFLINE-NAVIGATION-STATE.md)和[当前修复](../docs/RASTER-COVERAGE-FIX-1.11.2.md)为准，以下早期区域描述只作历史。
+
+原始实验分支：`codex/offline-recast-navigation`；当前工作分支以持久状态为准。当前先接入八卦阁前路口到戏梦山庄正门及周边首区域，其他区域继续原有导航；完整游戏尚未重建。版本、实机失败与下一步以[持久项目状态](../docs/OFFLINE-NAVIGATION-STATE.md)为准；最初实现范围见[实现记录](../docs/OFFLINE-RECAST-IMPLEMENTATION-20261115.md)。
 
 用户约束：不分发 EXE。离线烘焙使用锁定的 `recast-navigation@0.44.0`，游戏运行端用 `binaryen@132.0.0` 的 wasm2js 将同一核心转译成普通JavaScript，保留Detour接口与图块格式。游戏宿主已明确禁止WASM代码生成，因此发行运行端不依赖WASM。没有新增导航DLL；打包器与包验证器拒绝EXE/COM/SCR/MSI。
 
@@ -46,7 +48,11 @@ node --test tests/offline-runtime.test.cjs tests/recast-integration.test.cjs
 
 `cli.mjs bake/query/coverage/components/inspect`仍可用于静态或合成场景诊断。发行的条件图块编译则强制`base`场景、零已记录解析错误和输入SHA一致，拒绝把某个用户的当前存档场景固化进公共数据。
 
+`node offline-navigation/build-terminal-movement-field.mjs DATA_ROOT OUTPUT WORLD AUTHORED_BELL_ID CAPABILITIES_JSON` 从铺好网格的指定世界补查能够落入铃铛步行分区的单向跳落。`OUTPUT` 使用 `build/` 下的新目录。补扫结果需先由 `py -3.12 tools/build-custom-route-action-oracle.py OUTPUT --routes 1` 独立核验，再通过移动页合并器的 `--action-proof` 筛选后进入世界移动数据。游戏按现有规则使用这些候选，仍会检查当前能力与碰撞。
+
 ## 验证边界
+
+完整世界的新入口为 `tools/build-offline-world.py` 和 `tools/build-offline-world-tiles.py index/bake/finalize`，使用逐包流式几何、hash receipt、SQLite空间索引和有界稀疏图块窗口。现已完成完整旁镇32,819包与58,867空间图块首轮，保留多层/密集块及失败账本，结果与限制见[完整旁镇记录](../docs/OFFLINE-WORLD-BUILD-20261115.md)。这些实验输出尚未接入发行Mod，不能把包清单覆盖等同于碰撞语义完整或实机通过。
 
 输入仅来自游戏碰撞和关卡放置，不读取小黑盒、原 Mod 的面/路网、固定路线或实走轨迹来造路。`prepare-offline-reference.py` 的实测位置只供结果对照，构建器不读取它。
 

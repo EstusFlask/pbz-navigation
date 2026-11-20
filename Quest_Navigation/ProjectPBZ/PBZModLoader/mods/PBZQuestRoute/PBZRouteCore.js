@@ -54,6 +54,33 @@ const append=(v,p)=>{if(!v.length||dist(v[v.length-1],p)>1)v.push(p);};
 const clamp=(t,a=0,b=1)=>Math.max(a,Math.min(b,t));
 function nearestOnLine(p,line,lo=0,hi=line.length-1){let r={i:0,d:Infinity,t:0};for(let i=Math.max(0,lo);i<Math.min(line.length-1,hi);i++){const a=line[i],b=line[i+1],x=b.x-a.x,y=b.y-a.y,z=b.z-a.z,t=clamp(((p.x-a.x)*x+(p.y-a.y)*y+(p.z-a.z)*z)/(x*x+y*y+z*z||1));const v=lerp(a,b,t),d=dist(v,p);if(d<r.d)r={i,t,p:v,d};}return r;}
 function extent(ps){let l=0;for(let i=1;i<ps.length;i++)l+=dist(ps[i-1],ps[i]);return l;}
+// Index segment metadata once, preserving the first match even for unordered
+// or overlapping ranges. Keep row references for live state changes.
+function* segmentLookup(rows=[],length,implicitEnd=false,begin=0){
+ if(rows.length<=8||length<=begin+8)return i=>rows.find(row=>row.from<=i&&
+  (implicitEnd?(row.to??row.from+1):row.to)>=i+1);
+ const owners=new Uint32Array(length-begin),next=new Uint32Array(owners.length);
+ const available=position=>{
+  while(next[position]){
+   const following=next[position];
+   if(next[following])next[position]=next[following];
+   position=next[position];
+  }
+  return position;
+ };
+ let work=0;
+ for(let i=0;i<rows.length;i++){
+  const row=rows[i],from=row.from,to=implicitEnd?(row.to??from+1):row.to;
+  const first=Math.max(0,Math.ceil(from)-begin),end=Math.min(owners.length,Math.floor(to)-begin);
+  for(let position=available(first);position<end;position=next[position]){
+   owners[position]=i+1;next[position]=available(position+1);
+   if((++work&127)===0)yield;
+  }
+  if((++work&127)===0)yield;
+ }
+ return i=>rows[owners[i-begin]-1];
+}
+exports.segmentLookup=segmentLookup;
 class Heap{
  constructor(){this.f=[];this.id=[];}
  add(f,id){let p=this.id.length;this.id.push(0);this.f.push(0);while(p){const q=(p-1)>>1;if(this.f[q]<=f)break;this.f[p]=this.f[q];this.id[p]=this.id[q];p=q;}this.f[p]=f;this.id[p]=id;}

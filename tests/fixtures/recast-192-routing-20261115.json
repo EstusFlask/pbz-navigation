@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "clientDate": "2026-11-15",
+  "timezone": "America/Tijuana",
+  "version": "1.9.2-dev",
+  "userReport": {
+    "initialSelection": "Both bells initially show a wrong route",
+    "afterMoving": "Correct route appears when walking toward the stairs",
+    "route001": "Overall route correct after moving toward stairs; a breakable prop required a light attack before continuing",
+    "stability": "Frequent recalculation and ribbon flashing/disappearing"
+  },
+  "acceptance": "Geometry broadly user-confirmed with explicit start, dynamic-obstacle and ribbon-stability caveats; not an unconditional complete pass",
+  "repeatedFailures": [
+    {
+      "reason": "surface is not walkable",
+      "x": -186160,
+      "y": 111500,
+      "count": 13
+    },
+    {
+      "reason": "component forbids step up",
+      "x": -179695,
+      "y": 119537,
+      "count": 4
+    },
+    {
+      "reason": "ledge exceeds step height",
+      "x": -175695,
+      "y": 118973,
+      "count": 3
+    },
+    {
+      "reason": "surface is not walkable",
+      "x": -170924,
+      "y": 111831,
+      "count": 2
+    }
+  ],
+  "examples": [
+    {
+      "world": "pbz_pangzhen_wp",
+      "edge": -1,
+      "why": "surface is not walkable",
+      "p": {
+        "x": -170923.51562022202,
+        "y": 111830.91406192661,
+        "z": -1728.1605714716754
+      },
+      "a": {
+        "x": -170940.1781717936,
+        "y": 111836.39945983887,
+        "z": -1732.6667785644531
+      },
+      "b": {
+        "x": -170906.85653686523,
+        "y": 111825.42762756348,
+        "z": -1729.9995422363281
+      },
+      "locked": false,
+      "segment": 110,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "line",
+        "complex": false,
+        "point": {
+          "x": -170923.51562022202,
+          "y": 111830.91406192661,
+          "z": -1728.1605714716754
+        },
+        "normal": {
+          "x": 0.9010957486799642,
+          "y": 0.03988681258651556,
+          "z": 0.43178176651241645
+        },
+        "playerProfile": "Profile_Capsule",
+        "playerObjectType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_pangzhen_wp",
+      "edge": -1,
+      "why": "surface is not walkable",
+      "p": {
+        "x": -170923.51562022202,
+        "y": 111830.91406192661,
+        "z": -1728.1605714716754
+      },
+      "a": {
+        "x": -170940.1781717936,
+        "y": 111836.39945983887,
+        "z": -1732.6667785644531
+      },
+      "b": {
+        "x": -170906.85653686523,
+        "y": 111825.42762756348,
+        "z": -1729.9995422363281
+      },
+      "locked": false,
+      "segment": 110,
+      "trace": {
+        "profile": "Profile_Capsule",
+        "shape": "line",
+        "complex": false,
+        "point": {
+          "x": -170923.51562022202,
+          "y": 111830.91406192661,
+          "z": -1728.1605714716754
+        },
+        "normal": {
+          "x": 0.9010957486799642,
+          "y": 0.03988681258651556,
+          "z": 0.43178176651241645
+        },
+        "playerProfile": "Profile_Capsule",
+        "playerObjectType": 2
+      },
+      "actions": []
+    },
+    {
+      "world": "pbz_pangzhen_wp",
+      "edge": -1,
+      "why": "component forbids step up",
+      "p": {
+        "x": -179694.9218740877,
+        "y": 119536.8906254881,
+        "z": -4109.378239472501
+      },
+      "a": {
+        "x": -179652.1329334804,
+        "y": 119526.69816698346,
+        "z": -4131.462860107422
+      },
+      "b": {
+        "x": -179694.92604391914,
+        "y": 119536.88700539725,
+        "z": -4131.044769287109
+      },
+      "locked": false,
+      "segment": 141,
+      "actions": []
+    }
+  ],
+  "evidence": {
+    "loader.log": {
+      "localFile": "build/field-recast-192-routing/loader.log",
+      "sha256": "aa9f0ae9c5b7f5936a17e47e567869744a96306a5eb140db691edfd5ab2ea324"
+    },
+    "route-log.txt": {
+      "localFile": "build/field-recast-192-routing/route-log.txt",
+      "sha256": "68d8a2e100a78a5730e1e1c8acc21b93634f2d36931233c8c4741f24ac379fab"
+    },
+    "UE4SS.log": {
+      "localFile": "build/field-recast-192-routing/UE4SS.log",
+      "sha256": "2d28084f0b8e2af98efe6d92d68f9348901212dc08d8bbe61b43ba387fc80889"
+    }
+  }
+}

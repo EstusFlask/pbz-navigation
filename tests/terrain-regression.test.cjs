@@ -63,6 +63,22 @@ function terrain(floor){
  return world;
 }
 
+test('a lower walkable centre ray in a narrow seam uses paired capsule support without bridging a real drop',()=>{
+ const seam=terrain((x,y)=>x>30&&x<42&&Math.abs(y)<10?-60:0);
+ assert.ok(seam.step({x:0,y:0,z:0},{x:70,y:0,z:0},true).p,'a 60cm centre-ray drop through a narrow tread seam rejected valid capsule support');
+ const cliff=terrain(x=>x>=30?-60:0);
+ assert.equal(cliff.step({x:0,y:0,z:0},{x:70,y:0,z:-60},true).p,undefined,'one bank became a bridge over a genuine drop');
+});
+
+test('a physically accepted seam path stays accepted when the ribbon auditor starts a fresh floor query',()=>{
+ const world=terrain((x,y)=>x>30&&x<42&&Math.abs(y)<10?-60:0),F=require(root+'/PBZRouteFeasibility'),{Auditor}=require(root+'/PBZRouteObstacles');
+ const job=F.check(world,{world:'test',provider:'recast',points:[{x:0,y:0,z:0},{x:70,y:0,z:0}],moves:[],walks:[],checks:[]},{x:0,y:0,z:0});let row;
+ do{row=job.next();}while(!row.done);assert.equal(row.value.ok,true,'fixture did not reach the accepted planner path');
+ const projected=world.floorAt({x:35,y:0,z:0},true);assert.ok(projected&&Math.abs(projected.z)<5,'fresh floorAt dropped to the seam bottom after step had accepted capsule support');
+ const audit=new Auditor();audit.begin(row.value.leg,world,{x:0,y:0,z:0},1000);audit.pump(()=>1000,500,100);
+ assert.equal(audit.result?.complete,true,'the unchanged accepted path was truncated during ribbon auditing');
+});
+
 test('a rejected walking trace exposes actual component responses without changing its verdict',()=>{
  const world=terrain(()=>0),owner={GetName:()=> 'decoration'},component={GetName:()=> 'mesh',GetOwner:()=>owner,
   GetCollisionObjectType:()=>0,GetCollisionProfileName:()=> 'BlockAll',GetCollisionResponseToChannel:()=>2};

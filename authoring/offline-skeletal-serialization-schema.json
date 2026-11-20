@@ -1,0 +1,996 @@
+{
+  "sourceBinarySHA256": "4415933ce33476f14c837abb61a1b60af8b78cd81783896501913a7aac69e423",
+  "skeletalMeshProperties": [
+    {
+      "name": "SourceModels",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "SourceModels",
+          "kind": 25,
+          "structName": "SkeletalMeshSourceModel"
+        }
+      ]
+    },
+    {
+      "name": "Skeleton",
+      "kind": 82
+    },
+    {
+      "name": "ImportedBounds",
+      "kind": 25,
+      "structName": "BoxSphereBounds"
+    },
+    {
+      "name": "ExtendedBounds",
+      "kind": 25,
+      "structName": "BoxSphereBounds"
+    },
+    {
+      "name": "PositiveBoundsExtension",
+      "kind": 25,
+      "structName": "Vector"
+    },
+    {
+      "name": "NegativeBoundsExtension",
+      "kind": 25,
+      "structName": "Vector"
+    },
+    {
+      "name": "Materials",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "Materials",
+          "kind": 25,
+          "structName": "SkeletalMaterial"
+        }
+      ]
+    },
+    {
+      "name": "MinQualityLevelLOD",
+      "kind": 25,
+      "structName": "PerQualityLevelInt"
+    },
+    {
+      "name": "MinLod",
+      "kind": 25,
+      "structName": "PerPlatformInt"
+    },
+    {
+      "name": "DisableBelowMinLodStripping",
+      "kind": 25,
+      "structName": "PerPlatformBool"
+    },
+    {
+      "name": "bUseFullPrecisionUVs",
+      "kind": 12
+    },
+    {
+      "name": "bUseHighPrecisionTangentBasis",
+      "kind": 12
+    },
+    {
+      "name": "bHasVertexColors",
+      "kind": 12
+    },
+    {
+      "name": "bEnablePerPolyCollision",
+      "kind": 12
+    },
+    {
+      "name": "BodySetup",
+      "kind": 82
+    },
+    {
+      "name": "PhysicsAsset",
+      "kind": 82
+    },
+    {
+      "name": "ShadowPhysicsAsset",
+      "kind": 82
+    },
+    {
+      "name": "NodeMappingData",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "NodeMappingData",
+          "kind": 82
+        }
+      ]
+    },
+    {
+      "name": "bSupportRayTracing",
+      "kind": 12
+    },
+    {
+      "name": "RayTracingMinLOD",
+      "kind": 3
+    },
+    {
+      "name": "ClothLODBiasMode",
+      "kind": 30,
+      "inner": [
+        {
+          "name": "UnderlyingType",
+          "kind": 0
+        }
+      ]
+    },
+    {
+      "name": "MorphTargets",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "MorphTargets",
+          "kind": 82
+        }
+      ]
+    },
+    {
+      "name": "PostProcessAnimBlueprint",
+      "kind": 17
+    },
+    {
+      "name": "PostProcessAnimBPLODThreshold",
+      "kind": 3
+    },
+    {
+      "name": "MeshClothingAssets",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "MeshClothingAssets",
+          "kind": 82
+        }
+      ]
+    },
+    {
+      "name": "SamplingInfo",
+      "kind": 25,
+      "structName": "SkeletalMeshSamplingInfo"
+    },
+    {
+      "name": "AssetUserData",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "AssetUserData",
+          "kind": 82
+        }
+      ]
+    },
+    {
+      "name": "Sockets",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "Sockets",
+          "kind": 82
+        }
+      ]
+    },
+    {
+      "name": "SkinWeightProfiles",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "SkinWeightProfiles",
+          "kind": 25,
+          "structName": "SkinWeightProfileInfo"
+        }
+      ]
+    },
+    {
+      "name": "DefaultMeshDeformer",
+      "kind": 82
+    },
+    {
+      "name": "TargetMeshDeformers",
+      "kind": 82
+    },
+    {
+      "name": "OverlayMaterial",
+      "kind": 82
+    },
+    {
+      "name": "OverlayMaterialMaxDrawDistance",
+      "kind": 10
+    },
+    {
+      "name": "ForwardAxis",
+      "kind": 0
+    },
+    {
+      "name": "LODInfo",
+      "kind": 22,
+      "inner": [
+        {
+          "name": "LODInfo",
+          "kind": 25,
+          "structName": "SkeletalMeshLODInfo"
+        }
+      ]
+    }
+  ],
+  "singleAnimationPlayData": [
+    {
+      "name": "AnimToPlay",
+      "kind": 82
+    },
+    {
+      "name": "bSavedLooping",
+      "kind": 12
+    },
+    {
+      "name": "bSavedPlaying",
+      "kind": 12
+    },
+    {
+      "name": "SavedPosition",
+      "kind": 10
+    },
+    {
+      "name": "SavedPlayRate",
+      "kind": 10
+    }
+  ],
+  "structs": {
+    "SkeletalMeshSourceModel": [
+      {
+        "name": "TriangleCount",
+        "kind": 3
+      },
+      {
+        "name": "VertexCount",
+        "kind": 3
+      },
+      {
+        "name": "Bounds",
+        "kind": 25,
+        "structName": "BoxSphereBounds"
+      },
+      {
+        "name": "CachedSkinWeightProfileNames",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "CachedSkinWeightProfileNames",
+            "kind": 20
+          }
+        ]
+      },
+      {
+        "name": "CachedMorphTargetNames",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "CachedMorphTargetNames",
+            "kind": 20
+          }
+        ]
+      },
+      {
+        "name": "CachedHasVertexColors",
+        "kind": 33,
+        "inner": [
+          {
+            "name": "CachedHasVertexColors",
+            "kind": 76
+          }
+        ]
+      },
+      {
+        "name": "CachedVertexColorGuid",
+        "kind": 25,
+        "structName": "Guid"
+      },
+      {
+        "name": "ScreenSize",
+        "kind": 25,
+        "structName": "PerPlatformFloat"
+      },
+      {
+        "name": "LODHysteresis",
+        "kind": 10
+      },
+      {
+        "name": "LODMaterialMap",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "LODMaterialMap",
+            "kind": 3
+          }
+        ]
+      },
+      {
+        "name": "BuildSettings",
+        "kind": 25,
+        "structName": "SkeletalMeshBuildSettings"
+      },
+      {
+        "name": "ReductionSettings",
+        "kind": 25,
+        "structName": "SkeletalMeshOptimizationSettings"
+      },
+      {
+        "name": "BonesToRemove",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "BonesToRemove",
+            "kind": 25,
+            "structName": "BoneReference"
+          }
+        ]
+      },
+      {
+        "name": "BonesToPrioritize",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "BonesToPrioritize",
+            "kind": 25,
+            "structName": "BoneReference"
+          }
+        ]
+      },
+      {
+        "name": "SectionsToPrioritize",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "SectionsToPrioritize",
+            "kind": 25,
+            "structName": "SectionReference"
+          }
+        ]
+      },
+      {
+        "name": "WeightOfPrioritization",
+        "kind": 10
+      },
+      {
+        "name": "BakePose",
+        "kind": 82
+      },
+      {
+        "name": "BakePoseOverride",
+        "kind": 82
+      },
+      {
+        "name": "SkinCacheUsage",
+        "kind": 30,
+        "inner": [
+          {
+            "name": "UnderlyingType",
+            "kind": 0
+          }
+        ]
+      },
+      {
+        "name": "MorphTargetPositionErrorTolerance",
+        "kind": 10
+      },
+      {
+        "name": "VertexAttributes",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "VertexAttributes",
+            "kind": 25,
+            "structName": "SkeletalMeshVertexAttributeInfo"
+          }
+        ]
+      },
+      {
+        "name": "bHasBeenSimplified",
+        "kind": 12
+      },
+      {
+        "name": "bHasPerLODVertexColors",
+        "kind": 12
+      },
+      {
+        "name": "bAllowCPUAccess",
+        "kind": 12
+      },
+      {
+        "name": "bBuildHalfEdgeBuffers",
+        "kind": 12
+      },
+      {
+        "name": "bAllowMeshDeformer",
+        "kind": 12
+      },
+      {
+        "name": "bSupportUniformlyDistributedSampling",
+        "kind": 12
+      }
+    ],
+    "BoxSphereBounds": [
+      {
+        "name": "Origin",
+        "kind": 25,
+        "structName": "Vector"
+      },
+      {
+        "name": "BoxExtent",
+        "kind": 25,
+        "structName": "Vector"
+      },
+      {
+        "name": "SphereRadius",
+        "kind": 32
+      }
+    ],
+    "Vector": [
+      {
+        "name": "X",
+        "kind": 32
+      },
+      {
+        "name": "Y",
+        "kind": 32
+      },
+      {
+        "name": "Z",
+        "kind": 32
+      }
+    ],
+    "Guid": [
+      {
+        "name": "A",
+        "kind": 3
+      },
+      {
+        "name": "B",
+        "kind": 3
+      },
+      {
+        "name": "C",
+        "kind": 3
+      },
+      {
+        "name": "D",
+        "kind": 3
+      }
+    ],
+    "SkeletalMeshLODInfo": [
+      {
+        "name": "ScreenSize",
+        "kind": 25,
+        "structName": "PerPlatformFloat"
+      },
+      {
+        "name": "LODHysteresis",
+        "kind": 10
+      },
+      {
+        "name": "LODMaterialMap",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "LODMaterialMap",
+            "kind": 3
+          }
+        ]
+      },
+      {
+        "name": "BuildSettings",
+        "kind": 25,
+        "structName": "SkeletalMeshBuildSettings"
+      },
+      {
+        "name": "ReductionSettings",
+        "kind": 25,
+        "structName": "SkeletalMeshOptimizationSettings"
+      },
+      {
+        "name": "BonesToRemove",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "BonesToRemove",
+            "kind": 25,
+            "structName": "BoneReference"
+          }
+        ]
+      },
+      {
+        "name": "BonesToPrioritize",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "BonesToPrioritize",
+            "kind": 25,
+            "structName": "BoneReference"
+          }
+        ]
+      },
+      {
+        "name": "SectionsToPrioritize",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "SectionsToPrioritize",
+            "kind": 25,
+            "structName": "SectionReference"
+          }
+        ]
+      },
+      {
+        "name": "WeightOfPrioritization",
+        "kind": 10
+      },
+      {
+        "name": "BakePose",
+        "kind": 82
+      },
+      {
+        "name": "BakePoseOverride",
+        "kind": 82
+      },
+      {
+        "name": "SkinCacheUsage",
+        "kind": 30,
+        "inner": [
+          {
+            "name": "UnderlyingType",
+            "kind": 0
+          }
+        ]
+      },
+      {
+        "name": "MorphTargetPositionErrorTolerance",
+        "kind": 10
+      },
+      {
+        "name": "VertexAttributes",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "VertexAttributes",
+            "kind": 25,
+            "structName": "SkeletalMeshVertexAttributeInfo"
+          }
+        ]
+      },
+      {
+        "name": "bHasBeenSimplified",
+        "kind": 12
+      },
+      {
+        "name": "bHasPerLODVertexColors",
+        "kind": 12
+      },
+      {
+        "name": "bAllowCPUAccess",
+        "kind": 12
+      },
+      {
+        "name": "bBuildHalfEdgeBuffers",
+        "kind": 12
+      },
+      {
+        "name": "bAllowMeshDeformer",
+        "kind": 12
+      },
+      {
+        "name": "bSupportUniformlyDistributedSampling",
+        "kind": 12
+      }
+    ],
+    "PerPlatformFloat": [
+      {
+        "name": "Default",
+        "kind": 10
+      }
+    ],
+    "SkeletalMeshBuildSettings": [
+      {
+        "name": "bRecomputeNormals",
+        "kind": 12
+      },
+      {
+        "name": "bRecomputeTangents",
+        "kind": 12
+      },
+      {
+        "name": "bUseMikkTSpace",
+        "kind": 12
+      },
+      {
+        "name": "bComputeWeightedNormals",
+        "kind": 12
+      },
+      {
+        "name": "bRemoveDegenerates",
+        "kind": 12
+      },
+      {
+        "name": "bUseHighPrecisionTangentBasis",
+        "kind": 12
+      },
+      {
+        "name": "bUseHighPrecisionSkinWeights",
+        "kind": 12
+      },
+      {
+        "name": "bUseFullPrecisionUVs",
+        "kind": 12
+      },
+      {
+        "name": "bUseBackwardsCompatibleF16TruncUVs",
+        "kind": 12
+      },
+      {
+        "name": "ThresholdPosition",
+        "kind": 10
+      },
+      {
+        "name": "ThresholdTangentNormal",
+        "kind": 10
+      },
+      {
+        "name": "ThresholdUV",
+        "kind": 10
+      },
+      {
+        "name": "MorphThresholdPosition",
+        "kind": 10
+      },
+      {
+        "name": "BoneInfluenceLimit",
+        "kind": 3
+      }
+    ],
+    "SkeletalMeshOptimizationSettings": [
+      {
+        "name": "TerminationCriterion",
+        "kind": 0
+      },
+      {
+        "name": "NumOfTrianglesPercentage",
+        "kind": 10
+      },
+      {
+        "name": "NumOfVertPercentage",
+        "kind": 10
+      },
+      {
+        "name": "MaxNumOfTriangles",
+        "kind": 6
+      },
+      {
+        "name": "MaxNumOfVerts",
+        "kind": 6
+      },
+      {
+        "name": "MaxDeviationPercentage",
+        "kind": 10
+      },
+      {
+        "name": "ReductionMethod",
+        "kind": 0
+      },
+      {
+        "name": "SilhouetteImportance",
+        "kind": 0
+      },
+      {
+        "name": "TextureImportance",
+        "kind": 0
+      },
+      {
+        "name": "ShadingImportance",
+        "kind": 0
+      },
+      {
+        "name": "SkinningImportance",
+        "kind": 0
+      },
+      {
+        "name": "bRemapMorphTargets",
+        "kind": 12
+      },
+      {
+        "name": "bRecalcNormals",
+        "kind": 12
+      },
+      {
+        "name": "WeldingThreshold",
+        "kind": 10
+      },
+      {
+        "name": "NormalsThreshold",
+        "kind": 10
+      },
+      {
+        "name": "MaxBonesPerVertex",
+        "kind": 3
+      },
+      {
+        "name": "bEnforceBoneBoundaries",
+        "kind": 12
+      },
+      {
+        "name": "bMergeCoincidentVertBones",
+        "kind": 12
+      },
+      {
+        "name": "VolumeImportance",
+        "kind": 10
+      },
+      {
+        "name": "bLockEdges",
+        "kind": 12
+      },
+      {
+        "name": "bLockColorBounaries",
+        "kind": 12
+      },
+      {
+        "name": "bImproveTrianglesForCloth",
+        "kind": 12
+      },
+      {
+        "name": "BaseLOD",
+        "kind": 3
+      }
+    ],
+    "BoneReference": [
+      {
+        "name": "BoneName",
+        "kind": 20
+      }
+    ],
+    "SectionReference": [
+      {
+        "name": "SectionIndex",
+        "kind": 3
+      }
+    ],
+    "SkeletalMeshVertexAttributeInfo": [
+      {
+        "name": "EnabledForRender",
+        "kind": 25,
+        "structName": "PerPlatformBool"
+      },
+      {
+        "name": "Name",
+        "kind": 20
+      },
+      {
+        "name": "DataType",
+        "kind": 30,
+        "inner": [
+          {
+            "name": "UnderlyingType",
+            "kind": 3
+          }
+        ]
+      }
+    ],
+    "PerPlatformBool": [
+      {
+        "name": "Default",
+        "kind": 76
+      }
+    ],
+    "SkeletalMaterial": [
+      {
+        "name": "MaterialInterface",
+        "kind": 82
+      },
+      {
+        "name": "MaterialSlotName",
+        "kind": 20
+      },
+      {
+        "name": "UVChannelData",
+        "kind": 25,
+        "structName": "MeshUVChannelInfo"
+      },
+      {
+        "name": "OverlayMaterialInterface",
+        "kind": 82
+      }
+    ],
+    "MeshUVChannelInfo": [
+      {
+        "name": "bInitialized",
+        "kind": 76
+      },
+      {
+        "name": "bOverrideDensities",
+        "kind": 76
+      },
+      {
+        "name": "LocalUVDensities",
+        "kind": 10
+      }
+    ],
+    "PerQualityLevelInt": [
+      {
+        "name": "Default",
+        "kind": 3
+      },
+      {
+        "name": "PerQuality",
+        "kind": 3
+      },
+      {
+        "name": "PerQuality_Key",
+        "kind": 3
+      },
+      {
+        "name": "PerQuality",
+        "kind": 23
+      }
+    ],
+    "PerPlatformInt": [
+      {
+        "name": "Default",
+        "kind": 3
+      }
+    ],
+    "SkeletalMeshSamplingInfo": [
+      {
+        "name": "Regions",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "Regions",
+            "kind": 25,
+            "structName": "SkeletalMeshSamplingRegion"
+          }
+        ]
+      },
+      {
+        "name": "BuiltData",
+        "kind": 25,
+        "structName": "SkeletalMeshSamplingBuiltData"
+      }
+    ],
+    "SkeletalMeshSamplingRegion": [
+      {
+        "name": "Name",
+        "kind": 20
+      },
+      {
+        "name": "LODIndex",
+        "kind": 3
+      },
+      {
+        "name": "bSupportUniformlyDistributedSampling",
+        "kind": 12
+      },
+      {
+        "name": "MaterialFilters",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "MaterialFilters",
+            "kind": 25,
+            "structName": "SkeletalMeshSamplingRegionMaterialFilter"
+          }
+        ]
+      },
+      {
+        "name": "BoneFilters",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "BoneFilters",
+            "kind": 25,
+            "structName": "SkeletalMeshSamplingRegionBoneFilter"
+          }
+        ]
+      }
+    ],
+    "SkeletalMeshSamplingRegionMaterialFilter": [
+      {
+        "name": "MaterialName",
+        "kind": 20
+      }
+    ],
+    "SkeletalMeshSamplingRegionBoneFilter": [
+      {
+        "name": "BoneName",
+        "kind": 20
+      },
+      {
+        "name": "bIncludeOrExclude",
+        "kind": 12
+      },
+      {
+        "name": "bApplyToChildren",
+        "kind": 12
+      }
+    ],
+    "SkeletalMeshSamplingBuiltData": [
+      {
+        "name": "WholeMeshBuiltData",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "WholeMeshBuiltData",
+            "kind": 25,
+            "structName": "SkeletalMeshSamplingLODBuiltData"
+          }
+        ]
+      },
+      {
+        "name": "RegionBuiltData",
+        "kind": 22,
+        "inner": [
+          {
+            "name": "RegionBuiltData",
+            "kind": 25,
+            "structName": "SkeletalMeshSamplingRegionBuiltData"
+          }
+        ]
+      }
+    ],
+    "SkeletalMeshSamplingLODBuiltData": [],
+    "SkeletalMeshSamplingRegionBuiltData": [],
+    "SkinWeightProfileInfo": [
+      {
+        "name": "Name",
+        "kind": 20
+      },
+      {
+        "name": "DefaultProfile",
+        "kind": 25,
+        "structName": "PerPlatformBool"
+      },
+      {
+        "name": "DefaultProfileFromLODIndex",
+        "kind": 25,
+        "structName": "PerPlatformInt"
+      }
+    ]
+  },
+  "nativeSerializers": {
+    "Vector": "3d",
+    "Rotator": "3d",
+    "Quat": "4d",
+    "Guid": "16s",
+    "Transform": [
+      "4d",
+      "3d",
+      "3d"
+    ],
+    "PerPlatformFloat": [
+      "cooked:boolean-i32==1",
+      "f"
+    ],
+    "PerPlatformInt": [
+      "cooked:boolean-i32==1",
+      "i"
+    ],
+    "PerPlatformBool": [
+      "cooked:boolean-i32==1",
+      "boolean-i32"
+    ],
+    "SkeletalMeshSamplingLODBuiltData": [
+      "Array<f>",
+      "Array<i>",
+      "f"
+    ],
+    "Optional": "present:boolean-i32 then inner only if present",
+    "LargeWorldCoordinatesReal": "d"
+  },
+  "nativeMeshPrefix": [
+    "UObject serialize GUID flag:i32==0",
+    "stripFlags:2B==[5,0]",
+    "importedBounds:7d",
+    "materials:Array<native FSkeletalMaterial>",
+    "referenceSkeleton:RawRefBoneInfo Array<FName,i32>;RawRefBonePose Array<10d>;RawNameToIndexMap Array<FName,i32>",
+    "next cooked:i32==1 and LODcount:i32==5"
+  ],
+  "scope": "Only property/native prefix and reference skeleton proven. Render LODs and live animation pose not decoded."
+}

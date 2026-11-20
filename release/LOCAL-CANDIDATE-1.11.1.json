@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "version": "1.11.1",
+  "branch": "codex/recast-routing-193",
+  "clientDate": "2026-11-16",
+  "packages": [
+    {
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.1.zip",
+      "bytes": 2499728384,
+      "installedBytes": 3650548642,
+      "files": 5182,
+      "worldFiles": 3643,
+      "profile": {
+        "version": "1.11.1",
+        "flavor": "release",
+        "label": "1.11.1",
+        "development": false,
+        "sourceSHA256": "7069b29538c87e9bdd829e79e1f1ed95f5d997a76df3f0966a2ea01a09f997bd",
+        "captureSchema": 1
+      },
+      "runtimeSHA256": "d89b05fce2f824d360dca311522f48a3884ef0a37ef66856c685f6b64f578f5b",
+      "adapterSHA256": "afa35d73e25e65b9b9d5532b9bee2a63542351da4c8a088346ac8ea4674fdd42",
+      "sha256": "d357cf53d4c22e189f41416cf316be3351f9dc49a4053d14b9d6149d7625423f",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sourceSHA256Passed": true
+    },
+    {
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.1_Development.zip",
+      "bytes": 2499751514,
+      "installedBytes": 3650653514,
+      "files": 5189,
+      "worldFiles": 3643,
+      "profile": {
+        "version": "1.11.1",
+        "flavor": "development",
+        "label": "1.11.1-dev",
+        "development": true,
+        "sourceSHA256": "7069b29538c87e9bdd829e79e1f1ed95f5d997a76df3f0966a2ea01a09f997bd",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "5b157e3a8d814685953cdfaedc7412e3d2ce4f1a75e215aaa9db93c5f386faf1",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      },
+      "runtimeSHA256": "d89b05fce2f824d360dca311522f48a3884ef0a37ef66856c685f6b64f578f5b",
+      "adapterSHA256": "afa35d73e25e65b9b9d5532b9bee2a63542351da4c8a088346ac8ea4674fdd42",
+      "sha256": "8b8893fd7bfbd2dc7b7cfca3a184f411de6f63c8917e73476b67fae560fcf83c",
+      "prohibitedFiles": [],
+      "privateArtifacts": [],
+      "exactManifestPassed": true,
+      "crcPassed": true,
+      "sourceSHA256Passed": true
+    }
+  ],
+  "gameAcceptance": false,
+  "installed": true,
+  "storage": {
+    "kind": "deflate-text-v1",
+    "worldDataFiles": 3643,
+    "worldDataBytes": 3169926559,
+    "unchangedFrom": "1.10.1"
+  },
+  "movementProposals": {
+    "worlds": 11,
+    "rows": 12850,
+    "pages": 28,
+    "source": "cooked collision/Detour/placed interactions; no player observations"
+  },
+  "validation": {
+    "jsPassed": 424,
+    "worldPipelinePassed": 11,
+    "componentPassed": 7,
+    "luaPassed": true,
+    "nativeABIPassed": true,
+    "installationTransactionPassed": 2,
+    "stagedWorlds": 11,
+    "stagedGrids": 12,
+    "customRouteAudit": {
+      "total": 47,
+      "topologyCandidates": 7,
+      "independentWalkingPassed": 4,
+      "candidateOnly": 3,
+      "missingConnections": 40,
+      "gameAccepted": 0,
+      "evidence": "authoring/custom-route-audit-1.11.1.json",
+      "remainingWork": true
+    },
+    "knownLimitations": [
+      "Forty custom routes still lack complete modeled connections even in explicit optimistic controls",
+      "Routes 5, 17 and 47 have independent collision failures and remain candidates only",
+      "Route 47 times out in plain JavaScript cold-load scheduling control",
+      "No new game acceptance; ordinary walking collision does not certify native actions",
+      "Proposals require current live conditions and physics",
+      "Five dense proposal windows exceed unchanged resident budget; bounded runtime discovery remains available",
+      "Multi-grid geometry remains isolated"
+    ],
+    "installedWorlds": 11,
+    "installedGrids": 12,
+    "installedProfileMatchesSource": true
+  },
+  "installationReceipt": "release/INSTALLATION-1.11.1.json"
+}

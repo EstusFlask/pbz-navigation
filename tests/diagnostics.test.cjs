@@ -4,6 +4,13 @@ const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/m
 const {Recorder,snapshot}=require(root+'/PBZRouteDiagnostics');
 function setup(write){let now=0;const files=new Map(),r=new Recorder({build:'1.5.0-dev',root:'saved/',clock:()=>now,
  write:write||((p,s)=>files.set(p,s))});return {r,files,set:t=>now=t};}
+
+test('capture separates cached ribbon intent from native visibility and the last hide reason',()=>{
+ const row={on:true,meshOn:true,visibilityRepairs:2,a:{IsHidden:()=>true},fiber:{IsVisible:()=>false,bHiddenInGame:true,bUseAttachParentBound:false,bNeverDistanceCull:true}};
+ const saved=snapshot({trip:null,line:[],cfg:{},observedLocks:[]},{pending:false,stats:{}},{pool:[row],lastHiddenReason:'no verified forward corridor'},[]);
+ assert.equal(saved.renderState.hiddenReason,'no verified forward corridor');
+ assert.deepEqual(saved.renderState.visibility[0],{index:0,wantedOn:true,meshWanted:true,fiberOff:false,repairs:2,actorHidden:true,meshVisible:false,meshHiddenInGame:true,parentBounds:false,neverDistanceCull:true});
+});
 test('development marker saves before/after context and survives an interrupted post window',()=>{
  const {r,files,set}=setup();r.sample({context:'world/1',feet:{x:0,y:0,z:0}},0);r.poll(false,true,()=>({}),0);
  set(100);r.event('native',{status:'invalid path'});r.sample({context:'world/1',feet:{x:1,y:2,z:3}});
