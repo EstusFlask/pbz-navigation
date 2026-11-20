@@ -32,8 +32,10 @@ Evidence: build/field-tower-20261120/
 Package hashes/inventories: release/LOCAL-CANDIDATE-1.11.4.json
 Older dist content preserved under build/release-archive/20261120-before-1.11.4/.
 
-Field limits: current installed logs identify 1.11.3 Release. No installation,
-launch or upload was performed. Tower currency still lacks a proved complete
+Field limits: current installed logs identify 1.11.3 Release. No installation
+or launch was performed. Subsequently published to Nexus at the user's explicit
+request: Release 4717 and Development 4718; see LOCAL-CANDIDATE-1.11.4.json.
+Tower currency still lacks a proved complete
 route or bell-to-item chain in the offline sample. The exact reported wall
 crossing lacks a complete captured origin/path. In-game routes and the additional
 full-capsule query cost remain to be accepted in the real host. A fixed synthetic

@@ -75,10 +75,36 @@
   },
   "evidence": "build/field-tower-20261120/",
   "installed": false,
-  "uploaded": false,
+  "uploaded": true,
   "previousDistributions": "build/release-archive/20261120-before-1.11.4/archive-index.json",
   "fieldLimitations": [
     "Tower currency sample still has no proved full route or usable bell arrival; no proximity-only recommendation is invented.",
     "The reproduced low-wall leak is fixed, but the exact reported wall crossing lacks a complete captured origin/path and awaits in-game acceptance."
-  ]
+  ],
+  "sourceCommit": "02654f681d34660601cd31fbb7172f4b85c30976",
+  "nexus": {
+    "status": "published",
+    "modId": 994,
+    "mainFileId": 4717,
+    "mainFileVersion": "1.11.4",
+    "developmentFileId": 4718,
+    "developmentFileVersion": "1.11.4",
+    "developmentCategory": "Optional files",
+    "optionalFileId": 4696,
+    "optionalFileVersion": "1.9.4",
+    "replacesMainFileId": 4703,
+    "previousMainArchived": true,
+    "mainPrimary": true,
+    "publicFilesUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
+    "publicFilesVerified": true,
+    "publicDescriptionVerified": true,
+    "publicFileDescriptionsVerified": true,
+    "publicChangelogVerified": true,
+    "scanUponVerification": "in progress for both new files",
+    "scanMonitoring": false,
+    "proof": [
+      "build/nexus-release-1.11.4/nexus-files.jpg",
+      "build/nexus-release-1.11.4/nexus-changelog.jpg"
+    ]
+  }
 }

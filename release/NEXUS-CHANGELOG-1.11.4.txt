@@ -1,0 +1,6 @@
+Restored activated-bell alternatives when item routing fails.
+物品寻路失败后恢复已启用铃铛的中转建议。
+Improved consecutive tower descents, local detours and checked route previews.
+改善塔内连续下降、局部绕障与已确认路段显示，修复一类矮墙漏检。
+Added a separate Development download with numbered test endpoints and light-attack recording.
+新增独立开发版下载，包含编号测试起终点和轻攻击录制操作。

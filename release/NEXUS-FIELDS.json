@@ -1,5 +1,5 @@
 {
-  "status": "local-candidate",
+  "status": "published",
   "draftId": 994,
   "draftEditUrl": "https://www.nexusmods.com/games/phantombladezero/mods/994/edit/general",
   "draftSavedSections": [
@@ -17,12 +17,12 @@
   "authorField": "azqwq333 - original - kurosakana - fork",
   "category": "User Interface",
   "language": "Any",
-  "shortDescription": "Quest, collectible and bell navigation with map routes and a guiding rope. Choose the 11-world experimental edition or the smaller Lite edition. / 任务、收集物和铃铛导航，提供地图路线和引导绳，可选 11 个世界的实验版或小体积 Lite 版。",
+  "shortDescription": "Quest, collectible and bell navigation with map routes and a guiding rope. Release, Development and Lite downloads. / 任务、收集物和铃铛导航，提供地图路线和引导绳，可选发行版、开发版或Lite版。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
   "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4.zip",
   "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.4",
   "fileCategory": "Main Files",
-  "fileDescription": "Improved activated-bell fallback, tower descent planning and checked route previews. Release and Development editions. / 改善已启用铃铛中转、塔内连续下降与已确认路段显示，提供发行版和开发版。",
+  "fileDescription": "Activated-bell fallback, tower descent planning and checked route previews. UE Mod Manager: extract ZIP before importing. / 改善已启用铃铛中转、塔内连续下降与已确认路段显示。使用 UE Mod Manager 请先解压 ZIP。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -75,19 +75,19 @@
     "source": "User confirmed that permission from the original author had already been obtained."
   },
   "published": true,
-  "lastVerifiedNexusVersion": "1.11.3",
+  "lastVerifiedNexusVersion": "1.11.4",
   "modUrl": "https://www.nexusmods.com/phantombladezero/mods/994",
   "latestTextUpdate": {
     "date": "2026-11-20",
     "timezone": "America/Tijuana",
-    "version": "1.11.3",
+    "version": "1.11.4",
     "sections": [
-      "General: synchronized bilingual version references and verified UE Mod Manager extraction instructions",
-      "Files: verified the 1.11.3 bilingual file description and changelog"
+      "General: bilingual Release/Development/Lite choice, development recording controls and extract-before-import instructions",
+      "Files: Release and Development descriptions, shared bilingual 1.11.4 changelog, previous main archived"
     ],
     "descriptionChanged": true,
     "verifiedOnPublicPage": true,
-    "evidence": "release/LOCAL-CANDIDATE-1.11.3.json"
+    "evidence": "release/LOCAL-CANDIDATE-1.11.4.json"
   },
   "localCandidate": {
     "version": "1.7.1",
@@ -117,18 +117,20 @@
   },
   "latestFileUpdate": {
     "date": "2026-11-20",
-    "version": "1.11.3",
-    "fileId": 4703,
-    "replacesFileId": 4697,
+    "version": "1.11.4",
+    "fileId": 4717,
+    "developmentFileId": 4718,
+    "replacesFileId": 4703,
     "previousFileArchived": true,
-    "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.3.zip",
+    "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4.zip",
+    "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4_Development.zip",
     "optionalFileId": 4696,
     "optionalFileVersion": "1.9.4",
     "publicFilesUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
     "publicFilesVerified": true,
+    "publicFileDescriptionVerified": true,
     "scanMonitoring": false,
-    "evidence": "release/LOCAL-CANDIDATE-1.11.3.json",
-    "publicFileDescriptionVerified": true
+    "evidence": "release/LOCAL-CANDIDATE-1.11.4.json"
   },
   "publishingPreferences": {
     "monitorVirusScanAfterUpload": false,
@@ -181,5 +183,7 @@
     }
   ],
   "localCandidateInstalled": false,
-  "localCandidateUploaded": true
+  "localCandidateUploaded": true,
+  "developmentFileDisplayName": "Quest Navigation - Fork 1.11.4 Development",
+  "developmentFileDescription": "Development edition: 47 numbered test routes; light attack starts/ends recording, heavy attack marks problems, defense marks wrong turns. Replaces Release. / 开发版含47段测试起终点；轻攻击起止录制、重攻击标问题、防御标误走。与发行版选装其一，先解压再导入。"
 }

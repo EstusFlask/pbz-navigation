@@ -1,14 +1,17 @@
 [size=5][b]Quest and Exploration Navigation - Fork[/b][/size]
-[b]Version 1.11.3 | Experimental[/b]
+[b]Version 1.11.4 | Experimental[/b]
 Navigation for quests, map pins, collectibles and bells, with routes on the regional map and a raised guiding rope in the game world. Based on [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333's Quest and Exploration Navigation 0.8.5-beta[/url], independently maintained by kurosakana.
 
 [size=4][b]Which file to install[/b][/size]
 Choose one ZIP under [url=https://www.nexusmods.com/phantombladezero/mods/994?tab=files]Files[/url].
 [list]
-[*][b]1.11.3 Full:[/b] Experimental collision-based navigation across 11 worlds.[/*]
+[*][b]1.11.4 Release:[/b] Experimental collision-based navigation across 11 worlds, for everyday play.[/*]
+[*][b]1.11.4 Development:[/b] The same navigation plus 47 numbered test routes and local recording controls. Install this or Release, not both.[/*]
 [*][b]1.9.4 Lite:[/b] Smaller standalone edition using the navigation data from before the full-world rebuild.[/*]
 [/list]
 To switch from Full to Lite, close the game and uninstall Full in UE Mod Manager before installing Lite. Keep your settings file.
+
+[b]Development recording:[/b] Show quest items or all items in Map Tracker Plus 1.0.14, then select a numbered start/end marker. Light attack starts recording near its start and saves near its end. Heavy attack marks navigation problems; defense marks personal wrong turns. Defaults: X/left mouse, Y/F (legacy keyboard Y also works), LB/right mouse. Record only during gameplay; menus do not trigger recording. Release does not include these test markers or recording controls.
 
 [size=4][b]Rope color (1.3.1)[/b][/size]
 Install [url=https://www.nexusmods.com/phantombladezero/mods/173]PbzModConfig - Mod Settings Menu (UE4SS)[/url] and its UE4SS dependency. In the in-game Mods settings page, open Quest & Exploration Navigation → Rope color and choose Red, Blue (default), or Custom. The custom-color control appears when Custom is selected. Changes save automatically and apply within about one second. Map Tracker is not required for this setting.
@@ -30,7 +33,7 @@ Install [url=https://www.nexusmods.com/phantombladezero/mods/173]PbzModConfig - 
 [*]Shows blue calculation and loading messages with elapsed time.[/*]
 [*]Retains two directed reference courses: 大廊桥 → 小张藏身处 and 乱葬岗 → 墨玑子衣冠冢, with checked same-floor joins and short item approaches.[/*]
 [*]Adds 170 supplementary Chinese acquisition hints while preserving existing detailed descriptions and other languages. Collector-owned files are not replaced.[/*]
-[*]The world line sits about 105 cm above the ground. No runtime trail learning, saved player-route history or runtime downloads.[/*]
+[*]The world line sits about 105 cm above the ground. No runtime trail learning or runtime downloads. Development saves local diagnostic recordings.[/*]
 [/list]
 
 [b]Route coverage[/b]
@@ -58,16 +61,19 @@ Settings: F9 → Quest & Exploration Navigation - Fork. Config: ProjectPBZ/Conte
 Uninstall through the manager after closing the game. For manual removal, remove only navigation's PBZQuestRoute script/assets folders and PBZQuestRouteCompat adapter, retaining your config, collector and shared runtimes.
 
 [size=5][b]中文说明[/b][/size]
-[b]任务与探索导航 - Fork 1.11.3（实验版）[/b]
+[b]任务与探索导航 - Fork 1.11.4（实验版）[/b]
 在区域地图上显示任务、标记、收集物和铃铛路线，关闭地图后显示离地约 105 厘米的导航引导线。基于 azqwq333 的原版 0.8.5-beta，由 kurosakana 独立维护。
 
 [size=4][b]版本选择[/b][/size]
 在[url=https://www.nexusmods.com/phantombladezero/mods/994?tab=files]文件页[/url]选装一个 ZIP。
 [list]
-[*][b]1.11.3 全图实验版：[/b]包含 11 个世界的碰撞重建导航。[/*]
+[*][b]1.11.4 发行版：[/b]包含 11 个世界的碰撞重建导航，用于日常游玩。[/*]
+[*][b]1.11.4 Development 开发版：[/b]相同导航核心，另含47段编号测试起终点和本地记录功能；与发行版选装其一。[/*]
 [*][b]1.9.4 Lite：[/b]使用全图重建前的导航数据，可独立安装，下载体积更小。[/*]
 [/list]
 从全图版换回 Lite 时，请关闭游戏，先用 UE Mod Manager 卸载全图版，再安装 Lite。保留原配置文件。
+
+[b]开发版录制：[/b]在Map Tracker Plus 1.0.14中显示任务物品或全部物品，选择编号路线的开始/结束点。起点附近轻攻击开始记录，终点附近轻攻击结束保存；重攻击标导航问题，防御标自己走错。默认按键为X/鼠标左键、Y/F（保留旧键盘Y）、LB/鼠标右键。仅操控角色时记录，地图与菜单不触发。发行版不含这些测试标记与采集操作。
 
 [size=4][b]绳子颜色（1.3.1）[/b][/size]
 安装[url=https://www.nexusmods.com/phantombladezero/mods/173]PbzModConfig - Mod Settings Menu (UE4SS)[/url]及其UE4SS依赖，在游戏设置的Mods页打开“任务与探索导航”→“绳子颜色”，可选红色、蓝色（默认）或自定义。选择自定义后显示颜色控件，修改后自动保存，约1秒内生效。此设置不需要安装Map Tracker。
