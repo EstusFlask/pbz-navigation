@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "version": "1.11.2",
+  "clientDate": "2026-11-20",
+  "sourceCommit": "257edf7fe546b0f9e6b9f0b2250d40d8dbf7b48a",
+  "branch": "codex/recast-routing-193",
+  "packages": [
+    {
+      "version": "1.11.2",
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2.zip",
+      "bytes": 2555861123,
+      "sha256": "742e10a66aecda052455f6359667a85743a80ef31223c809486ed43862e82c12",
+      "archiveEntries": 5335,
+      "uncompressedBytes": 3743844234,
+      "profile": {
+        "version": "1.11.2",
+        "flavor": "release",
+        "label": "1.11.2",
+        "development": false,
+        "sourceSHA256": "1cdd1b275c359e3bca68adf781e14cf177310bb425b3344f66d468e49dd566e9",
+        "captureSchema": 1
+      },
+      "exactManifestPassed": true,
+      "crcPassed": true
+    },
+    {
+      "version": "1.9.4",
+      "flavor": "release",
+      "archive": "build/release-archive/20261116-before-1.10.0/Quest_and_Exploration_Navigation_Fork_1.9.4.zip",
+      "bytes": 129183960,
+      "sha256": "06ca17ed15dfddd51951cd59c65a0c538b7aabf78efc240ac2aadd8516bdc776",
+      "crcPassed": true
+    }
+  ],
+  "validation": {
+    "sourceJavaScript": 670,
+    "stagedJavaScript": 348,
+    "plainJavaScriptWorlds": 11,
+    "plainJavaScriptGrids": 12,
+    "nativeAdapterPassed": true,
+    "gameAcceptance": false
+  },
+  "installed": false,
+  "nexus": {
+    "uploaded": false,
+    "modId": 994,
+    "confirmedExistingPrimaryVersion": "1.3.5",
+    "originalAuthorPermissionRecordPending": true
+  }
+}

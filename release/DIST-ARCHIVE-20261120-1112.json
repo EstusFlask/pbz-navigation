@@ -1,0 +1,17 @@
+{
+  "reason": "Preserve standard and Development 1.11.1 packages before preparing 1.11.2",
+  "packages": [
+    {
+      "original": "dist/Quest_and_Exploration_Navigation_Fork_1.11.1.zip",
+      "archive": "build/release-archive/20261120-before-1.11.2/Quest_and_Exploration_Navigation_Fork_1.11.1.zip",
+      "bytes": 2499728384,
+      "sha256": "d357cf53d4c22e189f41416cf316be3351f9dc49a4053d14b9d6149d7625423f"
+    },
+    {
+      "original": "dist/Quest_and_Exploration_Navigation_Fork_1.11.1_Development.zip",
+      "archive": "build/release-archive/20261120-before-1.11.2/Quest_and_Exploration_Navigation_Fork_1.11.1_Development.zip",
+      "bytes": 2499751514,
+      "sha256": "8b8893fd7bfbd2dc7b7cfca3a184f411de6f63c8917e73476b67fae560fcf83c"
+    }
+  ]
+}
