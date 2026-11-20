@@ -1,9 +1,11 @@
 ### Version 1.11.2
 
+- Rebuilt navigation across 11 worlds with on-demand loading of compressed map data.
+- 重建 11 个世界的导航，压缩地图数据按需加载。
 - Improved guidance for consecutive wall runs, automatic slides, grapples and collapsed bridges.
 - 改善连续跑墙、自动滑坡、钩索和塌桥路段的引导。
-- Updated routes when nearby mechanisms or movement options change, and spread route checks across frames.
-- 附近机关或移动能力变化时更新路线，并将路线检查分散到多个画面帧执行。
+- Routes update when nearby gates or mechanisms change, with less repeated loading during planning.
+- 附近的门或机关状态变化时更新路线，减少寻路时的重复加载。
 
 ### Version 1.11.1
 
