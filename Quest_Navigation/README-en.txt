@@ -1,10 +1,10 @@
 Quest and Exploration Navigation - Fork
-Version:1.11.2 (Experimental)
+Version:1.11.4 (Experimental)
 
 Map routes and a blue guide for quests, collectibles and bells. Some routes still need improvement and testing.
 
-Install:close the game and replace the old navigation with the complete ZIP in UE Mod Manager, or merge ProjectPBZ and platform into the game root. Preserve settings and keep one navigation installation.
-Package choice: standard for everyday use, Development for testing. Install one at a time. Development records a local case on gamepad heavy-attack Y or keyboard Y during gameplay and shows a saved/failed notice, including target, routes and before/after context.
+Install:close the game, extract the ZIP, then import the extracted folder containing both ProjectPBZ and platform into UE Mod Manager. Or merge those folders into the game root manually. Preserve settings and keep one navigation installation.
+Package choice: Release for everyday use; Development includes 47 numbered test routes. Light attack starts/finishes recording at the selected endpoints; heavy attack marks navigation problems; defense marks personal wrong turns. Install one edition at a time. See DEVELOPMENT-SURVEYS.md in Development.
 Requires PBZModLoader1.0.0. Mods Menu is optional; collectible navigation also needs Map Tracker Plus and its UE4SS dependency.
 Controls:select a map target. For tracker items, hover and press the middle mouse button, or use the D-pad and press A. Movement actions remain manual.
 

@@ -709,7 +709,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
   const clock=options.clock||Date.now;
   const priority=new Set((options.priorityActions||[]).map(v=>String(v).toLowerCase()));
   const candidates=[],cache=liveWorlds.get(world.sourceWorld||world);
-  const relays=options.recast?WallrunRelays.forWorld(g.name):[];
+  const relays=options.recast&&!options.geometryOnly?WallrunRelays.forWorld(g.name):[];
   const relayActors=new Set(relays.flatMap(relay=>relay.steps.map(step=>step.guid.toLowerCase())));
   const directedWallruns=new Map();
   const maximumScore=options.recast?Math.max(26000,R.dist(start,goal)+6000):26000;
@@ -729,7 +729,8 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
    else if(priority.has(key)||score<maximumScore)candidates.push(candidate);
   };
  const features=new Map();let work=0;
- for(const group of [g.actors,cache?.known.values()||[],g.observedPassages.values(),options.features||[]])for(const f of group){features.set(String(f.guid).toLowerCase(),f);if((++work&63)===0)yield;}
+ const groups=options.geometryOnly?[options.features||[]]:[g.actors,cache?.known.values()||[],g.observedPassages.values(),options.features||[]];
+ for(const group of groups)for(const f of group){features.set(String(f.guid).toLowerCase(),f);if((++work&63)===0)yield;}
   for(const feature of features.values()) {if((++work&7)===0)yield;
     if(!feature.path)continue;
     const live=liveWorlds.get(world.sourceWorld||world)?.paths.get(feature.guid);
@@ -776,7 +777,7 @@ function* liveRouteJob(g,world,start,goal,nativeWalk,options={}) {
    offer({guid:relay.guid,kind:'wallrun',source:'game-placement',requiresLoaded:true,wallrunRelay},
     key,first.state,[...first.runtimePath,...second.runtimePath],null,{launchBox:first.launchBox});
   }
-  const slide=options.recast?SlideRelay.forWorld(g.name):null;
+  const slide=options.recast&&!options.geometryOnly?SlideRelay.forWorld(g.name):null;
   const slideKey=slide?.guid.toLowerCase(),slideHint=options.actionPads?.get(slideKey);
   if(slideHint){
    const steps=[];

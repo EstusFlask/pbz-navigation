@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "version": "1.11.4",
+  "clientDate": "2026-11-20",
+  "packages": [
+    {
+      "version": "1.11.4",
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4.zip",
+      "bytes": 2569670417,
+      "sha256": "e526b3ae9b0bed56238baab2f4c659aa37abaa65e1f84799abb740f2acd15d3b",
+      "archiveEntries": 5335,
+      "uncompressedBytes": 3743857421,
+      "profile": {
+        "version": "1.11.4",
+        "flavor": "release",
+        "label": "1.11.4",
+        "development": false,
+        "sourceSHA256": "71eb5e1cb4fa317f5a639c5f36bf7dc3010d0566f24c717952332ed0eb218185",
+        "captureSchema": 1
+      },
+      "exactManifestPassed": true,
+      "crcPassed": true
+    },
+    {
+      "version": "1.11.4",
+      "flavor": "development",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4_Development.zip",
+      "bytes": 2569693616,
+      "sha256": "1fc44dbbb62e25134d989b2925e9026fe3a7694f8ec2763b3f9775ce570ab186",
+      "archiveEntries": 5342,
+      "uncompressedBytes": 3743962468,
+      "profile": {
+        "version": "1.11.4",
+        "flavor": "development",
+        "label": "1.11.4-dev",
+        "development": true,
+        "sourceSHA256": "71eb5e1cb4fa317f5a639c5f36bf7dc3010d0566f24c717952332ed0eb218185",
+        "captureSchema": 1,
+        "diagnosticsSHA256": "5b157e3a8d814685953cdfaedc7412e3d2ce4f1a75e215aaa9db93c5f386faf1",
+        "surveySHA256": {
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurvey.js": "b51801e2028a55601c236ad3e2149090bc063a04dd65e2598c8a7c7bd761487e",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTasks.js": "f35b736c0c5dccc397041894fcc47f9f35cb2cfb0db2706df1287a06460e655d",
+          "ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRouteSurveyTracker.js": "8268e1da870ff46d28e9d285d915cd2e08eaf2c9a8daa47baf8d8c0e83c98fd1",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalog.lua": "7b07a38f22e48efe22f40d871fd394ed597181c8fbc8d01ac496278410150b02",
+          "platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZSurveyCatalogData.lua": "7aae9a42b78396cc00f7f308b61d3b3ffc45a208da18cbb1f9fa526318c2406f"
+        }
+      },
+      "exactManifestPassed": true,
+      "crcPassed": true
+    }
+  ],
+  "validation": {
+    "sourceJsTestsPassed": 688,
+    "stagedJsTestsPassed": 270,
+    "luaAdapterTestsPassed": true,
+    "pythonSurveyTestsPassed": 6,
+    "nativeAdapterTestsPassed": true,
+    "offlineWorldCount": 11,
+    "offlineGridCount": 12,
+    "offlineRouteCandidates": {
+      "total": 47,
+      "complete": 47,
+      "routeShapeChanges": [],
+      "heightControls": [
+        14,
+        18,
+        27,
+        46
+      ],
+      "scope": "Offline topology controls; checks contain volatile verification times. No field collision or gameplay acceptance."
+    },
+    "inGameAcceptance": false,
+    "packageVerification": "build/field-tower-20261120/package-verification.log"
+  },
+  "evidence": "build/field-tower-20261120/",
+  "installed": false,
+  "uploaded": false,
+  "previousDistributions": "build/release-archive/20261120-before-1.11.4/archive-index.json",
+  "fieldLimitations": [
+    "Tower currency sample still has no proved full route or usable bell arrival; no proximity-only recommendation is invented.",
+    "The reproduced low-wall leak is fixed, but the exact reported wall crossing lacks a complete captured origin/path and awaits in-game acceptance."
+  ]
+}

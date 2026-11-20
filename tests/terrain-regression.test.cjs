@@ -31,6 +31,25 @@ test('single-sided wall triangles block walking and guide traces from their reve
  assert.equal(w.step({...a,x:50},{...a,x:400},true).p.x,400,'clear same-side walking was rejected');
 });
 
+test('a low wall cannot disappear below the raised step-clearance capsule on a level floor',()=>{
+ const UE={KismetSystemLibrary:{
+  LineTraceSingleByProfile:(pawn,a,b,profile,complex,ignored,debug,out)=>{
+   out.value={bBlockingHit:true,ImpactPoint:{X:b.X,Y:b.Y,Z:0},ImpactNormal:{X:0,Y:0,Z:1}};return true;
+  },
+  CapsuleTraceSingleByProfile:(pawn,a,b,r,h,profile,complex,ignored,debug,out)=>{
+   if(Math.min(a.X,b.X)<=35&&Math.max(a.X,b.X)>=35&&Math.min(a.Z,b.Z)-h<45){
+    out.value={bBlockingHit:true,ImpactPoint:{X:35,Y:0,Z:40},ImpactNormal:{X:-1,Y:0,Z:0}};return true;
+   }return false;
+  }},Vector:class{constructor(X,Y,Z){Object.assign(this,{X,Y,Z});}},NewArray:()=>({Add(){}}),LinearColor:class{},EDrawDebugTrace:{None:0}};
+ const mod={exports:{}};
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteWorld.js','utf8')+'\n})')(
+  id=>id==='ue'?UE:id==='puerts'?{$ref:value=>({value}),$unref:ref=>ref.value}:require(path.resolve(root,id)),mod,mod.exports);
+ const cap={GetScaledCapsuleHalfHeight:()=>96,GetScaledCapsuleRadius:()=>45,GetCollisionProfileName:()=> 'Profile_Capsule'};
+ const world=new mod.exports.Ground({CapsuleComponent:cap,CharacterMovement:{MaxStepHeight:50}});
+ assert.equal(world.step({x:0,y:0,z:0},{x:70,y:0,z:0},true).p,undefined,'a wall below the raised capsule was accepted as a flat walk');
+ assert.ok(world.step({x:100,y:0,z:0},{x:170,y:0,z:0},true).p,'a clear level floor was rejected');
+});
+
 test('walking and ribbon traces detect a wall with triangle collision but no simple collision',()=>{
  const queries=[];
  const trace=(...args)=>{

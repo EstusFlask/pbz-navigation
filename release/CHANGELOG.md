@@ -1,3 +1,19 @@
+### Version 1.11.4
+
+- Restored activated-bell alternatives when item routing fails, including nearby items and destinations reached through terrain transitions.
+- 物品寻路失败后恢复已启用铃铛的中转建议，兼顾近处物品和需要地形接力的目标。
+- Improved consecutive tower descents and local walking detours. Checked route previews remain visible when a detour first leads away from the target.
+- 改善塔内连续下降与局部步行绕障；绕路需要先背离目标时，也保留已确认路段。
+- Available as Release and Development packages. Development includes numbered test endpoints and light-attack recording controls.
+- 同时提供发行版与开发版；开发版包含编号测试起终点和轻攻击录制操作。
+
+### Version 1.11.3
+
+- Regional maps now draw routes through their linked areas, including XiMeng on the Pangzhen chart.
+- 区域地图会显示所属子区域的路线，包括庞镇地图上的戏梦山庄路线。
+- Improved jump-down connections and show the best checked route so far while a full route is still being found or after a timeout.
+- 改善跳落路段的连接。完整路线仍在计算或计算超时时，先显示当前已验证的最佳路段。
+
 ### Version 1.11.2
 
 - Rebuilt navigation across 11 worlds with on-demand loading of compressed map data.

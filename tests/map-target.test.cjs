@@ -14,7 +14,7 @@ function fixture(options={}){
   node:()=>0,reachable:()=>new Set([0]),sameComponent:(a,b)=>a===b};
  const vector=v=>({x:v.X??v.x,y:v.Y??v.y,z:v.Z??v.z});
  const W={alive:o=>!!o,vec:p=>p,plain:vector,norm:s=>String(s)};
- const map={ProjectWorldLocationToMap:project,GetMapIDByLocation:()=>area};
+ const map={ProjectWorldLocationToMap:project,GetMapIDByLocation:options.mapAt||(()=>area)};
  const UE={BlueprintPathsLibrary:{FileExists:()=>false},ESlateVisibility:{HitTestInvisible:0,Collapsed:1,Hidden:2},ECommonInputType:{Gamepad:1},
   MapSubsystem:{StaticClass:()=> 'map'},BellManager:{StaticClass:()=> 'bell'},
   PBZUIActionRouterBase:{StaticClass:()=> 'router'},Key:function(name){this.KeyName=name;},Vector2D:function(X,Y){this.X=X;this.Y=Y;},
@@ -31,17 +31,31 @@ function fixture(options={}){
   './PBZRouteSurface':{anchors:()=>[{id:0,r:0,dz:0}]},'./PBZPrivateRibbon':{},'./PBZRouteInk':{},
   './PBZRoutePassages':{},'./PBZRouteMinimap':{},'./PBZRouteScout':{}};
  const module={exports:{}};
- const hook='\nexports.test={S,confirmMapItem,bindPadTap,frame:onMap,surveys(tasks){diagnostics={event(){},survey:new (require("./PBZRouteSurvey").Survey)({tasks,build:{},root:"",write:()=>true})};surveyTracker=new (require("./PBZRouteSurveyTracker").SurveyTracker)(tasks);},fromTracker:item=>trackerChanged(item,"selected"),bridge(value){globalThis.PBZMapTrackerBridge={target:value};tracker={choose:(host,item)=>value.choose(item.tracked)};},click(h,uv){pointers.set(h,{take:()=>[{type:"pin",uv}],hold(){},cancel(){}});onMap(h);},init(g){graphs.set(g.name,g);ink={draw(){},hide(){}};threads={hide(){}};solve=()=>{};}};';
+ const hook='\nexports.test={S,confirmMapItem,bindPadTap,frame:onMap,surveys(tasks){diagnostics={event(){},survey:new (require("./PBZRouteSurvey").Survey)({tasks,build:{},root:"",write:()=>true})};surveyTracker=new (require("./PBZRouteSurveyTracker").SurveyTracker)(tasks);},fromTracker:item=>trackerChanged(item,"selected"),bridge(value){globalThis.PBZMapTrackerBridge={target:value};tracker={choose:(host,item)=>value.choose(item.tracked)};},click(h,uv){pointers.set(h,{take:()=>[{type:"pin",uv}],hold(){},cancel(){}});onMap(h);},init(g,draw){graphs.set(g.name,g);ink={draw,hide(){}};threads={hide(){}};solve=()=>{};}};';
  const Clock=options.now?class extends Date{static now(){return options.now();}}:Date;
  vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZQuestRoute.js','utf8')+hook+'\n})',{Date:Clock,console:{log:s=>logs.push(s)}})
   (id=>Object.hasOwn(mocks,id)?mocks[id]:require(path.resolve(root,id)),module,module.exports);
- const api=module.exports.test;api.init(g);Object.assign(api.S,{pawn:{},level:name,world:{feet:()=>feet}});
+ const api=module.exports.test;api.init(g,options.draw||(()=>{}));Object.assign(api.S,{pawn:{},level:name,world:{feet:()=>feet}});
  const widget={GetVisibility:()=>0,slot:{GetPosition:()=>({X:500,Y:500}),GetSize:()=>({X:32,Y:32})}};
  const h={FocusPoint:{X:.5,Y:.5},focusItemMap:new Map([[bell.id,{itemType:0,widget}]]),CurrentDisplayMapID:area,CurrentMapSize:()=>({X:1000,Y:1000}),PBZMapCanvasSlotWeak:{GetPosition:()=>({X:0,Y:0})},
   getMouseLocalPosition:()=>({X:500,Y:500}),getCurrentInputType:()=>0,
   mapIDToBigMapID:id=>['pangzhen','houjie','ximeng'].includes(String(id).toLowerCase())?'pangzhen':String(id).toLowerCase()};
  return {api,h,g,project,logs,click:(uv={x:.5,y:.5})=>api.click(h,uv)};
 }
+
+test('the regional paper map projects XiMeng route points with their native area and excludes another chart',()=>{
+ const start={x:-198856,y:62721,z:9461},other={x:100,y:900,z:30};
+ const h=fixture({mapAt:p=>p.x<0?'XiMeng':'XiGu',project:(p,area)=>area==='XiMeng'?{X:.4,Y:.6}:{X:0,Y:0},
+  draw:(host,S,project,display,allowed)=>{
+   assert.equal(display,'pbz_pangzhen_wp');
+   assert.equal(allowed(start,'pbz_ximeng_wp'),true);
+   assert.equal(allowed(other,'pbz_xigu_wp'),false);
+   const uv=project(start);assert.equal(uv.x,.4);assert.equal(uv.y,.6);
+  }});
+ h.h.CurrentDisplayMapID='PangZhen';
+ h.api.S.level='pbz_ximeng_wp';
+ h.api.frame(h.h);
+});
 
 function padFixture(options){
  const h=fixture(options),focused=[],chosen=[];

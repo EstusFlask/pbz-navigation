@@ -129,3 +129,18 @@ test('the map preserves a checked right-angle detour instead of rounding through
   assert.ok(!(p.X<500-.01&&p.Y>100+.01),'cosmetic smoothing drew a shortcut inside the wall at '+JSON.stringify(p));
  }
 });
+
+test('a merged regional chart draws the visible part of a route from another streamed world',()=>{
+ const h=widgets(),module={exports:{}};
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteInk.js','utf8')+'\n})')(
+  id=>id==='ue'?h.UE:id==='./PBZRouteWorld'?h.W:id==='./PBZRoutePassages'?{}:require(path.resolve(root,id)),module,module.exports);
+ const ink=new module.exports.Ink('',()=>{}),host={WidgetTree:{RootWidget:new h.Widget('map-root')},
+  PBZMapCanvasSlotWeak:{GetPosition:()=>({X:0,Y:0})},CurrentDisplayMapID:'PangZhen',CurrentLayer:0,CurrentMapSize:()=>({X:1000,Y:1000})};
+ const points=[{x:100,y:100,z:9460},{x:300,y:100,z:9460},{x:400,y:100,z:8920},{x:600,y:100,z:8920}];
+ const S={world:{feet:()=>points[0]},level:'pbz_ximeng_wp',arrival:{},cfg:{MapRoute:true},version:1,active:0,
+  trip:{legs:[{world:'pbz_ximeng_wp',points},{world:'pbz_xigu_wp',points}]}};
+ ink.draw(host,S,p=>({x:p.x/1000,y:p.y/1000}),'pbz_pangzhen_wp',(p,world)=>world==='pbz_ximeng_wp'&&p.x<=400,true);
+ const images=h.made.filter(w=>w.type==='image'&&w.visibility===0);assert.ok(images.length);
+ assert.ok(images.some(w=>w.slot.position.X>300),'the descent was not projected');
+ assert.ok(images.every(w=>w.slot.position.X<401),'an off-chart run was painted');
+});

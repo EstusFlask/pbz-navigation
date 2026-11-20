@@ -291,6 +291,32 @@ class WorldCache{
   // beyond it. Let this same immutable Detour window decide endpoint coverage.
   return this.leg(world,yield* session.planner.routeJob([a.x,a.y,a.z],[b.x,b.y,b.z]));
  }
+ // Bell ranking may use a directed terrain chain outside the resident window.
+ // Return only an estimate; no far-side route points may be drawn before travel.
+ *bellArrival(world,a,b,policy){
+  const session=this.localSession,active=this.pages?.current??this.pages;
+  if(!session||session.world!==world||session.planner!==active?.window?.planner||!active?.corridors)return null;
+  if(this.pages?.manifest?.kind==='multi-grid-world'){
+   const from=this.pages.select([a.x,a.y,a.z]),to=this.pages.select([b.x,b.y,b.z]);
+   if(from.id!==to.id||this.pages.currentID!==from.id)return null;
+  }
+  const source=this.movementCorridors(world),envelope=policy||MovementIndex.walkingEnvelope;
+  const actionSource=source?{*fromJob(id){
+   const rows=yield* source.fromJob(id);
+   return rows.filter(row=>row.kind==='surface'||policy&&row.entry[2]-row.exit[2]<=envelope.maxHeightCm&&
+    Math.hypot(row.entry[0]-row.exit[0],row.entry[1]-row.exit[1])<=envelope.maxRunCm);
+  }}:undefined;
+  const corridor=yield* active.corridors.path([a.x,a.y,a.z],[b.x,b.y,b.z],this.states,
+   {maxCoarseNodes:2048,actionSource,excludedActions:this.movementExclusions()});
+  if(!corridor?.length)return null;
+  let previous=a,length=0;
+  for(const row of corridor)if(row.viaEntry&&row.viaExit){
+   const entry=row.viaReverse?row.viaExit:row.viaEntry,exit=row.viaReverse?row.viaEntry:row.viaExit;
+   const p={x:entry[0],y:entry[1],z:entry[2]},q={x:exit[0],y:exit[1],z:exit[2]};
+   length+=R.dist(previous,p)+R.dist(p,q);previous=q;
+  }
+  return {meters:Math.max(R.dist(a,b),length+R.dist(previous,b))/100,evidence:'recast-topology'};
+ }
  *routeEndpointLocal(world,a,b){
   const session=this.localSession,active=this.pages?.current??this.pages;
   if(!session||session.world!==world||session.planner!==active?.window?.planner||session.planner.destroyed||!active?.routeJob||!active.window?.holdWindow||!active.window?.restoreWindow)return null;
@@ -358,12 +384,45 @@ class WorldCache{
   const result=yield* session.planner.actionTopologyJob([start.x,start.y,start.z],[goal.x,goal.y,goal.z],features,{relevantOnly:true,maxRankedFeatures:1024,pendingMechanisms:true,...topologyGoals(additionalGoals),...(diverseRecovery?{diverseRecovery:true}:{})});
   this.report('recast action topology',JSON.stringify(result.stats));return result;
  }
+ *indexedMovements(world,start,goal,policy,bounds,vertical,priority,nearFall){
+  const io={priority,nearFall,manifest:this.api.movementManifest};
+  if(this.api.readText)Object.assign(io,{state:this.movementStorage||={},core:()=>this.core||this.load('./PBZRecastRuntime'),readText:file=>this.api.readText((this.api.movementDataRoot||this.api.dataRoot+'/../PBZRouteMovementData')+'/'+world+'/'+file)});
+  return yield* MovementIndex.candidates(world,this.index,start,goal,policy,bounds,this.pages?.currentID,vertical,io);
+ }
+ *preferredFalls(world,start,goal,policy){
+  const session=this.localSession,active=this.pages?.current??this.pages;
+  if(!policy||!session||session.world!==world||session.planner!==active?.window?.planner||!this.corridorActions?.length)return [];
+  const result=new Map(),excluded=this.movementExclusions();
+  for(const guid of this.corridorActions.slice(0,12)){
+  if(!guid.startsWith('recast-movement:')||this.corridorDirections?.get(guid)!==1)continue;
+  const pads=this.corridorPads?.get(guid);
+  if(!pads)continue;
+  const {entry,exit}=pads;
+  if(entry[2]-exit[2]<100)continue;
+  const bounds=[Math.min(entry[0],exit[0])-900,Math.min(entry[1],exit[1])-900,
+   Math.max(entry[0],exit[0])+900,Math.max(entry[1],exit[1])+900];
+  const vertical=[exit[2]-120,entry[2]+120];
+  const saved=yield* this.indexedMovements(world,start,goal,policy,bounds,vertical,new Set([guid]),pads);
+  if(!saved||session!==this.localSession)return [];
+  const nearest=[];
+  for(const [i,feature] of saved.entries()){
+   if(!excluded?.has(feature.guid)){
+    const score=MovementIndex.distance(feature.path[0],entry)+MovementIndex.distance(feature.path[1],exit);
+    const at=nearest.findIndex(row=>row.score>score);
+    if(at>=0)nearest.splice(at,0,{feature,score});
+    else if(nearest.length<24)nearest.push({feature,score});
+    if(nearest.length>24)nearest.pop();
+   }
+   if((i&31)===31)yield;
+  }
+  for(const row of nearest)result.set(row.feature.guid,row.feature);
+  }
+  return [...result.values()];
+ }
  *dropCandidates(world,start,goal,seeds,policy){
   const session=this.localSession,active=this.pages?.current??this.pages;if(!session||session.world!==world||session.planner!==active?.window?.planner||!session.planner.dropCandidatesJob)return[];
   const priority=new Set((this.corridorActions||[]).filter(guid=>guid.startsWith('recast-movement:')));
-  const io={priority,manifest:this.api.movementManifest};
-  if(this.api.readText)Object.assign(io,{state:this.movementStorage||={},core:()=>this.core||this.load('./PBZRecastRuntime'),readText:file=>this.api.readText((this.api.movementDataRoot||this.api.dataRoot+'/../PBZRouteMovementData')+'/'+world+'/'+file)});
-  const saved=yield* MovementIndex.candidates(world,this.index,start,goal,policy,session.bounds,this.pages?.currentID,session.vertical,io);
+  const saved=yield* this.indexedMovements(world,start,goal,policy,session.bounds,session.vertical,priority);
   if(saved?.length||saved?.deferred?.length||saved?.coverageComplete){
    const primary=yield* stageMovements(this,world,start,goal,saved,saved.deferred||[],this.movementExclusions());
    this.report('recast movement proposals',JSON.stringify({world,count:primary.length,deferred:primary.deferredCount,coverageComplete:!!saved.coverageComplete,source:'offline geometry; current scene verification required'}));return primary;
@@ -410,6 +469,7 @@ class RecastCache{
  routeLocal(world,a,b){return this.active===this.worlds?this.worlds.routeLocal(world,a,b):this.regional.route(world,a,b);}
  endpointCandidates(world,p){return this.active===this.worlds?this.worlds.endpointCandidates(world,p):(function*(){return[];})();}
  routeEndpointLocal(world,a,b){return this.active===this.worlds?this.worlds.routeEndpointLocal(world,a,b):(function*(){return null;})();}
+ bellArrival(world,a,b,policy){return this.active===this.worlds?this.worlds.bellArrival(world,a,b,policy):(function*(){return null;})();}
  walkingAlternative(world,a,b){return this.active===this.worlds?this.worlds.walkingAlternative(world,a,b):(function*(){return null;})();}
  *routeAlternateMovement(world,a,b,excludedActions){
   if(this.active===this.worlds)return yield* this.worlds.routeAlternateMovement(world,a,b,excludedActions);
@@ -431,6 +491,10 @@ class RecastCache{
   const rows=yield* planner.dropCandidatesJob([[start.x,start.y,start.z],...seeds.map(p=>[p.x,p.y,p.z])],{...(policy||MovementIndex.walkingEnvelope),maxRiseCm:200});
   const recovered=[],primary=yield* MovementIndex.boundaryFeatures(rows,recovered,!policy);
   return yield* stageMovements(this,world,start,goal,primary,recovered);
+ }
+ *preferredFalls(world,start,goal,policy){
+  if(this.active!==this.worlds)return [];
+  return yield* this.worlds.preferredFalls(world,start,goal,policy);
  }
  moreMovementCandidates(world,start,goal){return this.active===this.worlds?this.worlds.moreMovementCandidates(world,start,goal):takeDeferred(this,world,start,goal);}
  actionCorridorActions(){return this.active===this.worlds?this.worlds.actionCorridorActions():[];}

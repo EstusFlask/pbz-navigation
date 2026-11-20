@@ -22,7 +22,8 @@
         "captureSchema": 1
       },
       "exactManifestPassed": true,
-      "crcPassed": true
+      "crcPassed": true,
+      "retainedArchive": "build/release-archive/20261120-before-1.11.3/Quest_and_Exploration_Navigation_Fork_1.11.2.zip"
     },
     {
       "version": "1.9.4",
@@ -97,7 +98,9 @@
       "proof": [
         "build/nexus-release-1.11.2/nexus-public-descriptions.jpg",
         "build/nexus-release-1.11.2/nexus-public-changelogs.jpg"
-      ]
+      ],
+      "uemmExtractedFolderImportVerified": true,
+      "uemmInstructionsProof": "build/nexus-release-1.11.2/nexus-uemm-install.jpg"
     }
   }
 }

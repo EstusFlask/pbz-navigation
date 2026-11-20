@@ -8,6 +8,7 @@ const movementKind=drop=>drop<100?'surface':'fall';
 const walkingEnvelope=Object.freeze({maxHeightCm:100,maxRunCm:315});
 const movementID=(a,b)=>'recast-movement:'+a.map(Math.round).join(',')+'>'+b.map(Math.round).join(',');
 const feature=(a,b,kind,guid)=>({guid,kind,both:kind==='surface',source:'recast-boundary',path:[a,b]});
+const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
 function* boundaryFeatures(rows,recovered,walkingOnly=false){
  const result=[];
  for(let i=0;i<rows.length;i++){
@@ -23,7 +24,7 @@ function* candidates(world,index,start,goal,policy,bounds,navigationGrid,vertica
  if(manifest.navigationGrid&&manifest.navigationGrid!==navigationGrid)return null;
  const packed=manifest.schema===2&&manifest.kind==='spatial-geometry-movement-proposals';
  if(manifest.world!==world||manifest.sourceIndexSHA256!==index.sourceIndexSHA256||!packed&&(manifest.schema!==1||manifest.kind!=='geometry-movement-proposals'||manifest.pages>256))return null;
- const envelope=policy||walkingEnvelope;
+ const envelope=policy||walkingEnvelope,nearFall=io?.nearFall;
  const rows=[],deferred=[],seen=new Set(),maximum=Number(envelope.maxRunCm),height=Number(envelope.maxHeightCm);
  const maxDetour=R.dist(start,goal)+15000;
  let pages,reader;
@@ -31,7 +32,7 @@ function* candidates(world,index,start,goal,policy,bounds,navigationGrid,vertica
   if(!io?.readText||!io?.core||!io?.state)return null;
   const key=world+'/'+manifest.sourceIndexSHA256+'/'+manifest.packedFromManifestSHA256;
   if(io.state.key!==key){io.state.reader?.clear();io.state.reader=new(require('./PBZRouteMovementStore').Reader)(manifest,io.readText,io.core());io.state.key=key;}
-  reader=io.state.reader;const query=bounds||[Math.min(start.x,goal.x)-maximum,Math.min(start.y,goal.y)-maximum,Math.max(start.x,goal.x)+maximum,Math.max(start.y,goal.y)+maximum];pages=yield* reader.descriptorsJob(query);
+  reader=io.state.reader;const query=bounds||[Math.min(start.x,goal.x)-maximum,Math.min(start.y,goal.y)-maximum,Math.max(start.x,goal.x)+maximum,Math.max(start.y,goal.y)+maximum];pages=yield* reader.descriptorsJob(query,nearFall?vertical:undefined);
  }else pages=Array.from({length:manifest.pages},(_,i)=>i);
  for(const page of pages){
   let data;if(reader)data=yield* reader.pageJob(page);else{try{data=require('./PBZRouteMovementData/'+world+'/'+page).rows;}catch(_){return null;}yield;}
@@ -58,6 +59,8 @@ function* candidates(world,index,start,goal,policy,bounds,navigationGrid,vertica
    if(outsideBand&&!io?.priority?.size)continue;
    const ap=row.slice(0,3),bp=row.slice(3),guid=movementID(ap,bp);
    if(outsideBand&&!io.priority.has(guid)||seen.has(guid))continue;
+   if(nearFall&&(kind!=='fall'||Math.abs(az-nearFall.entry[2])>120||Math.abs(bz-nearFall.exit[2])>120||
+    distance(ap,nearFall.entry)>900||distance(bp,nearFall.exit)>900))continue;
    seen.add(guid);
    const candidate=feature(ap,bp,kind,guid);
    if(vertical&&[a,b].some(p=>p.z<vertical[0]||p.z>vertical[1]))deferred.push(candidate);else rows.push(candidate);
@@ -78,3 +81,4 @@ function* candidates(world,index,start,goal,policy,bounds,navigationGrid,vertica
 }
 exports.candidates=candidates;exports.boundaryFeatures=boundaryFeatures;
 exports.walkingEnvelope=walkingEnvelope;
+exports.distance=distance;

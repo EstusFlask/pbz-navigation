@@ -3,6 +3,25 @@ const test=require('node:test'),assert=require('node:assert/strict'),path=requir
 const root=path.resolve(__dirname,'../Quest_Navigation/ProjectPBZ/PBZModLoader/mods/PBZQuestRoute'),D=require(root+'/PBZRouteDrops'),T=require(root+'/PBZRouteTransitions');
 const p=(x,z=0)=>({x,y:0,z}),run=job=>{let row,n=0;do{row=job.next();assert.ok(++n<100000);}while(!row.done);return row.value;};
 const policy={maxHeightCm:1150,maxRunCm:900,gravityCm:2156,speedCm:600,jumpVelocityCm:420,canJump:true};
+test('full-size air sweeps clear normal standing floor contact while still rejecting a real obstruction',()=>{
+ const module={exports:{}};
+ vm.runInNewContext('(function(require,module,exports){'+fs.readFileSync(root+'/PBZRouteWorld.js','utf8')+'\n})')(
+  id=>['ue','puerts'].includes(id)?{}:require(path.resolve(root,id)),module,module.exports);
+ const world=Object.create(module.exports.Ground.prototype),floor=q=>q.x<=40?{...q,z:500}:q.x>=220?{...q,z:0}:null;
+ let obstruction=false;
+ Object.assign(world,{r:45,h:95,rise:45,normal:.7,dropPolicy:()=>policy,floorAt:floor,step:()=>({why:'ledge'}),
+  hit(a,b,body,owners,walking){
+   assert.ok(body&&!walking);
+   const support=floor(a),offset=a.z+2-(support?.z??-Infinity);
+   if(b.z===a.z-190&&support)return {nz:1,center:{...support,z:support.z+this.h}};
+   if(obstruction&&Math.max(a.x,b.x)>=110&&Math.min(a.x,b.x)<=110)return {point:p(110,390),normal:{x:-1,y:0,z:0}};
+   return [a,b].some(q=>q.z+2<=(floor(q)?.z??-Infinity)+1e-8)?{point:offset<1e-8?a:b,normal:{x:0,y:0,z:1}}:null;
+  }});
+ const result=run(D.inspect(world,p(0,500),p(300)));
+ assert.ok(result.ok,result.why);assert.equal(result.launch,'jump');
+ obstruction=true;
+ assert.equal(run(D.inspect(world,p(0,500),p(300))).why,'drop trajectory capsule obstructed');
+});
 test('the eroded navigation lip follows checked physical ground before jumping down',()=>{
  const floor=q=>q.x<=100?{...q,z:500}:q.x>=240?{...q,z:0}:null,trace=[];
  const world={r:45,dropPolicy:()=>policy,floorAt:floor,standAt:q=>q,step:(a,b)=>b.x<=100?{p:floor(b)}:{why:'ledge'},airHit:(a,b)=>{trace.push(a);return a.x<75&&a.z<520?{point:a}:null;}};

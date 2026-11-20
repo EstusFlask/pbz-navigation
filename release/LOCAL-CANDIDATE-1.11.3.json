@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "version": "1.11.3",
+  "clientDate": "2026-11-20",
+  "packages": [
+    {
+      "version": "1.11.3",
+      "flavor": "release",
+      "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.3.zip",
+      "bytes": 2555862998,
+      "sha256": "3e1b45ac20747c5c01eb209a2ed4e845ae6731475666673acc2aed685d3119c6",
+      "archiveEntries": 5335,
+      "uncompressedBytes": 3743851074,
+      "profile": {
+        "version": "1.11.3",
+        "flavor": "release",
+        "label": "1.11.3",
+        "development": false,
+        "sourceSHA256": "8d757e3de8dacbc7aed375417bfbdcf3f36047a0c42f94b93e1cd60b18bbf8cf",
+        "captureSchema": 1
+      },
+      "exactManifestPassed": true,
+      "crcPassed": true
+    }
+  ],
+  "validation": {
+    "sourceJsTestsPassed": 680,
+    "focusedJsTestsPassed": 76,
+    "nativeAdapterTestsPassed": true,
+    "offlineWorldCount": 11,
+    "offlineRouteCandidates": {
+      "complete": 47,
+      "total": 47,
+      "routeShapeChanges": []
+    },
+    "bambooTrailCookedJumpClearance": {
+      "tested": 7,
+      "clearWithStandingGap": 6,
+      "remainedObstructed": 1,
+      "evidence": "build/field-items-map-20261120/chest-air-contact-compare.json"
+    },
+    "inGameAcceptance": false,
+    "luaAdapterTestsPassed": true,
+    "worldPackageSourceTestsPassed": true
+  },
+  "nexus": {
+    "status": "published",
+    "modId": 994,
+    "replacesMainFileId": 4697,
+    "optionalFileId": 4696,
+    "optionalFileVersion": "1.9.4",
+    "mainFileId": 4703,
+    "mainFileVersion": "1.11.3",
+    "mainPrimary": true,
+    "publicFilesUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
+    "previousMainArchived": true,
+    "publicFileDescriptionVerified": true,
+    "publicChangelogVerified": true,
+    "publicDescriptionVerified": true,
+    "uemmExtractionInstructionsVerified": true,
+    "scanUponVerification": "in progress",
+    "scanMonitoring": false,
+    "proof": [
+      "build/nexus-release-1.11.3/nexus-files.jpg",
+      "build/nexus-release-1.11.3/nexus-changelog.jpg"
+    ]
+  }
+}

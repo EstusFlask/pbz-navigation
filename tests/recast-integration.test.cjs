@@ -54,6 +54,69 @@ test('an uncovered empty proposal page reaches bounded action discovery before e
  assert.equal(discovered,1);assert.deepEqual(r.value.map(row=>[row.kind,row.both]),[['fall',false],['surface',true]],'only upward-capable geometric surfaces should expose a separately checked reverse direction');
 });
 
+test('nearby descent candidates keep only usable directions and a bounded shortlist',()=>{
+ const world='pbz_test',entry=[40,80,550],exit=[170,120,0],guid='recast-movement:40,80,550>170,120,0';
+ const start={x:0,y:0,z:550},goal={x:2000,y:0,z:0},policy={maxHeightCm:750,maxRunCm:500};
+ const cache=new WorldCache(()=>{}, {},()=>{},()=>{},()=>0),planner={};
+ Object.assign(cache,{world,pages:{window:{planner}},localSession:{world,planner},index:{actors:[{id:'deck',movementRequiresPassable:[guid]}]},
+  corridorActions:[guid],corridorPads:new Map([[guid,{entry,exit}]]),corridorDirections:new Map([[guid,1]])});
+ let reads=0;
+ cache.indexedMovements=function*(name,a,b,p,bounds,height,priority,pads){
+  reads++;assert.equal(name,world);assert.equal(p,policy);assert.deepEqual(pads,{entry,exit});
+  assert.deepEqual(height,[-120,670]);assert.equal(priority.has(guid),true);
+  return [{guid,kind:'fall',path:[entry,exit]},...Array.from({length:40},(_,i)=>({
+   guid:'nearby-'+i,kind:'fall',path:[[entry[0]+i+1,entry[1],entry[2]],exit]}))];
+ };
+ for(const state of [undefined,true]){
+  cache.states={deck:state};
+  const shortlist=drain(cache.preferredFalls(world,start,goal,policy));
+  assert.equal(shortlist.length,24);
+  assert.equal(shortlist[0].guid,state===true?guid:'nearby-0');
+  assert.equal(shortlist.some(f=>f.guid===guid),state===true);
+ }
+ cache.corridorDirections.set(guid,2);
+ assert.deepEqual(drain(cache.preferredFalls(world,start,goal,policy)),[]);
+ assert.equal(reads,2);
+});
+
+test('bell access estimates preserve the resident planner, fall capabilities and closed decks',()=>{
+ const world='pbz_test',planner={},start={x:0,y:0,z:600},goal={x:1000,y:0,z:0};
+ const guid='recast-movement:fall',cache=new WorldCache(()=>{}, {},()=>{},()=>{},()=>0);
+ const rows=[{guid,kind:'fall',entry:[0,0,600],exit:[400,0,0]},
+  {guid:'too-deep',kind:'fall',entry:[0,0,1600],exit:[400,0,0]}];
+ const session={world,planner};let allowed,exclusions;
+ const active={window:{planner},corridors:{*path(a,b,states,options){
+  allowed=yield* options.actionSource.fromJob(0);exclusions=options.excludedActions;yield;
+  return allowed.some(row=>!exclusions?.has(row.guid))?[{viaEntry:rows[0].entry,viaExit:rows[0].exit}]:null;
+ }}};
+ Object.assign(cache,{index:{actors:[{id:'deck',movementRequiresPassable:[guid]}]},states:{deck:true},pages:active,localSession:session});
+ cache.movementCorridors=()=>({*fromJob(){return rows;}});
+ const policy={maxHeightCm:900,maxRunCm:600};
+ const estimate=drain(cache.bellArrival(world,start,goal,policy));
+ assert.equal(estimate.evidence,'recast-topology');assert.ok(estimate.meters>=Math.hypot(1000,600)/100);
+ assert.deepEqual(allowed.map(row=>row.guid),[guid]);assert.equal(estimate.points,undefined);
+ assert.equal(cache.localSession,session);assert.equal(active.window.planner,planner);
+ cache.states.deck=false;assert.equal(drain(cache.bellArrival(world,start,goal,policy)),null);
+ cache.states.deck=true;assert.equal(drain(cache.bellArrival(world,start,goal)),null);
+ const job=cache.bellArrival(world,start,goal,policy);job.next();job.return();
+ assert.equal(cache.localSession,session);assert.equal(active.window.planner,planner);
+});
+
+test('a tower descent chain keeps bounded alternatives for every selected landing',()=>{
+ const world='pbz_test',planner={},cache=new WorldCache(()=>{}, {},()=>{},()=>{},()=>0);
+ const a='recast-movement:first',b='recast-movement:second';
+ Object.assign(cache,{index:{actors:[]},states:{},pages:{window:{planner}},localSession:{world,planner},
+  corridorActions:[a,b],corridorDirections:new Map([[a,1],[b,1]]),
+  corridorPads:new Map([[a,{entry:[0,0,1500],exit:[100,0,800]}],[b,{entry:[200,0,800],exit:[300,0,0]}]])});
+ cache.indexedMovements=function*(w,start,goal,policy,bounds,vertical,priority,pads){
+  return Array.from({length:40},(_,i)=>({guid:[...priority][0]+'-'+i,kind:'fall',path:[pads.entry,pads.exit]}));
+ };
+ const shortlist=drain(cache.preferredFalls(world,{x:0,y:0,z:1500},{x:1000,y:0,z:0},{maxHeightCm:1000}));
+ assert.equal(shortlist.length,48);
+ assert.equal(shortlist.filter(f=>f.guid.startsWith(a)).length,24);
+ assert.equal(shortlist.filter(f=>f.guid.startsWith(b)).length,24);
+});
+
 test('measured recovery proposals do not preempt the original valid route candidates',()=>{
  const world='pbz_test',start={x:0,y:0,z:550},goal={x:200,y:0,z:0},cache=new WorldCache(()=>{}, {},()=>{},()=>{},()=>0);
  const planner={*dropCandidatesJob(){return [

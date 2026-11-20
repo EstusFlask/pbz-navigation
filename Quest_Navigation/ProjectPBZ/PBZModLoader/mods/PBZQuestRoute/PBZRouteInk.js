@@ -30,19 +30,19 @@ class Ink{
   const chart=id=>String(host.mapIDToBigMapID?.(id)||id||'').toLowerCase();
   const display=chart(host.CurrentDisplayMapID);
   const cross=transfer&&chart(transfer.from.area)!==chart(transfer.to.area);
-  const flag=enabled&&!overview&&S.arrival.completedTarget!==S.manual?.key&&S.manual?.area===String(host.CurrentDisplayMapID).toLowerCase()?S.manual:null;
+  const flag=enabled&&!overview&&S.arrival.completedTarget!==S.manual?.key&&S.manual?.area&&chart(S.manual.area)===display?S.manual:null;
   const lookoutHint=enabled&&!overview&&display==='zhengdaodaying'&&S.lookoutHint;
   if(!S.cfg.MapRoute||(overview&&!cross)||(!lookoutHint&&!flag&&(!enabled||!S.trip))){this.hide(host);return;}
   const map=host.PBZMapCanvasSlotWeak;if(!W.alive(map))return;s=this.layer(host);if(!s)return;if(!s.shown){s.canvas.SetVisibility(visible);s.shown=true;}
   const size=host.CurrentMapSize(),w=Number(size.X),h=Number(size.Y);
   const origin=map.GetPosition(),left=Number(origin.X),top=Number(origin.Y),geom=[left,top,w,h].join('/');
   if(geom!==s.geom){s.slot.SetPosition(V(left,top));s.slot.SetSize(V(w,h));s.geom=geom;}
-  const active=S.trip?.legs[S.active],feet=S.world.feet(),close=active?.world===displayWorld?R.nearestOnLine(feet,active.points):null;
+  const active=S.trip?.legs[S.active],feet=S.world.feet(),close=active?.world===(S.level||displayWorld)?R.nearestOnLine(feet,active.points):null;
   const trim=close?.p&&close.d<235?close:null;
   const focus=String(host.SlotWidgetGroup?.GetSelectedSlotID?.()||"").toLowerCase();
   const sig=[overview,focus,S.version,S.active,S.contextEpoch,S.arrival.completedTarget,flag?.key,S.routeStatus,enabled,S.lockVersion,host.CurrentDisplayMapID,host.CurrentLayer,w,h,trim?.i,trim?Math.round(trim.t*6):0].join('/');
   if(s.sig===sig||w<=0||h<=0)return;
-  const uvKey=[S.version,overview,display,host.CurrentLayer].join('/');
+  const uvKey=[S.version,S.contextEpoch,overview,host.CurrentDisplayMapID,host.CurrentLayer].join('/');
   if(s.uvKey!==uvKey){s.uvKey=uvKey;s.legUV=new WeakMap();}
   let ni=0,nt=0,count=0,gateCount=0,breaks=0,travelled=0;
   const tex=(name)=>s.textures[name]||(s.textures[name]=UE.KismetRenderingLibrary.ImportFileAsTexture2D(host,this.path+name+".png"));
@@ -54,7 +54,7 @@ class Ink{
     const f=wid.Font;f.Size=13;wid.SetFont(f);wid.SetShadowOffset(V(1,1));wid.SetShadowColorAndOpacity(C(.16,.10,.06,.92));ob={wid,sl};s.labels.push(ob);}
    ob.wid.SetText(str);ob.wid.SetColorAndOpacity(new UE.SlateColor(col,UE.ESlateColorStylingMode.UseColor_Specified));ob.sl.SetPosition(V(x,y));ob.wid.SetVisibility(visible);};
   const px=u=>({x:u.x*w,y:u.y*h});const chalk=C(1,1,1,1),light=C(.99,.955,.83,1);
-  const legs=!overview&&enabled&&S.trip?S.trip.legs.slice(S.active).filter(l=>l.world===displayWorld):[];
+  const legs=!overview&&enabled&&S.trip?S.trip.legs.slice(S.active):[];
   // Only merge collinear samples. Pixel-tolerance simplification and cosmetic
   // corner rounding changed the checked detour into an unchecked wall chord.
   const paintRun=(raw,style="walk")=>{if(raw.length<2)return;const ps=simplify(raw,.000001);
@@ -72,15 +72,19 @@ class Ink{
    if(W.alive(widget)){const pos=UE.WidgetLayoutLibrary.SlotAsCanvasSlot(widget)?.GetPosition();if(pos){const uv={x:Number(pos.X)/w,y:Number(pos.Y)/h};if(UV.valid(uv))return uv;}}
    const p={x:bell.at[0],y:bell.at[1],z:bell.at[2]},u=project(p,bell.area);return UV.valid(u)?u:null;
   };
+  let visibleLegs=0;
   for(const leg of legs){
+   const belongs=p=>allowed(p,leg.world);
    let trace=s.legUV.get(leg);
    if(!trace){
     let startUV=null,endUV=null;const t=S.trip.transfer;
     if(t&&leg===S.trip.legs[0])endUV=bellUV(t.from);
     if(t&&leg===S.trip.legs[1])startUV=bellUV(t.to);
     if(flag?.item&&leg===S.trip.legs[S.trip.legs.length-1]&&R.xy(leg.points[leg.points.length-1],flag.p)<220)endUV=flag.uv;
-    trace=Charts.projectLeg(leg.points,project,allowed,startUV,endUV);s.legUV.set(leg,trace);
+    trace=Charts.projectLeg(leg.points,project,belongs,startUV,endUV);s.legUV.set(leg,trace);
    }
+   if(!trace.runs.length)continue;
+   visibleLegs++;
    breaks+=trace.repairs;
    const skip=leg===active&&trim?trace.offsets[trim.i]+(trace.offsets[trim.i+1]-trace.offsets[trim.i])*trim.t:0;
    const cuts=Obstacles.intervals(leg);
@@ -89,12 +93,12 @@ class Ink{
    if(leg.roadbook){const at=leg.points[trim?.i||0],u=project(at);if(UV.valid(u)){const p=px(u);label('路书路线 · '+leg.roadbook.name,p.x+12,p.y+17,light);}}
    const used=new Set();
    for(const move of leg.moves||[]){
-    const title=Passages.title(move);if(!title||used.has(move.guid)||!allowed(move.p))continue;
+    const title=Passages.title(move);if(!title||used.has(move.guid)||!belongs(move.p))continue;
     const u=project(move.p);if(!UV.valid(u))continue;used.add(move.guid);
     const pos=px(u);label(title,pos.x+10,pos.y-13,light);
-    if(move.kind==='lift'&&move.end&&allowed(move.end)){const out=project(move.end);if(UV.valid(out)&&R.xy(px(out),pos)>36){const v=px(out);label('↥',v.x+4,v.y-6,light);}}
+    if(move.kind==='lift'&&move.end&&belongs(move.end)){const out=project(move.end);if(UV.valid(out)&&R.xy(px(out),pos)>36){const v=px(out);label('↥',v.x+4,v.y-6,light);}}
    }
-   for(const gate of leg.locks||[]){if(!allowed(gate.p))continue;const uv=project(gate.p);if(!UV.valid(uv))continue;
+   for(const gate of leg.locks||[]){if(!belongs(gate.p))continue;const uv=project(gate.p);if(!UV.valid(uv))continue;
     const p=px(uv),tint=gate.unknown?C(.86,.79,.62,1):C(1,.12,.075,1);
     if(gate.icon==='barrier'){
      for(const [x1,y1,x2,y2]of [[-13,-11,13,11],[-13,11,13,-11],[-16,15,-7,15],[7,15,16,15]])
@@ -124,8 +128,8 @@ class Ink{
    else if(!S.trip)label('暂未找到连通道路',p.x+24,p.y+18,C(.95,.76,.57,1));}
   for(let i=ni;i<s.images.length;i++)s.images[i].wid.SetVisibility(hidden);for(let i=nt;i<s.labels.length;i++)s.labels[i].wid.SetVisibility(hidden);
   s.sig=sig;
-  const summary=[S.version,overview,display,legs.length,breaks,!!transfer].join('/');
-  if(s.logged!==summary){s.logged=summary;this.log('ink','chart='+display+' legs='+legs.length+' repaired seams='+breaks+' transfer='+!!transfer);}
+  const summary=[S.version,overview,display,visibleLegs,breaks,!!transfer].join('/');
+  if(s.logged!==summary){s.logged=summary;this.log('ink','chart='+display+' legs='+visibleLegs+' repaired seams='+breaks+' transfer='+!!transfer);}
  }
 }
 exports.Ink=Ink;

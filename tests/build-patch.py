@@ -34,6 +34,8 @@ if release['archive'] != archive_name(version,'release'):
     raise SystemExit('Archive must be the current version in dist/')
 (root/'dist').mkdir(exist_ok=True)
 assert (nav/'platform/steam/ue4ss/Mods/PBZQuestRouteCompat/dlls/main.dll').is_file(), 'Build native adapter first'
+config = nav / 'platform/steam/ue4ss/Mods/PBZQuestRouteCompat/Scripts/PBZRouteConfig.lua'
+assert "modVersion='"+version+"'" in config.read_text(encoding='utf-8'), 'Sync the settings provider version before packaging'
 subprocess.run(['node','--expose-gc',str(root/'tests/stream-atlas.cjs')],check=True)
 streamed=root/'build/streamed-atlas'
 stream_state=json.loads((streamed/'manifest.json').read_text(encoding='utf-8'))

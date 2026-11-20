@@ -92,6 +92,51 @@ test('a custom Recast route retries the wider walking corridor before stopping a
  const trip=run(h.api.makePlan(h.dest));assert.equal(widened,1);assert.ok(trip&&!trip.legs[0].partial,'a wider real walking corridor was never requested');
 });
 
+for(const outcome of ['unresolved','timeout','complete','blocked','detour'])test('a checked Recast frontier remains visible until a complete route replaces it: '+outcome,()=>{
+ const start={x:0,y:0,z:0},goal={x:2500,y:0,z:450},end={x:800,y:0,z:0};
+ let now=1000,finished=false;
+ const path=(world,points,partial)=>({world,provider:'recast',points,checks:[],moves:[],gates:[],
+  walks:[],partial,meters:8});
+ const recast={RecastCache:class{
+  covers(){return true;}
+  *route(world){return path(world,[start,outcome==='detour'?{x:-800,y:0,z:0}:end],true);}
+  *walkingAlternative(world,a,b){
+   while(outcome==='timeout')yield;
+   if(outcome==='complete'){while(!finished)yield;return path(world,[start,{x:1300,y:400,z:200},b],false);}
+   return null;
+  }
+ }};
+ const world={floorAt:p=>p,step:(a,b)=>outcome==='blocked'&&b.x>350?{hit:b,why:'blocked body clearance'}:{p:b}};
+ const h=planner(world,{quiet:true,start,recast,now:()=>now});
+ Object.assign(h.goal,goal);
+ h.api.arm(h.dest);h.api.planning.clock=()=>now;
+ h.api.solve(h.dest,'selection');
+ for(let i=0;i<5;i++){now+=20;h.api.planning.pump();}
+ const preview=h.api.S.trip?.legs[0];
+ assert.ok(preview?.diagnostic&&preview.partial);
+ assert.ok(h.api.S.line.length>1);
+ assert.ok(preview.points.slice(0,preview.verifiedEndIndex+1).every(p=>p.x<=(outcome==='blocked'?350:800)));
+ assert.match(h.api.S.routeStatus,/已确认路段/);
+ if(outcome==='timeout'){now+=31000;h.api.planning.pump();assert.match(h.api.S.routeStatus,/超时/);}
+ if(outcome==='complete'){finished=true;now+=20;h.api.planning.pump();}
+ assert.equal(h.api.planning.pending,false);
+ assert.equal(h.api.S.trip?.legs[0].partial,outcome!=='complete');
+ if(outcome==='complete')assert.equal(h.api.S.routeStatus,'');
+ assert.deepEqual(h.goal,goal);
+});
+
+test('a covered nearby item can walk around a wall when the resident mesh and native query have no route',()=>{
+ const start={x:0,y:0,z:0},target={x:700,y:0,z:0};
+ const world={floorAt:p=>({...p,z:0}),step:(a,b)=>Math.min(a.x,b.x)<350&&Math.max(a.x,b.x)>=350&&Math.min(a.y,b.y)<180?
+  {hit:b,why:'blocked body clearance'}:{p:{...b,z:0}}};
+ const recast={RecastCache:class{covers(){return true;}*route(){return null;}}};
+ const h=planner(world,{quiet:true,start,recast,localWalk:require(root+'/PBZRouteLocalWalk')});Object.assign(h.goal,target);h.dest.provider='187';
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0,previewPartial:true}));
+ assert.ok(trip&&!trip.legs[0].partial,'a normal checked detour was skipped in Recast coverage');
+ assert.ok(trip.legs[0].points.some(p=>p.y>=180));
+ assert.ok(trip.legs[0].points.slice(1).every((p,i)=>world.step(trip.legs[0].points[i],p).p),'the accepted detour crosses the wall');
+});
+
 test('covered custom targets use a clear same-floor approach instead of the colliding marker centre',()=>{
  const target={x:1000,y:0,z:0},attempts=[],recast={RecastCache:class{covers(){return true;}*route(world,a,b){attempts.push({...b});return null;}*routeLocal(world,a,b){attempts.push({...b});if(Math.hypot(b.x-target.x,b.y-target.y)<60)return null;return{world,provider:'recast',points:[a,b],moves:[],walks:[],checks:[],gates:[],partial:false,meters:10};}}};
  const h=planner({floorAt:p=>p,hit:(a,b,body)=>body&&Math.hypot(a.x-target.x,a.y-target.y)<60?{point:a}:null,step:(a,b)=>({p:b})},{quiet:true,recast});Object.assign(h.goal,target);
@@ -168,6 +213,46 @@ test('a failed focused movement chain retries deferred heights before declaring 
  const passages={refreshLadders(){},resetLadders(){},isLookout:()=>false,liveRouteJob:function*(g,w,start,goal,native,options){phases.push(options.features.map(f=>f.guid));if(!options.features.some(f=>f.guid==='lower'))return null;return{legs:[{world:'test',points:[start,goal],checks:[],moves:[],gates:[],walks:[],partial:false,meters:16}],transfer:null};}};
  const h=planner({floorAt:p=>p,step:(a,b)=>({p:b}),dropPolicy:()=>({maxHeightCm:1100,maxRunCm:800})},{quiet:true,recast,passages});Object.assign(h.goal,{x:1600,y:0,z:0});
  const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));assert.ok(trip&&!trip.legs[0].partial);assert.equal(retried,1);assert.deepEqual(phases,[['near'],['near','lower']]);
+});
+
+for(const obstructed of [false,true])test('a nearby lower item tries the selected descent before the full search: '+obstructed,()=>{
+ const chosen='recast-movement:selected',alternative='recast-movement:alternate';
+ const start={x:0,y:0,z:550},path=[[350,0,550],[500,0,0]],calls=[];let proofs=0;
+ const features=[chosen,alternative].map(guid=>({guid,kind:'fall',source:'recast-boundary',path}));
+ const recast={RecastCache:class{
+  covers(){return true;}
+  *route(){return null;}
+  *preferredFalls(){calls.push('nearby');return features;}
+  *dropCandidates(){calls.push('full');return features;}
+  actionCorridorActions(){return [chosen];}
+ }};
+ const passages={isLookout:()=>false,*liveRouteJob(g,w,a,b,native,options){
+  if(options.geometryOnly){
+   assert.deepEqual(options.features,features);
+   options.report('action rejected',{guid:chosen,source:'recast-boundary',knownBlocked:true});
+   if(obstructed){
+    options.report('action rejected',{guid:alternative,source:'recast-boundary',unknown:true});
+    return null;
+   }
+  }else{
+   assert.ok(obstructed,'the full scan held up a valid descent');
+   assert.equal(options.excludedDirections.get(chosen),1);
+   assert.equal(options.excludedDirections.has(alternative),false);
+  }
+  const [entry,exit]=options.geometryOnly?path.map(([x,y,z])=>({x,y,z})):[a,b];
+  const checks=options.geometryOnly?[{kind:12,mode:'fall',a:entry,b:exit,edge:-1,guid:alternative,from:1,to:2}]:[];
+  const moves=options.geometryOnly?[{kind:'fall',guid:alternative,from:1,to:2}]:[];
+  return {legs:[{world:'test',points:[a,entry,exit,b],checks,moves,gates:[],walks:[],meters:16}],transfer:null};
+ }};
+ const world={floorAt:p=>p,step:(a,b)=>({p:b}),dropPolicy:()=>({maxHeightCm:1100,maxRunCm:800})};
+ const h=planner(world,{quiet:true,start,recast,passages,drops:{*recheck(){proofs++;return {ok:true};}}});
+ const target={x:1500,y:0,z:0};Object.assign(h.goal,target);
+ const result=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(result&&!result.legs[0].partial);
+ assert.deepEqual(calls,obstructed?['nearby','full']:['nearby']);
+ assert.equal(proofs,obstructed?0:1);
+ assert.deepEqual(h.goal,target);
+ if(!obstructed)assert.equal(result.legs[0].moves[0].guid,alternative);
 });
 
 test('focused and deferred movement searches share the original 24-connector limit',()=>{
@@ -1939,6 +2024,37 @@ for(const mode of ['connected','partial scene','blocked departure','arrival disc
  if(mode==='deadline'){assert.equal(remote,1);assert.equal(closed,true);assert.equal(clock,300);}
  if(mode==='direct')assert.ok(trip&&!trip.legs[0].partial);
  assert.equal(h.dest.p.x,mode==='direct'?4000:20000);
+});
+
+test('a bell arrival with a directed terrain chain remains a pending transfer, never a drawn chord',()=>{
+ const R=require(root+'/PBZRouteCore');let inspected=0;
+ const recast={RecastCache:class{
+  covers(){return true;}
+  *route(){return null;}
+  *routeLocal(world,a,b){return a.x<1000&&b.x<1000?{world,provider:'recast',points:[a,b],walks:[],checks:[],gates:[],moves:[],meters:R.dist(a,b)/100}:null;}
+  *bellArrival(world,a,b){inspected++;return a.x>=17000?{meters:35,evidence:'recast-topology'}:null;}
+ }};
+ const h=bellHarness(false,undefined,[],{recast});
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.ok(inspected>0);assert.equal(trip?.transfer?.to.id,'item-bell');
+ assert.equal(trip.transfer.evidence,'recast-topology');
+ assert.equal(trip.legs[1].points.length,1);assert.equal(trip.legs[1].arrivalPending,true);
+});
+
+for(const activated of [true,false])test('a nearby disconnected item still considers only activated transfer bells: '+activated,()=>{
+ const R=require(root+'/PBZRouteCore');
+ const recast={RecastCache:class{
+  covers(){return true;}
+  *route(){return null;}
+  *routeLocal(world,a,b){
+   if(a.x<1000&&b.x<1000||a.x>=1700&&b.x>=1900)return {world,provider:'recast',points:[a,b],walks:[],checks:[],gates:[],moves:[],meters:R.dist(a,b)/100};
+   return null;
+  }
+ }};
+ const h=bellHarness(false,undefined,[],{recast,activeBellIDs:activated?['start-bell','item-bell']:['start-bell']});
+ h.bells[1].at=[1800,0,500];Object.assign(h.goal,{x:2200,y:0,z:500});
+ const trip=run(h.api.makePlan(h.dest,false,false,false,{clock:()=>0}));
+ assert.equal(trip?.transfer?.to.id,activated?'item-bell':undefined);
 });
 
 test('an unloaded valley item still gets a checked route to a transfer bell',()=>{

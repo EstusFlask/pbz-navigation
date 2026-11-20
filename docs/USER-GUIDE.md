@@ -1,15 +1,17 @@
 # 任务与探索导航 / Quest and Exploration Navigation
 
-版本 / Version **1.11.2** · 实验版 / Experimental
+版本 / Version **1.11.4** · 实验版 / Experimental
 
 本地实验版扩展从游戏碰撞重建的世界导航，按需加载普通步行路线。门、战斗雾门和藤蔓仍取决于当前状态；未加载或未确认的路段会停止指引。攀爬、跳跃和机关通路仍受动作覆盖限制，尚未完成全图规则与实机全程验收，无需运行额外 EXE。
+
+物品暂时找不到完整路线时，会尝试玩家已发现并启用、且未被禁用传送的铃铛；传送后继续为原物品规划。搜索中保留当前已确认的最佳路段，必要的绕路可以先背离目标，遇到阻挡或未加载区域时停止蓝线。
 
 ## 安装与更新
 
 区域导航首次加载时显示进度；加载失败会显示不可用状态，计算超时或中断会保留原因与重试提示。替换版本后须重启游戏。
 
 1. 退出游戏，保留原配置。安装所需的PBZModLoader。
-2. 使用UE Mod Manager导入完整ZIP并替换旧导航；或将包内`ProjectPBZ`和`platform`合并到游戏根目录。只启用一份导航。
+2. 先解压 ZIP，再用 UE Mod Manager 导入包含 `ProjectPBZ` 和 `platform` 的解压目录并替换旧导航。手动安装时，将这两个文件夹合并到游戏根目录。只启用一份导航。
 3. 使用收集物导航时，另行安装Map Tracker Plus及其所需的UE4SS；这些Mod不包含在本包内。
 4. 标准包和文件名带`Development`的开发包选择一个安装，互相替换，保留配置后重启游戏。
 
@@ -47,7 +49,7 @@
 
 ## Installation and controls
 
-Install PBZModLoader, then import the complete ZIP into UE Mod Manager or merge its `ProjectPBZ` and `platform` folders into the game root. Keep one navigation installation and preserve your settings.
+Install PBZModLoader and extract the ZIP. Import the extracted folder containing `ProjectPBZ` and `platform` into UE Mod Manager. For a manual install, merge those two extracted folders into the game root. Keep one navigation installation and preserve your settings.
 
 Select a map target and follow the map route/blue guide. With a supported tracker, hover an item and press the middle mouse button, or use the D-pad and press A on a controller. Climbing, grappling, jumping and sailing remain manual. Mods Menu is optional for the existing navigation settings. For rope colors, install PbzModConfig and UE4SS, then open the Mods settings page → Quest & Exploration Navigation → Rope color. Choose Red, Blue (default), or Custom to show the color picker. Changes apply within about one second and persist in PBZQuestRoute-settings.json in the actual ProjectPBZ/Saved directory. Map Tracker is optional for this setting.
 

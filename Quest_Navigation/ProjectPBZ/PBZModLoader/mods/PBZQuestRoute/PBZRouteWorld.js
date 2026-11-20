@@ -3,6 +3,7 @@ const UE=require('ue'),P=require('puerts'),R=require('./PBZRouteCore');
 const vec=p=>new UE.Vector(p.x,p.y,p.z),plain=p=>p?{x:Number(p.X),y:Number(p.Y),z:Number(p.Z)}:null;
 function alive(o){try{return !!o&&UE.KismetSystemLibrary.IsValid(o);}catch(_){return false;}}
 const norm=s=>String(s||'').toLowerCase().split('/').pop().split('.').pop().replace(/^uedpie_\d+_/,'');
+const airTraceLift=2,standingFloorGap=2.15;
 const walkable=(w,h)=>!!h&&(typeof h.walkable==='boolean'?h.walkable:h.nz>=w.normal-.025);
 function contact(w,h,ground=true){
  let component=h.Component;try{if(component&&!component.GetOwner&&component.Get)component=component.Get();}catch(_){component=null;}
@@ -74,7 +75,7 @@ class Ground{
   // their downward direction. Only add the reverse complex sweep after misses.
   for(let pass=0;pass<(body?3:2);pass++){
    tail[1]=pass>0;reversed=pass===2;this.calls++;
-   if(body){const lift=walking?this.rise+3:2,half=walking?Math.max(this.r,this.h-lift/2):this.h;const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(reversed?db:da),vec(reversed?da:db),Math.max(5,this.r*.98),half,...tail);}
+   if(body){const lift=walking?this.rise+3:airTraceLift,half=walking?Math.max(this.r,this.h-lift/2):this.h;const da={...a,z:a.z+lift+half},db={...b,z:b.z+lift+half};yes=k.CapsuleTraceSingleByProfile(this.pawn,vec(reversed?db:da),vec(reversed?da:db),Math.max(5,this.r*.98),half,...tail);}
    else yes=k.LineTraceSingleByProfile(this.pawn,vec(a),vec(b),...tail);
    if(yes&&P.$unref(o)?.bBlockingHit)break;
   }
@@ -137,7 +138,10 @@ class Ground{
  airHit(a,b){return this.hit(a,b,true,false,false);}
  standAt(p){
   const hit=this.hit({...p,z:p.z+this.rise+50},{...p,z:p.z-this.rise-50},true,false,false);
-  return hit&&!hit.penetrating&&hit.nz>=this.normal-.025&&R.finite(hit.center)?{x:p.x,y:p.y,z:hit.center.z-this.h-2}:null;
+  // The sweep reports the capsule center at floor contact. Leave the normal
+  // standing clearance so air sweeps at takeoff and landing start clear.
+  return hit&&!hit.penetrating&&hit.nz>=this.normal-.025&&R.finite(hit.center)?
+   {x:p.x,y:p.y,z:hit.center.z-this.h-airTraceLift+standingFloorGap}:null;
  }
  snapshot(p){
   const m=this.pawn?.CharacterMovement;
@@ -205,7 +209,14 @@ class Ground{
    else {
     const rule=this.slopeRules?.blocked(from,hit.point);
     if(rule)return {hit:hit.point,why:'forced slope slide uphill',block:rule};
-    const wall=this.hit(from,hit.point,true);
+    let wall=this.hit(from,hit.point,true);
+    // Raising the capsule clears legal stair risers, but can entirely skip a
+    // thin wall below MaxStepHeight between two level floor samples. Without
+    // a measured step onto its top, require full-height clearance as well.
+    if(!wall&&Math.abs(hit.point.z-from.z)<=3){
+     const low=this.hit(from,hit.point,true,false,false);
+     if(low&&low.nz<this.normal-.025)wall=low;
+    }
     if(wall){const block=this.describeBlocker?.(wall.actor);failure={hit:wall.point,normal:wall.normal,owners:wall.owners,why:'blocked body clearance',block,locked:!!block?.locked,collision:wall};}
     else return {p:hit.point,points:[hit.point]};
    }

@@ -60,11 +60,16 @@ def summarize(manifest, chunks):
     comparison = None
     if baseline:
         at, points, leg = baseline
+        first = next((s for s in samples if point(s.get('feet'))), None)
+        origin_offset = distance(first['feet'], points[0]) / 100 if first else None
+        delay = (at - first['at']) / 1000 if first else None
         # Bound offline work on very dense routes; the actual points remain in the report.
         selected = [s for s in samples if s['at'] >= at and point(s.get('feet'))]
         stride = max(1, math.ceil(len(selected) * len(points) / 1500000))
         deviations = sorted(line_distance(s['feet'], points) / 100 for s in selected[::stride])
         comparison = dict(at=at, provider=leg.get('provider'), direction=leg.get('searchDirection'),
+                          originOffsetMeters=origin_offset, secondsFromCaptureStart=delay,
+                          fullCaptureComparison=origin_offset is not None and origin_offset <= 6.5 and abs(delay) <= 1,
                           plannedMeters=sum(distance(a, b) for a, b in zip(points, points[1:])) / 100,
                           sampledDeviationCount=len(deviations), deviationStride=stride,
                           medianDeviationMeters=deviations[len(deviations) // 2] if deviations else None,
@@ -99,7 +104,10 @@ def markdown(surveys):
                       f"- 有界缓冲裁剪：{s['dropped'] or '无'}", ''])
         if s['comparison']:
             c = s['comparison']
-            lines.append(f"首次捕获的完整规划：{c['plannedMeters']:.1f} 米，{c['provider']} / {c['direction']}。")
+            scope = '全程规划对照' if c['fullCaptureComparison'] else '仅末段规划对照，不代表从补采起点找到全程'
+            lines.append(f"{scope}：{c['plannedMeters']:.1f} 米，{c['provider']} / {c['direction']}。")
+            if c['originOffsetMeters'] is not None:
+                lines.append(f"规划起点距采集初始脚点 {c['originOffsetMeters']:.1f} 米，快照距采集开始 {c['secondsFromCaptureStart']:.1f} 秒。")
             if c['sampledDeviationCount']:
                 lines.append(f"后续脚点到该折线的距离中位数/P95：{c['medianDeviationMeters']:.2f}/{c['p95DeviationMeters']:.2f} 米。动作、改道和重算需结合原始记录复核。")
             else:

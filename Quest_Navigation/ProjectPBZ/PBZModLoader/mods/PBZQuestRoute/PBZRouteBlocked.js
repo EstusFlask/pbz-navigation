@@ -62,9 +62,21 @@ function offer(context,leg,start,goal){
  if(previous?.goalTopology&&!leg.goalTopology)return;
  if(regressesFromActions(previous,leg,goal))return;
  const safe=leg.points[leg.verifiedEndIndex],score=R.extent(leg.points.slice(0,leg.verifiedEndIndex+1));
- if(previous&&priority<rank(previous)&&(priority===0||score<context.bestScore+50))return;
- if(previous&&priority>=1&&score<context.bestScore-1)return;
- const old=context.best?.legs[0],oldSafe=old?.points[old.verifiedEndIndex],block=leg.obstacles?.[0],oldBlock=old?.obstacles?.[0];
+ const oldSafe=previous?.points[previous.verifiedEndIndex],block=leg.obstacles?.[0],oldBlock=previous?.obstacles?.[0];
+ if(context.previewPartial&&R.finite(goal)){
+  const proposed=canGuide(leg)&&score>0&&R.finite(safe),retained=canGuide(previous)&&context.bestScore>0&&R.finite(oldSafe);
+  // A real corridor can initially lead away from an item around a wall or
+  // down a tower. Keep that checked route when it is the only available one.
+  if(leg.previewFrontier&&!proposed)return;
+  if(retained&&!proposed)return;
+  if(retained&&proposed&&(!leg.goalTopology||previous.goalTopology)){
+   const delta=R.dist(safe,goal)-R.dist(oldSafe,goal);
+   if(delta>50||Math.abs(delta)<=50&&score>context.bestScore+50)return;
+  }
+ }else{
+  if(previous&&priority<rank(previous)&&(priority===0||score<context.bestScore+50))return;
+  if(previous&&priority>=1&&score<context.bestScore-1)return;
+ }
  if(oldSafe&&score<context.bestScore+50&&R.dist(safe,oldSafe)<75&&block&&oldBlock&&
   block.unknown===oldBlock.unknown&&block.locked===oldBlock.locked&&R.dist(block.p,oldBlock.p)<75)return;
  context.best={legs:[leg],transfer:null};context.bestScore=score;

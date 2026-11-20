@@ -4,7 +4,7 @@ local json = Core.json
 local M = {}
 local function text(en, zh, hant) return {en=en, ['zh-Hans']=zh, ['zh-Hant']=hant or zh} end
 M.descriptor = {
-    apiVersion=1, modId='PBZQuestRoute', modVersion='1.11.2', schemaVersion=1,
+    apiVersion=1, modId='PBZQuestRoute', modVersion='1.11.4', schemaVersion=1,
     displayName=text('Quest & Exploration Navigation', '任务与探索导航', '任務與探索導航'),
     groups={{id='thread', label=text('Guiding thread', '导航绳子', '導航繩子'), order=0}},
     entries={

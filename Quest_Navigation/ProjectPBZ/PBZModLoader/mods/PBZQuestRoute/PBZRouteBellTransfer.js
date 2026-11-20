@@ -32,11 +32,13 @@ function* plan(startGraph,goalGraph,start,goal,bells,options={}){
     if(reaches(excluded,at,goal))continue;
    }finally{goalGraph.allowBlockedTraverse=previous;}
   }
-  const connected=reaches(route,at,goal),inspection=connected&&options.inspectArrival?(yield* options.inspectArrival(route,bell)):null;
+  const walking=reaches(route,at,goal),access=!walking&&options.arrivalAccess?(yield* options.arrivalAccess(at,goal,bell)):null;
+  const connected=walking||Number.isFinite(access?.meters)&&access.meters>=R.dist(at,goal)/100-.01;
+  const inspection=walking&&options.inspectArrival?(yield* options.inspectArrival(route,bell)):null;
   if(inspection?.blocked||options.connectedArrivalsOnly&&!connected)continue;
-  const distance=R.dist(at,goal)/100,estimate=connected?route.meters:distance*1.8+50;
+  const distance=R.dist(at,goal)/100,estimate=walking?route.meters:connected?access.meters:distance*1.8+50;
   arrivals.push({bell,estimate,evidence:inspection?.verified?2:connected?1:0,
-   cost:distance+Math.max(0,estimate-(distance*2.5+50))});yield;
+   cost:distance+Math.max(0,estimate-(distance*2.5+50)),source:access?.evidence});yield;
  }
  if(!arrivals.length)return null;
  arrivals.sort(rank);
@@ -88,7 +90,7 @@ function* plan(startGraph,goalGraph,start,goal,bells,options={}){
    const end=point(arrival.bell);
    best={legs:[leg,{world:goalGraph.name,points:[end],meters:0,walks:[],moves:[],checks:[],gates:[],
     partial:true,arrivalPending:true}],transfer:{from:bell,to:arrival.bell,estimatedMeters:score,
-     evidence:['proximity',options.connectedEvidence||'atlas','checked'][arrival.evidence],arrivalPending:true}};
+     evidence:arrival.source||['proximity',options.connectedEvidence||'atlas','checked'][arrival.evidence],arrivalPending:true}};
    bestArrival=arrival;
   }
  }

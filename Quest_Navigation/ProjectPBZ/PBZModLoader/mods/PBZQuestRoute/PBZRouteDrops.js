@@ -75,7 +75,11 @@ function* inspect(w,a,b,mode='fall',preferred){
     const locked=w.blockAt?.(previous,next);
     if(locked){failure??={ok:false,unknown:false,p:locked.p,why:'locked passage',block:locked};blocked=true;break;}
     const hit=w.airHit?w.airHit(previous,next):w.hit(previous,next,true);yield;
-    if(hit){failure??={ok:false,unknown:false,obstructed:true,p:hit.point||previous,why:'drop trajectory capsule obstructed'};blocked=true;break;}
+    if(hit){
+     failure??={ok:false,unknown:false,obstructed:true,p:hit.point||previous,why:'drop trajectory capsule obstructed',
+      flight:{launch,sample:i,samples:steps,point:hit.point,normal:hit.normal,penetrating:!!hit.penetrating,reverse:!!hit.reverse}};
+     blocked=true;break;
+    }
     points.push(next);previous=next;
    }
    if(!blocked)return{ok:true,points,walkIn:takeoff,launch,kind};

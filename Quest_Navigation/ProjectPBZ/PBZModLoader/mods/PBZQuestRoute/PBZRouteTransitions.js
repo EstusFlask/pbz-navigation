@@ -424,7 +424,7 @@ function* route(options){
       const failure=validation?.ok===false?validation:null;
       disabled.add(action);rejected.push({guid:feature.guid,kind:feature.kind,why:!entry?'entry support/clearance':!exit?'exit support/clearance':failure?.why||'action approach',
        ...(failure?{unknown:failure.unknown!==false,knownBlocked:feature.source==='recast-boundary'&&failure.unknown===false&&failure.obstructed===true}:{})});
-      options.report?.('action rejected',{...rejected.at(-1),source:feature.source,reverse:path[0]!==feature.runtimePath[0]});
+      options.report?.('action rejected',{...rejected.at(-1),source:feature.source,reverse:path[0]!==feature.runtimePath[0],flight:failure?.flight});
       yield* refill(action);failed=true;break;
      }
      padsMoved||=R.dist(action.entry,entry)>0||R.dist(action.exit,exit)>0;

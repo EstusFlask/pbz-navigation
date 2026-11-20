@@ -1,5 +1,5 @@
 {
-  "status": "published",
+  "status": "local-candidate",
   "draftId": 994,
   "draftEditUrl": "https://www.nexusmods.com/games/phantombladezero/mods/994/edit/general",
   "draftSavedSections": [
@@ -9,8 +9,8 @@
   ],
   "draftFileUploaded": true,
   "name": "Quest and Exploration Navigation - Fork",
-  "version": "1.11.2",
-  "offlineWorldStage": "build/offline-navigation/integration-release-1.11.2",
+  "version": "1.11.4",
+  "offlineWorldStage": "build/offline-navigation/integration-release-1.11.4",
   "offlineWorldCount": 11,
   "upstreamVersion": "0.8.5-beta",
   "localPatchBase": "0.8.5-local-fix5",
@@ -19,10 +19,10 @@
   "language": "Any",
   "shortDescription": "Quest, collectible and bell navigation with map routes and a guiding rope. Choose the 11-world experimental edition or the smaller Lite edition. / 任务、收集物和铃铛导航，提供地图路线和引导绳，可选 11 个世界的实验版或小体积 Lite 版。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
-  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2.zip",
-  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.2",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.4",
   "fileCategory": "Main Files",
-  "fileDescription": "Experimental navigation across 11 worlds with improved wall runs, automatic slides, grapples and changing mechanisms. / 11 个世界的实验性导航，改善连续跑墙、自动滑坡、钩索和机关通路引导。",
+  "fileDescription": "Improved activated-bell fallback, tower descent planning and checked route previews. Release and Development editions. / 改善已启用铃铛中转、塔内连续下降与已确认路段显示，提供发行版和开发版。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -75,19 +75,19 @@
     "source": "User confirmed that permission from the original author had already been obtained."
   },
   "published": true,
-  "lastVerifiedNexusVersion": "1.11.2",
+  "lastVerifiedNexusVersion": "1.11.3",
   "modUrl": "https://www.nexusmods.com/phantombladezero/mods/994",
   "latestTextUpdate": {
     "date": "2026-11-20",
     "timezone": "America/Tijuana",
-    "version": "1.11.2",
+    "version": "1.11.3",
     "sections": [
-      "General: bilingual short description, edition selection, switching instructions and current coverage",
-      "Files: bilingual descriptions and changelogs for 1.11.2 and 1.9.4 Lite"
+      "General: synchronized bilingual version references and verified UE Mod Manager extraction instructions",
+      "Files: verified the 1.11.3 bilingual file description and changelog"
     ],
     "descriptionChanged": true,
     "verifiedOnPublicPage": true,
-    "evidence": "release/LOCAL-CANDIDATE-1.11.2.json"
+    "evidence": "release/LOCAL-CANDIDATE-1.11.3.json"
   },
   "localCandidate": {
     "version": "1.7.1",
@@ -117,17 +117,17 @@
   },
   "latestFileUpdate": {
     "date": "2026-11-20",
-    "version": "1.11.2",
-    "fileId": 4697,
-    "replacesFileId": 4030,
+    "version": "1.11.3",
+    "fileId": 4703,
+    "replacesFileId": 4697,
     "previousFileArchived": true,
-    "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2.zip",
+    "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.3.zip",
     "optionalFileId": 4696,
     "optionalFileVersion": "1.9.4",
     "publicFilesUrl": "https://www.nexusmods.com/phantombladezero/mods/994?tab=files",
     "publicFilesVerified": true,
     "scanMonitoring": false,
-    "evidence": "release/LOCAL-CANDIDATE-1.11.2.json",
+    "evidence": "release/LOCAL-CANDIDATE-1.11.3.json",
     "publicFileDescriptionVerified": true
   },
   "publishingPreferences": {
@@ -145,8 +145,8 @@
     "verifiedOnPublicPage": true,
     "evidence": "release/NEXUS-CHANGELOG-CLEANUP-20261114.json"
   },
-  "localCandidateVersion": "1.11.2",
-  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.2_Development.zip",
+  "localCandidateVersion": "1.11.4",
+  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4_Development.zip",
   "previousLocalCandidate": {
     "version": "1.9.3",
     "date": "2026-11-15",

@@ -1,11 +1,11 @@
 [size=5][b]Quest and Exploration Navigation - Fork[/b][/size]
-[b]Version 1.11.2 | Experimental[/b]
+[b]Version 1.11.3 | Experimental[/b]
 Navigation for quests, map pins, collectibles and bells, with routes on the regional map and a raised guiding rope in the game world. Based on [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333's Quest and Exploration Navigation 0.8.5-beta[/url], independently maintained by kurosakana.
 
 [size=4][b]Which file to install[/b][/size]
 Choose one ZIP under [url=https://www.nexusmods.com/phantombladezero/mods/994?tab=files]Files[/url].
 [list]
-[*][b]1.11.2 Full:[/b] Experimental collision-based navigation across 11 worlds.[/*]
+[*][b]1.11.3 Full:[/b] Experimental collision-based navigation across 11 worlds.[/*]
 [*][b]1.9.4 Lite:[/b] Smaller standalone edition using the navigation data from before the full-world rebuild.[/*]
 [/list]
 To switch from Full to Lite, close the game and uninstall Full in UE Mod Manager before installing Lite. Keep your settings file.
@@ -49,7 +49,7 @@ Guidance depends on the passages and mechanisms currently available. At a closed
 [*][b]Optional settings menu:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/149]Mods Menu 0.7.2 (#149)[/url].[/*]
 [*][b]For collectible sync/hints:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/187]Map Tracker Plus 1.0.14 (#187)[/url] and [url=https://www.nexusmods.com/phantombladezero/mods/5]UE4SS for Phantom Blade Zero 1.0.3 (#5)[/url]. Tested UE4SS runtime: [b]v3.0.1-1195-g1ceefac8 Shipping[/b]; its ABI/hash check remains. Other collector versions require compatible service interfaces.[/*]
 [/list]
-Close the game and back up [b]ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt[/b]. Import the complete ZIP into UE Mod Manager as an update, selecting both navigation game files and PBZQuestRouteCompat. For manual installation, disable the older navigation, move its script folder outside the game, and merge the ZIP's ProjectPBZ and platform folders into the game root. Keep only one navigation copy and restart the game.
+Close the game and back up [b]ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt[/b]. For UE Mod Manager, extract the ZIP first. Import the extracted folder containing both ProjectPBZ and platform, then select both the navigation game files and PBZQuestRouteCompat. For manual installation, disable the older navigation, move its script folder outside the game, and merge the extracted ProjectPBZ and platform folders into the game root. Keep only one navigation copy and restart the game.
 
 The package does not include PBZModLoader, UE4SS or the collector. PBZQuestRouteCompat belongs to navigation; leave PbzMapTracker files untouched. When migrating from the old JS collector/navigation, move out the old pbz-map-tracker folder, legacy 0.7.x zzz_PBZQuestRoute_P files and PBZQuestRouteMouse. Do not run both collector generations. Legacy JS-only minimap-route, enlarged-icon and automatic-accessory options have not been ported to the UE4SS collector.
 
@@ -58,13 +58,13 @@ Settings: F9 → Quest & Exploration Navigation - Fork. Config: ProjectPBZ/Conte
 Uninstall through the manager after closing the game. For manual removal, remove only navigation's PBZQuestRoute script/assets folders and PBZQuestRouteCompat adapter, retaining your config, collector and shared runtimes.
 
 [size=5][b]中文说明[/b][/size]
-[b]任务与探索导航 - Fork 1.11.2（实验版）[/b]
+[b]任务与探索导航 - Fork 1.11.3（实验版）[/b]
 在区域地图上显示任务、标记、收集物和铃铛路线，关闭地图后显示离地约 105 厘米的导航引导线。基于 azqwq333 的原版 0.8.5-beta，由 kurosakana 独立维护。
 
 [size=4][b]版本选择[/b][/size]
 在[url=https://www.nexusmods.com/phantombladezero/mods/994?tab=files]文件页[/url]选装一个 ZIP。
 [list]
-[*][b]1.11.2 全图实验版：[/b]包含 11 个世界的碰撞重建导航。[/*]
+[*][b]1.11.3 全图实验版：[/b]包含 11 个世界的碰撞重建导航。[/*]
 [*][b]1.9.4 Lite：[/b]使用全图重建前的导航数据，可独立安装，下载体积更小。[/*]
 [/list]
 从全图版换回 Lite 时，请关闭游戏，先用 UE Mod Manager 卸载全图版，再安装 Lite。保留原配置文件。
@@ -99,7 +99,7 @@ Uninstall through the manager after closing the game. For manual removal, remove
 [b]依赖、安装与排错[/b]
 必需 PBZModLoader #113（1.0.0）；可选设置菜单 Mods Menu #149（0.7.2）。需要收集联动／补充提示时，另装 Map Tracker Plus #187（1.0.14）和 UE4SS #5（1.0.3，v3.0.1-1195-g1ceefac8 Shipping）。运行时 ABI／哈希检查保留，其他收集版本仍须满足服务接口契约。
 
-退出游戏并备份 ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt。将完整 ZIP 导入 UE Mod Manager 更新现有导航，同时选择导航游戏文件与 PBZQuestRouteCompat；或停用旧导航、将旧脚本目录移出游戏后，把 ZIP 的 ProjectPBZ 与 platform 合并到游戏根目录。只启用一份导航并重启游戏。
+退出游戏并备份 ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt。使用 UE Mod Manager 时，请先解压 ZIP，再导入包含 ProjectPBZ 和 platform 的解压目录，同时选择导航游戏文件与 PBZQuestRouteCompat。手动安装时，先停用旧导航、将旧脚本目录移出游戏，再把解压后的 ProjectPBZ 和 platform 合并到游戏根目录。只启用一份导航并重启游戏。
 
 包内不含加载器、UE4SS 本体或收集 Mod。PBZQuestRouteCompat 属于导航，不要替换 PbzMapTracker 文件。迁移时移出旧 JS 收集目录、旧 0.7.x 导航文件及 PBZQuestRouteMouse，不要同时启用两代收集 Mod。旧 JS 专用的小地图路线、放大图标、自动饰品提示尚未迁移到 UE4SS 收集版。
 

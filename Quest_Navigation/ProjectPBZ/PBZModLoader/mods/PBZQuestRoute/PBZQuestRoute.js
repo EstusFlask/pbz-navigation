@@ -27,7 +27,7 @@ const auditor=new Obstacles.Auditor();let guardedLeg=null,guardRetry=0,guardBudg
 const {questIdentity,QuestGate}=require('./PBZRouteSelection');
 const questGate=new QuestGate();
 const {ItemConfirm}=require('./PBZRouteConfirm'),{MinimapRoute}=require('./PBZRouteMinimap');
-const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.11.2';
+const {MapPress}=require('./PBZRouteControls'),{Scout}=require('./PBZRouteScout'),tables=require('./PBZRouteTables').data,BUILD='1.11.4';
 const Build=require('./PBZRouteBuild');
 let diagnostics=null,developerAPI=null,developerPC=null,developerPawn=null,developerWorld=null,developerKeys=null,surveyTracker=null;
 const S={cfg:{LargeItemIcons:true,AutoAccessory:true,MapRoute:true,MinimapRoute:true,WorldThread:true,FogBellSense:true,DisplayMode:'Always'},pawn:null,world:null,level:'',area:'',trip:null,line:[],manual:null,scout:null,routeStatus:'',routeWork:null,version:0,lockVersion:0,expires:0,active:0,contextEpoch:0,arrival:new Arrival()};
@@ -265,6 +265,12 @@ function updateRouteStatus(force=false){
   const progress=recast.loading.total>1?' '+recast.loading.completed+'/'+recast.loading.total:'';
   S.routeStatus=(statusEnglish?'Loading navigation…':'正在加载导航…')+progress;
  }
+ const shown=S.trip?.legs[S.active];
+ if(enabled&&!S.travelPhase&&shown?.partial&&Blocked.canGuide(shown)&&
+    (shown.diagnostic?shown.verifiedEndIndex>0:shown.physicalVerified&&shown.points.length>1)){
+  const label=statusEnglish?'Showing the verified route so far':'当前显示已确认路段，后续路线待确认';
+  S.routeStatus=S.routeStatus?S.routeStatus+'\n'+label:label;
+ }
  const notice=[diagnostics?.notice(now),diagnostics?.survey?.notice(now)].filter(Boolean).join('\n');if(notice&&W.alive(S.pawn)&&!menu)S.routeStatus=notice+(S.routeStatus?'\n'+S.routeStatus:'');
  statusHud?.update(gameContext||S.pawn,S.routeStatus,now);
 }
@@ -318,6 +324,7 @@ function* recastBellTransfer(dest,start,world,context){
  }};
  const job=BellTransfer.plan(mesh,mesh,start,dest.p,bells,{
   connectedArrivalsOnly:true,connectedEvidence:'recast',
+  arrivalAccess:recast.bellArrival?((a,b)=>recast.bellArrival(dest.world,a,b,world.dropPolicy?.())):undefined,
   approaches:(at,bell)=>Goals.approaches(world,at,140,{targetKey:'bell:'+bell.id}),
   ready:function*(p,goals){
    for(const q of goals){
@@ -368,13 +375,22 @@ function* refreshPlanActions(graph,start,goal,context,options){
   }
  }finally{discovery.return();}
 }
+function* rememberRecastFrontier(leg,start,goal,context){
+ const end=leg?.points.at(-1);
+ if(!context.previewPartial||!leg?.partial||leg.conditionalCandidate||!R.finite(end)||R.extent(leg.points)<50)return;
+ const candidate={...leg,obstacles:[],previewFrontier:true};
+ if((yield* proofJob(candidate,false,context,{deferRepair:true}))!==null)return;
+ const frontier=candidate.points.at(-1),last=candidate.points.length-1;
+ Blocked.offer(context,Blocked.fromFailure(candidate,{prefix:candidate.points,prefixLeg:candidate,segment:last,
+  p:frontier,unknown:true,why:'route beyond the checked frontier is unresolved'},goal),start,goal);
+}
 function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=0){
  if(depth===0&&dest.world===S.level&&recast.covers(S.level,S.world.feet(),dest.p)){
   const start=S.world.feet();context.start||={...start};context.goal||={...dest.p};context.goalWorld||=dest.world;
   if(S.world.refreshRulesJob)yield* S.world.refreshRulesJob();
   const routeWorld=context.world||=Locks.constrain(S.world,lockRows,S.level),g=Passages.recastContext?.(S.level)||graphs.get(S.level);
   const tryBellTransfer=function*(){
-   if(context.bellTransferTried||walkOnly||dest.noTransfer||!dest.item||dest.bell||atArrivalBell(dest)||R.dist(start,dest.p)<=2500)return;
+   if(context.bellTransferTried||walkOnly||dest.noTransfer||!dest.item||dest.bell||atArrivalBell(dest))return;
    context.bellTransferTried=true;
    yield* recastBellTransfer(dest,start,routeWorld,context);
   };
@@ -408,7 +424,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
   context.report?.('recast candidate',{points:leg?.points.length||0,partial:leg?.partial,generation:leg?.recastGeneration});
   if(leg&&(!leg.partial||leg.conditionalCandidate)){
    const rejected=yield* proofJob(leg,false,context);if(rejected===null)return yield* finishCandidate({legs:[leg],transfer:null});
-  }
+  }else yield* rememberRecastFrontier(leg,start,dest.p,context);
   const approaches=(yield* Goals.approaches(routeWorld,dest.p,180,{targetKey:dest.key})).filter(p=>R.xy(p,dest.p)<=190&&Math.abs(p.z-dest.p.z)<=110);
   // The marker remains the destination. Nearby standing pads avoid routing
   // into the bell/collectible's own collider or onto its top surface.
@@ -416,17 +432,6 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    const candidate=yield* recast.routeLocal(S.level,start,goal);
    if(candidate&&!candidate.partial){const rejected=yield* proofJob(candidate,false,context);if(rejected===null)return yield* finishCandidate({legs:[candidate],transfer:null});}
   }
-  const endpointRoute=yield* require('./PBZRouteRecastApproach').route(recast,S.level,routeWorld,start,dest.p,approaches,{clock:context.clock,report:context.report});
-  if(endpointRoute){const rejected=yield* proofJob(endpointRoute,false,context);if(rejected===null)return yield* finishCandidate({legs:[endpointRoute],transfer:null});}
-  // Runtime navigation can include a currently deployed surface that differs
-  // from the cooked snapshot. It remains only a candidate: the exact same
-  // live floor/body/lock audit must certify every displayed segment.
-  const native= nativeWalk(start,dest.p,false,context.report?value=>context.report('native covered candidate',value):undefined);
-  if(native){const rejected=yield* proofJob(native,false,context);if(rejected===null)return yield* finishCandidate({legs:[native],transfer:null});}
-  yield* tryBellTransfer();
-  // Walking topology is only one part of navigation. Keep cooked/current
-  // interactions, while every ground connector still uses Recast or live
-  // checked walking. No recorded guide or old atlas geometry enters here.
   const memo=new Map(),clock=context.clock||Date.now;
   const key=(a,b)=>[a.x,a.y,a.z,b.x,b.y,b.z].join('/');memo.set(key(start,dest.p),leg);
   const walkJob=function*(a,b){
@@ -436,6 +441,56 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    // the exact standing pads, before this hypothetical corridor is usable.
    return result.conditionalCandidate?{...result,partial:false}:result;
   };
+  const goals=approaches.length?approaches:[dest.p];
+  const topologyJob=(features,diverse)=>recast.actionTopology(S.level,start,goals[0],features,goals.slice(1),diverse);
+  const completeMovement=trip=>{
+   const mixed=trip?.legs?.[0],end=mixed?.points?.at(-1);
+   if(!mixed||mixed.partial||!R.finite(end)||R.xy(end,dest.p)>190||Math.abs(end.z-dest.p.z)>110)return null;
+   return Object.assign(mixed,{provider:'recast',actionsIntegrated:true,topologyComplete:true,physicalVerified:false,recastGeneration:recast.revision});
+  };
+  const rejectedNearbyFalls=new Map();
+  if(!alternateStage&&g&&typeof Passages.liveRouteJob==='function'&&recast.preferredFalls&&movementConnectors<windowConnectorLimit){
+   const falls=yield* recast.preferredFalls(S.level,start,dest.p,routeWorld.dropPolicy?.());
+   if(falls.length){
+    let connectors=0;
+    const rejectFall=({guid,reverse})=>{
+     const key=String(guid).toLowerCase(),mask=reverse?2:1;
+     rejectedNearbyFalls.set(key,(rejectedNearbyFalls.get(key)??0)|mask);
+     if(recast.actionCorridorDirections?.()?.has(key))
+      rejectedCorridorDirections.set(key,(rejectedCorridorDirections.get(key)??0)|mask);
+    };
+    const trip=yield* Passages.liveRouteJob(g,routeWorld,start,dest.p,nativeWalk,{
+     clock,deadline:clock()+250,walkJob,recast:true,geometryOnly:true,features:falls,goals,
+     priorityActions:recast.actionCorridorActions?.(),topologyJob:recast.actionTopology?(features=>topologyJob(features,false)):null,
+     maxConnectors:Math.min(Math.max(4,(recast.actionCorridorActions?.()?.length||1)*3),windowConnectorLimit-movementConnectors),report:(phase,data)=>{
+      if(phase==='action connector start')connectors=Math.max(connectors,data.id||0);
+      if(phase==='action rejected'&&data.source==='recast-boundary'&&data.knownBlocked)rejectFall(data);
+      context.report?.(phase,data);
+     }});
+    movementConnectors+=connectors;
+    const mixed=completeMovement(trip);
+    if(mixed&&(yield* proofJob(mixed,false,context,{deferRepair:true,onGeometricObstruction:rejectFall}))===null)return trip;
+   }
+  }
+  const endpointRoute=yield* require('./PBZRouteRecastApproach').route(recast,S.level,routeWorld,start,dest.p,approaches,{clock:context.clock,report:context.report});
+  if(endpointRoute){const rejected=yield* proofJob(endpointRoute,false,context);if(rejected===null)return yield* finishCandidate({legs:[endpointRoute],transfer:null});}
+  // A current-scene walking candidate stays subject to the same live checks.
+  const native=nativeWalk(start,dest.p,false,context.report?value=>context.report('native covered candidate',value):undefined);
+  if(native){const rejected=yield* proofJob(native,false,context);if(rejected===null)return yield* finishCandidate({legs:[native],transfer:null});}
+  yield* tryBellTransfer();
+  if(!context.nearbyWalkTried&&dest.item&&dest.provider==='187'&&R.dist(start,dest.p)<=6000){
+   context.nearbyWalkTried=true;
+   const nearby=yield* LocalWalk.search(routeWorld,start,dest.p,{clock,maxDistance:6000,maxNodes:384,maxMs:200,
+    ...(approaches.length?{goals:approaches}:{}),report:context.report,onProgress:progress=>{
+     progress.world=S.level;progress.provider='scene';
+     Blocked.offer(context,Blocked.fromFailure(progress,{prefix:progress.points,prefixLeg:progress,
+      segment:progress.points.length-1,p:progress.points.at(-1),unknown:true,why:'scene search continues'},dest.p),start,dest.p);
+    }});
+   if(nearby&&!nearby.partial){
+    nearby.world=S.level;nearby.provider='scene';
+    if((yield* proofJob(nearby,false,context,{deferRepair:true}))===null)return {legs:[nearby],transfer:null};
+   }
+  }
   if(g&&typeof Passages.liveRouteJob==='function'){
    const priorityActions=recast.actionCorridorActions?.();
    if(priorityActions?.length&&Passages.refreshLoadedJob)
@@ -454,7 +509,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    // confirmed geometric failures; unknown support remains eligible. A new
    // window gets fresh checks, apart from the existing alternate-corridor bans.
    const rejectedMovementDirections=new Map(alternateStage?
-    [...rejectedCorridorDirections].filter(([guid])=>guid.startsWith('recast-movement:')):[]);
+    [...rejectedCorridorDirections].filter(([guid])=>guid.startsWith('recast-movement:')):rejectedNearbyFalls);
    const excludedPlacements=new Map(),airborneDirections=new Map();
    let offeredMixedRoute=false;
    for(let movementStage=0;movementStage<2;movementStage++){
@@ -463,7 +518,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
     const key=String(guid).toLowerCase(),prior=rejectedMovementDirections.get(key)??0,next=prior|(reverse?2:1);
     if(next!==prior){rejectedMovementDirections.set(key,next);addedCollisionExclusion=true;}
    };
-   const trip=yield* Passages.liveRouteJob(g,routeWorld,start,dest.p,nativeWalk,{clock,walkJob,recast:true,features,priorityActions,actionPads:recast.actionCorridorPads?.(),excludedDirections:rejectedMovementDirections,excludedPlacements,airborneDirections,goals:approaches.length?approaches:[dest.p],topologyJob:recast.actionTopology?(features=>recast.actionTopology(S.level,start,approaches[0]||dest.p,features,approaches.slice(1),rejectedMovementDirections.size>0)):null,
+   const trip=yield* Passages.liveRouteJob(g,routeWorld,start,dest.p,nativeWalk,{clock,walkJob,recast:true,features,priorityActions,actionPads:recast.actionCorridorPads?.(),excludedDirections:rejectedMovementDirections,excludedPlacements,airborneDirections,goals,topologyJob:recast.actionTopology?(features=>topologyJob(features,rejectedMovementDirections.size>0)):null,
     actionPadCandidates:recast.actionPadCandidates?(p=>recast.actionPadCandidates(S.level,p)):null,
     maxConnectors:Math.min(windowConnectorLimit-movementConnectors,movementStage===0&&features.deferredCount?8:24),report:(phase,data)=>{
     if(phase==='action connector start')stageConnectors=Math.max(stageConnectors,data.id||0);
@@ -484,10 +539,9 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
      if(diagnostic)Blocked.offer(context,diagnostic,start,dest.p);
     }});
    movementConnectors+=stageConnectors;
-   const mixed=trip?.legs?.[0],end=mixed?.points?.at(-1);
-   if(mixed&&!mixed.partial&&R.finite(end)&&R.xy(end,dest.p)<=190&&Math.abs(end.z-dest.p.z)<=110){
+   const mixed=completeMovement(trip);
+   if(mixed){
     offeredMixedRoute=true;
-    Object.assign(mixed,{provider:'recast',actionsIntegrated:true,topologyComplete:true,physicalVerified:false,recastGeneration:recast.revision});
     const rejected=yield* proofJob(mixed,false,context,{onGeometricObstruction:check=>{
      excludeObstructedDirection(check);
      const guid=String(check.guid).toLowerCase();
@@ -533,7 +587,7 @@ function* makePlan(dest,walkOnly=false,seams=false,drops=false,context={},depth=
    if(alternate&&(!alternate.partial||alternate.conditionalCandidate)){
     context.report?.('recast expanded walking candidate',{points:alternate.points.length,meters:alternate.meters});
     const rejected=yield* proofJob(alternate,false,context);if(rejected===null)return yield* finishCandidate({legs:[alternate],transfer:null});
-   }
+   }else yield* rememberRecastFrontier(alternate,start,dest.p,context);
   }
   if(pendingPlacement){
    const {leg,check}=pendingPlacement,block=pendingPlacement.block||{unknown:true,icon:'mechanism',label:'机关通路待确认'};
@@ -906,7 +960,7 @@ function solve(dest,reason){
   Blocked.keepComplete(retained.trip.legs[retained.active],S.world,now.start,candidate?.legs[0]);
  S.lookoutHint=Passages.isLookout(S.level,start,dest);
  let scheduledRequest;
- const context={report:(phase,detail)=>log('route search',phase+' '+JSON.stringify(detail)),
+ const context={previewPartial:true,report:(phase,detail)=>log('route search',phase+' '+JSON.stringify(detail)),
  acceptPassageObservation:(before,after)=>{
   const active=planning.job?.request;
   if(!active||active!==scheduledRequest||!active.revision.startsWith('recast/'))return;
@@ -921,14 +975,16 @@ function solve(dest,reason){
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(current?.key===dest.key&&S.level===request.level&&R.dist(current.p,dest.p)<190){
    const now=routeRequest(current);if(keepExisting(now,trip))return;
-   if(originChanged(request,now,trip)&&standingAt(now.start)&&poseReady)return;
-   setTrip(trip,dest,now.start,reason+(trip.transfer?' bell candidate':' blocked; searching detour'),now);
+   if(originChanged(scheduledRequest||request,now,trip))return;
+   setTrip(trip,dest,now.start,reason+(trip.transfer?' bell candidate':' checked route preview'),now);
+   updateRouteStatus(true);
   }
  }};
  const accepted=planning.request(request,clock=>{context.clock=clock;return makePlan(dest,!!dest.bell&&dest.provider!=='187',false,false,context);},(trip,selected,metrics)=>{
   const current=S.manual||(!questGate.paused&&tracked(narrative()))||S.scout;
   if(!current||current.key!==selected.key||S.level!==selected.level||R.dist(current.p,selected.p)>190)return;
   const now=routeRequest(current);
+  if(!trip)trip=Blocked.finish(context);
   if((!trip||trip.legs.some(l=>l.partial||l.diagnostic))&&keepExisting(now,trip)){
    S.routeWork=null;updateRouteStatus(true);return;
   }
@@ -938,9 +994,8 @@ function solve(dest,reason){
   }
   // A failed route is a result. It stays stopped until selection, region,
   // destination, door/ladder state, or substantial movement actually changes.
-  if(!trip&&(metrics.timeout||metrics.paused||metrics.error))trip=Blocked.finish(context);
   setTrip(trip,dest,now.start,reason+' async cpu='+metrics.cpu+'ms wall='+metrics.wall+'ms',now);
-  if(trip)S.routeWork=null;
+  if(trip&&trip.legs.every(l=>!l.partial&&!l.diagnostic))S.routeWork=null;
   updateRouteStatus(true);
   if(!trip&&planning.failed){planning.failed.revision=routeRequest(dest,start).revision;if(context.unresolvedConnection){planning.failed.failureCause=context.blockedCondition?'mechanism':'connection';planning.failed.detail=context.blockedCondition?.label;}}
  },force);
@@ -1026,7 +1081,7 @@ function observe(){
   const leg=S.trip.legs[S.active];
   if(leg.diagnostic&&!planning.pending&&poseReady&&now-lastSolve>1500&&
    (leg.provider==='recast'?Blocked.retryRecast(leg,Locks.constrain(S.world,lockRows,S.level),foot,now):movedForRetry(foot,previous.site))){solve(target,'blocked approach changed');return;}
-  if(leg.scenePartial&&!planning.pending&&poseReady&&R.dist(foot,leg.points[leg.points.length-1])<600&&now-lastSolve>2000&&movedForRetry(foot,previous.site)){solve(target,'loaded frontier');return;}
+  if((leg.scenePartial||leg.previewFrontier)&&!planning.pending&&poseReady&&R.dist(foot,leg.points[leg.points.length-1])<600&&now-lastSolve>2000&&movedForRetry(foot,previous.site)){solve(target,'loaded frontier');return;}
   // A physical arrival remains a gameplay state independently of what gets drawn.
   const end=S.line[S.line.length-1];
   if(end&&S.arrival.check(S,foot,end,now)){
@@ -1379,9 +1434,26 @@ function onMap(h){
  if(!S.world||!W.alive(S.pawn)){ink.hide(h);return;}
  const area=low(h.CurrentDisplayMapID);if(!area){ink.hide(h);return;}
  const name=worldOf(area),ms=T.getWorldSubsystem(h,UE.MapSubsystem.StaticClass());
- const project=(p,requestedArea)=>{const u=ms.ProjectWorldLocationToMap(W.vec(p),requestedArea||h.CurrentDisplayMapID);return {x:Number(u.X),y:Number(u.Y)};};
- const allowed=p=>{if(name!==S.level||!['pbz_zhengdaodaying_wp','pbz_pangzhen_wp'].includes(name))return true;
-  const id=low(ms.GetMapIDByLocation(W.vec(p)));return !id||id==='none'||Groups.isInSameMapGroup(area,id)||low(h.mapIDToBigMapID(id)||id)===area;};
+ const chart=id=>low(h.mapIDToBigMapID(id)||id);
+ const displayChart=chart(area);
+ const belongs=id=>!!id&&(low(id)===area||chart(id)===displayChart||Groups.isInSameMapGroup(area,low(id)));
+ let areas;
+ const pointArea=p=>{
+  areas??=new WeakMap();
+  if(!areas.has(p)){const id=String(ms.GetMapIDByLocation(W.vec(p))||'');areas.set(p,low(id)==='none'?'':id);}
+  return areas.get(p);
+ };
+ const project=(p,requestedArea)=>{
+  const id=requestedArea||pointArea(p),u=ms.ProjectWorldLocationToMap(W.vec(p),requestedArea||(belongs(id)?id:h.CurrentDisplayMapID));
+  return u?{x:Number(u.X),y:Number(u.Y)}:null;
+ };
+ const allowed=(p,world=name)=>{
+  const id=pointArea(p);
+  if(id)return belongs(id);
+  // A remote, unstreamed point has no location volume to query. Use only
+  // an area whose route world and displayed chart can both be established.
+  return world===name||world===S.level&&belongs(S.area)||world===S.manual?.world&&belongs(S.manual.area);
+ };
  let state=maps.get(h);if(!state){state={area:'',stamp:textFile(mousePath),press:new MapPress(),read:0,lockTime:0};maps.set(h,state);}
  const now=Date.now();
  const type=h.getCurrentInputType(),pad=type===UE.ECommonInputType.Gamepad,device=pad?'pad':'mouse';

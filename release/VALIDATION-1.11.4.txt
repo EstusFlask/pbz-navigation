@@ -1,0 +1,40 @@
+1.11.4 local Release and Development candidates — 2026-11-20, America/Tijuana
+
+Source JavaScript: 688 passed; 0 failed.
+Staged planning/physics/development integration: 270 passed; 0 failed.
+Lua adapter and real MCT1.0.14 selection/target bridge: passed.
+Python survey analysis/import/tracker: 6 passed.
+Native adapter ABI/runtime gate/dispatch self-test: passed.
+Plain-JavaScript paged loader/query: 11 worlds, 12 grids passed with code generation disabled.
+47 original endpoint pairs: 47 complete offline topology candidates.
+Compared with 1.11.3: identical route points, walks, moves and lengths after
+repeating 14/18/27/46 with their expanded height windows. Verification timestamps
+are volatile. These controls are not physical or game acceptance.
+
+Regression evidence:
+- A nearby disconnected item can propose only activated transfer bells.
+- A directed terrain arrival estimate cannot draw an unchecked far-side chord.
+- Closed decks and unsupported fall capabilities exclude bell access estimates.
+- A tower chain retains bounded alternatives for each selected descent.
+- A physically checked corridor remains visible even when it initially leads away.
+- A missing resident/native path can use a checked local detour around a wall.
+- Ground.step rejects a thin low wall below the raised stepping capsule.
+- Late replanned survey tails are labeled separately from whole-capture comparisons.
+
+Package validation: both exact inventories and all CRCs passed; no EXE/COM/SCR/MSI,
+collector-owned files, player settings or private collision/route evidence included.
+Release has 5,335 entries. Development has 5,342, including its six development
+modules and survey instructions. JS, Lua, native adapter and documentation agree
+on 1.11.4. The settings-provider version was synchronized before final package
+verification; the builder now checks it before compression.
+
+Evidence: build/field-tower-20261120/
+Package hashes/inventories: release/LOCAL-CANDIDATE-1.11.4.json
+Older dist content preserved under build/release-archive/20261120-before-1.11.4/.
+
+Field limits: current installed logs identify 1.11.3 Release. No installation,
+launch or upload was performed. Tower currency still lacks a proved complete
+route or bell-to-item chain in the offline sample. The exact reported wall
+crossing lacks a complete captured origin/path. In-game routes and the additional
+full-capsule query cost remain to be accepted in the real host. A fixed synthetic
+wall failure and 47 topology candidates must not be reported as that acceptance.
