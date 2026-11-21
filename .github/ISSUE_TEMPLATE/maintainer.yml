@@ -1,0 +1,35 @@
+name: Contributor / maintainer application · 参与或接手维护
+description: Introduce your experience and links / 介绍相关经验与作品
+title: "[Maintainer] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Experience with navigation mods, pathfinding, Unreal Engine mods or related work is helpful. The owner will review applications before inviting GitHub collaboration and adding Nexus contributor credit.
+        请介绍相关经验并附作品链接；由维护者确认合适后邀请协作并加入 Nexus contributor 名单。
+  - type: textarea
+    id: experience
+    attributes:
+      label: Relevant experience / 相关开发经验
+    validations:
+      required: true
+  - type: textarea
+    id: projects
+    attributes:
+      label: Repository or mod links / 仓库或 Mod 链接
+      description: Links to work you can share; describe your contribution.
+    validations:
+      required: false
+  - type: input
+    id: nexus
+    attributes:
+      label: Nexus Mods account / N 网账号或主页链接
+    validations:
+      required: false
+  - type: textarea
+    id: scope
+    attributes:
+      label: What would you like to work on? / 希望参与的方向与时间安排
+      description: Occasional contributions and longer-term maintenance are both welcome.
+    validations:
+      required: true

@@ -1,4 +1,43 @@
-dist/
+# Local builds and dependencies
+/dist/
+/build/
+node_modules/
 __pycache__/
-build/
-offline-navigation/node_modules/
+*.py[cod]
+.venv/
+venv/
+.vs/
+.idea/
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+
+# Separately downloaded reference; retained locally for integration tests
+/Map_Collectible_Tracker_1.0.14_187_1.0.14_2026-11-12T21-13Z_s0mFcMSDh/
+/Map_Collectible_Tracker_*/
+
+# Credentials, game keys, saves and diagnostic recordings
+.env
+.env.*
+!.env.example
+.game-key
+*.pem
+*.key
+*.pfx
+*.sav
+*.log
+saved-navigation-state.json
+PBZQuestRoute-dev-*.json
+PBZQuestRoute-tracker.json
+
+# Downloaded archives and raw game inputs
+*.zip
+*.7z
+*.rar
+*.pak
+*.ucas
+*.utoc
+*.wkpack
+*.hb3dpack

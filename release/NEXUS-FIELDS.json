@@ -17,7 +17,7 @@
   "authorField": "azqwq333 - original - kurosakana - fork",
   "category": "User Interface",
   "language": "Any",
-  "shortDescription": "Quest, collectible and bell navigation with map routes and a guiding rope. Release, Development and Lite downloads. / 任务、收集物和铃铛导航，提供地图路线和引导绳，可选发行版、开发版或Lite版。",
+  "shortDescription": "Quest, collectible and bell navigation with map routes and a guiding rope. Release and Lite downloads. / 任务、收集物和铃铛导航，提供地图路线和引导绳，可选发行版或Lite版。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
   "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4.zip",
   "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.4",
@@ -134,7 +134,12 @@
   },
   "publishingPreferences": {
     "monitorVirusScanAfterUpload": false,
-    "fileDescriptionStyle": "Concise bilingual player-facing features/changes only; keep test and verification status in development documents."
+    "fileDescriptionStyle": "Concise bilingual player-facing features/changes only; keep test and verification status in development documents.",
+    "nexusUploadFlavors": [
+      "release"
+    ],
+    "developmentDistribution": "local-developer-only",
+    "developmentUploadsAllowed": false
   },
   "latestChangelogCopyUpdate": {
     "date": "2026-11-14",
@@ -184,6 +189,14 @@
   ],
   "localCandidateInstalled": false,
   "localCandidateUploaded": true,
-  "developmentFileDisplayName": "Quest Navigation - Fork 1.11.4 Development",
-  "developmentFileDescription": "Development edition: 47 numbered test routes; light attack starts/ends recording, heavy attack marks problems, defense marks wrong turns. Replaces Release. / 开发版含47段测试起终点；轻攻击起止录制、重攻击标问题、防御标误走。与发行版选装其一，先解压再导入。"
+  "developmentArchiveUsage": "Local developer use only; never upload to Nexus or distribute publicly.",
+  "sourceRepository": "https://github.com/EstusFlask/pbz-navigation",
+  "contributorContact": "https://github.com/EstusFlask/pbz-navigation/issues",
+  "sourcePublication": {
+    "date": "2026-11-20",
+    "visibilityChangeBy": "repository owner",
+    "licenseDecision": "Publish source while retaining existing permissions; no new repository-wide open-source license.",
+    "descriptionRecruitmentPublished": true,
+    "newModFilesUploaded": false
+  }
 }
