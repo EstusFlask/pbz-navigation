@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-20",
+  "timezone": "America/Tijuana",
+  "repository": "https://github.com/EstusFlask/pbz-navigation",
+  "sourcePreparationCommit": "b1a2e545f56013222dfab0df988ae7a839b6f0e9",
+  "git": {
+    "syncedBranches": ["main", "codex/recast-routing-193"],
+    "remote": "origin",
+    "push": "ordinary atomic push; no force",
+    "originalLocalMain": "9520c2de86f063c2ff66da04d5d80eeab755bc5e",
+    "originalLocalMainBackup": "codex/main-before-publication-20261120",
+    "backupScope": "Local only; main's only unique changes were 77 downloaded node_modules files, excluded from publication.",
+    "existingRemoteHistoryRewritten": false
+  },
+  "repositorySettingsVerified": {
+    "private": true,
+    "defaultBranch": "main",
+    "issuesEnabled": true,
+    "visibilityChangeBy": "repository owner"
+  },
+  "permissions": "User chose source publication retaining existing permissions; no new repository-wide open-source license.",
+  "collectorReference": {
+    "trackedFilesAfter": 0,
+    "localFilesPreserved": 111,
+    "historyPurged": false
+  },
+  "documentation": [
+    "README.md",
+    "CONTRIBUTING.md",
+    "AGENTS.md",
+    "THIRD-PARTY-NOTICES.md",
+    "docs/DEVELOPMENT.md",
+    "docs/USER-GUIDE.md",
+    "offline-navigation/README.md",
+    ".github/ISSUE_TEMPLATE/maintainer.yml",
+    ".github/ISSUE_TEMPLATE/bug_report.yml"
+  ],
+  "verification": {
+    "gitDiffCheck": "passed",
+    "localDocumentationLinks": {"checked": 102, "broken": 0},
+    "minimalJavaScriptTests": {"passed": 49, "failed": 0},
+    "cleanTrackedExportMinimalTests": {"passed": 49, "failed": 0, "localReferencesAndDependenciesPresent": false},
+    "realCollectorLuaJavaScriptIntegration": "passed with the retained local MCT 1.0.14 reference, including survey integration",
+    "credentialPatternScan": "No matches in checked current source/docs; encoded generated payloads excluded. Not a complete Git-history secret audit.",
+    "newGameAcceptance": false
+  },
+  "nexus": {
+    "url": "https://www.nexusmods.com/phantombladezero/mods/994",
+    "publicDescriptionVerified": true,
+    "recruitmentLanguages": ["en", "zh"],
+    "contact": "https://github.com/EstusFlask/pbz-navigation/issues",
+    "repositoryLinkAdded": true,
+    "requests": ["relevant experience", "repository or mod links if available", "Nexus Mods account"],
+    "contributorInvitation": "Owner reviews the fit before inviting GitHub collaboration and adding Nexus contributor credit.",
+    "repositoryPublicationPendingNotice": true,
+    "newFilesUploaded": false,
+    "modVersionChanged": false,
+    "permissionsChanged": false,
+    "proofScreenshotLocalOnly": "build/publication-20261120/nexus-recruitment.jpg"
+  },
+  "localEvidence": "build/publication-20261120/ (ignored)"
+}
