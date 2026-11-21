@@ -198,5 +198,12 @@
     "licenseDecision": "Publish source while retaining existing permissions; no new repository-wide open-source license.",
     "descriptionRecruitmentPublished": true,
     "newModFilesUploaded": false
+  },
+  "latestDescriptionLayoutUpdate": {
+    "date": "2026-11-20",
+    "receipt": "release/NEXUS-LAYOUT-20261120.json",
+    "descriptionSHA256": "f5d5f6386cb2f95a79bf883ce269fb44ffcc3bd8c621d06777527d5c8785d4c3",
+    "publicPageVerified": true,
+    "scope": "Description layout only; prominent maintainer recruitment, grouped bilingual sections, collapsed help. No Mod file upload."
   }
 }

@@ -35,3 +35,11 @@
 - 改善楼梯和上下层导航。
 
 详细打包要求见[开发说明](../docs/DEVELOPMENT.md)，历史发布记录见[PUBLISH-NOTES](PUBLISH-NOTES.md)。
+
+## Nexus 正文排版
+
+正文以 `NEXUS-DESCRIPTION.bbcode` 为准：居中标题与下载／源码／Issue 入口，顶部金色标题与引用底色框突出接手招募；正文统一浅蓝色分区标题，采用中英成组短段、功能列表和安装步骤。迁移、配置与排错详情放入折叠区，历史更新留在 changelog，避免在正文重复堆放整套中英文历史记录。招募入口保持直接可见。
+
+修改后在 Nexus 实际页面核对标题、颜色、列表、链接和折叠行为，再保存截图与回执。参考样式：[原导航 #472](https://www.nexusmods.com/phantombladezero/mods/472) 的简短列表、[管理器 #2](https://www.nexusmods.com/phantombladezero/mods/2) 的统一配色和重点框。只借鉴结构，不复制对方素材或功能承诺。
+
+如日后需要从 Markdown 同步，可参考 [BUTR/Converter.MarkdownToBBCode](https://github.com/BUTR/Converter.MarkdownToBBCode) 的 Nexus 输出；当前直接维护 BBCode，没有新增工具依赖。纯页面排版不递增 Mod 版本、不重建或上传安装包。

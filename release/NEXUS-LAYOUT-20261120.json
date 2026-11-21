@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-20",
+  "timezone": "America/Tijuana",
+  "url": "https://www.nexusmods.com/phantombladezero/mods/994",
+  "referencePages": [
+    "https://www.nexusmods.com/phantombladezero/mods/472",
+    "https://www.nexusmods.com/phantombladezero/mods/2"
+  ],
+  "relatedProject": "https://github.com/BUTR/Converter.MarkdownToBBCode",
+  "newDependencyInstalled": false,
+  "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
+  "descriptionSHA256": "f5d5f6386cb2f95a79bf883ce269fb44ffcc3bd8c621d06777527d5c8785d4c3",
+  "characters": 9596,
+  "layout": {
+    "hero": "centered bilingual title and download/source/issues links",
+    "recruitment": "top quote panel; gold 24px title; bold experience and requested links; direct maintainer Issue form",
+    "sections": "seven consistent cyan bilingual headings",
+    "help": "upgrade/configuration/compatibility/troubleshooting/uninstall in a collapsed spoiler",
+    "historicalChanges": "kept in changelog, removed from description"
+  },
+  "publicVerification": {
+    "savedAndReloaded": true,
+    "goldHeadingColor": "rgb(231, 189, 117)",
+    "goldHeadingSize": "24px",
+    "quotePanelVisible": true,
+    "applicationLink": "https://github.com/EstusFlask/pbz-navigation/issues/new?template=maintainer.yml",
+    "helpExpandedSuccessfully": true,
+    "helpCollapsedAfterReload": true,
+    "unrenderedBBCodeObserved": false
+  },
+  "screenshotsLocalOnly": [
+    "build/nexus-layout-20261120/recruitment-top.jpg",
+    "build/nexus-layout-20261120/help-expanded.jpg"
+  ],
+  "modVersion": "1.11.4",
+  "newFilesUploaded": false,
+  "modVersionChanged": false,
+  "permissionsChanged": false,
+  "newGameAcceptance": false
+}

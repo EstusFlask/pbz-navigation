@@ -1,124 +1,124 @@
-[size=5][b]Quest and Exploration Navigation - Fork[/b][/size]
-[b]Version 1.11.4 | Experimental[/b]
-Navigation for quests, map pins, collectibles and bells, with routes on the regional map and a raised guiding rope in the game world. Based on [url=https://www.nexusmods.com/phantombladezero/mods/472]azqwq333's Quest and Exploration Navigation 0.8.5-beta[/url], independently maintained by kurosakana.
+[center][size=2][color=#8DCBEB][b]PHANTOM BLADE ZERO  ◆  NAVIGATION  ◆  1.11.4[/b][/color][/size]
+[size=6][b]Quest and Exploration Navigation[/b][/size]
+[size=4]任务与探索导航 · Fork[/size]
+Map routes and a blue guide for quests, collectibles and bells.
+任务、收集物与铃铛导航，在地图看路线，在场景跟随蓝色引导线。
 
-[size=4][b]Contributors / maintainer wanted · 招募贡献者与接手维护者[/b][/size]
-I am busy with other commitments, have finished the game, and am unsure where to take the next optimizations. I would like to find someone interested in continuing development or taking over maintenance. Experience with navigation mods, pathfinding, Unreal Engine modding or related work would be especially helpful.
-Please open an [url=https://github.com/EstusFlask/pbz-navigation/issues]Issue on GitHub[/url] with a short introduction, your relevant experience, links to your repositories or mods if available, and your Nexus Mods account. Once we agree that it is a good fit, I can invite you to collaborate on GitHub and add you as a contributor to this Nexus mod.
+[b][url=https://www.nexusmods.com/phantombladezero/mods/994?tab=files]DOWNLOAD / 下载[/url]   ·   [url=https://github.com/EstusFlask/pbz-navigation]GITHUB / 源码[/url]   ·   [url=https://github.com/EstusFlask/pbz-navigation/issues]ISSUES / 反馈与联系[/url][/b][/center]
 
-我平时比较忙，也已经通关游戏，对接下来如何优化暂时缺少明确方向，希望找人继续开发或接手维护。有导航Mod、寻路、Unreal Engine Mod或类似开发经验更好。
-有兴趣请在[url=https://github.com/EstusFlask/pbz-navigation/issues]GitHub Issue[/url]联系我，简单介绍相关经验，尽量附上自己的仓库或Mod链接，以及Nexus Mods账号。双方确认合适后，我会邀请你参与GitHub协作，并加入本Mod的contributor名单。
-[b]Source / 源码：[/b][url=https://github.com/EstusFlask/pbz-navigation]EstusFlask/pbz-navigation on GitHub[/url]
-The repository is being prepared for public access; if the link is unavailable, please check again after publication. Existing permissions remain unchanged.
-仓库将由我稍后公开；如链接暂时无法访问，请在公开后再查看。源码公开保留现有权限。
+[quote][center][size=5][color=#E7BD75][b]MAINTAINER WANTED
+招募贡献者与接手维护者[/b][/color][/size][/center]
+我平时比较忙，也已经通关游戏，对接下来如何优化暂时缺少明确方向，希望找人继续开发或接手维护。[b]有导航 Mod、寻路、Unreal Engine Mod 或类似经验更好。[/b]
 
-[size=4][b]Which file to install[/b][/size]
-Choose one ZIP under [url=https://www.nexusmods.com/phantombladezero/mods/994?tab=files]Files[/url].
+I am busy with other commitments, have finished the game, and am unsure where to take the next optimizations. I am looking for someone to continue development or take over maintenance. [b]Experience with navigation mods, pathfinding, Unreal Engine modding or related work would be especially helpful.[/b]
+
+[b]请通过 GitHub Issue 联系[/b]，介绍相关经验，尽量附上[b]仓库或 Mod 链接，以及 Nexus Mods 账号[/b]。双方确认合适后，我会邀请你参与 GitHub 协作，并加入本 Mod 的 contributor 名单。
+Please introduce yourself in a GitHub Issue, preferably with [b]repository/mod links and your Nexus account[/b]. Once we agree it is a good fit, I can invite you to collaborate on GitHub and add you as a contributor to this Nexus mod.
+
+[center][size=4][b][url=https://github.com/EstusFlask/pbz-navigation/issues/new?template=maintainer.yml]→ APPLY ON GITHUB / 在 GitHub 联系我[/url][/b][/size][/center][/quote]
+[size=2]The repository will be made public by its owner. If the links are unavailable, please check again after publication. Existing permissions remain unchanged.
+仓库稍后由本人公开；如链接暂时无法访问，请在公开后查看。源码公开保留现有权限。[/size]
+
+[line]
+[size=4][color=#8DCBEB][b]◆ DOWNLOAD / 版本选择[/b][/color][/size]
 [list]
-[*][b]1.11.4 Release:[/b] Experimental collision-based navigation across 11 worlds, for everyday play.[/*]
-[*][b]1.9.4 Lite:[/b] Smaller standalone edition using the navigation data from before the full-world rebuild.[/*]
+[*][b]1.11.4 Release — Full edition / 全图发行版[/b]
+Experimental collision-based navigation across 11 worlds.
+包含 11 个世界的碰撞重建导航，仍在持续完善。[/*]
+[*][b]1.9.4 Lite — Smaller alternative / 小体积版[/b]
+Standalone edition using the navigation data from before the full-world rebuild.
+使用全图重建前的导航数据，可独立安装。[/*]
 [/list]
-To switch from Full to Lite, close the game and uninstall Full in UE Mod Manager before installing Lite. Keep your settings file.
+[b]Install one edition at a time. / 只启用一份导航。[/b]
+To switch Full ↔ Lite, close the game, uninstall the old navigation in UE Mod Manager, then install the other edition. Keep your settings.
+全图版与 Lite 互换时，先退出游戏并在管理器卸载旧导航，再安装另一版，保留配置。
 
-[size=4][b]Rope color (1.3.1)[/b][/size]
-Install [url=https://www.nexusmods.com/phantombladezero/mods/173]PbzModConfig - Mod Settings Menu (UE4SS)[/url] and its UE4SS dependency. In the in-game Mods settings page, open Quest & Exploration Navigation → Rope color and choose Red, Blue (default), or Custom. The custom-color control appears when Custom is selected. Changes save automatically and apply within about one second. Map Tracker is not required for this setting.
-
-[size=4][b]Changes since 1.0.1[/b][/size]
-[list]
-[*][b]1.2.1 — Controller input and grouped maps:[/b] adds D-pad polling when the game omits preview-key events, combines event/poll repeats, and fixes selection/projection of collectibles from another world within a merged chart. Each item keeps its real location and height.[/*]
-[*][b]1.2.0 — Wall checks and D-pad selection:[/b] revokes expired distant-line checks before revalidation, adds triangle-collision checks after simple misses, preserves map-route corners, and marks the route beyond a known blocker as unconfirmed. D-pad focuses the nearest visible collectible in the requested direction without latching back onto native bells.[/*]
-[*][b]1.1.1 — Bell identity and detours:[/b] recognizes the collector's native bell markers. Unopened bells use overland routing; blocked roadbook candidates can attempt checked local detours, including an open side passage around a closed gate. The gate remains locked.[/*]
-[*][b]1.1.0 — Experimental traversal expansion:[/b] expands wall-running, wall-jump, ledge/pole and boarding recognition. Adds 487 placed interaction instances and 86 directional 3D roadbook candidates. Sailing and recognized cinematic rides retain the target and replan after ending. Candidates still require current scene and mechanism checks.[/*]
-[*][b]1.0.2 — Walking and traversal connections:[/b] keeps inactive bells on overland routes, compares nearby walking before choosing a bell transfer, connects actions through checked ground corridors, and corrects down-slide entry and rappel landing handling.[/*]
+[size=4][color=#8DCBEB][b]◆ INSTALL / 安装与依赖[/b][/color][/size]
+[list=1]
+[*]Install [url=https://www.nexusmods.com/phantombladezero/mods/113][b]PBZModLoader[/b][/url] (tested: 1.0.0), then close the game.
+安装 PBZModLoader，然后退出游戏。[/*]
+[*]Download one navigation ZIP and [b]extract it first[/b].
+下载一个导航包，[b]先解压 ZIP[/b]。[/*]
+[*]In [url=https://www.nexusmods.com/phantombladezero/mods/2]UE Mod Manager[/url], import the extracted folder containing [b]both ProjectPBZ and platform[/b]. Enable the navigation files and [b]PBZQuestRouteCompat[/b].
+向 UE Mod Manager 导入同时包含 [b]ProjectPBZ 和 platform[/b] 的解压目录，启用导航文件及 PBZQuestRouteCompat。[/*]
+[*]Restart the game. For manual installation, merge those two extracted folders into the game root after removing the old navigation copy.
+重启游戏。手动安装时，先移出旧导航，再将上述两个文件夹合并到游戏根目录。[/*]
 [/list]
-
-[size=4][b]Navigation features[/b][/size]
+[b]Optional integrations / 按需搭配[/b]
 [list]
-[*]Tracks normal quests, map pins and collectible selections. Map Tracker sync preserves the item's actual 3D position, including its floor, and follows target changes, collection and cancellation.[/*]
-[*]Compares walking with activated-bell transfers. A transfer guides you to the departure bell; after you teleport manually, navigation continues toward the original item. Unloaded arrival segments remain pending.[/*]
-[*]Checks floor support, character clearance, slopes, steps, known locks and recognized mechanism conditions. Blocked searches can retain a checked prefix and an unconfirmed preview while looking for a bounded detour.[/*]
-[*]Shows blue calculation and loading messages with elapsed time.[/*]
-[*]Retains two directed reference courses: 大廊桥 → 小张藏身处 and 乱葬岗 → 墨玑子衣冠冢, with checked same-floor joins and short item approaches.[/*]
-[*]Adds 170 supplementary Chinese acquisition hints while preserving existing detailed descriptions and other languages. Collector-owned files are not replaced.[/*]
-[*]The world line sits about 105 cm above the ground. No runtime trail learning or runtime downloads.[/*]
+[*][b]Collectibles / 收集物联动：[/b][url=https://www.nexusmods.com/phantombladezero/mods/187]Map Tracker Plus 1.0.14[/url] + [url=https://www.nexusmods.com/phantombladezero/mods/5]UE4SS for Phantom Blade Zero[/url].[/*]
+[*][b]Navigation settings / 导航设置：[/b][url=https://www.nexusmods.com/phantombladezero/mods/149]Mods Menu[/url] (tested: 0.7.2), default shortcut / 默认快捷键 [b]F9[/b].[/*]
+[*][b]Rope colors / 绳子颜色：[/b][url=https://www.nexusmods.com/phantombladezero/mods/173]PbzModConfig[/url] + UE4SS. Open / 打开 [b]Mods → Quest & Exploration Navigation → Rope color[/b]. Choose Red, Blue (default) or Custom; changes save automatically. 可选红色、蓝色（默认）或自定义，自动保存。[/*]
 [/list]
+Loaders and the collector are separate downloads. PBZQuestRouteCompat belongs to navigation; keep [b]PbzMapTracker[/b] files untouched.
+包内不含加载器、UE4SS 本体或收集 Mod。PBZQuestRouteCompat 属于导航，不替换 PbzMapTracker 文件。
 
-[b]Route coverage[/b]
-Guidance depends on the passages and mechanisms currently available. At a closed route, guidance can stop at the obstacle. The full edition is experimental.
-
-[size=4][b]Controls[/b][/size]
+[size=4][color=#8DCBEB][b]◆ CONTROLS / 基本操作[/b][/color][/size]
 [list]
-[*][b]Mouse:[/b] left-click a collectible to track it, or hover and middle-click to navigate with its actual height. Close filters before placing a map pin: middle-click blank map space; hold about 0.6 s on blank space to cancel.[/*]
-[*][b]Controller:[/b] on the regional map, use D-pad to focus the nearest visible collectible in that direction, then A to confirm. Press again for the next item; holding repeats at a limited rate. Native bells/quests and hidden/collected items are skipped. Moving the stick, switching map/layer or removing the item releases focus. Empty-space A hold cancels navigation.[/*]
-[*][b]Bells and actions:[/b] use the stick and normal confirmation for native bells, or middle-click their icons. Use the game controls for teleporting, climbing, grappling, ladders and lifts. Step onto an automatic slope to start sliding. Close the map for the world line; enable WorldThread. Sense30 mode first requires Sense.[/*]
-[/list]
-
-[size=4][b]Requirements and installation[/b][/size]
-[list]
-[*][b]Required:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/113]PBZModLoader 1.0.0 (#113)[/url].[/*]
-[*][b]Optional settings menu:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/149]Mods Menu 0.7.2 (#149)[/url].[/*]
-[*][b]For collectible sync/hints:[/b] [url=https://www.nexusmods.com/phantombladezero/mods/187]Map Tracker Plus 1.0.14 (#187)[/url] and [url=https://www.nexusmods.com/phantombladezero/mods/5]UE4SS for Phantom Blade Zero 1.0.3 (#5)[/url]. Tested UE4SS runtime: [b]v3.0.1-1195-g1ceefac8 Shipping[/b]; its ABI/hash check remains. Other collector versions require compatible service interfaces.[/*]
-[/list]
-Close the game and back up [b]ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt[/b]. For UE Mod Manager, extract the ZIP first. Import the extracted folder containing both ProjectPBZ and platform, then select both the navigation game files and PBZQuestRouteCompat. For manual installation, disable the older navigation, move its script folder outside the game, and merge the extracted ProjectPBZ and platform folders into the game root. Keep only one navigation copy and restart the game.
-
-The package does not include PBZModLoader, UE4SS or the collector. PBZQuestRouteCompat belongs to navigation; leave PbzMapTracker files untouched. When migrating from the old JS collector/navigation, move out the old pbz-map-tracker folder, legacy 0.7.x zzz_PBZQuestRoute_P files and PBZQuestRouteMouse. Do not run both collector generations. Legacy JS-only minimap-route, enlarged-icon and automatic-accessory options have not been ported to the UE4SS collector.
-
-Settings: F9 → Quest & Exploration Navigation - Fork. Config: ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt. For troubleshooting, check ProjectPBZ/PBZModLoader/loader.log, PBZQuestRoute-startup.txt in the actual Saved folder, and PBZQuestRouteCompat-status.txt in the adapter folder. The new [b]pad focus[/b] log includes input source and candidate counts.
-
-Uninstall through the manager after closing the game. For manual removal, remove only navigation's PBZQuestRoute script/assets folders and PBZQuestRouteCompat adapter, retaining your config, collector and shared runtimes.
-
-[size=5][b]中文说明[/b][/size]
-[b]任务与探索导航 - Fork 1.11.4（实验版）[/b]
-在区域地图上显示任务、标记、收集物和铃铛路线，关闭地图后显示离地约 105 厘米的导航引导线。基于 azqwq333 的原版 0.8.5-beta，由 kurosakana 独立维护。
-
-[size=4][b]版本选择[/b][/size]
-在[url=https://www.nexusmods.com/phantombladezero/mods/994?tab=files]文件页[/url]选装一个 ZIP。
-[list]
-[*][b]1.11.4 发行版：[/b]包含 11 个世界的碰撞重建导航，用于日常游玩。[/*]
-[*][b]1.9.4 Lite：[/b]使用全图重建前的导航数据，可独立安装，下载体积更小。[/*]
-[/list]
-从全图版换回 Lite 时，请关闭游戏，先用 UE Mod Manager 卸载全图版，再安装 Lite。保留原配置文件。
-
-[size=4][b]绳子颜色（1.3.1）[/b][/size]
-安装[url=https://www.nexusmods.com/phantombladezero/mods/173]PbzModConfig - Mod Settings Menu (UE4SS)[/url]及其UE4SS依赖，在游戏设置的Mods页打开“任务与探索导航”→“绳子颜色”，可选红色、蓝色（默认）或自定义。选择自定义后显示颜色控件，修改后自动保存，约1秒内生效。此设置不需要安装Map Tracker。
-
-[size=4][b]1.0.1 以来的更新[/b][/size]
-[list]
-[*][b]1.2.1：手柄输入与合并地图。[/b]补上未送达预览事件时的十字键轮询，事件和轮询共用去重与长按节流；修复合并地图中跨世界物品被误排除、投影使用错误地图 ID 的问题，保留物品真实位置和楼层。[/*]
-[*][b]1.2.0：穿墙显示检查与十字键选物。[/b]远段碰撞检查过期后立即撤销旧安全终点，复查只放行已确认前段；简化碰撞未命中时补查三角面碰撞。地图保留真实拐角，已知阻挡之后显示待确认虚线。十字键可按方向选择最近可见收集物，避免焦点被原生铃铛抢回。[/*]
-[*][b]1.1.1：铃铛识别与遇阻绕行。[/b]识别收集 Mod 的原生铃铛标记，未解锁铃铛使用陆路；路书候选遇阻可尝试经检查的局部绕行。门锁仍有效，但可寻找开放侧路。[/*]
-[*][b]1.1.0：实验性动作扩展。[/b]扩展走壁、蹬墙跳、翻越、立柱与登船识别，接入 487 个关卡交互实例和 86 条有向三维路书候选。乘船及已识别剧情骑乘期间保留目标，结束后续算；候选仍需当前场景和机关条件检查。[/*]
-[*][b]1.0.2：步行与动作接路。[/b]未激活铃铛保留陆路导航，近处物品先比较步行与铃铛中转；动作之间可用经检查的地面路网连接，并修正下滑入口与沿绳下降落点。[/*]
+[*][b]Quests / 任务：[/b]Use normal game tracking. 使用游戏原有任务追踪操作。[/*]
+[*][b]Mouse / 鼠标：[/b]Left-click a collectible to track it, or hover and middle-click to navigate with its actual floor. Close map filters before middle-clicking blank space to place a pin.
+左键追踪收集物，或悬停后中键导航并保留实际楼层。落旗前关闭地图筛选，再中键点击空白处。[/*]
+[*][b]Controller / 手柄：[/b]Use the D-pad on the regional map to focus a visible collectible, then press A. Use normal stick selection for native bells.
+区域地图中用十字键选择可见收集物，按 A 确认；原生铃铛仍用摇杆选择。[/*]
+[*][b]Cancel / 取消：[/b]Hold middle mouse or A on blank map space for about 0.6 seconds.
+地图空白处长按中键或 A 约 0.6 秒。[/*]
+[*][b]World guide / 场景引导：[/b]Close the map and enable WorldThread. Sense30 mode requires Sense first. Teleporting, climbing, grappling, ladders and lifts remain manual; step onto an automatic slope to slide.
+关闭地图并开启 WorldThread；Sense30 模式先使用洞照。传送、攀爬、钩索、梯子和升降装置由玩家操作，自动滑坡踏上即可触发。[/*]
 [/list]
 
-[b]保留的功能[/b]
-收集目标保留三维坐标，切换、收集完成和取消会同步。物品导航可比较已激活铃铛中转：先到出发铃铛，由玩家手动传送，落稳后继续原物品末段。地面、身体空间、坡度、步高、已知门锁和机关条件参与检查；受阻时可保留安全前段和未确认预览。计算或加载路网时显示蓝色提示和等待秒数。
-
-保留大廊桥→小张藏身处、乱葬岗→墨玑子衣冠冢两条有向参考课程，以及经检查的同层接入和短物品支线。补充 170 项中文获取提示，保留收集 Mod 原有详细说明和其他语言。不替换收集文件，不采样或保存玩家通路，运行时不联网下载。
-
-[b]导航范围[/b]
-导航取决于当前通路和机关状态，通路关闭时可能只指到障碍前。全图版仍为实验版。
-
-[b]操作[/b]
+[size=4][color=#8DCBEB][b]◆ FEATURES / 导航功能[/b][/color][/size]
 [list]
-[*]鼠标：左键追踪物品，或悬停后中键导航以保留实际高度。关闭筛选后，中键点击地图空白处落旗，空白处长按约 0.6 秒取消。[/*]
-[*]手柄：区域地图中按十字键吸附该方向最近的可见收集物，按 A 确认；继续按可切到下一个，长按限速切换。跳过原生铃铛、任务以及隐藏／已收集物品。移动摇杆、切图／切层或移除该物品后解除吸附。空白处长按 A 取消导航。[/*]
-[*]原生铃铛仍可用摇杆和确认键选择，鼠标可中键选铃铛图标。传送、攀爬、钩索、梯子、滑索和升降装置由玩家操作，自动滑坡踏上斜坡即可触发。关闭地图查看引导线，开启 WorldThread；Sense30 模式先使用洞照。[/*]
+[*][b]Map + world guidance / 地图与场景：[/b]Routes for quests, map pins, collectibles and bells, plus a blue world line raised above the ground.
+地图查看路线，关闭地图后跟随离地的蓝色引导线。[/*]
+[*][b]Activated-bell transfers / 已激活铃铛中转：[/b]Compares walking with available bell travel. Follow the departure leg, teleport manually, then continue toward the original item.
+比较步行与可用铃铛中转，先引导到出发铃铛，手动传送后继续原物品末段。[/*]
+[*][b]Checked route segments / 通路检查：[/b]Ground support, character clearance, known locks and recognized mechanism conditions inform guidance. Searches can retain a checked prefix while looking for a detour.
+检查地面、身体空间、已知门锁与机关；寻找绕路时可保留已确认的前段。[/*]
+[*][b]Collector sync / 收集联动：[/b]Keeps each target's 3D location and floor, follows selection changes and collection, and adds supplementary Chinese acquisition hints without replacing existing detailed descriptions.
+保留目标三维位置与楼层，同步切换、收集和取消；补充中文获取提示，保留原有详细说明。[/*]
+[*][b]Display / 显示：[/b]Calculation/loading messages, configurable rope colors, and no runtime downloads.
+提供计算与加载提示、绳色设置，运行时不联网下载。[/*]
 [/list]
 
-[b]依赖、安装与排错[/b]
-必需 PBZModLoader #113（1.0.0）；可选设置菜单 Mods Menu #149（0.7.2）。需要收集联动／补充提示时，另装 Map Tracker Plus #187（1.0.14）和 UE4SS #5（1.0.3，v3.0.1-1195-g1ceefac8 Shipping）。运行时 ABI／哈希检查保留，其他收集版本仍须满足服务接口契约。
+[size=4][color=#8DCBEB][b]◆ PLEASE NOTE / 使用须知[/b][/color][/size]
+The full edition is experimental. Complex floors, traversal actions, mechanisms and unloaded areas can still produce missing or inaccurate routes. Guidance may stop at an obstacle; follow the actual environment when blocked.
+全图版仍为实验版。复杂楼层、特殊动作、机关和未加载区域可能缺路或指引不准确；遇到关闭通路时可能只指到障碍前，请以游戏实际场景为准。
 
-退出游戏并备份 ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt。使用 UE Mod Manager 时，请先解压 ZIP，再导入包含 ProjectPBZ 和 platform 的解压目录，同时选择导航游戏文件与 PBZQuestRouteCompat。手动安装时，先停用旧导航、将旧脚本目录移出游戏，再把解压后的 ProjectPBZ 和 platform 合并到游戏根目录。只启用一份导航并重启游戏。
+[size=4][color=#8DCBEB][b]◆ HELP / 升级、排错与卸载[/b][/color][/size]
+[spoiler]Upgrade, configuration and troubleshooting / 点击展开详细说明
 
-包内不含加载器、UE4SS 本体或收集 Mod。PBZQuestRouteCompat 属于导航，不要替换 PbzMapTracker 文件。迁移时移出旧 JS 收集目录、旧 0.7.x 导航文件及 PBZQuestRouteMouse，不要同时启用两代收集 Mod。旧 JS 专用的小地图路线、放大图标、自动饰品提示尚未迁移到 UE4SS 收集版。
+[b]Upgrading / 旧版升级[/b]
+Disable the old navigation and keep only one copy. When migrating from the old JS collector, move out the old pbz-map-tracker folder, legacy 0.7.x zzz_PBZQuestRoute_P files and PBZQuestRouteMouse. Do not enable both collector generations.
+停用旧导航，只保留一份。由旧 JS 收集版迁移时，移出旧 pbz-map-tracker 目录、0.7.x 的 zzz_PBZQuestRoute_P 文件及 PBZQuestRouteMouse，不要同时启用两代收集 Mod。
 
-设置菜单默认 F9，配置路径见上文。排错查看 ProjectPBZ/PBZModLoader/loader.log、实际 Saved 目录的 PBZQuestRoute-startup.txt 和桥接目录的 PBZQuestRouteCompat-status.txt；[b]pad focus[/b] 日志会记录输入来源和候选数量。卸载时退出游戏，通过管理器移除导航，或仅移除导航自己的脚本／资产和桥接目录，保留配置、收集 Mod 与共享运行时。
+Legacy JS-only minimap routes, enlarged icons and automatic-accessory hints have not been ported to the UE4SS collector.
+旧 JS 专用的小地图路线、放大图标、自动饰品提示尚未迁移到 UE4SS 收集版。
 
-[size=4][b]Credits / 署名与 AI 声明[/b][/size]
-azqwq333: original navigation system, 11 world graphs and bundled data/assets / 原导航系统、11 个世界路网及随包数据资产。
-kurosakana: independent fork maintenance / 独立分支维护，不表示原作者背书。
-PiPiFanDev: separately distributed Map Tracker Plus / 单独分发的收集 Mod。
-UE4SS contributors: runtime interfaces; UE4SS-LICENSE.txt retained / 公开运行时接口与保留的许可证。
-Code, documentation and page text use AI assistance. AI-Generated Content and AI Media are declared; the cover is a schematic title card, not a game screenshot.
-代码、说明与页面文字使用 AI 辅助，已声明对应标签；封面为示意标题卡，非游戏截图。
+[b]Configuration / 配置[/b]
+Navigation: [b]ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt[/b]
+Rope color: [b]PBZQuestRoute-settings.json[/b] in the actual ProjectPBZ/Saved folder. 绳色保存在实际 Saved 目录内。
+Back up these settings before replacing or uninstalling navigation. 更新与卸载前备份配置。
+
+[b]Compatibility / 兼容说明[/b]
+Tested collector: Map Tracker Plus 1.0.14. Tested UE4SS package: 1.0.3, runtime v3.0.1-1195-g1ceefac8 Shipping. The adapter retains ABI/hash checks; other collector versions need compatible service interfaces.
+已测试收集 Mod 1.0.14、UE4SS 包 1.0.3（1195 Shipping）。适配器保留 ABI／哈希检查，其他版本须符合服务接口。
+
+[b]Report a problem / 报告问题[/b]
+Use [url=https://github.com/EstusFlask/pbz-navigation/issues]GitHub Issues[/url] with your mod/dependency versions, area, target, start/end floors, steps and relevant logs. 请附版本、区域、目标、起终点楼层、步骤及相关日志。
+Logs / 日志：[b]ProjectPBZ/PBZModLoader/loader.log[/b] · [b]PBZQuestRoute-startup.txt[/b] in the actual Saved folder · [b]PBZQuestRouteCompat-status.txt[/b] in the adapter folder.
+Do not upload full saves or private keys. 不要上传完整存档或密钥。
+
+[b]Uninstall / 卸载[/b]
+Close the game and remove navigation through the manager. For manual removal, remove only navigation's PBZQuestRoute scripts/assets and PBZQuestRouteCompat adapter. Keep your config, collector and shared runtimes.
+退出游戏后用管理器卸载导航。手动卸载只移除导航自有脚本、资源和 PBZQuestRouteCompat，保留配置、收集 Mod 与共享运行时。[/spoiler]
+
+[line]
+[size=4][color=#8DCBEB][b]◆ CREDITS / 署名与源码[/b][/color][/size]
+[b]azqwq333[/b] — [url=https://www.nexusmods.com/phantombladezero/mods/472]Original Quest and Exploration Navigation 0.8.5-beta[/url], navigation data and assets / 原导航系统、数据与资产。
+[b]kurosakana[/b] — Independent fork maintenance / 独立分支维护，不表示原作者背书。
+[b]PiPiFanDev[/b] — Separately distributed Map Tracker Plus / 独立分发的收集 Mod。
+[b]UE4SS, PbzModConfig, Recast/Detour and fflate contributors[/b] — Runtime interfaces and components; bundled notices retained / 运行时接口与组件，保留相关许可及来源说明。
+
+[url=https://github.com/EstusFlask/pbz-navigation][b]Source / 源码[/b][/url]   ·   [url=https://github.com/EstusFlask/pbz-navigation/blob/main/CONTRIBUTING.md]Contributing / 参与开发[/url]   ·   [url=https://github.com/EstusFlask/pbz-navigation/blob/main/release/CHANGELOG.md]Changelog / 更新记录[/url]
+[size=2]Code, documentation and page text use AI assistance. The cover is a schematic title card, not a game screenshot.
+代码、文档与页面文字使用 AI 辅助；封面为示意标题卡，非游戏截图。[/size]
