@@ -15,6 +15,27 @@
   "screenshotsLocalOnly": [
     "build/nexus-hotkey-20261120/public-description.jpg"
   ],
+  "bindingAudit": {
+    "date": "2026-11-20",
+    "navigationRegistersF9": false,
+    "bindingOwner": "Mods Menu",
+    "ownerDocumentation": "https://www.nexusmods.com/phantombladezero/mods/149",
+    "ownerDocumentationCheckedInBrowser": true,
+    "navigationRegistration": "PBZQuestRoute.js menuOptions() publishes settings without a menu-opening key binding.",
+    "luaAndNativeRegistrationChecked": true,
+    "existingPackagesChecked": {
+      "version": "1.11.4",
+      "releaseScriptsScanned": 1526,
+      "developmentScriptsScanned": 1532,
+      "bindingPatterns": ["quoted F9", "VK_F9", "Key_F9", "RegisterKeyBind", "GetAsyncKeyState"],
+      "bindingMatches": []
+    },
+    "developmentGuideShortcutTextRemoved": true,
+    "publicNavigationDescriptionRechecked": true,
+    "runtimeCodeChanged": false,
+    "newPackagesBuiltOrUploaded": false,
+    "otherModsChanged": false
+  },
   "modVersion": "1.11.4",
   "newFilesUploaded": false,
   "modVersionChanged": false,

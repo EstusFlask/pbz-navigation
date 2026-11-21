@@ -120,7 +120,7 @@
 - 铃铛图标中键选择，手柄用确认键选择；使用铃铛位置作为终点，不按当前可达路网改写目标。超出吸附范围的空白落旗只显示标记，需重新靠近道路选点。
 - 手柄地图按十字键吸附该方向最近可见收集物，继续按同方向切到下一个；跳过铃铛等原生设施。按 A 确认物品，保留其真实楼层；移动摇杆解除物品吸附，可继续选原生铃铛。空白处长按 A 约 0.6 秒取消导航。
 - 落旗前关闭筛选面板，关闭地图查看场景线；`WorldThread=on`，Sense30 模式需先洞照。
-- Mods Menu 默认 F9，条目“任务与探索导航 - Fork”。配置仍是 `ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt`。
+- Mods Menu 中的条目为“任务与探索导航 - Fork”。配置仍是 `ProjectPBZ/Content/Paks/~mods/PBZQuestRoute.txt`。
 - `MapRoute`、`WorldThread`、`FogBellSense` 为 on/off；`DisplayMode` 为 Always/Sense30。`MinimapRoute`、`LargeItemIcons`、`AutoAccessory` 是旧 JS 收集适配选项。
 
 启动状态：游戏实际 Saved 目录的 `PBZQuestRoute-startup.txt`。运行日志：`ProjectPBZ/Saved/PBZQuestRoute-log.txt`。桥接 JSON 文件是临时状态，不是存档。
