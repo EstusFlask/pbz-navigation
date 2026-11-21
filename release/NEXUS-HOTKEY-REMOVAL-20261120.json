@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-20",
+  "timezone": "America/Tijuana",
+  "url": "https://www.nexusmods.com/phantombladezero/mods/994",
+  "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
+  "descriptionSHA256": "3240a77df5c8342ec80905487106d2e9c423c0078d3a0be6403036f3c1cb567a",
+  "descriptionHashFormat": "UTF-8 with LF line endings",
+  "change": "Removed the bilingual default shortcut F9 text from Navigation settings; retained the Mods Menu link and tested version 0.7.2.",
+  "publicVerification": {
+    "savedAndReopenedPublicPage": true,
+    "navigationSettingsText": "Navigation settings / 导航设置：Mods Menu (tested: 0.7.2).",
+    "modsMenuUrl": "https://www.nexusmods.com/phantombladezero/mods/149",
+    "shortcutTextPresent": false
+  },
+  "screenshotsLocalOnly": [
+    "build/nexus-hotkey-20261120/public-description.jpg"
+  ],
+  "modVersion": "1.11.4",
+  "newFilesUploaded": false,
+  "modVersionChanged": false,
+  "permissionsChanged": false,
+  "newGameAcceptance": false
+}
