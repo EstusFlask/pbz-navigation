@@ -9,9 +9,9 @@
 
 ## 当前版本与限制
 
-当前版本 **1.11.4**，另保留 **1.9.4 Lite**。全图版已接入 11 个世界的首轮碰撞重建导航，仍属实验版本：部分路线缺失、跨层或特殊动作连接不准确，性能也有继续优化的空间。离线候选和模拟测试通过不代表游戏中已走通；当前问题及实测证据见[项目状态](docs/OFFLINE-NAVIGATION-STATE.md)。
+当前版本 **1.11.5**，另保留 **1.9.4 Lite**。全图版已接入 11 个世界的首轮碰撞重建导航，仍属实验版本：部分路线缺失、跨层或特殊动作连接不准确，性能也有继续优化的空间。离线候选和模拟测试通过不代表游戏中已走通；当前问题及实测证据见[项目状态](docs/OFFLINE-NAVIGATION-STATE.md)。
 
-1.11.4 改善物品寻路失败后的铃铛备用、连续下降候选和绕路前段显示。传送、攀爬、钩索等动作仍由玩家操作。游戏运行端使用普通 JavaScript；Recast/Detour 的 WASM 只用于离线工具，不要求游戏宿主支持 WASM。
+1.11.5 新增对 UE4SS 4.0.0（保留 1195）的收集联动与绳色界面适配器兼容；1.11.4 改善物品寻路失败后的铃铛备用、连续下降候选和绕路前段显示。传送、攀爬、钩索等动作仍由玩家操作。游戏运行端使用普通 JavaScript；Recast/Detour 的 WASM 只用于离线工具，不要求游戏宿主支持 WASM。
 
 **Nexus 仅发布发行版。Development 开发版供开发者本地构建和测试，不公开分发。** 1.9.4 Lite 使用全图重建前的数据；切换版本前关闭游戏，卸载旧导航并保留配置，只启用一份导航。
 
@@ -53,7 +53,7 @@
 
 ## English
 
-Quest, map-pin, collectible and bell navigation for **Phantom Blade Zero**, with regional-map routes and a blue world guide. Current version: **1.11.4**, with **1.9.4 Lite** also available. Full-world navigation is experimental; missing routes, traversal connections and performance still need work. Download the complete Release package from [Nexus Mods](https://www.nexusmods.com/phantombladezero/mods/994?tab=files), extract it, then import the folder containing both `ProjectPBZ` and `platform` into UE Mod Manager. See the bilingual [user guide](docs/USER-GUIDE.md). Development builds are for local developer use only.
+Quest, map-pin, collectible and bell navigation for **Phantom Blade Zero**, with regional-map routes and a blue world guide. Current version: **1.11.5**, with **1.9.4 Lite** also available. Full-world navigation is experimental; missing routes, traversal connections and performance still need work. Download the complete Release package from [Nexus Mods](https://www.nexusmods.com/phantombladezero/mods/994?tab=files), extract it, then import the folder containing both `ProjectPBZ` and `platform` into UE Mod Manager. See the bilingual [user guide](docs/USER-GUIDE.md). Development builds are for local developer use only.
 
 **Contributors / maintainer wanted:** I am busy, have finished the game, and am unsure where to take the next optimizations. Experience with navigation mods, pathfinding, Unreal Engine modding or related work would be helpful. Please open a [GitHub Issue](https://github.com/EstusFlask/pbz-navigation/issues/new?template=maintainer.yml) with your experience, repository/mod links and Nexus Mods account. After we agree on the handover, I can invite you to collaborate on GitHub and add you as a contributor on the Nexus mod page. Start with [CONTRIBUTING.md](CONTRIBUTING.md); agents should read [AGENTS.md](AGENTS.md).
 

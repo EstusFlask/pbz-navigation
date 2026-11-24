@@ -19,9 +19,12 @@ Lua::~Lua() = default;
 void Lua::execute_file(std::wstring_view path) const { executed=path; }
 }
 int main(int argc, char** argv) {
-    static_assert(sizeof(RC::CppUserModBase)==192, "UE4SS 1195 base layout changed");
+    static_assert(sizeof(RC::CppUserModBase)==192, "UE4SS base layout changed");
     assert(argc==3);
-    assert(sha256(argv[1])=="e1fb9a7e1d868afef6a091c2012e711c3ec47f05d100ba37f9631a4f75f31df2");
+    assert(is_supported_runtime_hash("e1fb9a7e1d868afef6a091c2012e711c3ec47f05d100ba37f9631a4f75f31df2"));
+    assert(is_supported_runtime_hash("3843d81a8280096b0de3c750eebf15507e374c250dc551cbf07e7be7acc1e2ba"));
+    assert(!is_supported_runtime_hash("0000000000000000000000000000000000000000000000000000000000000000"));
+    assert(is_supported_runtime_hash(sha256(argv[1])));
     test_root=module_file().parent_path()/"native-fixture"/"Mods"/"PBZQuestRouteCompat";
     std::filesystem::create_directories(test_root/"Scripts");
     assert(test_root.is_absolute() && test_root.filename()==L"PBZQuestRouteCompat");

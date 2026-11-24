@@ -1,0 +1,40 @@
+1.11.5 local Release and Development candidates — 2026-11-24, America/Tijuana
+
+UE4SS 4.0.0 compatibility:
+- Field failure observed in installed logs: after updating UE4SS to v4.0.0
+  (Git SHA #30afe5ff, UE4SS.dll SHA256
+  3843d81a8280096b0de3c750eebf15507e374c250dc551cbf07e7be7acc1e2ba),
+  PBZQuestRouteCompat-status.txt logged:
+  "Unsupported UE4SS build; expected PBZ 1195 shipping. Adapter remains off."
+  PBZQuestRoute-startup.txt remained on "tracker": "waiting for installed tracker"
+  and PBZQuestRoute-tracker.json stopped updating after the 1195 session.
+- Verified public UE4SS adapter headers (CppUserModBase.hpp,
+  LibBoundaryWrappers.hpp, LuaMadeSimple.hpp, StringType.hpp, Common.hpp,
+  File/Macros.hpp, Input/Handler.hpp) are identical between 1ceefac8 (1195) and
+  30afe5ff (4.0.0), and all 19 UE4SS.dll imported symbols exist in 4.0.0.
+- Updated native/QuestRouteCompat.cpp and native/native-tests.cpp to accept
+  both verified shipping UE4SS.dll hashes (1195 and 4.0.0) and rebuilt
+  PBZQuestRouteCompat/dlls/main.dll against the read-only installed UE4SS 4.0.0 DLL.
+
+Commands and results:
+- Native adapter build/test (against UE4SS 4.0.0 DLL):
+  py -3.12 native/build-native.py --ue4ss "D:\software\Steam\steamapps\common\PBZ\platform\steam\ue4ss\UE4SS.dll" --test
+  PASS: native ABI size, runtime SHA gate, mod filtering, version-independent host dispatch
+- Source JavaScript tests: 688 passed; 0 failed.
+- Lua adapter, real MCT 1.0.14 bridge, and real PbzModConfig 1.0.4 host tests: passed
+  (2 Python survey integration tests + all Lua roundtrip/contract/hint/config tests).
+- World stage: build/offline-navigation/integration-release-1.11.5
+  (5,334 staged files, 11 paged worlds, matching 1.11.4 world/overlay hashes).
+- Package build and verification (Release + Development + UE Mod Manager ownership):
+  - dist/Quest_and_Exploration_Navigation_Fork_1.11.5.zip
+    2,569,678,702 bytes, SHA256: 02c482efba1789eaa357f188cd5ea763da550ef1423bc3914e23d34133ab7515
+    5,335 entries, exact file matches, 0 collector overlap, UE MM update=True (5325/5331)
+  - dist/Quest_and_Exploration_Navigation_Fork_1.11.5_Development.zip
+    2,569,701,914 bytes, SHA256: 4720ef8aaac89c8211bf6132e8c4a6fe910954f6a23d23b4c6f9357e7f36e67e
+    5,342 entries, exact file matches, 0 collector overlap, UE MM update=True (5331/5331)
+  - Older 1.11.4 dist artifacts moved to build/release-archive/20261124-before-1.11.5/.
+
+Limits:
+- Game installation, saves, and UE Mod Manager remain untouched (read-only).
+  In-game verification of PBZQuestRouteCompat attaching under UE4SS 4.0.0
+  awaits installing 1.11.5 and restarting the game.

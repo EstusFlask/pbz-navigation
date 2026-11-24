@@ -1,4 +1,4 @@
-"""Build the navigation-owned UE4SS 1195 adapter with MSVC, without changing UE4SS."""
+"""Build the navigation-owned UE4SS adapter (1195 / 4.0.0) with MSVC, without changing UE4SS."""
 from pathlib import Path
 import argparse
 import os

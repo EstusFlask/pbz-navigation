@@ -9,8 +9,8 @@
   ],
   "draftFileUploaded": true,
   "name": "Quest and Exploration Navigation - Fork",
-  "version": "1.11.4",
-  "offlineWorldStage": "build/offline-navigation/integration-release-1.11.4",
+  "version": "1.11.5",
+  "offlineWorldStage": "build/offline-navigation/integration-release-1.11.5",
   "offlineWorldCount": 11,
   "upstreamVersion": "0.8.5-beta",
   "localPatchBase": "0.8.5-local-fix5",
@@ -19,10 +19,10 @@
   "language": "Any",
   "shortDescription": "Quest, collectible and bell navigation with map routes and a guiding rope. Release and Lite downloads. / 任务、收集物和铃铛导航，提供地图路线和引导绳，可选发行版或Lite版。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
-  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4.zip",
-  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.4",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.5.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.5",
   "fileCategory": "Main Files",
-  "fileDescription": "Activated-bell fallback, tower descent planning and checked route previews. UE Mod Manager: extract ZIP before importing. / 改善已启用铃铛中转、塔内连续下降与已确认路段显示。使用 UE Mod Manager 请先解压 ZIP。",
+  "fileDescription": "Compatible with UE4SS 4.0.0 and 1195 for collector sync and rope color UI. UE Mod Manager: extract ZIP before importing. / 兼容 UE4SS 4.0.0 与 1195 的收集联动及绳色设置。使用 UE Mod Manager 请先解压 ZIP。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -55,9 +55,9 @@
     {
       "modId": 5,
       "name": "UE4SS for Phantom Blade Zero",
-      "version": "1.0.3",
+      "version": "1.0.3 / 4.0.0",
       "required": false,
-      "note": "Required for optional collector sync and hints: v3.0.1-1195-g1ceefac8 Shipping; exact UE4SS runtime hash retained, collector entry text is not version-pinned."
+      "note": "Required for optional collector sync and hints: v3.0.1-1195-g1ceefac8 Shipping or v4.0.0 (#30afe5ff) Shipping; exact UE4SS runtime hash allowlist retained, collector entry text is not version-pinned."
     },
     {
       "name": "PbzModConfig",
@@ -152,8 +152,8 @@
     "verifiedOnPublicPage": true,
     "evidence": "release/NEXUS-CHANGELOG-CLEANUP-20261114.json"
   },
-  "localCandidateVersion": "1.11.4",
-  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.4_Development.zip",
+  "localCandidateVersion": "1.11.5",
+  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.5_Development.zip",
   "previousLocalCandidate": {
     "version": "1.9.3",
     "date": "2026-11-15",

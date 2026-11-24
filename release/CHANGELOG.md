@@ -1,3 +1,8 @@
+### Version 1.11.5
+
+- Added UE4SS 4.0.0 compatibility for collectible tracker sync and rope color settings while retaining UE4SS 1195 support.
+- 新增 UE4SS 4.0.0 兼容支持，恢复收集联动与绳子颜色设置界面适配，并保留对 UE4SS 1195 的支持。
+
 ### Version 1.11.4
 
 - Restored activated-bell alternatives when item routing fails, including nearby items and destinations reached through terrain transitions.

@@ -16,6 +16,13 @@
 用户明确设置持续目标“把所有路线问题与mod连接问题都做好”。不得把成功标准缩成少数通过路线、只打包安装、或仅完成47段巡检。47段是当前必须重复的全量回归集；世界几何、动作/机关规则、目标与Mod接线、游戏验收仍需分别证明。用户已恢复持续目标。不自行启动游戏；发布依用户当轮明确授权，不用轨迹造路。
 - 用户确认的方向规则：普通地形上得去的边，也应提供从上往下的候选。下行按该方向独立检查地面、胶囊和当前角色能力，通过后才画线。纯坠落保持单向，机关和原生动作遵守各自的方向和状态。
 
+### 1.11.5：UE4SS 4.0.0 原生适配器兼容（2026-11-24）
+
+- 现场日志排查确认：游戏升级至 UE4SS v4.0.0（Git SHA `#30afe5ff`，`UE4SS.dll` SHA256 `3843d81a8280096b0de3c750eebf15507e374c250dc551cbf07e7be7acc1e2ba`）后，`PBZQuestRouteCompat/PBZQuestRouteCompat-status.txt` 报错 `Unsupported UE4SS build; expected PBZ 1195 shipping. Adapter remains off.`；`UE4SS.log` 显示 `PBZQuestRouteCompat` 的 Lua 配置端正常注册（`REGISTERED PBZQuestRoute navigation and rope settings`），但 C++ 适配器因 `supported_runtime()` 仅校验 1195 哈希（`e1fb9a7e...`）而拒绝挂载，`PBZQuestRoute-startup.txt` 停留在 `"tracker":"waiting for installed tracker"`，`PBZQuestRoute-tracker.json` 未再更新。
+- 核对公开头文件与导出符号：对比 RE-UE4SS `1ceefac8`（1195）与 `30afe5ff`（4.0.0）中 `QuestRouteCompat.cpp` 依赖的 `CppUserModBase.hpp`、`LibBoundaryWrappers.hpp`、`LuaMadeSimple.hpp`、`StringType.hpp`、`Common.hpp`、`File/Macros.hpp`、`Input/Handler.hpp` 完全一致；`main.dll` 导入的 19 个 `UE4SS.dll` 符号在 4.0.0 导出表全部存在，且运行时均使用 MSVC Release CRT（`/MD`）。
+- 已更新 `native/QuestRouteCompat.cpp` 与 `native/native-tests.cpp`，保留运行时哈希白名单校验并同时允许 1195 Shipping 与 4.0.0 `#30afe5ff` Shipping；使用只读的实装 `UE4SS.dll`（4.0.0）重建 `PBZQuestRouteCompat/dlls/main.dll` 并通过原生 ABI/哈希门限/分发测试。
+- 同步版本至 `1.11.5`（含 `VERSION-LOCK.json`、`NEXUS-FIELDS.json`、双语说明与 `CHANGELOG.md`），旧 `dist/` 1.11.4 包归档至 `build/release-archive/20261124-before-1.11.5/`。已完成 `integration-release-1.11.5` 暂存（5,334 文件 / 11 世界），688 项源码 JS 测试、Lua/MCT 1.0.14/PbzModConfig 1.0.4 联动测试、发行版（5,335 项，SHA256 `02c482efba1789eaa357f188cd5ea763da550ef1423bc3914e23d34133ab7515`）与开发版（5,342 项，SHA256 `4720ef8aaac89c8211bf6132e8c4a6fe910954f6a23d23b4c6f9357e7f36e67e`）打包与管理器归属校验全部通过，见 [1.11.5 验证记录](../release/VALIDATION-1.11.5.txt)。游戏目录保持只读未改动，需用户安装 1.11.5 并重启游戏完成实机挂载确认。
+
 ### 源码公开与维护招募准备（2026-11-20）
 
 - 按用户要求移除 Nexus 正文中 Mods Menu 的“默认快捷键 F9”说明，保留导航设置链接和测试版本 0.7.2；本地 BBCode 同步，保存后已在公开页核对并留图。仅文案修改，不递增版本、不构建或上传安装包，导航与游戏验收状态不变，见[文案更新回执](../release/NEXUS-HOTKEY-REMOVAL-20261120.json)。

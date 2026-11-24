@@ -1,6 +1,6 @@
 # 开发与维护入口
 
-新贡献者先读[贡献指南](../CONTRIBUTING.md)，其中包含环境、本地输入、最小检查、完整测试与构建前提；Agent 从 [AGENTS.md](../AGENTS.md) 进入。当前版本为 1.11.4，最新现场问题和下一步以[持久项目状态](OFFLINE-NAVIGATION-STATE.md)为准。
+新贡献者先读[贡献指南](../CONTRIBUTING.md)，其中包含环境、本地输入、最小检查、完整测试与构建前提；Agent 从 [AGENTS.md](../AGENTS.md) 进入。当前版本为 1.11.5，最新现场问题和下一步以[持久项目状态](OFFLINE-NAVIGATION-STATE.md)为准。
 
 本仓库公开源码并保留现有权限，详见[来源与权限](../THIRD-PARTY-NOTICES.md)。收集 Mod 1.0.14 参考改为自行下载、只在本地保存；克隆不包含全图暂存及 receipt、密钥或游戏数据，不能直接当作完整安装包。
 
@@ -11,6 +11,8 @@
 ## 历史开发与验证记录
 
 以下保留各阶段原始记录；其中“当前”“已安装”“未发行”等只对应所在版本的当时状态，不能替代上面的当前入口与最新持久状态。
+
+- **1.11.5 UE4SS 4.0.0 原生适配器兼容（本地双包已构建）**：排查游戏日志确认 `PBZQuestRouteCompat` 因硬编码校验 UE4SS 1195 哈希而在 UE4SS v4.0.0（`#30afe5ff`）下停用收集联动与 PbzModConfig 行兼容钩子。核对公共头文件与 19 个导出符号一致后，更新 `QuestRouteCompat.cpp` 同时允许 1195 与 4.0.0 Shipping 哈希并重建 `main.dll`。通过原生测试、688 项源码 JS、Lua/MCT 1.0.14/PbzModConfig 1.0.4 联动测试与 1.11.5 双包构建/校验（未安装或上传），详见[验证记录](../release/VALIDATION-1.11.5.txt)与[持久状态](OFFLINE-NAVIGATION-STATE.md)。
 
 - **1.11.4发行/开发双包已发布**：修复近物品铃铛备用、连续下降候选、绕路前段显示及平地矮墙漏检，恢复同时交付开发起终点与轻攻击采集。688项源JS、270项暂存检查、11世界/12网格、47对离线候选与双包逐项校验通过；杀气塔现场完整路线及新增胶囊查询开销尚未验收。按用户要求已发布Nexus主文件4717和开发版可选文件4718，并推送源码；未安装或启动游戏，详见[发布回执](../release/LOCAL-CANDIDATE-1.11.4.json)、[验证记录](../release/VALIDATION-1.11.4.txt)与[持久状态](OFFLINE-NAVIGATION-STATE.md)。
 

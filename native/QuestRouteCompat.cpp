@@ -4,10 +4,12 @@
 #include <bcrypt.h>
 #include <Mod/CppUserModBase.hpp>
 #include <LuaMadeSimple/LuaMadeSimple.hpp>
+#include <algorithm>
 #include <array>
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
+#include <string_view>
 
 namespace {
 HMODULE module_handle{};
@@ -52,9 +54,16 @@ std::string sha256(const std::filesystem::path& file) {
     for (auto byte : digest) { result += digits[byte >> 4]; result += digits[byte & 15]; }
     return result;
 }
+constexpr std::array<std::string_view, 2> kSupportedRuntimeHashes{
+    "e1fb9a7e1d868afef6a091c2012e711c3ec47f05d100ba37f9631a4f75f31df2", // UE4SS v3.0.1-1195-g1ceefac8 Shipping
+    "3843d81a8280096b0de3c750eebf15507e374c250dc551cbf07e7be7acc1e2ba", // UE4SS v4.0.0 #30afe5ff Shipping
+};
+bool is_supported_runtime_hash(const std::string& digest) {
+    return std::find(kSupportedRuntimeHashes.begin(), kSupportedRuntimeHashes.end(), digest) != kSupportedRuntimeHashes.end();
+}
 bool supported_runtime() {
     const auto root=own_root().parent_path().parent_path();
-    return sha256(root / "UE4SS.dll") == "e1fb9a7e1d868afef6a091c2012e711c3ec47f05d100ba37f9631a4f75f31df2";
+    return is_supported_runtime_hash(sha256(root / "UE4SS.dll"));
 }
 class QuestRouteCompat final : public RC::CppUserModBase {
     static void lua_started(RC::CppUserModBase*, RC::CStringView name,
@@ -74,7 +83,7 @@ class QuestRouteCompat final : public RC::CppUserModBase {
     }
 public:
     QuestRouteCompat() {
-        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"1.11.4";
+        ModName=L"Quest Navigation Fork Tracker Adapter"; ModVersion=L"1.11.5";
         ModDescription=L"Navigation-owned collectible bridge and settings UI compatibility";
         ModAuthors=L"kurosakana (fork); original navigation by azqwq333";
         register_on_lua_start(&lua_started);
@@ -83,7 +92,7 @@ public:
 }
 extern "C" __declspec(dllexport) RC::CppUserModBase* start_mod() {
     try {
-        if (!supported_runtime()) { status("Unsupported UE4SS build; expected PBZ 1195 shipping. Adapter remains off."); return nullptr; }
+        if (!supported_runtime()) { status("Unsupported UE4SS build; expected verified PBZ 1195 or 4.0.0 shipping. Adapter remains off."); return nullptr; }
         return new QuestRouteCompat();
     } catch (...) { status("Navigation adapter startup failed."); return nullptr; }
 }
