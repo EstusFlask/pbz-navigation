@@ -34,7 +34,7 @@ class Scout{
    let best=null;
    for(const c of group.sort((a,b)=>Math.hypot(a.p.x-foot.x,a.p.y-foot.y)-Math.hypot(b.p.x-foot.x,b.p.y-foot.y))){
     if(best&&Math.hypot(c.p.x-foot.x,c.p.y-foot.y)>best.leg.meters*100+400)continue;
-    yield;const leg=yield* walk(c.p);if(leg&&(!best||leg.meters<best.leg.meters))best={...c,leg};}
+    yield;const leg=yield* walk(c.p,c.b);if(leg&&(!best||leg.meters<best.leg.meters))best={...c,leg};}
    if(best){const {b,p,active,leg}=best;this.log('sense',patch+' -> '+b.id+' '+b.name+' '+Math.round(leg.meters)+'m');
     return {key:'sense:'+b.id,world:b.world,area:b.area,p,bell:b.id,wasActive:active,until:Date.now()+30000,trip:{legs:[leg],transfer:null}};}
   }

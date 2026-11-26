@@ -9,19 +9,19 @@ import subprocess
 import zipfile
 from collector_fixture import current_fixture
 from release_profiles import archive_name, included, build_bytes, lua_build_bytes, BUILD, LUA_BUILD, DEVELOPMENT_FILES
-from world_package import world_sources
+from lite_package import package_sources
 
 root=Path(__file__).resolve().parents[1]
 nav=root/'Quest_Navigation'
 parser=argparse.ArgumentParser()
 parser.add_argument('--manager-state',type=Path)
 parser.add_argument('--flavor',choices=['release','development','all'],default='all')
+parser.add_argument('--edition',choices=['full','lite','all'],default='all')
 parser.add_argument('--world-stage',help='Verified public full-world staging; defaults to release metadata')
 args=parser.parse_args()
 release=json.loads((root/'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))
 lock=json.loads((root/'release/VERSION-LOCK.json').read_text(encoding='utf-8'))
 version=str(release['version'])
-world_files,world_hashes=world_sources(root,release,args.world_stage)
 def version_key(value):
     match=re.fullmatch(r'(\d+)\.(\d+)\.(\d+)(?:-fork\.\d+)?', value)
     assert match, 'invalid release version: '+value
@@ -58,15 +58,17 @@ for world in stream_state['worlds']:
 subprocess.run(['node',str(root/'tests/verify-stream-atlas.cjs')],check=True)
 print('PASS: every streamed column matches original data byte hashes; original source files unchanged')
 assert archive.relative_to(root).as_posix()==release['archive']
-for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]:
- archive=root/archive_name(version,flavor)
- with zipfile.ZipFile(archive) as z:
+for edition in ['full','lite'] if args.edition=='all' else [args.edition]:
+ world_files,world_hashes=package_sources(root,release,edition,args.world_stage)
+ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]:
+  archive=root/archive_name(version,flavor,edition)
+  with zipfile.ZipFile(archive) as z:
     package_documents={**documents}
     if flavor=='development':package_documents['DEVELOPMENT-SURVEYS.md']=root/'docs/DEVELOPMENT-SURVEYS.md'
     names=set(z.namelist())
     assert len(names)==len(z.namelist()), 'duplicate archive paths'
     assert not any(Path(n).suffix.lower() in {'.exe','.com','.scr','.msi'} for n in names), 'executable included in Mod package'
-    expected={p.relative_to(nav).as_posix() for p in nav.rglob('*') if p.is_file() and included(p.relative_to(nav).as_posix(),flavor)}
+    expected={p.relative_to(nav).as_posix() for p in nav.rglob('*') if p.is_file() and included(p.relative_to(nav).as_posix(),flavor,edition)}
     expected.update(scripts+'PBZRouteStreaming/'+name for name in stream_state['files'])
     expected.update(world_files)
     assert names==expected|set(package_documents), 'incomplete navigation package'
@@ -76,8 +78,8 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     assert 'surfaceDataSHA256' not in json.loads(z.read(BUILD).decode().split('module.exports=',1)[1].strip().removesuffix(';')), 'retired model profile included'
     for development_file in DEVELOPMENT_FILES:
         assert (development_file in names)==(flavor=='development'), 'development flavor boundary broken: '+development_file
-    assert z.read(BUILD)==build_bytes(nav,version,flavor), 'build profile mismatch'
-    assert z.read(LUA_BUILD)==lua_build_bytes(version,flavor), 'tracker VM build profile mismatch'
+    assert z.read(BUILD)==build_bytes(nav,version,flavor,edition), 'build profile mismatch'
+    assert z.read(LUA_BUILD)==lua_build_bytes(version,flavor,edition), 'tracker VM build profile mismatch'
     assert not any(n.endswith('PBZRouteSurveyMap.js') for n in names),'superseded survey overlay included'
     assert z.testzip() is None
     version=release['version']
@@ -100,7 +102,7 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
         # redundant multi-GB disk pass over the same validated snapshot.
         if name in world_hashes:assert identity.hex()==world_hashes[name], 'staging receipt differs: '+name
         else:assert identity==hashlib.sha256(source.read_bytes()).digest(),name
-    print(f'PASS: {flavor} complete archive, {len(names)} exact file matches, no collector-owned paths')
+    print(f'PASS: {edition}/{flavor} complete archive, {len(names)} exact file matches, no collector-owned paths')
     print(f'PASS: archive, runtime, native adapter and documentation versions agree: {version}')
     if args.manager_state:
         mods=json.loads(args.manager_state.read_text(encoding='utf-8'))['mods']
@@ -118,7 +120,9 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
                 # Exact IsSameMod formula from UE MM v1.6.4 ModManager.cs.
                 same=overlap*2>=len(mod['files'])
                 print(f"UE MM: {mod['name']}: {overlap}/{len(mod['files'])} existing paths; recognized update={same}")
-                assert same
+                if not same:
+                    assert edition=='lite' and 'Quest' in mod['name'], 'unexpected package ownership overlap'
+                    print('UE MM: Full/Lite size change requires uninstalling the old navigation before importing; settings must be retained')
         assert len(owners)<=1 and (not owners or 'Quest' in owners[0]['name']), 'download takes ownership of another mod'
         if not owners:print('PASS: no existing Mod owns these paths; navigation can be registered as a new managed install')
         tracker=next(m for m in mods if m['name']=='Map Collectible Tracker')

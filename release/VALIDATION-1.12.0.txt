@@ -1,0 +1,36 @@
+Version 1.12.0 - Full/Lite local delivery (2026-11-25 America/Tijuana)
+
+Scope: preserve all original Lite features and add cooked bell corridors.
+No player traces/saves were used to construct navigation.
+
+Passed:
+- 693 JavaScript source tests and the same 693-test run with an isolated Lite profile.
+- 3 Python bell extraction/package-boundary tests and existing world-package control.
+- Lua/MCT 1.0.14 target, marker, cancellation, hint and rope-color protocols.
+- Existing native adapter rebuilt; ABI, 1195/4.0.0 SHA gate and dispatch checks.
+- Independent exact tile/state variants and directed topology differential: 1,962 tiles, 1,171 reachable pairs.
+- 16 original/subset Detour walking controls in plain JavaScript with string/WASM generation disabled.
+- Full Release, Full Development, Lite Release, Lite Development: CRC, exact file SHA and version agreement.
+- UE Mod Manager ownership: no overlap with all 110 installed collector files.
+- Original 1.9.4 Lite file list fully retained; all 951 original atlas modules byte-identical.
+
+Packages:
+dist/Quest_and_Exploration_Navigation_Fork_1.12.0.zip
+  2,569,679,794 bytes ZIP; 3,743,859,736 installed bytes; 5335 entries
+  SHA256 a6e5b7ea09e2b0fd2f99e945eddd45da8b44120c3e0e2a39fb1064689b4ed647
+dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Development.zip
+  2,569,703,004 bytes ZIP; 3,743,964,783 installed bytes; 5342 entries
+  SHA256 d85ac48bd4ac621cd396bc2b35ee915241e67cd5df9bf176fcbb3be0f6e6a90c
+dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Lite.zip
+  402,711,005 bytes ZIP; 845,799,282 installed bytes; 2027 entries
+  SHA256 736b0f1105ec7fde2d867787387887d227b016c2bf304ddaa201c28551eba779
+dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Lite_Development.zip
+  402,734,206 bytes ZIP; 845,904,329 installed bytes; 2034 entries
+  SHA256 aca7e757c49499a09d63907158cb54eea44558f768fa5a88880fbe11fc3984ea
+
+Limits:
+- 167 bell endpoints projected; Bell_DP_005 remains on original planning.
+- Topology/Detour evidence is not live floor/capsule/door/native-action acceptance.
+- Game installation, manager, saves and other Mods remain untouched; no game start or upload.
+- FPS not measured. Full/Lite switching requires uninstalling old navigation while retaining settings.
+- Development packages remain local only.

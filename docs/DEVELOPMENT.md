@@ -1,6 +1,6 @@
 # 开发与维护入口
 
-新贡献者先读[贡献指南](../CONTRIBUTING.md)，其中包含环境、本地输入、最小检查、完整测试与构建前提；Agent 从 [AGENTS.md](../AGENTS.md) 进入。当前版本为 1.11.5，最新现场问题和下一步以[持久项目状态](OFFLINE-NAVIGATION-STATE.md)为准。
+新贡献者先读[贡献指南](../CONTRIBUTING.md)，其中包含环境、本地输入、最小检查、完整测试与构建前提；Agent 从 [AGENTS.md](../AGENTS.md) 进入。当前源码候选为1.12.0，Full／Lite各有本地发行／开发配对，最新现场问题和下一步以[持久项目状态](OFFLINE-NAVIGATION-STATE.md)为准。
 
 本仓库公开源码并保留现有权限，详见[来源与权限](../THIRD-PARTY-NOTICES.md)。收集 Mod 1.0.14 参考改为自行下载、只在本地保存；克隆不包含全图暂存及 receipt、密钥或游戏数据，不能直接当作完整安装包。
 

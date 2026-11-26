@@ -1,6 +1,6 @@
 # 离线碰撞 → Recast / Detour
 
-当前发布线为 **1.11.5**，已接入11世界／12网格的碰撞重建、普通JS运行端和压缩数据；完整游戏路线、动态规则和现场性能仍未全部验收。当前实装及故障以[持久状态](../docs/OFFLINE-NAVIGATION-STATE.md)为准。新接手者先读[贡献指南](../CONTRIBUTING.md)准备本地依赖、游戏输入及全图暂存；这些输入不随源码克隆。离线候选、独立碰撞、宿主模拟和真实游戏验收分别记账。
+当前源码候选为 **1.12.0**，已接入11世界／12网格的碰撞重建、普通JS运行端和压缩数据；完整游戏路线、动态规则和现场性能仍未全部验收。当前实装及故障以[持久状态](../docs/OFFLINE-NAVIGATION-STATE.md)为准。新接手者先读[贡献指南](../CONTRIBUTING.md)准备本地依赖、游戏输入及全图暂存；这些输入不随源码克隆。离线候选、独立碰撞、宿主模拟和真实游戏验收分别记账。
 
 原始实验分支：`codex/offline-recast-navigation`；新贡献从最新 `main` 开始。下面的 `route-001` 命令是最初首区域流程示例，不能代替完整世界构建；最初范围见[实现记录](../docs/OFFLINE-RECAST-IMPLEMENTATION-20261115.md)。
 
@@ -49,6 +49,15 @@ node --test tests/offline-runtime.test.cjs tests/recast-integration.test.cjs
 `cli.mjs bake/query/coverage/components/inspect`仍可用于静态或合成场景诊断。发行的条件图块编译则强制`base`场景、零已记录解析错误和输入SHA一致，拒绝把某个用户的当前存档场景固化进公共数据。
 
 `node offline-navigation/build-terminal-movement-field.mjs DATA_ROOT OUTPUT WORLD AUTHORED_BELL_ID CAPABILITIES_JSON` 从铺好网格的指定世界补查能够落入铃铛步行分区的单向跳落。`OUTPUT` 使用 `build/` 下的新目录。补扫结果需先由 `py -3.12 tools/build-custom-route-action-oracle.py OUTPUT --routes 1` 独立核验，再通过移动页合并器的 `--action-proof` 筛选后进入世界移动数据。游戏按现有规则使用这些候选，仍会检查当前能力与碰撞。
+
+## Lite 铃铛子网
+
+Lite保留旧atlas、首区域Recast及全部原有功能，铃铛目标另外使用从当前完整世界提取的原始瓦片子网。离线编译同时保留混合动作与纯步行的有向铃铛通路、端点附近接入瓦片和全部门锁状态变体。已有局部接入检查处理近处偏离；远处或缺少连接的起点仍可回退旧规划。体积缩小不构成帧率或全图可达保证。
+
+1. 从`release/NEXUS-FIELDS.json.offlineWorldStage`读取完整暂存下的`ProjectPBZ/PBZModLoader/mods/PBZQuestRoute/PBZRecastWorlds`，运行`node offline-navigation/bell-anchors.mjs WORLD_ROOT build/offline-navigation/bell-anchors-VERSION.json`，保存绑定源清单SHA的真实Detour端点投影。
+2. 运行`py -3.12 tools/build-bell-lite.py --source WORLD_ROOT --anchors ANCHORS_JSON --output build/offline-navigation/bell-lite-VERSION`。输出必须是新的私有目录；工具不读取实走轨迹或玩家存档。
+3. 运行`py -3.12 tools/verify-bell-lite-data.py WORLD_ROOT SUBSET_ROOT ANCHORS_JSON build/bell-data-validation.json`，独立核对原瓦片／状态字节与有向拓扑；再运行`node offline-navigation/verify-bell-lite.mjs WORLD_ROOT SUBSET_ROOT ANCHORS_JSON build/bell-detour-validation.json`对照普通JS查询。这两步均不证明游戏物理或机关动作通过。
+4. 同步版本锁与元数据中的`liteWorldStage/liteWorldCount`后，以`tests/build-patch.py --edition all --flavor all`及`tests/verify-package.py --edition all --flavor all`生成、检查Full／Lite各自的发行／开发配对。只有发行包可在获得授权后上传。
 
 ## 验证边界
 

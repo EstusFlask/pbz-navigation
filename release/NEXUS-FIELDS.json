@@ -9,8 +9,8 @@
   ],
   "draftFileUploaded": true,
   "name": "Quest and Exploration Navigation - Fork",
-  "version": "1.11.5",
-  "offlineWorldStage": "build/offline-navigation/integration-release-1.11.5",
+  "version": "1.12.0",
+  "offlineWorldStage": "build/offline-navigation/integration-release-1.12.0-final",
   "offlineWorldCount": 11,
   "upstreamVersion": "0.8.5-beta",
   "localPatchBase": "0.8.5-local-fix5",
@@ -19,10 +19,10 @@
   "language": "Any",
   "shortDescription": "Quest, collectible and bell navigation with map routes and a guiding rope. Release and Lite downloads. / 任务、收集物和铃铛导航，提供地图路线和引导绳，可选发行版或Lite版。",
   "descriptionFile": "release/NEXUS-DESCRIPTION.bbcode",
-  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.5.zip",
-  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.11.5",
+  "archive": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0.zip",
+  "fileDisplayName": "Quest and Exploration Navigation - Fork 1.12.0",
   "fileCategory": "Main Files",
-  "fileDescription": "Compatible with UE4SS 4.0.0 and 1195 for collector sync and rope color UI. UE Mod Manager: extract ZIP before importing. / 兼容 UE4SS 4.0.0 与 1195 的收集联动及绳色设置。使用 UE Mod Manager 请先解压 ZIP。",
+  "fileDescription": "Full and Lite editions. Lite retains all navigation features and adds compact bell corridors. / 全图版与Lite版；Lite保留全部导航功能并新增精简铃铛路网。",
   "tags": [
     "AI-Generated Content",
     "AI Media",
@@ -90,12 +90,17 @@
     "evidence": "release/LOCAL-CANDIDATE-1.11.4.json"
   },
   "localCandidate": {
-    "version": "1.7.1",
-    "date": "2026-11-15",
+    "version": "1.12.0",
+    "date": "2026-11-25",
     "timezone": "America/Tijuana",
+    "receipt": "release/LOCAL-CANDIDATE-1.12.0.json",
+    "installed": false,
     "uploaded": false,
-    "basedOnLocalVersion": "1.7.0",
-    "note": "Survey points use real Map Collectible Tracker1.0.14 catalog, repository, tooltip and selection. Retired1.0.9 fixtures and restoration. First game presentation acceptance pending."
+    "editions": [
+      "full",
+      "lite"
+    ],
+    "developmentUsage": "Local only"
   },
   "releasePolicy": "release/README.md",
   "previousDescriptionUpdate": {
@@ -152,8 +157,8 @@
     "verifiedOnPublicPage": true,
     "evidence": "release/NEXUS-CHANGELOG-CLEANUP-20261114.json"
   },
-  "localCandidateVersion": "1.11.5",
-  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.11.5_Development.zip",
+  "localCandidateVersion": "1.12.0",
+  "developmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Development.zip",
   "previousLocalCandidate": {
     "version": "1.9.3",
     "date": "2026-11-15",
@@ -185,10 +190,18 @@
       "uploaded": false,
       "basedOnLocalVersion": "1.6.0",
       "note": "Selectable numbered survey items, explicit light-attack capture control, defense mistake markers; 47 directed cards. First game acceptance pending."
+    },
+    {
+      "version": "1.7.1",
+      "date": "2026-11-15",
+      "timezone": "America/Tijuana",
+      "uploaded": false,
+      "basedOnLocalVersion": "1.7.0",
+      "note": "Survey points use real Map Collectible Tracker1.0.14 catalog, repository, tooltip and selection. Retired1.0.9 fixtures and restoration. First game presentation acceptance pending."
     }
   ],
   "localCandidateInstalled": false,
-  "localCandidateUploaded": true,
+  "localCandidateUploaded": false,
   "developmentArchiveUsage": "Local developer use only; never upload to Nexus or distribute publicly.",
   "sourceRepository": "https://github.com/EstusFlask/pbz-navigation",
   "contributorContact": "https://github.com/EstusFlask/pbz-navigation/issues",
@@ -205,5 +218,9 @@
     "descriptionSHA256": "f5d5f6386cb2f95a79bf883ce269fb44ffcc3bd8c621d06777527d5c8785d4c3",
     "publicPageVerified": true,
     "scope": "Description layout only; prominent maintainer recruitment, grouped bilingual sections, collapsed help. No Mod file upload."
-  }
+  },
+  "liteWorldStage": "build/offline-navigation/bell-lite-1.12.0-final",
+  "liteWorldCount": 8,
+  "liteArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Lite.zip",
+  "liteDevelopmentArchive": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Lite_Development.zip"
 }

@@ -1,3 +1,10 @@
+### Version 1.12.0
+
+- Added an updated Lite edition with compact bell-navigation corridors while retaining quest, collectible, map and guiding-thread features.
+- 新增使用精简铃铛路网的 Lite 版本，保留任务、收集物、地图路线和场景丝线功能。
+- Lite loads the added corridors for bell navigation and keeps the original planner as a fallback.
+- Lite 在铃铛导航时按需加载新增路网，并保留原寻路方式作为备用。
+
 ### Version 1.11.5
 
 - Added UE4SS 4.0.0 compatibility for collectible tracker sync and rope color settings while retaining UE4SS 1195 support.

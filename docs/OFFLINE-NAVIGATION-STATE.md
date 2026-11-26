@@ -16,6 +16,25 @@
 用户明确设置持续目标“把所有路线问题与mod连接问题都做好”。不得把成功标准缩成少数通过路线、只打包安装、或仅完成47段巡检。47段是当前必须重复的全量回归集；世界几何、动作/机关规则、目标与Mod接线、游戏验收仍需分别证明。用户已恢复持续目标。不自行启动游戏；发布依用户当轮明确授权，不用轨迹造路。
 - 用户确认的方向规则：普通地形上得去的边，也应提供从上往下的候选。下行按该方向独立检查地面、胶囊和当前角色能力，通过后才画线。纯坠落保持单向，机关和原生动作遵守各自的方向和状态。
 
+### 1.12.0：Lite 精简铃铛路网（2026-11-25，本地实施，游戏验收待补）
+
+- 用户已明确授权按精简子网方法实施；**保留 Lite 全部原有功能**。当前 Full／Lite 使用同一导航源码，`edition` 与 `release/development` 采集开关独立；Lite 保留任务、物品、地图选点、地图路线、场景丝线、颜色设置、收集联动、旧 atlas 及首区域 Recast 数据，只为铃铛目标额外查询精简世界子网，不强制改变显示方式或原有目标优先级。
+- `offline-navigation/bell-anchors.mjs` 从已校验的1.11.5世界暂存做真实Detour端点投影，共168个非损坏铃铛表项中167个可定位；`Bell_DP_005` 未投影成功，保留原规划。`tools/build-bell-lite.py` 从原有向步行／机关／几何动作图提取铃铛最短通路，同时保留纯步行绕行和铃铛附近接入瓦片。最终8世界／9网格（含没有铃铛的空 giant 子网占位）、1,962原始瓦片；全部原始条件变体的字节SHA256保持，不读存档或轨迹造路，不把乐观提取状态写入游戏真值。
+- 独立核验 `tools/verify-bell-lite-data.py` 逐瓦片核对源元数据、全部状态变体字节、门锁Actor与有向边，再用BFS复核保留1,171个原铃铛有向拓扑对（其中108对也有纯步行拓扑）。这些数字不是实走通过数。`offline-navigation/verify-bell-lite.mjs` 在禁WASM／字符串代码生成的普通JS运行端对照原数据与子网，8区域、未知状态关闭及乐观查询提示两种模式共16组真实Detour步行控制通过；不包含游戏物理或机关动作验收。
+- `RecastCache` 的 Lite 子网只在铃铛目标期间装载／轮询，停止目标时取消生成器并释放子网与动作缓存，原区域提供器继续保留。`Scout` 将铃铛身份传给规划器；子网失败／仅有前段时尝试原规划，已有完整旧路线优先于不完整新候选。回退仅接纳本次规划自身引起的提供器版本切换；内部雾门接近规划继承外层提供器，避免反复重算，状态变化仍按原规则失效。
+- 构建器及验证器新增 `--edition full/lite/all`，默认与 `--flavor all` 组合生成四包；Development 两包仍仅限本地。`tests/lite_package.py` 按清单、世界身份、私有路径及哈希严格限定子网与裁剪动作页，拒绝无引用私有文件。完整世界通过 `tools/restage-release-worlds.py` 从1.11.5本地暂存及其回执逐文件验SHA后转入新版本，未伪造数据或从Nexus包恢复。
+- 已同步1.12.0版本锁、JS／Lua／原生版本及双语文案，重建已有适配器并通过ABI／1195与4.0.0哈希门限测试。693项JS在Full源码和独立Lite配置下各通过一次；3项Python子网／包边界、已有世界清单检查、真实MCT1.0.14与绳色Lua协议均通过。原dist双包已带SHA256归档至 `build/release-archive/20261125-before-1.12.0/`。最终四包已完成CRC、逐文件SHA、版本及管理器归属校验；Full发行版2,569,679,794字节／5,335项，Lite发行版402,711,005字节／2,027项、解压845,799,282字节。Lite不缺旧1.9.4任何文件，951个旧atlas模块字节完全一致。详见[交付回执](../release/LOCAL-CANDIDATE-1.12.0.json)和[验证记录](../release/VALIDATION-1.12.0.txt)。
+- 管理器现场只读核对：Full覆盖原导航5,325／5,331文件，可识别更新；Lite覆盖2,017／5,331文件，达不到管理器自动更新阈值，**Full／Lite切换须退出游戏，先卸载旧导航、保留配置，再导入另一版**。各包与实装110个收集Mod文件零重叠。未安装、启动游戏、上传Nexus、发送玩家回复或Git push。全部路线活动目标仍未完成，实际帧率、未覆盖起点／大幅偏离及特殊动作继续待游戏验收。
+
+### Lite 保留全部功能并补充铃铛路线（2026-11-25，实施前核查记录）
+
+- **用户最新澄清：不要去掉任何东西，保留 Lite 现有全部功能，只将已有铃铛路线补入 Lite。** 此约束覆盖上一轮助手提出的铃铛专用裁剪版建议；不得据玩家原评论删除任务、物品、地图或收集联动，也不能擅自将所有显示强制改为洞照30秒。
+- 当前 Lite 是保留旧数据的完整1.9.4。本地归档 `build/release-archive/20261116-before-1.10.0/Quest_and_Exploration_Navigation_Fork_1.9.4.zip` 已含 `onSense → Scout.beginJob → makePlan` 接线。现有寻铃要求玩家在已知未揭开迷雾内、没有手动导航目标、没有接管导航的任务追踪，优先选择对应迷雾的未激活铃铛，寻铃目标最多持续30秒；功能入口已存在不等于新版路线质量已移植。
+- 逐文件对比1.9.4发行包与当前源码：`PBZRouteScout.js`、`PBZRouteGuideData.js`、`PBZRouteGuides.js`、`PBZRouteBellNetwork.js`、`PBZRouteRoadbook.js`、`PBZRouteTables.js`、`PBZRouteBellIdentity.js` 完全相同，`PBZRouteRoadbookData/` 的10文件和 `PBZRouteWorlds/` 的11文件也全部相同；固定引导及路书相关文件合计382,661字节。没有一套新版新增的固定铃铛点列可直接复制来获得全图重建后的效果；`PBZRouteBellTransfer.js` 和通用规划／物理逻辑存在更新。
+- 逐 ZIP 中央目录核对：1.9.4发行包129,183,960字节，其中旧 `PBZRouteStreaming` 安装字节431,116,408，首区域 `PBZRecastData` 36,020,521；1.11.5发行包2,569,678,702字节，新增全世界 `PBZRecastWorlds` 安装字节3,203,327,486。新铃铛路径是规划器查询通用重建路网的结果，不能仅复制目标坐标或绘线模块，也不能从包体积直接推算FPS。
+- 满足用户方向的候选方案：保留 Lite 原有功能和旧路网，在离线阶段从现有重建数据编译铃铛通路所需的精简子网／有向路线骨架及必要动作、门锁依赖，按需提供额外的铃铛候选；任意站位到骨架、偏离重接及到铃铛的末段仍须有可用连接与当前地面／胶囊／状态检查，失败时保留旧规划。不能用玩家轨迹造路，不能把固定点列当作当前机关已开放的证明。直接回移代码修复只能改善旧数据上的行为，不能自动补齐新版路网才有的连接。
+- 精简子网方案尚未实现或测量；任意起点／大幅偏离／绕行需要多少额外数据、是否能显著缩小及具体性能收益均未验证，不能承诺复制几个小文件即可完全等同Full。若继续实施需先做离线提取与重接验证，再按保留功能的验收要求更新构建规则；`release/development` 仍只是开发采集开关。本轮只更新持久状态，未改生产代码、版本、包或游戏安装，未启动游戏、上传或发送玩家回复，原导航活动目标与游戏验收保持未完成。
+
 ### 1.11.5：UE4SS 4.0.0 原生适配器兼容（2026-11-24）
 
 - 现场日志排查确认：游戏升级至 UE4SS v4.0.0（Git SHA `#30afe5ff`，`UE4SS.dll` SHA256 `3843d81a8280096b0de3c750eebf15507e374c250dc551cbf07e7be7acc1e2ba`）后，`PBZQuestRouteCompat/PBZQuestRouteCompat-status.txt` 报错 `Unsupported UE4SS build; expected PBZ 1195 shipping. Adapter remains off.`；`UE4SS.log` 显示 `PBZQuestRouteCompat` 的 Lua 配置端正常注册（`REGISTERED PBZQuestRoute navigation and rope settings`），但 C++ 适配器因 `supported_runtime()` 仅校验 1195 哈希（`e1fb9a7e...`）而拒绝挂载，`PBZQuestRoute-startup.txt` 停留在 `"tracker":"waiting for installed tracker"`，`PBZQuestRoute-tracker.json` 未再更新。

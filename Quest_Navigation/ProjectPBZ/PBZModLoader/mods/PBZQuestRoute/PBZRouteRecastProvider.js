@@ -463,8 +463,17 @@ class WorldCache{
  cancel(){for(const job of [...this.queryJobs])job.return();this.queryJobs.clear();this.pages?.cancelQueries?.();this.localSession=null;this.expandedWalkingCandidate=null;this.deferredMovements=null;this.corridorActions=null;this.corridorPads=null;this.corridorDirections=null;}
 }
 class RecastCache{
- constructor(load,api,report=()=>{},invalidate=()=>{},clock=Date.now){this.regional=new RegionalCache(load,api,report,invalidate,clock);this.worlds=new WorldCache(load,api,report,invalidate,clock);this.active=this.regional;}
- covers(world,start,goal=start){return this.regional.covers(world,start,goal)||this.worlds.covers(world,start,goal);}
+ constructor(load,api,report=()=>{},invalidate=()=>{},clock=Date.now){this.regional=new RegionalCache(load,api,report,invalidate,clock);this.worlds=new WorldCache(load,api,report,invalidate,clock);this.active=this.regional;this.bellOnly=api.bellOnly===true;this.bellTarget=false;}
+ setBellTarget(value){
+  if(this.bellOnly&&this.bellTarget&&!value){
+   const world=this.worlds;world.cancel();world.job?.return?.();world.job=null;world.clearMovementCorridors();world.movementStorage?.reader?.clear();world.movementStorage=null;
+   world.pages?.destroy();world.pages=null;world.world=null;world.pawn=null;world.ready=false;world.loading=null;world.error=null;world.statePoll.reset();world.states={};world.signature='';world.revision++;
+   this.active=this.regional;
+  }
+  this.bellTarget=!!value;
+ }
+ worldCoverage(world,start,goal){return(!this.bellOnly||this.bellTarget)&&this.worlds.covers(world,start,goal);}
+ covers(world,start,goal=start){return this.regional.covers(world,start,goal)||this.worldCoverage(world,start,goal);}
  route(world,start,goal,options){this.cancel();this.active=this.regional.covers(world,start,goal)?this.regional:this.worlds;return this.active.route(world,start,goal,options);}
  routeLocal(world,a,b){return this.active===this.worlds?this.worlds.routeLocal(world,a,b):this.regional.route(world,a,b);}
  endpointCandidates(world,p){return this.active===this.worlds?this.worlds.endpointCandidates(world,p):(function*(){return[];})();}
@@ -506,7 +515,7 @@ class RecastCache{
  }
  pump(world,pawn,foot){
   this.regional.pump(world,pawn,foot);
-  if(this.active===this.worlds||!this.regional.covers(world,foot)||this.worlds.world&&this.worlds.world!==world||this.worlds.pawn&&this.worlds.pawn!==pawn)this.worlds.pump(world,pawn,foot);
+  if((!this.bellOnly||this.bellTarget)&&(this.active===this.worlds||!this.regional.covers(world,foot)||this.worlds.world&&this.worlds.world!==world||this.worlds.pawn&&this.worlds.pawn!==pawn))this.worlds.pump(world,pawn,foot);
  }
  cancel(){this.deferredMovements=null;this.regional.cancel();this.worlds.cancel();}
  get revision(){return this.regional.revision+this.worlds.revision;}

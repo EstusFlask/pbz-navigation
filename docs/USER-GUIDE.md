@@ -1,6 +1,10 @@
 # 任务与探索导航 / Quest and Exploration Navigation
 
-版本 / Version **1.11.5** · 实验版 / Experimental
+版本 / Version **1.12.0** · 实验版 / Experimental
+
+Full 包含11世界重建导航；Lite 保留原有任务、收集物、地图选点、地图路线、场景丝线和联动功能，另外加入精简的铃铛通路数据。Lite 只在铃铛导航时查询新增数据，未覆盖的起点或无法接通的路段继续尝试原寻路方式。两版共用安装标识和配置，只安装其中一版；切换前退出游戏并卸载旧版，保留配置后再安装。
+
+Full includes the rebuilt world navigation. Lite retains quest, collectible, map-pin, map-route, world-thread and companion integration features, and adds compact bell corridors. Its added data is queried for bell targets; uncovered or disconnected approaches fall back to the original planner. Install one edition at a time. To switch, close the game, uninstall the old edition and keep your settings before installing the other one.
 
 本地实验版扩展从游戏碰撞重建的世界导航，按需加载普通步行路线。门、战斗雾门和藤蔓仍取决于当前状态；未加载或未确认的路段会停止指引。攀爬、跳跃和机关通路仍受动作覆盖限制，尚未完成全图规则与实机全程验收，无需运行额外 EXE。
 

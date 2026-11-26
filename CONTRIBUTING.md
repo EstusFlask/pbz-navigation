@@ -25,6 +25,7 @@ npm --prefix offline-navigation ci --ignore-scripts
 | Python `lupa` | Lua 5.4 测试：`py -3.12 -m pip install lupa`；也可安装到 `tests/run-lua-tests.py` 支持的临时依赖目录。 |
 | 游戏数据、解码依赖与本地密钥 | 离线重建需要；当前脚本含原维护者本机路径，先检查参数和 `--help`，再在本地配置。步骤见离线说明，仅克隆源码不足以复现所有数据。 |
 | 已校验的全图暂存及其 receipt | 完整双包构建需要。默认位置由 `release/NEXUS-FIELDS.json` 的 `offlineWorldStage` 指定；可用 `--world-stage` 指定 `build/offline-navigation/` 下相同版本、通过校验的暂存。不能用空目录绕过数据检查。 |
+| 铃铛精简子网及其 receipt | Lite 构建需要；位置由 `liteWorldStage` 指定，从已校验的完整世界生成。端点投影、提取与独立验证命令见[离线说明](offline-navigation/README.md#lite-铃铛子网)，不随源码克隆。 |
 | 已安装的 UE4SS.dll | 只读用于适配器链接和 ABI 核对，不将共享运行时复制进仓库或发行包。 |
 
 全图暂存不会从 Nexus 安装包自动恢复；缺失时按离线说明重新生成并校验，或先做不依赖它的源码工作。游戏、存档、管理器和其他 Mod 默认只读；安装、启动游戏或发布需要用户明确授权。
@@ -47,7 +48,7 @@ py -3.12 tests/run-lua-tests.py
 
 Python 离线重建和物理检查按修改范围选择，命令见离线说明与维护指南。模拟结果只能证明对应协议或候选；游戏中是否可走、帧卡是否改善需要真实宿主验收。
 
-修改版本或交付安装包时，先读 [release/README.md](release/README.md)，同步版本锁与文案，重建需要的原生适配器，再构建、校验两个完整包：
+修改版本或交付安装包时，先读 [release/README.md](release/README.md)，同步版本锁与文案，重建需要的原生适配器，再构建、校验 Full／Lite 各自的发行／开发配对：
 
 ```powershell
 py -3.12 native/build-native.py --ue4ss '你的只读 UE4SS.dll 绝对路径' --test
@@ -55,7 +56,7 @@ py -3.12 tests/build-patch.py --flavor all
 py -3.12 tests/verify-package.py --flavor all
 ```
 
-`dist/` 只保留当前两包；旧包按发布规范归档。Nexus 仅上传 Release；Development 只在开发者本地使用。纯文档和 Git 整理不递增 Mod 版本、不重建安装包。
+`dist/` 只保留当前 Full／Lite 各自的 Release／Development 四包；旧包按发布规范归档。`--edition`选择产品类型，`--flavor`选择是否包含开发采集模块；两者默认均为 `all`。Nexus 仅上传 Release；Development 只在开发者本地使用。纯文档和 Git 整理不递增 Mod 版本、不重建安装包。
 
 ## Issue / PR 要求
 

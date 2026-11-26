@@ -1,0 +1,84 @@
+{
+  "version": "1.12.0",
+  "date": "2026-11-25",
+  "timezone": "America/Tijuana",
+  "status": "local-built-and-verified",
+  "packages": [
+    {
+      "file": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0.zip",
+      "edition": "full",
+      "flavor": "release",
+      "bytes": 2569679794,
+      "sha256": "a6e5b7ea09e2b0fd2f99e945eddd45da8b44120c3e0e2a39fb1064689b4ed647",
+      "entries": 5335,
+      "installedBytes": 3743859736
+    },
+    {
+      "file": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Development.zip",
+      "edition": "full",
+      "flavor": "development",
+      "bytes": 2569703004,
+      "sha256": "d85ac48bd4ac621cd396bc2b35ee915241e67cd5df9bf176fcbb3be0f6e6a90c",
+      "entries": 5342,
+      "installedBytes": 3743964783
+    },
+    {
+      "file": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Lite.zip",
+      "edition": "lite",
+      "flavor": "release",
+      "bytes": 402711005,
+      "sha256": "736b0f1105ec7fde2d867787387887d227b016c2bf304ddaa201c28551eba779",
+      "entries": 2027,
+      "installedBytes": 845799282
+    },
+    {
+      "file": "dist/Quest_and_Exploration_Navigation_Fork_1.12.0_Lite_Development.zip",
+      "edition": "lite",
+      "flavor": "development",
+      "bytes": 402734206,
+      "sha256": "aca7e757c49499a09d63907158cb54eea44558f768fa5a88880fbe11fc3984ea",
+      "entries": 2034,
+      "installedBytes": 845904329
+    }
+  ],
+  "subset": {
+    "worlds": 8,
+    "grids": 9,
+    "tiles": 1962,
+    "bells": 167,
+    "unresolvedBells": [
+      "Bell_DP_005"
+    ],
+    "reachableDirectedTopologyPairs": 1171,
+    "walkingTopologyPairs": 108,
+    "bytes": 314153556,
+    "physicalVerified": false
+  },
+  "verification": {
+    "sourceJavaScriptTests": 693,
+    "liteProfileJavaScriptTests": 693,
+    "pythonBellTests": 3,
+    "worldPackageTests": 1,
+    "plainJavaScriptDetourControls": 16,
+    "independentTileVariantAndTopologyValidation": true,
+    "luaTrackerAndColorProtocolsPassed": true,
+    "nativeABIAndRuntimeHashTestsPassed": true,
+    "allFourArchivesCRCAndExactSHA256Passed": true,
+    "managerOwnershipAndZeroCollectorOverlapPassed": true,
+    "originalLiteFilesMissing": [],
+    "originalAtlasModulesByteIdentical": 951
+  },
+  "managerSwitchRequiresUninstall": true,
+  "fullWorldStage": "build/offline-navigation/integration-release-1.12.0-final",
+  "liteWorldStage": "build/offline-navigation/bell-lite-1.12.0-final",
+  "previousArchives": "build/release-archive/20261125-before-1.12.0/",
+  "installed": false,
+  "gameStarted": false,
+  "uploaded": false,
+  "gitPushed": false,
+  "limits": [
+    "Offline topology and query controls are not live physical or native-action acceptance.",
+    "Uncovered or disconnected origins use the original planner; all-world route completion remains pending.",
+    "Frame-rate and real game acceptance have not been measured."
+  ]
+}

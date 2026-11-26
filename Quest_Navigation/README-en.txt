@@ -1,5 +1,5 @@
 Quest and Exploration Navigation - Fork
-Version:1.11.5 (Experimental)
+Version:1.12.0 (Experimental)
 
 Map routes and a blue guide for quests, collectibles and bells. Some routes still need improvement and testing.
 

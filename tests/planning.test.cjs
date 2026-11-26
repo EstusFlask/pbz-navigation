@@ -32,6 +32,7 @@ function planner(world,options={}){
     if(options.repair)mocks['./PBZRouteRepair']=options.repair;
     if(options.roadbook)mocks['./PBZRouteRoadbook']=options.roadbook;
     if(options.guides)mocks['./PBZRouteGuides']=options.guides;
+    if(options.build)mocks['./PBZRouteBuild']=options.build;
     if(options.bells){const array=xs=>({Num:()=>xs.length,Get:i=>xs[i]});const bellService={ActivateBellIDs:array(options.activeBellIDs||options.bells.map(b=>b.id)),DisableTeleportBellIDs:array([])};
         mocks['Library/TsHelper'].default.getWorldSubsystem=(p,t)=>t==='map'?map:t==='ship'?options.ship:bellService;}
     if(options.surface)mocks['./PBZRouteSurface']=options.surface;
@@ -45,6 +46,36 @@ function planner(world,options={}){
     return {api,goal,pose:p,dest:{key:'upstairs',item:true,p:goal,world:level}};
 }
 function run(job){let row,steps=0;do{row=job.next();assert.ok(++steps<100000,'search did not yield a bounded result');}while(!row.done);return row.value;}
+
+test('Lite bell subset failure retains a complete legacy bell route',()=>{
+ let enabled=false,attempts=0;
+ const legacy={legs:[{world:'test',points:[{x:0,y:0,z:0},{x:100,y:0,z:0}],partial:false,meters:1}],transfer:null};
+ const recast={RecastCache:class{
+  setBellTarget(value){enabled=value;}covers(){return enabled;}
+  *route(){attempts++;return null;}
+ }};
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,build:{edition:'lite'},recast,guides:{*plan(){return legacy;},refreshActions(){}}});
+ h.goal.z=0;h.dest.bell='Bell_test';
+ assert.equal(run(h.api.makePlan(h.dest)),legacy);
+ assert.ok(attempts>0);assert.equal(enabled,false);
+});
+
+test('asynchronous Lite fallback keeps nested gate approaches in scope and avoids endless provider restarts',()=>{
+ let enabled=false,revision=0;
+ const a={x:0,y:0,z:0},b={x:100,y:0,z:0};
+ const legacy={legs:[{world:'test',points:[a,b],walks:[],checks:[],gates:[],moves:[],partial:false,meters:1}],transfer:null};
+ const recast={RecastCache:class{
+  get revision(){return revision;}
+  setBellTarget(value){if(value!==enabled){enabled=value;revision++;}}
+  covers(){return enabled;}*route(world,start,goal){yield;return goal.x===50?{world,points:[start,goal],walks:[],checks:[],gates:[],moves:[],partial:false,meters:.5}:null;}
+  *pendingSlideGate(){return{gate:'test-closed-gate',p:{x:50,y:0,z:0},closed:true};}
+ }};
+ const h=planner({floorAt:p=>p,step:(a,b)=>({p:b})},{quiet:true,build:{edition:'lite'},recast,guides:{*plan(){yield;return legacy;},refreshActions(){}}});
+ let now=1000;h.api.planning.clock=()=>now;
+ h.goal.z=0;h.dest.bell='Bell_test';h.api.arm(h.dest);h.api.solve(h.dest,'selection');
+ for(let i=0;i<100&&h.api.planning.pending;i++){now+=20;h.api.planning.pump();}
+ assert.equal(h.api.planning.pending,false);assert.equal(h.api.S.trip,legacy);assert.equal(revision,2);assert.equal(h.api.planning.stats.requests,1);
+});
 
 for(const mode of ['wallrun','hook','ascent','lift'])test('the main proof rechecks '+mode+' readiness within the passage-cache period',()=>{
  let ready=true,checks=0;

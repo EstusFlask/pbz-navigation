@@ -6,10 +6,11 @@ import re
 import subprocess
 import zipfile
 from release_profiles import archive_name, included, build_bytes, lua_build_bytes, BUILD, LUA_BUILD
-from world_package import world_sources
+from lite_package import package_sources
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--flavor', choices=['release','development','all'], default='all')
+parser.add_argument('--edition',choices=['full','lite','all'],default='all')
 parser.add_argument('--world-stage',help='Verified public full-world staging; defaults to release metadata')
 args=parser.parse_args()
 
@@ -18,7 +19,6 @@ nav = root / 'Quest_Navigation'
 release = json.loads((root/'release/NEXUS-FIELDS.json').read_text(encoding='utf-8'))
 lock = json.loads((root/'release/VERSION-LOCK.json').read_text(encoding='utf-8'))
 version = str(release['version'])
-world_files,world_hashes=world_sources(root,release,args.world_stage)
 def version_key(value):
     match = re.fullmatch(r'(\d+)\.(\d+)\.(\d+)(?:-fork\.\d+)?', value)
     if not match:
@@ -44,18 +44,20 @@ print('Packaging complete navigation data and navigation-owned adapter...', flus
 for file in nav.rglob('*'):
     if file.is_file() and file.suffix.lower() in {'.exe', '.com', '.scr', '.msi'}:
         raise SystemExit('Executable distributions are prohibited: '+str(file.relative_to(nav)))
-for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]:
- output=root/archive_name(version,flavor)
- with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
+for edition in ['full','lite'] if args.edition=='all' else [args.edition]:
+ world_files,world_hashes=package_sources(root,release,edition,args.world_stage)
+ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]:
+  output=root/archive_name(version,flavor,edition)
+  with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
     for file in sorted(nav.rglob('*')):
         if file.is_file():
             relative=file.relative_to(nav).as_posix()
-            if not included(relative,flavor):continue
+            if not included(relative,flavor,edition) or relative in world_files:continue
             assert '/Mods/PbzMapTracker/' not in relative
             if relative==BUILD:
-                archive.writestr(relative,build_bytes(nav,version,flavor));continue
+                archive.writestr(relative,build_bytes(nav,version,flavor,edition));continue
             if relative==LUA_BUILD:
-                archive.writestr(relative,lua_build_bytes(version,flavor));continue
+                archive.writestr(relative,lua_build_bytes(version,flavor,edition));continue
             source=root/'build/legacy-atlas'/file.name if relative.startswith(scripts+'PBZRouteChunks/') else file
             archive.write(source, relative)
     for name in stream_state['files']:
@@ -71,4 +73,4 @@ for flavor in ['release','development'] if args.flavor=='all' else [args.flavor]
     archive.write(root/'docs/ITEM-DESCRIPTION-AUDIT.md', 'ITEM-DESCRIPTION-AUDIT.md')
     if flavor=='development':
         archive.write(root/'docs/DEVELOPMENT-SURVEYS.md','DEVELOPMENT-SURVEYS.md')
- print(f'{output} ({output.stat().st_size:,} bytes; {flavor})', flush=True)
+  print(f'{output} ({output.stat().st_size:,} bytes; {edition}/{flavor})', flush=True)
